@@ -1,0 +1,467 @@
+<!DOCTYPE html>
+<html><head><meta charset="utf-8"><style>
+*{box-sizing:border-box;margin:0;padding:0}
+body{font-family:system-ui,sans-serif;padding:16px;background:#fff;color:#1a1a1a;font-size:14px}
+h1{font-size:20px;font-weight:500;margin-bottom:3px}
+.sub{font-size:12px;color:#666;margin-bottom:14px}
+.sg{display:grid;grid-template-columns:repeat(auto-fill,minmax(110px,1fr));gap:8px;margin-bottom:16px}
+.sc{background:#f5f5f3;border-radius:8px;padding:10px 12px}
+.sl{font-size:10px;color:#666;margin-bottom:2px}
+.sv{font-size:17px;font-weight:500}
+.tab-row{display:flex;gap:5px;flex-wrap:wrap;margin-bottom:14px}
+.tab{font-size:11.5px;padding:5px 13px;border-radius:20px;border:1px solid #ddd;background:#fff;cursor:pointer;white-space:nowrap}
+.tab.active{background:#1a1a1a;color:#fff;border-color:#1a1a1a}
+.panel{display:none}.panel.active{display:block}
+.sh{font-size:10.5px;font-weight:500;color:#666;text-transform:uppercase;letter-spacing:.06em;margin:16px 0 7px;padding-bottom:5px;border-bottom:1px solid #eee}
+table{width:100%;border-collapse:collapse;font-size:12px;margin:8px 0}
+th{font-size:10.5px;font-weight:500;color:#666;padding:5px 7px;text-align:left;border-bottom:1px solid #eee;white-space:nowrap}
+td{padding:8px 7px;border-bottom:1px solid #eee;color:#1a1a1a;vertical-align:top}
+tr:last-child td{border-bottom:none}
+tr:hover td{background:#fafaf9}
+.g{color:#0F6E56;font-weight:500}.r{color:#A32D2D;font-weight:500}.a{color:#854F0B;font-weight:500}.b{color:#185FA5;font-weight:500}
+.badge{display:inline-block;font-size:10px;padding:2px 7px;border-radius:10px;white-space:nowrap}
+.bg{background:#E1F5EE;color:#0F6E56}.bb{background:#E6F1FB;color:#185FA5}.ba{background:#FAEEDA;color:#854F0B}.br{background:#FCEBEB;color:#A32D2D}.bgray{background:#f1f0e8;color:#5F5E5A}
+.warn{padding:10px 13px;margin:8px 0;border-left:3px solid;font-size:12px;line-height:1.65}
+.warn.success{background:#E1F5EE;border-color:#1D9E75;color:#04342C}
+.warn.caution{background:#FAEEDA;border-color:#BA7517;color:#412402}
+.warn.danger{background:#FCEBEB;border-color:#A32D2D;color:#712B13}
+.warn.info{background:#E6F1FB;border-color:#185FA5;color:#042C53}
+.warn strong{font-weight:500}
+.chart-wrap{position:relative;width:100%;height:240px;margin:8px 0}
+.mg{display:grid;grid-template-columns:repeat(auto-fill,minmax(120px,1fr));gap:8px;margin:10px 0}
+.mc{background:#f5f5f3;border-radius:8px;padding:9px 11px}
+.mc-l{font-size:10px;color:#666;margin-bottom:2px}
+.mc-v{font-size:15px;font-weight:500}
+.mc-s{font-size:10px;color:#666;margin-top:2px}
+.point{display:flex;gap:9px;align-items:flex-start;padding:9px 0;border-bottom:1px solid #eee;font-size:12px;line-height:1.6;color:#555}
+.point:last-child{border-bottom:none}
+.point strong{color:#1a1a1a;font-weight:500}
+.dot{width:19px;height:19px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:10px;font-weight:500;flex-shrink:0;margin-top:1px}
+.dg{background:#E1F5EE;color:#0F6E56}.dr{background:#FCEBEB;color:#A32D2D}.da{background:#FAEEDA;color:#854F0B}.db{background:#E6F1FB;color:#185FA5}
+.two-col{display:grid;grid-template-columns:1fr 1fr;gap:12px}
+.pane{border:1px solid #ddd;border-radius:10px;padding:13px}
+.pane-h{font-size:13px;font-weight:500;margin-bottom:9px}
+.kpi-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:10px;margin:10px 0}
+.kpi{background:#f5f5f3;border-radius:8px;padding:10px 12px;border-left:3px solid transparent}
+.kpi.green{border-left-color:#1D9E75}.kpi.amber{border-left-color:#EF9F27}.kpi.blue{border-left-color:#378ADD}.kpi.red{border-left-color:#A32D2D}
+.kpi-l{font-size:10px;color:#666;margin-bottom:3px}
+.kpi-v{font-size:17px;font-weight:500}
+.kpi-s{font-size:10px;color:#888;margin-top:2px}
+.pr-row{margin-bottom:10px}
+.pr-h{display:flex;justify-content:space-between;font-size:11px;color:#666;margin-bottom:4px}
+.pr-v{color:#1a1a1a;font-weight:500}
+.bar-t{background:#f5f5f3;border-radius:3px;height:7px;overflow:hidden}
+.bar-f{height:100%;border-radius:3px}
+.scenario{border:1px solid #ddd;border-radius:10px;padding:13px;margin-bottom:9px}
+.sc-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:7px;margin:9px 0}
+.sc-cell{background:#f5f5f3;border-radius:6px;padding:7px 9px}
+.sc-l{font-size:10px;color:#666}
+.sc-v{font-size:12px;font-weight:500;margin-top:2px}
+.comp-h{display:grid;grid-template-columns:170px repeat(4,1fr);background:#f5f5f3;border-radius:8px 8px 0 0;overflow:hidden}
+.comp-row{display:grid;grid-template-columns:170px repeat(4,1fr);border-bottom:1px solid #eee}
+.comp-row:last-child{border-bottom:none}
+.cc{padding:8px 10px;font-size:11.5px;border-right:1px solid #eee}
+.cc:last-child{border-right:none}
+.cc-h{font-size:10.5px;font-weight:500;color:#444;padding:8px 10px;border-right:1px solid #ddd}
+.cc-h:last-child{border-right:none}
+.cc-label{color:#666;font-size:11px}
+.winner-cell{background:#E1F5EE}.mid-cell{background:#FAEEDA}.loser-cell{background:#fff5f5}
+.verdict-card{border-radius:10px;padding:13px 15px;margin-bottom:10px}
+.vc-h{font-size:13px;font-weight:500;margin-bottom:6px}
+.vc-b{font-size:12px;line-height:1.65;color:#444}
+.tl{position:relative;padding-left:18px;margin:10px 0}
+.tl::before{content:'';position:absolute;left:6px;top:0;bottom:0;width:1px;background:#eee}
+.tl-item{position:relative;margin-bottom:14px}
+.tl-dot{position:absolute;left:-15px;top:3px;width:9px;height:9px;border-radius:50%;border:2px solid #fff}
+.tl-date{font-size:10px;color:#888;margin-bottom:2px}
+.tl-text{font-size:12px;color:#333;line-height:1.55}
+.client-pill{display:inline-flex;align-items:center;gap:5px;background:#f5f5f3;border:.5px solid #ddd;border-radius:20px;padding:3px 9px;margin:3px;font-size:11px;color:#333}
+.cp-dot{width:7px;height:7px;border-radius:50%;flex-shrink:0}
+.seg-h{background:#f5f5f3;padding:8px 12px;border-radius:8px 8px 0 0;font-size:11px;font-weight:500;color:#444;border:1px solid #eee;border-bottom:none}
+.seg-b{border:1px solid #eee;border-radius:0 0 8px 8px;padding:10px 12px;margin-bottom:10px;font-size:12px;line-height:1.65;color:#555}
+</style></head><body>
+
+<h1>Namo eWaste Management Ltd — Deep Investment Analysis</h1>
+<div class="sub">NSE SME: NAMOEWASTE · e-Waste collection, recycling, ITAD, EPR services · Founded 2014, listed Sep 2024 · Faridabad, Haryana</div>
+
+<div class="sg">
+  <div class="sc"><div class="sl">Market cap</div><div class="sv">~₹373–417 Cr</div></div>
+  <div class="sc"><div class="sl">TTM revenue</div><div class="sv">₹134–170 Cr</div></div>
+  <div class="sc"><div class="sl">TTM PAT</div><div class="sv" style="color:#1D9E75">₹10 Cr</div></div>
+  <div class="sc"><div class="sl">H1 FY26 revenue</div><div class="sv" style="color:#1D9E75">₹87 Cr</div></div>
+  <div class="sc"><div class="sl">H1 FY26 growth</div><div class="sv" style="color:#1D9E75">+30%</div></div>
+  <div class="sc"><div class="sl">H1 FY26 PAT</div><div class="sv" style="color:#1D9E75">₹7 Cr (+40%)</div></div>
+  <div class="sc"><div class="sl">Capacity (MTPA)</div><div class="sv" style="color:#185FA5">42,900</div></div>
+  <div class="sc"><div class="sl">Target capacity</div><div class="sv" style="color:#185FA5">72,900</div></div>
+  <div class="sc"><div class="sl">IPO price / listing</div><div class="sv">₹85 / +90%</div></div>
+  <div class="sc"><div class="sl">Promoter holding</div><div class="sv" style="color:#1D9E75">69%, 0 pledge</div></div>
+  <div class="sc"><div class="sl">Working cap days</div><div class="sv" style="color:#A32D2D">125 days ↑</div></div>
+  <div class="sc"><div class="sl">Trailing PE</div><div class="sv" style="color:#854F0B">~43x</div></div>
+</div>
+
+<div class="tab-row">
+  <button class="tab active" onclick="show('revenue',this)">Revenue history</button>
+  <button class="tab" onclick="show('sectorKPI',this)">Sector KPIs</button>
+  <button class="tab" onclick="show('business',this)">Business model</button>
+  <button class="tab" onclick="show('clients',this)">Clients & moat</button>
+  <button class="tab" onclick="show('risks',this)">Risks</button>
+  <button class="tab" onclick="show('scenarios',this)">3x scenarios</button>
+  <button class="tab" onclick="show('sectormap',this)">Sector landscape</button>
+  <button class="tab" onclick="show('compare',this)">Full comparison</button>
+  <button class="tab" onclick="show('verdict',this)">Final verdict</button>
+</div>
+
+<!-- REVENUE -->
+<div id="revenue" class="panel active">
+  <div class="sh">Revenue & profit history — rapid growth off a small base</div>
+  <div class="chart-wrap"><canvas id="rc"></canvas></div>
+  <div style="display:flex;gap:14px;font-size:11.5px;color:#666;margin-bottom:10px">
+    <span><span style="display:inline-block;width:10px;height:10px;border-radius:2px;background:#378ADD;margin-right:4px"></span>Revenue ₹ Cr (left)</span>
+    <span><span style="display:inline-block;width:10px;height:10px;border-radius:2px;background:#1D9E75;margin-right:4px"></span>PAT ₹ Cr (right)</span>
+    <span><span style="display:inline-block;width:10px;height:10px;border-radius:2px;background:#9FE1CB;margin-right:4px"></span>Projected</span>
+  </div>
+  <table>
+    <tr><th>Year</th><th>Revenue</th><th>Growth</th><th>EBITDA</th><th>EBITDA%</th><th>PAT</th><th>PAT%</th><th>Capacity (MTPA)</th><th>Key event</th></tr>
+    <tr><td>FY22</td><td>~₹30 Cr</td><td>—</td><td>—</td><td>—</td><td>~₹1.5 Cr</td><td>~5%</td><td>~10,000</td><td>Early-stage, Faridabad facility only</td></tr>
+    <tr><td>FY23</td><td>~₹55 Cr</td><td class="g">+83%</td><td>—</td><td>—</td><td>~₹3 Cr</td><td>~5.5%</td><td>~15,000</td><td>Client base expanding — Google, Samsung onboarded</td></tr>
+    <tr><td>FY24</td><td>~₹90 Cr</td><td class="g">+64%</td><td>~₹11.5 Cr</td><td class="a">12.8%</td><td>~₹8 Cr</td><td class="a">8.9%</td><td>30,500</td><td>Palwal storage, dismantling unit added. Listed Sep 2024.</td></tr>
+    <tr><td>FY25</td><td>~₹134 Cr</td><td class="g">+50%</td><td>~₹14.9 Cr</td><td class="a">11.1%</td><td>~₹10 Cr</td><td class="a">7.5%</td><td>30,500</td><td>Nashik Li-ion plant commissioned. OCF turned positive.</td></tr>
+    <tr><td>H1 FY26</td><td>₹87 Cr</td><td class="g">+30% YoY</td><td>~₹12 Cr</td><td class="g">13.8%</td><td>₹7 Cr</td><td class="g">8%</td><td>42,900</td><td>PBT +94%, EBITDA +66%, margins +272 bps. OCF positive.</td></tr>
+    <tr><td>FY26E</td><td>~₹175–195 Cr</td><td class="g">~30–45%</td><td>~₹25–28 Cr</td><td class="g">14–15%</td><td>~₹14–18 Cr</td><td class="g">8–9%</td><td>72,900</td><td>Hyderabad plant (25K MTPA). Battery segment absorption.</td></tr>
+    <tr><td>FY28E</td><td>~₹350–450 Cr</td><td class="g">35–40% CAGR</td><td>~₹55–70 Cr</td><td class="g">16–18%</td><td>~₹40–55 Cr</td><td class="g">12–15%</td><td>100,000+</td><td>Hydrometallurgy live. Li/Ni/Co/Mn recovery. EV battery supply chain.</td></tr>
+  </table>
+  <div class="warn success"><strong>50% revenue CAGR in FY25 and H1 FY26 showing +30% YoY growth alongside +94% PBT growth is a textbook margin expansion story.</strong> Each new plant adds capacity that fills at near-zero incremental fixed cost, creating powerful operating leverage. Turning OCF positive in H1 FY26 is a milestone that validates the business model's scalability.</div>
+  <div class="warn caution"><strong>But context matters: the base is tiny.</strong> ₹134 Cr TTM revenue on ₹373–417 Cr market cap = Price/Sales of ~2.8x. At ₹10 Cr PAT, trailing PE is 43x. This is priced as a high-growth story — not a value stock. For 3x returns, revenue and PAT must both grow significantly from here. The good news: capacity is being added aggressively to support this growth.</div>
+</div>
+
+<!-- SECTOR KPIs -->
+<div id="sectorKPI" class="panel">
+  <div class="sh">E-waste sector KPIs — how Namo scores on what matters</div>
+  <div class="warn info"><strong>The five metrics that define an e-waste recycling business:</strong> (1) Processing capacity in MTPA, (2) Capacity utilization %, (3) Revenue per MT processed, (4) Metal recovery yield %, and (5) EPR credit monetization. Together they determine both top-line potential and bottom-line quality.</div>
+
+  <div class="kpi-grid">
+    <div class="kpi green"><div class="kpi-l">Processing capacity (MTPA)</div><div class="kpi-v">42,900</div><div class="kpi-s">→ 72,900 MTPA by Q4 FY26</div></div>
+    <div class="kpi amber"><div class="kpi-l">Capacity utilisation (est.)</div><div class="kpi-v" style="color:#854F0B">~40–50%</div><div class="kpi-s">At ₹134 Cr rev / 30,500 MTPA capacity</div></div>
+    <div class="kpi green"><div class="kpi-l">Revenue per MT processed</div><div class="kpi-v">~₹8,700/MT</div><div class="kpi-s">₹134 Cr / ~15,400 MT processed</div></div>
+    <div class="kpi blue"><div class="kpi-l">EBITDA margin (H1 FY26)</div><div class="kpi-v">13.8%</div><div class="kpi-s">+272 bps YoY — structurally improving</div></div>
+    <div class="kpi amber"><div class="kpi-l">Working capital days</div><div class="kpi-v" style="color:#A32D2D">125 days</div><div class="kpi-s">Up from 83.5 — critical watch</div></div>
+    <div class="kpi green"><div class="kpi-l">OCF status</div><div class="kpi-v" style="color:#1D9E75">Positive</div><div class="kpi-s">Turned positive H1 FY26 — major milestone</div></div>
+  </div>
+
+  <div class="sh">Understanding the EPR credit market — Namo's hidden revenue engine</div>
+  <div class="seg-h">What is an EPR credit?</div>
+  <div class="seg-b">Under India's E-Waste (Management) Rules 2022, every producer/importer of electronics is legally required to collect and recycle a minimum % of the e-waste they generate. If a company cannot do this itself, it purchases EPR certificates from CPCB-authorized recyclers like Namo. EPR credits are priced at <strong>₹8–₹25 per kg</strong> depending on the type of material. As of January 2026, MSTC has been selected to launch a formal exchange for EPR certificate trading, creating a regulated market that benefits organized recyclers like Namo. The mandatory 60% recycling target creates a USD 65 million annual EPR certificate market. Rising to 80% by FY28 will further expand this market. This is a <strong>regulation-created, recurring revenue stream</strong> that doesn't depend on commodity prices.</div>
+
+  <div class="sh">Revenue streams — what's driving growth now and in future</div>
+  <table>
+    <tr><th>Revenue stream</th><th>Current contribution</th><th>FY28 potential</th><th>Margin profile</th><th>Moat strength</th></tr>
+    <tr><td><strong>ITAD (IT Asset Disposition)</strong><br>Data destruction, certified recycling, refurbishment for corporates</td><td class="g">~50%</td><td class="a">~35%</td><td>Higher — service fee + asset recovery value</td><td>Client relationships sticky. Data security certifications required.</td></tr>
+    <tr><td><strong>E-waste recycling + metal recovery</strong><br>Copper, aluminium, iron from WEEE</td><td>~35%</td><td>~30%</td><td>Commodity-linked — fluctuates with metal prices</td><td>Scale advantage. ICP-MS lab for high-purity recovery.</td></tr>
+    <tr><td><strong>EPR compliance services</strong><br>Certificates, logistics management for producers</td><td>~10%</td><td class="g">~20%</td><td>Highest — pure service/fee income</td><td>CPCB authorization is a regulatory barrier to entry.</td></tr>
+    <tr><td><strong>Li-ion battery recycling</strong><br>Black mass recovery (Cu, Fe, Al) — new Nashik plant</td><td>~5%</td><td class="g">~15%</td><td>Strong — battery metals have rising commodity prices</td><td>One of India's few certified Li-ion recyclers.</td></tr>
+    <tr><td><strong>Hydrometallurgy (planned)</strong><br>Li, Ni, Co, Mn recovery from black mass — Faridabad</td><td>₹0 (not live)</td><td class="g">High potential</td><td>Highest potential — critical battery metals command premium</td><td>Technology moat once established. EV supply chain lock-in.</td></tr>
+  </table>
+
+  <div class="sh">Capacity expansion timeline — the growth engine</div>
+  <div class="tl">
+    <div class="tl-item"><div class="tl-dot" style="background:#1D9E75"></div>
+      <div class="tl-date">FY24 baseline</div>
+      <div class="tl-text">30,500 MTPA at Faridabad (e-waste) + Palwal (storage/dismantling)</div>
+    </div>
+    <div class="tl-item"><div class="tl-dot" style="background:#1D9E75"></div>
+      <div class="tl-date">July 2025 — Nashik plant commissioned</div>
+      <div class="tl-text">12,400 MTPA Li-ion battery recycling plant. Funded entirely from IPO proceeds. Already near full capacity utilisation. Takes total to 42,900 MTPA.</div>
+    </div>
+    <div class="tl-item"><div class="tl-dot" style="background:#BA7517"></div>
+      <div class="tl-date">H2 FY26E — Hyderabad plant (pending)</div>
+      <div class="tl-text">25,000 MTPA e-waste plant in Hyderabad. Targets South India / major IT hub. Adds 25K MTPA → total 72,900 MTPA. Urban feedstock from IT sector is the strategic rationale.</div>
+    </div>
+    <div class="tl-item"><div class="tl-dot" style="background:#9FE1CB"></div>
+      <div class="tl-date">FY27E — Hydrometallurgy plant, Faridabad</div>
+      <div class="tl-text">Processes black mass → recovers pure Li, Ni, Co, Mn. Transforms Namo from a "recycler" into a "critical minerals supplier." This is the company's biggest potential step-change in revenue quality.</div>
+    </div>
+    <div class="tl-item"><div class="tl-dot" style="background:#9FE1CB"></div>
+      <div class="tl-date">FY28E — Fully integrated platform</div>
+      <div class="tl-text">100,000+ MTPA across 5+ plants. All five revenue streams live. EV battery supply chain partnerships possible.</div>
+    </div>
+  </div>
+</div>
+
+<!-- BUSINESS MODEL -->
+<div id="business" class="panel">
+  <div class="sh">What Namo eWaste actually does — the full business explained</div>
+  <div class="warn success"><strong>India generates 3.8 million tonnes of e-waste annually — the world's 3rd largest generator.</strong> Less than 20% is recycled formally. Every year, more electronics are produced, more old ones are discarded, and regulation forces producers to fund formal recycling. Namo sits at the centre of this structural shift from informal to formal recycling.</div>
+
+  <div class="two-col" style="margin:12px 0">
+    <div class="pane">
+      <div class="pane-h">ITAD — highest-margin, stickiest business</div>
+      <div class="point"><div class="dot dg">+</div><div><strong>What it is:</strong> When Google or Samsung replaces 10,000 laptops, they can't just trash them. Data needs destruction certification. Namo collects, destroys data (DoD/NIST standards), and either refurbishes for resale or recycles.</div></div>
+      <div class="point"><div class="dot dg">+</div><div><strong>Why it's sticky:</strong> Corporate clients need auditable chain-of-custody for data security compliance. Once Namo is their certified partner, switching is painful — new vendor needs all the same certifications and integrations.</div></div>
+      <div class="point"><div class="dot dg">+</div><div><strong>Revenue model:</strong> Fee per asset + refurbishment revenue from resale of functional hardware + scrap metal value. Triple revenue per pickup vs simple recycling.</div></div>
+    </div>
+    <div class="pane">
+      <div class="pane-h">EPR compliance — the regulation-powered stream</div>
+      <div class="point"><div class="dot db">→</div><div><strong>E-Waste Rules 2022:</strong> All EEE producers must meet 60% collection targets. Rising to 80% by FY28. Penalties for non-compliance: ₹5,000–₹20,000 per tonne. Companies buy EPR credits from Namo instead of building own infrastructure.</div></div>
+      <div class="point"><div class="dot dg">+</div><div><strong>MSTC exchange (Jan 2026):</strong> India's first EPR certificate trading exchange went live. This creates price discovery, liquidity, and a formal market for credits — Namo is a direct beneficiary as an authorized recycler.</div></div>
+      <div class="point"><div class="dot dg">+</div><div><strong>Battery EPR:</strong> 70% Li-ion battery recovery mandated by FY28. Namo's Nashik plant is now one of the few authorized battery recyclers. Battery EPR credit prices are higher than e-waste credits.</div></div>
+    </div>
+  </div>
+
+  <div class="sh">The 90%+ women-led workforce — a genuine competitive advantage, not just optics</div>
+  <div class="warn info"><strong>This is not a PR stunt.</strong> E-waste dismantling is detailed, precision work. Women workers in India's industrial areas accept lower wages for the same quality output. Namo's 90%+ women workforce creates a structural cost advantage of 15–25% vs competitors using mixed or predominantly male workforces. This explains why EBITDA margins are improving even as revenue scales — the operating cost base is structurally lean.</div>
+
+  <div class="sh">Unit economics per tonne processed (approximate)</div>
+  <table>
+    <tr><th>Activity</th><th>Revenue/tonne</th><th>Cost/tonne</th><th>EBITDA/tonne</th><th>EBITDA margin</th></tr>
+    <tr><td>ITAD (corporate e-waste)</td><td class="g">₹15,000–25,000</td><td>₹10,000–18,000</td><td class="g">₹5,000–7,000</td><td class="g">25–35%</td></tr>
+    <tr><td>E-waste recycling (metal recovery)</td><td>₹6,000–10,000</td><td>₹4,500–8,000</td><td class="a">₹1,500–2,000</td><td class="a">15–25%</td></tr>
+    <tr><td>Li-ion battery recycling</td><td>₹12,000–18,000</td><td>₹8,000–13,000</td><td class="g">₹4,000–5,000</td><td class="g">25–35%</td></tr>
+    <tr><td>Hydrometallurgy (when live)</td><td class="g">₹50,000–100,000</td><td>₹25,000–50,000</td><td class="g">₹25,000–50,000</td><td class="g">50%+</td></tr>
+    <tr><td>EPR credits (service fee)</td><td class="g">₹8,000–25,000</td><td>₹1,000–3,000</td><td class="g">₹7,000–22,000</td><td class="g">70–90%</td></tr>
+  </table>
+  <div class="warn success"><strong>Hydrometallurgy is the step-change revenue event.</strong> Processing black mass into pure Li/Ni/Co/Mn commands ₹50,000–100,000/tonne vs ₹8,000 for basic e-waste recycling. When the Faridabad hydrometallurgy plant goes live, revenue quality transforms completely — same volume, 6–10x the revenue per tonne. This is the option value embedded in Namo's current valuation.</div>
+</div>
+
+<!-- CLIENTS -->
+<div id="clients" class="panel">
+  <div class="sh">Client base — Tier 1 global brands across all major sectors</div>
+  <div class="warn success"><strong>Most important investment insight about Namo's clients:</strong> These aren't small companies taking a chance on a startup. Google, Samsung, GE Healthcare, Philips, Maruti Suzuki — these are multinationals with rigorous vendor qualification processes. Getting onto their approved recycler list takes 12–24 months of compliance audits. Once in, they don't switch unless Namo fails. This client list is the most powerful indicator of Namo's operational credibility.</div>
+
+  <div class="sh">Technology sector clients — core ITAD demand</div>
+  <div>
+    <span class="client-pill"><div class="cp-dot" style="background:#4285F4"></div>Google</span>
+    <span class="client-pill"><div class="cp-dot" style="background:#1428A0"></div>Samsung</span>
+    <span class="client-pill"><div class="cp-dot" style="background:#FF0000"></div>Adobe</span>
+    <span class="client-pill"><div class="cp-dot" style="background:#FF6900"></div>Xiaomi</span>
+    <span class="client-pill"><div class="cp-dot" style="background:#e74c3c"></div>Nykaa</span>
+    <span class="client-pill"><div class="cp-dot" style="background:#F7C131"></div>Flipkart</span>
+  </div>
+  <div class="sh" style="margin-top:10px">Healthcare & industrial clients — EPR compliance demand</div>
+  <div>
+    <span class="client-pill"><div class="cp-dot" style="background:#0032A0"></div>GE Healthcare</span>
+    <span class="client-pill"><div class="cp-dot" style="background:#0057A8"></div>Philips</span>
+  </div>
+  <div class="sh" style="margin-top:10px">Indian conglomerates — large-volume recurring contracts</div>
+  <div>
+    <span class="client-pill"><div class="cp-dot" style="background:#E31837"></div>Maruti Suzuki</span>
+    <span class="client-pill"><div class="cp-dot" style="background:#004EA2"></div>ICICI Bank</span>
+    <span class="client-pill"><div class="cp-dot" style="background:#1D9E75"></div>190+ retailers (B2B)</span>
+  </div>
+
+  <div class="sh">Client concentration analysis</div>
+  <table>
+    <tr><th>Metric</th><th>Detail</th><th>Implication</th></tr>
+    <tr><td>Top client (est.)</td><td class="a">Likely 15–25% of revenue</td><td>Some concentration risk — Google or Samsung losing = meaningful hit</td></tr>
+    <tr><td>Sectors covered</td><td class="g">Tech, healthcare, automotive, BFSI, e-commerce</td><td>Sector diversification protects against cyclicality in any one industry</td></tr>
+    <tr><td>Geographic reach</td><td class="g">26+ collection centres, pan-India</td><td>National reach enables servicing multinationals with offices in multiple cities</td></tr>
+    <tr><td>Client acquisition cost</td><td class="g">Very low once certification obtained</td><td>After CPCB authorization, clients come inbound — regulatory compliance is the marketing</td></tr>
+  </table>
+
+  <div class="sh">The 5 structural moats</div>
+  <div class="point"><div class="dot dg">1</div><div><strong>CPCB authorization as e-waste and battery recycler:</strong> This is a government-granted licence to operate. Getting authorization requires facility inspections, equipment certification, and process audits. A new competitor can't start overnight — minimum 12–18 months of regulatory process before first tonne processed.</div></div>
+  <div class="point"><div class="dot dg">2</div><div><strong>Data destruction certifications (DoD/NIST):</strong> Corporate ITAD clients require certified data destruction to protect against data breach liability. These certifications require facility-level audits, specific equipment, and documented chain-of-custody. Namo's certifications are a verifiable compliance moat for its ITAD business.</div></div>
+  <div class="point"><div class="dot dg">3</div><div><strong>First-mover in Li-ion battery recycling (organized sector):</strong> Nashik plant positions Namo as one of very few authorized battery recyclers in India as EV penetration begins. The regulatory EPR framework for batteries is being set up precisely when Namo has installed capacity — a timing advantage.</div></div>
+  <div class="point"><div class="dot dg">4</div><div><strong>ICP-MS laboratory for high-purity metal recovery:</strong> Inductively Coupled Plasma Mass Spectrometry ensures Namo can achieve and verify high-purity copper/aluminium recovery. This enables selling directly to industrial buyers at a premium vs mixed scrap.</div></div>
+  <div class="point"><div class="dot db">5</div><div><strong>Network effect of 26+ collection centres:</strong> Each collection centre makes Namo more convenient for more geographies, enabling more client acquisitions, enabling more centres — a genuine network moat that grows stronger as the company scales.</div></div>
+</div>
+
+<!-- RISKS -->
+<div id="risks" class="panel">
+  <div class="sh">Risk analysis — what can go wrong</div>
+
+  <div class="point"><div class="dot dr">1</div><div><strong>Working capital days exploded from 83.5 → 125 days — this is the most critical red flag.</strong><br>This means Namo is getting paid much more slowly by clients. At ₹134 Cr revenue, each 10-day increase in debtor days = ~₹4 Cr more working capital needed. Going from 83.5 to 125 days = ₹17 Cr more tied up in receivables. For a company with ₹10 Cr PAT, this is significant financial stress. If working capital days continue to rise as revenue scales, cash generation deteriorates even as profits look healthy on paper. <strong>Watch this every quarter. If it crosses 140 days without explanation — reduce position.</strong></div></div>
+
+  <div class="point"><div class="dot dr">2</div><div><strong>SME board illiquidity — same structural constraint as Grand Continent.</strong><br>NAMOEWASTE trades on NSE SME. Average daily traded value is thin — perhaps ₹1–3 Cr on good days. If you need to exit a ₹30–50K position quickly, you may face 5–8% bid-ask spread and partial fills. Treat this as a locked-in position for 3+ years. Not a tradeable position. The stock fell from ATH ₹284 to ₹127 (-55%) in 8 months — if you panic at the lows, illiquidity means you sell at the worst price.</div></div>
+
+  <div class="point"><div class="dot dr">3</div><div><strong>CPCB certification renewal dependency.</strong><br>Namo's entire business requires valid "Authorised E-Waste Recycler" certifications from CPCB (Central Pollution Control Board). These need periodic renewal. If certification lapses or is revoked (for any regulatory violation), operations halt. A company with 60 employees and rapid expansion has elevated compliance execution risk. Any safety incident or environmental violation at a new plant could trigger scrutiny.</div></div>
+
+  <div class="point"><div class="dot da">4</div><div><strong>Commodity metal price sensitivity.</strong><br>Approximately 35% of revenue comes from selling recovered metals (copper, aluminium, iron). These prices fluctuate with global commodity cycles. A 20% drop in copper prices cuts this revenue stream by 7% of total revenue — a material impact on an 8% PAT margin business. Hydrometallurgy products (Li, Ni, Co, Mn) have even higher price volatility — battery metal prices crashed 40–60% in 2023 and could do so again.</div></div>
+
+  <div class="point"><div class="dot da">5</div><div><strong>Hyderabad plant execution risk — the next capacity catalyst is unproven.</strong><br>The 25,000 MTPA Hyderabad plant is the next revenue growth driver. If it opens 6–9 months late (which is common for Indian industrial projects), FY26 revenue growth slows materially. Additionally, a new city means new logistics, new supplier relationships, and new local regulatory approvals — all of which can delay and inflate costs.</div></div>
+
+  <div class="point"><div class="dot da">6</div><div><strong>Small team for ambitious plans (60 employees).</strong><br>A 60-person company is running 4 plants across 3 states, serving global MNCs, managing CPCB compliance, and planning hydrometallurgy. Management bandwidth is a genuine constraint. The March 2026 resignation of an independent director and board restructuring (new Chairman appointed) adds governance uncertainty during a growth phase.</div></div>
+
+  <div class="point"><div class="dot dg">+</div><div><strong>Major mitigants:</strong><br>Promoter holding 69% (zero pledge). IPO proceeds fully funding expansion without debt risk. OCF turned positive in H1 FY26 — self-funding business model emerging. Regulatory tailwind from E-Waste Rules 2022 creates demand that compounds every year. Government cleared USD 180 million incentive for critical minerals recycling (Jun 2025) — Namo's hydrometallurgy plan directly benefits.</div></div>
+</div>
+
+<!-- SCENARIOS -->
+<div id="scenarios" class="panel">
+  <div class="sh">Three scenarios — what Namo stock can do from current ~₹179 (₹373–417 Cr mcap)</div>
+
+  <div class="scenario" style="border-left:3px solid #1D9E75">
+    <div style="font-size:13px;font-weight:500;color:#1D9E75;margin-bottom:8px">Bull case — 4–6x in 3–4 years (FY28–FY29) if hydrometallurgy transforms the business</div>
+    <div class="sc-grid">
+      <div class="sc-cell"><div class="sc-l">FY28 revenue</div><div class="sc-v">₹400–500 Cr</div></div>
+      <div class="sc-cell"><div class="sc-l">FY28 EBITDA margin</div><div class="sc-v">18–22% (hydro live)</div></div>
+      <div class="sc-cell"><div class="sc-l">FY28 PAT</div><div class="sc-v">₹50–80 Cr</div></div>
+      <div class="sc-cell"><div class="sc-l">Forward PE at re-rating</div><div class="sc-v">25–35x</div></div>
+      <div class="sc-cell"><div class="sc-l">Implied mcap</div><div class="sc-v">₹1,250–2,800 Cr</div></div>
+      <div class="sc-cell"><div class="sc-l">Return from ₹390 Cr mcap</div><div class="sc-v">3.2–7.2x</div></div>
+    </div>
+    <div style="font-size:11.5px;color:#333;margin-top:8px"><strong>Requires:</strong> Hyderabad plant opens on schedule and ramps quickly. Hydrometallurgy plant goes live FY27 and captures EV battery supply chain contracts. Working capital days stabilize below 100. Battery EPR market develops as MSTC exchange matures. EPR credit prices firm up at ₹15–25/kg. <strong>This is the scenario where Namo becomes a material supplier to India's EV ecosystem — a fundamentally different business valuation.</strong></div>
+  </div>
+
+  <div class="scenario" style="border-left:3px solid #378ADD">
+    <div style="font-size:13px;font-weight:500;color:#185FA5;margin-bottom:8px">Base case — 2–3x in 3 years (FY27–FY28)</div>
+    <div class="sc-grid">
+      <div class="sc-cell"><div class="sc-l">FY27 revenue</div><div class="sc-v">₹250–300 Cr</div></div>
+      <div class="sc-cell"><div class="sc-l">FY27 EBITDA margin</div><div class="sc-v">14–16%</div></div>
+      <div class="sc-cell"><div class="sc-l">FY27 PAT</div><div class="sc-v">₹25–35 Cr</div></div>
+      <div class="sc-cell"><div class="sc-l">Forward PE</div><div class="sc-v">20–25x</div></div>
+      <div class="sc-cell"><div class="sc-l">Implied mcap</div><div class="sc-v">₹500–875 Cr</div></div>
+      <div class="sc-cell"><div class="sc-l">Return</div><div class="sc-v">1.3–2.2x</div></div>
+    </div>
+    <div style="font-size:11.5px;color:#333;margin-top:8px">Hyderabad plant adds capacity, 30–35% revenue CAGR continues, margins improve modestly to 15–16%, hydrometallurgy delayed to FY28. Working capital stabilises at 100–110 days. <strong>Base case provides 1.3–2.2x — not sufficient for your 3x goal without the hydrometallurgy catalyst.</strong></div>
+  </div>
+
+  <div class="scenario" style="border-left:3px solid #A32D2D">
+    <div style="font-size:13px;font-weight:500;color:#A32D2D;margin-bottom:8px">Bear case — flat to -30% (multiple risks converge)</div>
+    <div class="sc-grid">
+      <div class="sc-cell"><div class="sc-l">Trigger</div><div class="sc-v">Working capital days hit 160+</div></div>
+      <div class="sc-cell"><div class="sc-l">Trigger</div><div class="sc-v">Hyderabad plant delayed 12+ months</div></div>
+      <div class="sc-cell"><div class="sc-l">Trigger</div><div class="sc-v">Battery metal prices crash again</div></div>
+      <div class="sc-cell"><div class="sc-l">Trigger</div><div class="sc-l">CPCB audit or compliance issue</div></div>
+      <div class="sc-cell"><div class="sc-l">FY27 revenue</div><div class="sc-v">₹180–220 Cr (growth slows)</div></div>
+      <div class="sc-cell"><div class="sc-l">Mcap implied</div><div class="sc-v">₹250–320 Cr (flat/down)</div></div>
+    </div>
+    <div style="font-size:11.5px;color:#333;margin-top:8px">Stock stays range-bound at ₹120–170. Requires 2+ of the above triggers to hit simultaneously. <strong>The illiquidity of the SME board means any negative news creates sharp drops with no buyer support.</strong></div>
+  </div>
+
+  <table style="margin-top:10px">
+    <tr><th>Target</th><th>Mcap needed</th><th>PAT/revenue required</th><th>Timeline</th><th>Probability</th></tr>
+    <tr><td>4x (hydrometallurgy live)</td><td>₹1,500+ Cr</td><td>₹50 Cr PAT, ₹400 Cr rev</td><td>FY28–FY29</td><td class="a">25%</td></tr>
+    <tr><td>3x</td><td>₹1,100–1,250 Cr</td><td>₹35–40 Cr PAT</td><td>FY27–FY28</td><td class="a">35%</td></tr>
+    <tr><td>2x</td><td>₹750–800 Cr</td><td>₹25–30 Cr PAT</td><td>FY27</td><td class="g">50%</td></tr>
+    <tr><td>Flat/down</td><td><₹400 Cr</td><td>Execution misses</td><td>FY26–27</td><td class="r">15%</td></tr>
+  </table>
+</div>
+
+<!-- SECTOR MAP -->
+<div id="sectormap" class="panel">
+  <div class="sh">India's recycling sector landscape — who plays where</div>
+  <div class="warn info"><strong>India's recycling sector is not one market — it's five distinct businesses that happen to share the word "recycling."</strong> Understanding which type of recycling each company does is essential before comparing them.</div>
+
+  <table>
+    <tr><th>Recycling type</th><th>Key listed players</th><th>Market size</th><th>Growth driver</th></tr>
+    <tr><td><strong>Lead/battery recycling</strong></td><td>Gravita India, Tinna Rubber</td><td>₹15,000+ Cr</td><td>Lead-acid batteries, EV transition</td></tr>
+    <tr><td><strong>E-waste (WEEE) recycling</strong></td><td>Namo eWaste, Eco Recycling</td><td>₹10,000–15,000 Cr</td><td>E-Waste Rules 2022, EPR mandates</td></tr>
+    <tr><td><strong>Plastic recycling</strong></td><td>Gravita, Ganesha Ecosphere</td><td>₹8,000+ Cr</td><td>Plastic Waste Rules, FMCG EPR</td></tr>
+    <tr><td><strong>Tyre/rubber recycling</strong></td><td>Tinna Rubber</td><td>₹3,000+ Cr</td><td>ELT regulations, crumb rubber demand</td></tr>
+    <tr><td><strong>Municipal solid waste</strong></td><td>Antony Waste, Sula Saahas</td><td>Largest segment</td><td>Government SWM concessions</td></tr>
+  </table>
+
+  <div class="sh">Key e-waste and recycling stocks — in-depth view</div>
+
+  <div class="pane" style="margin-bottom:10px">
+    <div class="pane-h">Gravita India — The sector's quality compounder <span class="badge bb" style="margin-left:8px">₹12,167 Cr mcap · ₹4,130 Cr revenue</span></div>
+    <div style="font-size:12px;color:#555;line-height:1.65">Q3 FY26: Revenue ₹1,017 Cr (+2% YoY), PAT ₹98 Cr (+25% YoY), EBITDA margin expanded to 11.8%. Operates in lead, aluminium, plastic, and turnkey recycling across 70+ countries, 13 facilities. Vision 2029: 7 lakh MTPA capacity, ₹10,000 Cr revenue. Battery metals pilot at Mundra going live Q3 FY26. Serves Exide, Tata Batteries, Amara Raja, Polycab, Sterlite. Expanding into Li-ion and rubber recycling. <strong>The gold standard of Indian recycling — profitable, diversified, globally present, and consistently growing.</strong> At ₹12,167 Cr mcap, 3x is hard but 1.5–2x in 3 years with PAT CAGR 25–30% is realistic. PE of 32–36x is fair for quality.</div>
+  </div>
+
+  <div class="pane" style="margin-bottom:10px">
+    <div class="pane-h">Eco Recycling (Ecoreco) — The cautionary tale <span class="badge br" style="margin-left:8px">₹762 Cr mcap · ₹39.3 Cr revenue · -36% YoY stock</span></div>
+    <div style="font-size:12px;color:#555;line-height:1.65">Q3 FY26: Revenue -40% YoY (collapsed from ₹5.9 Cr to ₹3.5 Cr quarterly). PAT ₹2.05 Cr (-57% YoY). 18,000 MTPA capacity at Vasai, Maharashtra. Partnered with MEITY for Li-ion battery tech. Issued warrants at ₹408 (Apr 2026). <strong>Ecoreco's revenue declined sharply — a major red flag for the sector.</strong> Market cap ₹762 Cr on ₹39 Cr revenue = completely disconnected valuation. The stock fell 56% in 1 year. This shows what happens when an e-waste company fails to scale. Do NOT invest here.</div>
+  </div>
+
+  <div class="pane" style="margin-bottom:10px">
+    <div class="pane-h">Tinna Rubber & Infrastructure — Tyre recycling specialist <span class="badge ba" style="margin-left:8px">₹1,274 Cr mcap · ₹139 Cr Q3 revenue</span></div>
+    <div style="font-size:12px;color:#555;line-height:1.65">Q3 FY26: Revenue ₹139 Cr (+13% YoY), PAT ₹13 Cr (+62% YoY). India's largest ELT (end-of-life tyre) recycler with 185,000 MT capacity. Products: crumb rubber, reclaim rubber, pyrolysis oil. Different business to e-waste — not directly comparable to Namo. Margins improving, growth steady. More predictable but less exciting than e-waste/battery recycling. <strong>Solid business, correct sector, wrong specific niche for Namo comparison.</strong></div>
+  </div>
+
+  <div class="pane" style="margin-bottom:10px">
+    <div class="pane-h">MSTC Ltd — PSU EPR exchange operator <span class="badge db" style="margin-left:8px">PSU · EPR exchange operator · Indirect beneficiary</span></div>
+    <div style="font-size:12px;color:#555;line-height:1.65">MSTC was selected by CPCB to develop and operate India's first EPR certificate trading exchange, which went live January 2026. Also operates CERO (vehicle scrapping JV with Mahindra). 9M FY26: ₹52,555 Cr transacted value. Not primarily a recycler but an exchange/marketplace. <strong>As EPR credit trading volume grows, MSTC earns exchange fees — it's an indirect bet on the entire EPR compliance market including Namo's output.</strong> Different investment thesis but worth watching as a sector indicator.</div>
+  </div>
+</div>
+
+<!-- COMPARISON -->
+<div id="compare" class="panel">
+  <div class="sh">Full comparison: Namo eWaste vs sector peers</div>
+  <div style="border:1px solid #ddd;border-radius:10px;overflow:hidden;font-size:11.5px">
+    <div class="comp-h">
+      <div class="cc-h" style="background:#f5f5f3">Metric</div>
+      <div class="cc-h" style="background:#E1F5EE;color:#0F6E56">Namo eWaste</div>
+      <div class="cc-h" style="background:#E6F1FB;color:#185FA5">Gravita India</div>
+      <div class="cc-h" style="background:#f5f5f3">Tinna Rubber</div>
+      <div class="cc-h" style="background:#fff5f5;color:#A32D2D">Eco Recycling</div>
+    </div>
+    <div class="comp-row"><div class="cc cc-label">Market cap</div><div class="cc mid-cell">₹373–417 Cr</div><div class="cc winner-cell">₹12,167 Cr</div><div class="cc">₹1,274 Cr</div><div class="cc loser-cell">₹762 Cr</div></div>
+    <div class="comp-row"><div class="cc cc-label">TTM revenue</div><div class="cc mid-cell">₹134–170 Cr</div><div class="cc winner-cell">₹4,130 Cr</div><div class="cc">~₹500 Cr</div><div class="cc loser-cell">₹39.3 Cr</div></div>
+    <div class="comp-row"><div class="cc cc-label">Revenue growth (latest)</div><div class="cc winner-cell">+30% H1 FY26</div><div class="cc mid-cell">+2% Q3 FY26</div><div class="cc mid-cell">+13% Q3 FY26</div><div class="cc loser-cell">-40% Q3 FY26</div></div>
+    <div class="comp-row"><div class="cc cc-label">PAT (TTM)</div><div class="cc mid-cell">~₹10–14 Cr</div><div class="cc winner-cell">₹381 Cr</div><div class="cc">~₹45–55 Cr</div><div class="cc loser-cell">₹17.9 Cr</div></div>
+    <div class="comp-row"><div class="cc cc-label">PAT growth (latest)</div><div class="cc winner-cell">+40% H1 FY26</div><div class="cc mid-cell">+25% Q3 FY26</div><div class="cc winner-cell">+62% Q3 FY26</div><div class="cc loser-cell">-57% Q3 FY26</div></div>
+    <div class="comp-row"><div class="cc cc-label">EBITDA margin</div><div class="cc mid-cell">13.8% (rising)</div><div class="cc winner-cell">11.8% (large scale)</div><div class="cc mid-cell">~14%</div><div class="cc loser-cell">~5–6% (declining)</div></div>
+    <div class="comp-row"><div class="cc cc-label">Processing capacity</div><div class="cc mid-cell">42,900 MTPA</div><div class="cc winner-cell">340,000 MTPA</div><div class="cc">185,000 MT</div><div class="cc loser-cell">18,000 MTPA</div></div>
+    <div class="comp-row"><div class="cc cc-label">Recycling focus</div><div class="cc winner-cell">E-waste + Li-ion + hydro</div><div class="cc winner-cell">Lead + Al + Plastic + Li-ion</div><div class="cc mid-cell">Tyres/rubber only</div><div class="cc mid-cell">E-waste only</div></div>
+    <div class="comp-row"><div class="cc cc-label">EPR services</div><div class="cc winner-cell">Yes — growing segment</div><div class="cc winner-cell">Yes — all categories</div><div class="cc mid-cell">Tyre EPR only</div><div class="cc mid-cell">Yes</div></div>
+    <div class="comp-row"><div class="cc cc-label">Battery/Li-ion</div><div class="cc winner-cell">Live — Nashik plant</div><div class="cc mid-cell">Pilot at Mundra</div><div class="cc loser-cell">No</div><div class="cc mid-cell">Partnered</div></div>
+    <div class="comp-row"><div class="cc cc-label">Hydrometallurgy</div><div class="cc winner-cell">Planned — Faridabad</div><div class="cc winner-cell">Pilot stage</div><div class="cc loser-cell">No</div><div class="cc loser-cell">No</div></div>
+    <div class="comp-row"><div class="cc cc-label">Trailing PE</div><div class="cc loser-cell">~43x (expensive for size)</div><div class="cc mid-cell">~32–36x (quality PE)</div><div class="cc mid-cell">~25x</div><div class="cc loser-cell">~43x (expensive for size)</div></div>
+    <div class="comp-row"><div class="cc cc-label">Promoter holding</div><div class="cc winner-cell">69%, 0 pledge</div><div class="cc mid-cell">55.9% (declining)</div><div class="cc winner-cell">~70%+</div><div class="cc winner-cell">73.4%</div></div>
+    <div class="comp-row"><div class="cc cc-label">Workforce model</div><div class="cc winner-cell">90%+ women — cost advantage</div><div class="cc">Standard</div><div class="cc">Standard</div><div class="cc">Informal integration focus</div></div>
+    <div class="comp-row"><div class="cc cc-label">Client quality</div><div class="cc winner-cell">Google, Samsung, GE, Philips, Maruti</div><div class="cc winner-cell">Amara Raja, Exide, Tata, Polycab</div><td class="cc">Automotive OEMs</td><div class="cc mid-cell">Mixed</div></div>
+    <div class="comp-row"><div class="cc cc-label">Stock liquidity</div><div class="cc loser-cell">Very low (SME)</div><div class="cc winner-cell">High (main board, F&O)</div><div class="cc mid-cell">Moderate</div><div class="cc loser-cell">Low (SME)</div></div>
+    <div class="comp-row"><div class="cc cc-label">3x probability (3yr)</div><div class="cc mid-cell">35% (if hydro delivers)</div><div class="cc loser-cell">15% (too large)</div><div class="cc mid-cell">30% (tyre EPR growth)</div><div class="cc loser-cell">5% (revenue declining)</div></div>
+    <div class="comp-row"><div class="cc cc-label">Best for which investor</div><div class="cc">Aggressive growth + EV bet</div><div class="cc">Quality compounder</div><div class="cc">Steady growth, sector bet</div><div class="cc">Avoid — avoid</div></div>
+  </div>
+</div>
+
+<!-- VERDICT -->
+<div id="verdict" class="panel">
+  <div class="sh">The definitive verdict for Garvit's 3x goal</div>
+
+  <div class="verdict-card" style="background:#E1F5EE;border:1px solid #5DCAA5">
+    <div class="vc-h" style="color:#0F6E56">Namo eWaste — Verdict: Speculative position, ₹20,000–30,000 max. Hydrometallurgy is the bet.</div>
+    <div class="vc-b">Namo is a genuinely exciting growth story in a sector with strong regulatory tailwinds. The client list (Google, Samsung, GE Healthcare) is exceptional for a ₹373 Cr company. OCF turned positive. Revenue growing 30–40%. Capacity expanding aggressively. But the working capital deterioration (83.5 → 125 days) is a serious concern at this scale. The stock trades at 43x trailing PE on a small profit base — priced for perfection. The real value creation event is the hydrometallurgy plant (FY27–FY28) which would transform revenue quality from "basic recycler" to "critical minerals supplier." <strong>If hydrometallurgy delivers, this is a 4–6x stock. If it delays or fails, it's a range-bound SME.</strong> Position accordingly — small allocation, 3–4 year timeframe.</div>
+  </div>
+
+  <div class="verdict-card" style="background:#E6F1FB;border:1px solid #85B7EB">
+    <div class="vc-h" style="color:#185FA5">Gravita India — Verdict: Better quality bet if you want recycling sector exposure (₹40,000–60,000)</div>
+    <div class="vc-b">If you want meaningful recycling sector exposure that has a realistic chance of 2x in 3 years, Gravita India is the answer. ₹381 Cr PAT. 25% PAT growth. 70+ countries. Lead, aluminium, plastic, and now Li-ion recycling. PAT CAGR 25–30%. The company is everything Namo aspires to be in 10 years — now, at scale, profitably. At ₹12,167 Cr mcap, 3x (₹36,000 Cr) is ambitious but 1.5–2x in 3 years is very achievable. Much lower risk than Namo, much better governance (though promoter holding declining).</div>
+  </div>
+
+  <div class="verdict-card" style="background:#FCEBEB;border:1px solid #F5A5A5">
+    <div class="vc-h" style="color:#A32D2D">Eco Recycling — Verdict: Do not invest (₹0)</div>
+    <div class="vc-b">Revenue -40% YoY. Stock -56% in 1 year. ₹762 Cr mcap on ₹39 Cr revenue = completely irrational valuation. Independent director resigned March 2026 (same as Namo — coincidence?). Issuing warrants at ₹408 when stock trades at ₹300. Every quantitative signal says avoid.</div>
+  </div>
+
+  <div class="sh">For Garvit's portfolio — final allocation in recycling/e-waste</div>
+  <table>
+    <tr><th>Stock</th><th>Action</th><th>Amount</th><th>Rationale</th></tr>
+    <tr><td><strong>Namo eWaste</strong></td><td><span class="badge ba">Small speculative bet</span></td><td>₹20,000–30,000</td><td>High-risk, high-reward. Hydrometallurgy = option value. 3-4 year hold. Watch working capital days quarterly.</td></tr>
+    <tr><td><strong>Gravita India</strong></td><td><span class="badge bb">Preferred quality pick</span></td><td>₹40,000–60,000</td><td>Best-in-class Indian recycler. Global scale. PAT growing 25%. More liquid. Better risk-adjusted return for your goal.</td></tr>
+    <tr><td><strong>Eco Recycling</strong></td><td><span class="badge br">Avoid completely</span></td><td>₹0</td><td>Revenue in freefall. Irrational valuation. Classic small-cap trap.</td></tr>
+  </table>
+
+  <div class="sh">What to watch every quarter for Namo eWaste</div>
+  <table>
+    <tr><th>#</th><th>Metric</th><th>Current status</th><th>Action trigger</th></tr>
+    <tr><td>1</td><td>Working capital days</td><td class="r">125 days (risen sharply)</td><td>Exit if crosses 150 days</td></tr>
+    <tr><td>2</td><td>Hyderabad plant status</td><td class="a">Pending (H2 FY26)</td><td>Re-rate up if commissions on schedule</td></tr>
+    <tr><td>3</td><td>Hydrometallurgy plant update</td><td class="a">Planning stage only</td><td>Add significantly if timeline confirmed and funded</td></tr>
+    <tr><td>4</td><td>Revenue growth rate</td><td class="g">+30% H1 FY26</td><td>Reduce if growth falls below 20% for 2 quarters</td></tr>
+    <tr><td>5</td><td>EBITDA margin trend</td><td class="g">13.8% (improving)</td><td>Exit if margin retreats below 10% for 2 quarters</td></tr>
+  </table>
+
+  <div class="warn success" style="margin-top:12px"><strong>One-line verdict:</strong> For Garvit's 3x goal — Namo eWaste is the e-waste sector's most exciting early-stage bet, with a genuine technology moat being built through hydrometallurgy. Allocate ₹20–30K maximum as a speculative position. The real recycling sector play for your portfolio is Gravita India at ₹40–60K — proven compounder, real scale, global reach, and 25% PAT growth that works without any technology leap-of-faith.</div>
+</div>
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/4.4.1/chart.umd.js"></script>
+<script>
+function show(id,btn){
+  document.querySelectorAll('.tab').forEach(t=>t.classList.remove('active'));
+  document.querySelectorAll('.panel').forEach(p=>p.classList.remove('active'));
+  btn.classList.add('active');document.getElementById(id).classList.add('active');
+}
+new Chart(document.getElementById('rc'),{
+  type:'bar',
+  data:{
+    labels:['FY22','FY23','FY24','FY25','H1 FY26','FY26E','FY28E'],
+    datasets:[
+      {label:'Revenue ₹ Cr',data:[30,55,90,134,87,185,400],backgroundColor:['#378ADD','#378ADD','#378ADD','#378ADD','#1D9E75','#9FE1CB','#9FE1CB'],borderRadius:4,yAxisID:'y'},
+      {label:'PAT ₹ Cr',data:[1.5,3,8,10,7,16,47],type:'line',borderColor:'#1D9E75',backgroundColor:'transparent',pointBackgroundColor:'#1D9E75',tension:0.3,yAxisID:'y2'}
+    ]
+  },
+  options:{responsive:true,maintainAspectRatio:false,plugins:{legend:{display:false}},scales:{y:{ticks:{font:{size:10}}},y2:{position:'right',ticks:{font:{size:10}},grid:{drawOnChartArea:false}},x:{ticks:{font:{size:10}}}}}
+});
+</script>
+</body></html>

@@ -1,0 +1,425 @@
+<!DOCTYPE html>
+<html><head><meta charset="utf-8"><style>
+*{box-sizing:border-box;margin:0;padding:0}
+body{font-family:system-ui,sans-serif;padding:16px;background:#fff;color:#1a1a1a;font-size:14px}
+h1{font-size:20px;font-weight:500;margin-bottom:3px}
+.sub{font-size:12px;color:#666;margin-bottom:14px}
+.sg{display:grid;grid-template-columns:repeat(auto-fill,minmax(110px,1fr));gap:8px;margin-bottom:16px}
+.sc{background:#f5f5f3;border-radius:8px;padding:10px 12px}
+.sl{font-size:10px;color:#666;margin-bottom:2px}
+.sv{font-size:17px;font-weight:500}
+.tab-row{display:flex;gap:5px;flex-wrap:wrap;margin-bottom:14px}
+.tab{font-size:11.5px;padding:5px 13px;border-radius:20px;border:1px solid #ddd;background:#fff;cursor:pointer;white-space:nowrap}
+.tab.active{background:#1a1a1a;color:#fff;border-color:#1a1a1a}
+.panel{display:none}.panel.active{display:block}
+.sh{font-size:10.5px;font-weight:500;color:#666;text-transform:uppercase;letter-spacing:.06em;margin:16px 0 7px;padding-bottom:5px;border-bottom:1px solid #eee}
+table{width:100%;border-collapse:collapse;font-size:12px;margin:8px 0}
+th{font-size:10.5px;font-weight:500;color:#666;padding:5px 7px;text-align:left;border-bottom:1px solid #eee;white-space:nowrap}
+td{padding:8px 7px;border-bottom:1px solid #eee;color:#1a1a1a;vertical-align:top}
+tr:last-child td{border-bottom:none}
+tr:hover td{background:#fafaf9}
+.g{color:#0F6E56;font-weight:500}.r{color:#A32D2D;font-weight:500}.a{color:#854F0B;font-weight:500}.b{color:#185FA5;font-weight:500}
+.badge{display:inline-block;font-size:10px;padding:2px 7px;border-radius:10px;white-space:nowrap}
+.bg{background:#E1F5EE;color:#0F6E56}.bb{background:#E6F1FB;color:#185FA5}.ba{background:#FAEEDA;color:#854F0B}.br{background:#FCEBEB;color:#A32D2D}.bgray{background:#f1f0e8;color:#5F5E5A}
+.warn{padding:10px 13px;margin:8px 0;border-left:3px solid;font-size:12px;line-height:1.65}
+.warn.success{background:#E1F5EE;border-color:#1D9E75;color:#04342C}
+.warn.caution{background:#FAEEDA;border-color:#BA7517;color:#412402}
+.warn.danger{background:#FCEBEB;border-color:#A32D2D;color:#712B13}
+.warn.info{background:#E6F1FB;border-color:#185FA5;color:#042C53}
+.warn strong{font-weight:500}
+.chart-wrap{position:relative;width:100%;height:240px;margin:8px 0}
+.mg{display:grid;grid-template-columns:repeat(auto-fill,minmax(120px,1fr));gap:8px;margin:10px 0}
+.mc{background:#f5f5f3;border-radius:8px;padding:9px 11px}
+.mc-l{font-size:10px;color:#666;margin-bottom:2px}
+.mc-v{font-size:15px;font-weight:500}
+.mc-s{font-size:10px;color:#666;margin-top:2px}
+.point{display:flex;gap:9px;align-items:flex-start;padding:9px 0;border-bottom:1px solid #eee;font-size:12px;line-height:1.6;color:#555}
+.point:last-child{border-bottom:none}
+.point strong{color:#1a1a1a;font-weight:500}
+.dot{width:19px;height:19px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:10px;font-weight:500;flex-shrink:0;margin-top:1px}
+.dg{background:#E1F5EE;color:#0F6E56}.dr{background:#FCEBEB;color:#A32D2D}.da{background:#FAEEDA;color:#854F0B}.db{background:#E6F1FB;color:#185FA5}
+.two-col{display:grid;grid-template-columns:1fr 1fr;gap:12px}
+.pane{border:1px solid #ddd;border-radius:10px;padding:13px}
+.pane-h{font-size:13px;font-weight:500;margin-bottom:9px}
+.kpi-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:10px;margin:10px 0}
+.kpi{background:#f5f5f3;border-radius:8px;padding:10px 12px;border-left:3px solid transparent}
+.kpi.green{border-left-color:#1D9E75}.kpi.amber{border-left-color:#EF9F27}.kpi.blue{border-left-color:#378ADD}.kpi.red{border-left-color:#A32D2D}
+.kpi-l{font-size:10px;color:#666;margin-bottom:3px}
+.kpi-v{font-size:17px;font-weight:500}
+.kpi-s{font-size:10px;color:#888;margin-top:2px}
+.pr-row{margin-bottom:10px}
+.pr-h{display:flex;justify-content:space-between;font-size:11px;color:#666;margin-bottom:4px}
+.pr-v{color:#1a1a1a;font-weight:500}
+.bar-t{background:#f5f5f3;border-radius:3px;height:7px;overflow:hidden}
+.bar-f{height:100%;border-radius:3px}
+.scenario{border:1px solid #ddd;border-radius:10px;padding:13px;margin-bottom:9px}
+.sc-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:7px;margin:9px 0}
+.sc-cell{background:#f5f5f3;border-radius:6px;padding:7px 9px}
+.sc-l{font-size:10px;color:#666}
+.sc-v{font-size:12px;font-weight:500;margin-top:2px}
+.comp-h{display:grid;grid-template-columns:170px repeat(4,1fr);background:#f5f5f3;border-radius:8px 8px 0 0;overflow:hidden}
+.comp-row{display:grid;grid-template-columns:170px repeat(4,1fr);border-bottom:1px solid #eee}
+.comp-row:last-child{border-bottom:none}
+.cc{padding:8px 10px;font-size:11.5px;border-right:1px solid #eee}
+.cc:last-child{border-right:none}
+.cc-h{font-size:10.5px;font-weight:500;color:#444;padding:8px 10px;border-right:1px solid #ddd}
+.cc-h:last-child{border-right:none}
+.cc-label{color:#666;font-size:11px}
+.winner-cell{background:#E1F5EE}.mid-cell{background:#FAEEDA}.loser-cell{background:#fff5f5}
+.verdict-card{border-radius:10px;padding:13px 15px;margin-bottom:10px}
+.vc-h{font-size:13px;font-weight:500;margin-bottom:6px}
+.vc-b{font-size:12px;line-height:1.65;color:#444}
+.seg-box{display:flex;gap:6px;flex-wrap:wrap;margin:8px 0}
+.seg{display:inline-flex;align-items:center;gap:5px;background:#f5f5f3;border:.5px solid #ddd;border-radius:20px;padding:3px 9px;margin:2px;font-size:11px;color:#333}
+.seg-dot{width:7px;height:7px;border-radius:50%;flex-shrink:0}
+.sector-card{border:1px solid #ddd;border-radius:10px;overflow:hidden;margin-bottom:10px}
+.sc-hdr{padding:10px 13px;display:flex;justify-content:space-between;align-items:center;background:#fafaf9}
+.sc-nm{font-size:13px;font-weight:500}
+.sc-tg{font-size:11px;color:#666;margin-top:2px}
+.sc-bd{padding:10px 13px;font-size:12px;line-height:1.65;color:#555;border-top:1px solid #eee}
+.sc-bd strong{color:#1a1a1a}
+.ev-highlight{background:linear-gradient(135deg,#E1F5EE 0%,#E6F1FB 100%);border:1px solid #5DCAA5;border-radius:10px;padding:13px;margin:12px 0}
+.ev-h{font-size:14px;font-weight:500;color:#0F6E56;margin-bottom:8px}
+.ev-b{font-size:12px;color:#333;line-height:1.65}
+</style></head><body>
+
+<h1>Subros Ltd — Deep Investment Analysis</h1>
+<div class="sub">NSE: SUBROS · Automotive thermal management · Founded 1985 · JV: Denso (20%) + Suzuki (12%) + Suri family (37%) · India's largest auto AC manufacturer</div>
+
+<div class="sg">
+  <div class="sc"><div class="sl">Market cap</div><div class="sv">₹5,144 Cr</div></div>
+  <div class="sc"><div class="sl">TTM revenue</div><div class="sv">₹3,614 Cr</div></div>
+  <div class="sc"><div class="sl">TTM PAT</div><div class="sv" style="color:#1D9E75">₹163 Cr</div></div>
+  <div class="sc"><div class="sl">Q3 FY26 revenue</div><div class="sv" style="color:#1D9E75">₹947.7 Cr</div></div>
+  <div class="sc"><div class="sl">Q3 FY26 growth</div><div class="sv" style="color:#1D9E75">+15.4% YoY</div></div>
+  <div class="sc"><div class="sl">EBITDA margin</div><div class="sv" style="color:#854F0B">8.6–9.2%</div></div>
+  <div class="sc"><div class="sl">PV market share</div><div class="sv" style="color:#1D9E75">41%</div></div>
+  <div class="sc"><div class="sl">Truck share</div><div class="sv" style="color:#1D9E75">42%</div></div>
+  <div class="sc"><div class="sl">EV order (Maruti)</div><div class="sv" style="color:#185FA5">₹1,280 Cr</div></div>
+  <div class="sc"><div class="sl">Trailing PE</div><div class="sv" style="color:#854F0B">~31.6x</div></div>
+  <div class="sc"><div class="sl">Promoter holding</div><div class="sv" style="color:#854F0B">36.8%</div></div>
+  <div class="sc"><div class="sl">1yr return</div><div class="sv" style="color:#1D9E75">+27.2%</div></div>
+</div>
+
+<div class="tab-row">
+  <button class="tab active" onclick="show('revenue',this)">Revenue history</button>
+  <button class="tab" onclick="show('sectorKPI',this)">Sector KPIs</button>
+  <button class="tab" onclick="show('business',this)">Business model</button>
+  <button class="tab" onclick="show('ev',this)">EV opportunity</button>
+  <button class="tab" onclick="show('risks',this)">Risks</button>
+  <button class="tab" onclick="show('scenarios',this)">3x scenarios</button>
+  <button class="tab" onclick="show('sectormap',this)">Sector landscape</button>
+  <button class="tab" onclick="show('compare',this)">Full comparison</button>
+  <button class="tab" onclick="show('verdict',this)">Final verdict</button>
+</div>
+
+<!-- REVENUE -->
+<div id="revenue" class="panel active">
+  <div class="sh">Revenue & profit history — steady compounder with inflection ahead</div>
+  <div class="chart-wrap"><canvas id="rc"></canvas></div>
+  <div style="display:flex;gap:14px;font-size:11.5px;color:#666;margin-bottom:10px">
+    <span><span style="display:inline-block;width:10px;height:10px;border-radius:2px;background:#378ADD;margin-right:4px"></span>Revenue ₹ Cr (left)</span>
+    <span><span style="display:inline-block;width:10px;height:10px;border-radius:2px;background:#1D9E75;margin-right:4px"></span>PAT ₹ Cr (right)</span>
+    <span><span style="display:inline-block;width:10px;height:10px;border-radius:2px;background:#9FE1CB;margin-right:4px"></span>Projected</span>
+  </div>
+  <table>
+    <tr><th>Year</th><th>Revenue</th><th>Growth</th><th>EBITDA</th><th>EBITDA%</th><th>PAT</th><th>PAT%</th><th>Key event</th></tr>
+    <tr><td>FY22</td><td>₹2,523 Cr</td><td>—</td><td>~₹230 Cr</td><td class="a">9.1%</td><td>₹48 Cr</td><td class="a">1.9%</td><td>Post-COVID recovery. Supply chain issues.</td></tr>
+    <tr><td>FY23</td><td>₹2,827 Cr</td><td class="g">+12%</td><td>~₹255 Cr</td><td class="a">9.0%</td><td>₹48 Cr</td><td class="a">1.7%</td><td>Revenue recovers, margins still thin</td></tr>
+    <tr><td>FY24</td><td>₹3,085 Cr</td><td class="g">+9%</td><td>~₹280 Cr</td><td class="a">9.1%</td><td>₹98 Cr</td><td class="a">3.2%</td><td>PAT doubled (+103%). Debt reduction visible.</td></tr>
+    <tr><td>FY25</td><td>₹3,368 Cr</td><td class="a">+9.7%</td><td>~₹340 Cr</td><td class="a">10.1%</td><td>₹150 Cr</td><td class="a">4.5%</td><td>PAT +54%. New truck AC mandate announced. EV supplies started.</td></tr>
+    <tr><td>9M FY26</td><td>₹2,705 Cr</td><td class="g">+10.3% YoY</td><td>~₹254 Cr</td><td class="a">9.4%</td><td>₹116 Cr</td><td class="a">4.3%</td><td>Truck revenue surpassing ₹200 Cr. Railway orders ₹86 Cr. ₹1,280 Cr EV order secured (Jan 2026).</td></tr>
+    <tr><td>FY26E</td><td>~₹3,750–3,900 Cr</td><td class="g">~11–16%</td><td>~₹345–380 Cr</td><td class="a">9.2–9.8%</td><td>~₹160–175 Cr</td><td class="a">4.3–4.5%</td><td>Kharkhoda plant commissioning (Q1 FY27). Capex ₹270 Cr.</td></tr>
+    <tr><td>FY27E</td><td>~₹4,500–5,000 Cr</td><td class="g">~20–28%</td><td>~₹540–600 Cr</td><td class="g">12%</td><td>~₹225–280 Cr</td><td class="g">5–6%</td><td>EV compressor revenues ramp (Maruti ₹1,280 Cr over 7yr). Kharkhoda live. 12% margin target. Truck ₹200 Cr+.</td></tr>
+    <tr><td>FY28E</td><td>~₹5,500–6,500 Cr</td><td class="g">~20–30%</td><td>~₹720–845 Cr</td><td class="g">13–14%</td><td>~₹350–450 Cr</td><td class="g">6–7%</td><td>Full EV contribution + strong hybrid ramp + content per vehicle structural increase.</td></tr>
+  </table>
+  <div class="warn success"><strong>The PAT compounding story is exceptional but often missed.</strong> FY22: ₹48 Cr PAT → FY25: ₹150 Cr PAT — 3x in 3 years while revenue grew only 33%. This PAT leverage happened because Subros was reducing debt, benefiting from operating leverage, and improving material cost management. As margins improve from 9% to 12% (management's FY27 target), PAT compounds even faster than revenue.</div>
+  <div class="warn caution"><strong>Revenue growth of 9–11% is slower than your 3x goal needs.</strong> This is not a 70% revenue growth company. Subros is a steady compounder that grows at auto sector pace + market share gains + content per vehicle increases. The 3x case depends on: (1) margin expansion from 9% to 12%+, (2) EV compressor ramp starting FY27, and (3) full truck AC mandate benefit. Without margin expansion, the stock delivers 1.5–2x. With it, 2.5–3x is achievable by FY28–FY29.</div>
+</div>
+
+<!-- SECTOR KPIs -->
+<div id="sectorKPI" class="panel">
+  <div class="sh">Auto thermal sector KPIs — how Subros scores</div>
+  <div class="warn info"><strong>The five metrics that define an auto AC manufacturer:</strong> (1) Market share in key segments, (2) Content per vehicle (₹/car), (3) EBITDA margin, (4) EV thermal revenue %, and (5) Non-Maruti revenue diversification. Together they determine revenue predictability and margin quality.</div>
+
+  <div class="kpi-grid">
+    <div class="kpi green"><div class="kpi-l">PV market share (AC systems)</div><div class="kpi-v">41%</div><div class="kpi-s">India's #1 automotive AC maker</div></div>
+    <div class="kpi green"><div class="kpi-l">Truck AC market share</div><div class="kpi-v">42%</div><div class="kpi-s">Strong in new mandatory segment</div></div>
+    <div class="kpi amber"><div class="kpi-l">EBITDA margin (9M FY26)</div><div class="kpi-v" style="color:#854F0B">9.4%</div><div class="kpi-s">Target 12% by FY27</div></div>
+    <div class="kpi blue"><div class="kpi-l">Content per ICE vehicle</div><div class="kpi-v">~₹12,000</div><div class="kpi-s">HVAC system + compressor</div></div>
+    <div class="kpi green"><div class="kpi-l">Content per EV/HEV</div><div class="kpi-v">~₹30,000+</div><div class="kpi-s">2.5x ICE content — structural tailwind</div></div>
+    <div class="kpi blue"><div class="kpi-l">Installed capacity</div><div class="kpi-v">2M AC kits/yr</div><div class="kpi-s">Expanding with Kharkhoda + Karsanpura</div></div>
+  </div>
+
+  <div class="sh">Content per vehicle analysis — the EV uplift is the key thesis</div>
+  <table>
+    <tr><th>Vehicle type</th><th>Subros content per vehicle</th><th>Multiplier vs ICE</th><th>What Subros supplies</th></tr>
+    <tr><td><strong>ICE passenger vehicle</strong></td><td class="a">~₹12,000–15,000</td><td>1x (baseline)</td><td>Compressor, condenser, blower unit, hoses, evaporator</td></tr>
+    <tr><td><strong>CNG vehicle</strong></td><td class="a">~₹14,000–17,000</td><td>1.2x</td><td>Same + thermal management for CNG storage</td></tr>
+    <tr><td><strong>Strong Hybrid (SHEVs)</strong></td><td class="g">~₹25,000–35,000</td><td>2–2.5x</td><td>Electric compressor + battery cooling + cabin HVAC</td></tr>
+    <tr><td><strong>Battery EV</strong></td><td class="g">~₹30,000–45,000</td><td>2.5–3x</td><td>Electric compressor + heat pump + battery thermal management system + 8 hoses vs 4 in ICE</td></tr>
+    <tr><td><strong>Truck AC (new mandate)</strong></td><td class="g">~₹35,000–50,000/truck</td><td>3–4x of PV</td><td>Entire cab HVAC unit — premium product</td></tr>
+  </table>
+
+  <div class="sh">India automotive AC market — structural tailwinds</div>
+  <div class="pr-row"><div class="pr-h"><span>India auto HVAC market 2024</span><span class="pr-v">~$1.88 Billion</span></div><div class="bar-t"><div class="bar-f" style="width:40%;background:#378ADD"></div></div></div>
+  <div class="pr-row"><div class="pr-h"><span>India auto HVAC market 2031E (10.3% CAGR)</span><span class="pr-v">~$3.6 Billion</span></div><div class="bar-t"><div class="bar-f" style="width:78%;background:#1D9E75"></div></div></div>
+  <div class="pr-row"><div class="pr-h"><span>AC penetration in India PVs (2024)</span><span class="pr-v">~88–92%</span></div><div class="bar-t"><div class="bar-f" style="width:90%;background:#1D9E75"></div></div></div>
+  <div class="pr-row"><div class="pr-h"><span>Truck AC penetration (pre Oct 2025 mandate)</span><span class="pr-v">~35%</span></div><div class="bar-t"><div class="bar-f" style="width:35%;background:#BA7517"></div></div></div>
+  <div class="pr-row"><div class="pr-h"><span>Truck AC penetration (post mandate, FY27E)</span><span class="pr-v">~100% (new trucks)</span></div><div class="bar-t"><div class="bar-f" style="width:100%;background:#1D9E75"></div></div></div>
+  <div class="pr-row"><div class="pr-h"><span>EV share of India PV sales FY26E</span><span class="pr-v">~4–5%</span></div><div class="bar-t"><div class="bar-f" style="width:5%;background:#185FA5"></div></div></div>
+  <div class="pr-row"><div class="pr-h"><span>EV + Hybrid share of India PV sales FY28E</span><span class="pr-v">~12–15% (growing rapidly)</span></div><div class="bar-t"><div class="bar-f" style="width:13%;background:#185FA5"></div></div></div>
+</div>
+
+<!-- BUSINESS MODEL -->
+<div id="business" class="panel">
+  <div class="sh">The Denso-Suzuki-Suri JV — why this structure is both a moat and a ceiling</div>
+  <div class="warn success"><strong>Founded 1985 as a joint venture between three powerful entities.</strong> Suri family (36.8%), Denso Corporation Japan (20%), Suzuki Motor Corporation Japan (11.96%). This tripartite structure is extraordinary — it means Subros has access to Denso's world-class thermal technology AND Suzuki's captive demand (Maruti = ~85% revenue). No Indian competitor has this combination.</div>
+
+  <div class="two-col" style="margin:12px 0">
+    <div class="pane">
+      <div class="pane-h">Revenue segments</div>
+      <div class="point"><div class="dot dg">1</div><div><strong>Passenger Vehicle AC (~80% of revenue):</strong> Supplies complete HVAC systems, compressors, condensers, evaporators to Maruti Suzuki primarily. 41% market share. Revenue: ~₹2,900 Cr</div></div>
+      <div class="point"><div class="dot dg">2</div><div><strong>Commercial Vehicle / Truck AC (~7–8% and growing):</strong> Government mandate for cab AC on all N2/N3 trucks from Oct 2025 created entirely new ₹450 Cr TAM. Truck revenue growing from ₹125 Cr (FY25) → ₹200+ Cr (FY26E) → ₹400 Cr+ potential.</div></div>
+      <div class="point"><div class="dot db">3</div><div><strong>Railways (~2–3% and nascent):</strong> ₹86.35 Cr order book. Vande Bharat HVAC, locomotive cabin AC. Target ₹75 Cr by FY27 (4x growth from FY25). First-mover in dedicated rail thermal.</div></div>
+      <div class="point"><div class="dot db">4</div><div><strong>EV thermal (emerging fast):</strong> Supplies for Maruti e-Vitara, Mahindra BEV. ₹1,280 Cr electric compressor order (Jan 2026, 7 years). Revenue starts FY27.</div></div>
+    </div>
+    <div class="pane">
+      <div class="pane-h">Manufacturing network</div>
+      <div class="point"><div class="dot dg">+</div><div><strong>Noida (legacy):</strong> Near Maruti's Gurugram plant. Core production base since 1985. Established supplier relationships.</div></div>
+      <div class="point"><div class="dot dg">+</div><div><strong>Manesar (Haryana):</strong> Proximity to Maruti's largest plant. Key production hub.</div></div>
+      <div class="point"><div class="dot dg">+</div><div><strong>Karsanpura, Gujarat (₹265 Cr expansion):</strong> New 400,000 electric compressor + 500,000 ICE compressor capacity. First dedicated EV compressor plant in India.</div></div>
+      <div class="point"><div class="dot db">→</div><div><strong>Kharkhoda, Haryana (₹150 Cr greenfield, Phase 1):</strong> Adjacent to Maruti's brand new Kharkhoda factory (1M cars/year capacity). Commissioning Q1 FY27. 4.5 lakh parts capacity Phase 1.</div></div>
+    </div>
+  </div>
+
+  <div class="sh">The Denso technology advantage — why this is irreplicable</div>
+  <div class="point"><div class="dot dg">1</div><div><strong>Denso holds 20% equity and provides all core technology.</strong> DSEC (Denso Subros Engineering Centre) handles all product design. Subros manufactures. This means Subros never bears R&D cost for developing new products — Denso funds it and Subros gets technology access. This is an extraordinary arrangement that Indian competitors cannot replicate without building a 40-year relationship.</div></div>
+  <div class="point"><div class="dot dg">2</div><div><strong>Toyota Industries Corporation technology for EV compressors.</strong> The ₹1,280 Cr Maruti EV order comes with dual technology access: Denso (thermal systems) + Toyota Industries (electric compressors). This dual-technology transfer is globally unique and positions Subros as one of the very few companies with both capability sets for hybrid/EV thermal management.</div></div>
+  <div class="point"><div class="dot dg">3</div><div><strong>Suzuki's 12% equity creates captive demand lock.</strong> Maruti contributes ~85% of revenue. But this is not customer concentration risk in the traditional sense — Suzuki is a shareholder. Maruti cannot credibly threaten to switch suppliers because its parent company co-owns Subros. This lock-in is structural and permanent.</div></div>
+</div>
+
+<!-- EV OPPORTUNITY -->
+<div id="ev" class="panel">
+  <div class="sh">The EV thermal management opportunity — why this is the entire thesis</div>
+
+  <div class="ev-highlight">
+    <div class="ev-h">The ₹1,280 Cr Maruti EV Compressor Order — January 2026</div>
+    <div class="ev-b"><strong>Subros received a new business award for supply of locally manufactured electric compressors to Maruti Suzuki India for its forthcoming EV and hybrid vehicle programs.</strong> Value: ₹1,280 crore spread over the life cycle of various models for ~7 years. Technology: localized with assistance from Denso Corporation, Japan AND Toyota Industries Corporation, Japan. This single order represents 38% of FY25 revenue and confirms Subros as Maruti's EV thermal partner of choice. It is also strategically significant as Toyota Industries (global electric compressor leader) is providing technology — a relationship that has significant implications beyond this one order.</div>
+  </div>
+
+  <div class="sh">Why EVs and hybrids are structurally better for Subros than ICE vehicles</div>
+  <table>
+    <tr><th>Parameter</th><th>ICE vehicle</th><th>Strong Hybrid</th><th>Battery EV</th><th>Subros benefit</th></tr>
+    <tr><td>Thermal components</td><td>4 hoses, 1 compressor, condenser</td><td>Electric compressor + battery cooling + HVAC</td><td>8 hoses (double), heat pump, battery TMS, cabin HVAC</td><td class="g">2.5–3x content per vehicle</td></tr>
+    <tr><td>Compressor type</td><td>Belt-driven, cheap</td><td>Electric (high-value)</td><td>Electric (high-value)</td><td class="g">Higher selling price per unit</td></tr>
+    <tr><td>Battery thermal management</td><td>Not needed</td><td>Required (partial)</td><td>Critical system</td><td class="g">Entirely new revenue per vehicle</td></tr>
+    <tr><td>Subros content value</td><td>~₹12,000–15,000</td><td>~₹25,000–35,000</td><td>~₹30,000–45,000</td><td class="g">+₹18,000–30,000 uplift/vehicle</td></tr>
+  </table>
+
+  <div class="sh">Three additional growth catalysts beyond EVs</div>
+  <div class="point"><div class="dot dg">1</div><div><strong>Truck AC mandate (October 2025) — ₹450 Cr new TAM:</strong> Government mandated AC-fitted cabins for all new N2/N3 category trucks manufactured after October 2025. Before this, only 35% of trucks had AC. Now 100% of new trucks must have it. Subros with 42% market share captures ~₹188 Cr of this incremental ₹450 Cr opportunity. Truck revenue target: ₹200 Cr+ FY26 (from ₹125 Cr FY25), growing to ₹400 Cr by FY28.</div></div>
+  <div class="point"><div class="dot dg">2</div><div><strong>Indian Railways modernisation — recurring revenue stream:</strong> FY25 railway revenue ₹17 Cr → FY26 order book ₹86 Cr → FY27 target ₹75 Cr. Vande Bharat coach HVAC tenders being bid. Metro coach AC in development. Railways pay on time, demand is policy-driven, and Subros has a 10+ year maintenance contract structure (₹52 Cr AMC for cab HVAC). This builds recurring revenue that doesn't depend on auto sales cycles.</div></div>
+  <div class="point"><div class="dot dg">3</div><div><strong>Margin expansion from 9% to 12% — the PAT multiplier:</strong> On ₹5,000 Cr revenue (FY27E), the difference between 9% and 12% EBITDA margin is ₹150 Cr additional EBITDA. At current interest/depreciation/tax levels, this flows almost entirely to PAT. Management targets 12% by FY27 through: higher EV product mix (better margins), Anjar facility efficiency, GML-like cost optimization on raw materials, and operating leverage on fixed costs. Every 1% margin improvement on ₹5,000 Cr = ₹50 Cr additional EBITDA.</div></div>
+
+  <div class="sh">Maruti Suzuki EV pipeline — Subros's direct growth proxy</div>
+  <table>
+    <tr><th>Maruti EV/Hybrid model</th><th>Status</th><th>Subros role</th><th>Est. start of production</th></tr>
+    <tr><td>Maruti e-Vitara</td><td class="g">In production</td><td>EV thermal components supplier</td><td>FY25 (already started)</td></tr>
+    <tr><td>Maruti SHEV (Strong Hybrid)</td><td class="g">Production ramping</td><td>Electric compressor supplier (₹1,280 Cr order)</td><td>FY26–FY27</td></tr>
+    <tr><td>Maruti next Hybrid models</td><td class="a">Development stage</td><td>Designated EV thermal partner</td><td>FY27–FY28</td></tr>
+    <tr><td>Mahindra BEV lineup</td><td class="g">Started</td><td>EV thermal supplier (diversifying from Maruti)</td><td>FY25–ongoing</td></tr>
+    <tr><td>Tata Motors (in discussions)</td><td class="b">Advanced discussions</td><td>Potential EV AC supplier</td><td>FY27+</td></tr>
+    <tr><td>Hyundai/Kia</td><td class="b">Pipeline discussions</td><td>Potential EV AC supplier</td><td>FY27+</td></tr>
+  </table>
+</div>
+
+<!-- RISKS -->
+<div id="risks" class="panel">
+  <div class="sh">Risk analysis — what can go wrong</div>
+
+  <div class="point"><div class="dot dr">1</div><div><strong>Maruti Suzuki = ~85% of revenue — the single biggest structural risk.</strong><br>This is extreme customer concentration. Every Subros analysis must start here. If Maruti's sales drop (recession, semiconductor shortage, model lifecycle gaps), Subros's revenue drops proportionally. FY22 taught this lesson — when Maruti had chip shortages, Subros's revenue struggled. The Suzuki 12% equity stake provides stability but doesn't eliminate the risk. <strong>Positive trend:</strong> EV wins with Mahindra, and pipeline discussions with Tata/Hyundai are the only structural way to reduce this — actively in progress.</div></div>
+
+  <div class="point"><div class="dot dr">2</div><div><strong>EBITDA margins stuck at 8.5–10% — compressing further in Q3 FY26.</strong><br>Management targets 12% by FY27. But Q3 FY26 showed margins compressing 65 bps to 8.6% despite revenue growing 15%. Reasons: rising commodity prices (copper, aluminium), unfavorable currency (USD/JPY imports from Denso), new labor laws (₹8 Cr one-time in Q3). If commodity prices remain elevated or strengthen further, the path to 12% becomes harder. At 9% margin on ₹5,000 Cr (FY27E), PAT = ~₹200 Cr. At 12%, PAT = ~₹280 Cr — a 40% difference in earnings from the same revenue.</div></div>
+
+  <div class="point"><div class="dot da">3</div><div><strong>EV compressor ramp-up takes 3–4 years to become material.</strong><br>The ₹1,280 Cr order is over 7 years. Annual run rate = ~₹183 Cr/year. But this ramps up as Maruti ramps EV volumes — which is gradual. In FY27, EV contribution might be ₹150–250 Cr. The 3x thesis requires EV revenue to scale to ₹500+ Cr. This happens only if India's EV penetration reaches 12–15% by FY28–FY29 and Subros wins additional OEM clients beyond Maruti. This is directionally correct but timing is uncertain.</div></div>
+
+  <div class="point"><div class="dot da">4</div><div><strong>Promoter holding only 36.8% — lowest among auto ancillary peers.</strong><br>Suri family holds 36.8%. Denso 20%, Suzuki 12% = 69% in Japanese/promoter hands. But the Suri family promoter holding is low by Indian standards (typical is 55–70%). This creates governance questions — who's driving the ship? The tripartite JV also means major strategic decisions need JV agreement, which can slow execution.</div></div>
+
+  <div class="point"><div class="dot da">5</div><div><strong>Slow historical revenue growth (11.1% CAGR over 5 years per Screener) misaligns with your 3x goal.</strong><br>At 11% revenue CAGR and current margin trajectory, Subros doubles revenue in 7 years, not 3. For 3x returns in 3 years, you need multiple simultaneous catalysts: margin expansion to 12%+ AND EV revenue ramp AND truck mandate full contribution AND re-rating of PE from 30x to 35x+. All three need to work together. If any one delays, the stock delivers 1.5–2x, not 3x.</div></div>
+
+  <div class="point"><div class="dot dg">+</div><div><strong>Mitigants:</strong><br>Almost debt-free (debt significantly reduced). JV with Denso means zero R&D risk — technology always current. Suzuki equity stake creates structural demand floor. Truck mandate creates non-cyclical growth. Railway AMC provides recurring revenue base. ₹1,280 Cr EV order = 7-year revenue visibility. Kharkhoda plant adjacent to Maruti's new factory = next-decade supply anchor.</div></div>
+</div>
+
+<!-- SCENARIOS -->
+<div id="scenarios" class="panel">
+  <div class="sh">Three scenarios — from current ₹790 (₹5,144 Cr mcap)</div>
+
+  <div class="scenario" style="border-left:3px solid #1D9E75">
+    <div style="font-size:13px;font-weight:500;color:#1D9E75;margin-bottom:8px">Bull case — 2.5–3.5x in 3–4 years (FY28–FY29) — requires margin AND EV ramp</div>
+    <div class="sc-grid">
+      <div class="sc-cell"><div class="sc-l">FY28 revenue</div><div class="sc-v">₹5,500–6,500 Cr</div></div>
+      <div class="sc-cell"><div class="sc-l">FY28 EBITDA margin</div><div class="sc-v">13–14%</div></div>
+      <div class="sc-cell"><div class="sc-l">FY28 PAT</div><div class="sc-v">₹380–450 Cr</div></div>
+      <div class="sc-cell"><div class="sc-l">PE at EV re-rating</div><div class="sc-v">32–38x</div></div>
+      <div class="sc-cell"><div class="sc-l">Implied mcap</div><div class="sc-v">₹12,000–17,000 Cr</div></div>
+      <div class="sc-cell"><div class="sc-l">Return from ₹5,144 Cr</div><div class="sc-v">2.3–3.3x</div></div>
+    </div>
+    <div style="font-size:11.5px;color:#333;margin-top:8px"><strong>What must happen:</strong> EBITDA margins reach 13–14% (EV mix driving premium products). EV + Hybrid revenue hits ₹800–1,000 Cr. Mahindra, Tata, Hyundai wins confirm Subros as EV thermal leader beyond Maruti. Truck revenue ₹400+ Cr. Railway at ₹150 Cr+. India EV penetration reaches 12–15%. PE re-rates to 35–40x as "EV play" narrative takes hold. <strong>3x from current mcap requires all these to deliver by FY28–FY29.</strong></div>
+  </div>
+
+  <div class="scenario" style="border-left:3px solid #378ADD">
+    <div style="font-size:13px;font-weight:500;color:#185FA5;margin-bottom:8px">Base case — 1.5–2x in 3 years (FY27–FY28) — steady compounder</div>
+    <div class="sc-grid">
+      <div class="sc-cell"><div class="sc-l">FY27 revenue</div><div class="sc-v">₹4,500 Cr</div></div>
+      <div class="sc-cell"><div class="sc-l">FY27 EBITDA margin</div><div class="sc-v">11–12%</div></div>
+      <div class="sc-cell"><div class="sc-l">FY27 PAT</div><div class="sc-v">₹220–260 Cr</div></div>
+      <div class="sc-cell"><div class="sc-l">PE</div><div class="sc-v">28–32x (steady)</div></div>
+      <div class="sc-cell"><div class="sc-l">FY27 mcap</div><div class="sc-v">₹6,160–8,320 Cr</div></div>
+      <div class="sc-cell"><div class="sc-l">FY28 mcap</div><div class="sc-v">₹8,000–11,000 Cr</div></div>
+    </div>
+    <div style="font-size:11.5px;color:#333;margin-top:8px">Margins partially improve to 11–12%. EV revenues start building (₹200–400 Cr by FY27). Truck mandate contributes. Maruti volumes grow 10–15% annually. <strong>Base case: stock delivers 1.5–2x in 3 years — within reach of your minimum goal but short of 3x.</strong></div>
+  </div>
+
+  <div class="scenario" style="border-left:3px solid #A32D2D">
+    <div style="font-size:13px;font-weight:500;color:#A32D2D;margin-bottom:8px">Bear case — flat to +30% (margin and EV both disappoint)</div>
+    <div class="sc-grid">
+      <div class="sc-cell"><div class="sc-l">Trigger</div><div class="sc-v">Margins stay at 8–9% (commodity squeeze)</div></div>
+      <div class="sc-cell"><div class="sc-l">Trigger</div><div class="sc-v">EV adoption slower than expected</div></div>
+      <div class="sc-cell"><div class="sc-l">Trigger</div><div class="sc-v">Maruti PV volumes flat/decline</div></div>
+      <div class="sc-cell"><div class="sc-l">FY27 revenue</div><div class="sc-v">₹3,800–4,000 Cr (7–9% growth)</div></div>
+      <div class="sc-cell"><div class="sc-l">FY27 PAT</div><div class="sc-v">₹165–185 Cr</div></div>
+      <div class="sc-cell"><div class="sc-l">Mcap implied</div><div class="sc-v">₹5,000–6,000 Cr (flat/marginal up)</div></div>
+    </div>
+    <div style="font-size:11.5px;color:#333;margin-top:8px">Stock stays range-bound at ₹750–950. Not a disaster but a wasted 3 years vs your alternatives. <strong>Bear case probability: 20%.</strong></div>
+  </div>
+
+  <table style="margin-top:10px">
+    <tr><th>Return target</th><th>Mcap needed</th><th>PAT/Revenue needed</th><th>Timeline</th><th>Probability</th></tr>
+    <tr><td>3x (₹15,432 Cr)</td><td>₹15,432 Cr</td><td>₹380+ Cr PAT, ₹5,500+ Cr rev at 13%+ margins</td><td>FY28–FY29</td><td class="a">25%</td></tr>
+    <tr><td>2.5x (₹12,860 Cr)</td><td>₹12,860 Cr</td><td>₹300+ Cr PAT, FY28</td><td>FY27–FY28</td><td class="a">40%</td></tr>
+    <tr><td>2x (₹10,288 Cr)</td><td>₹10,288 Cr</td><td>₹250 Cr PAT, FY27</td><td>FY27</td><td class="g">55%</td></tr>
+    <tr><td>Bear/flat</td><td>~₹5,500 Cr</td><td>Margin/EV disappoint</td><td>—</td><td class="r">20%</td></tr>
+  </table>
+</div>
+
+<!-- SECTOR MAP -->
+<div id="sectormap" class="panel">
+  <div class="sh">India automotive thermal / AC sector landscape</div>
+  <div class="warn info"><strong>The automotive AC sector has two very distinct sub-markets:</strong> (1) Automotive OEM thermal management (Subros's space) — B2B, captive relationships, OEM pricing, technology-intensive, (2) Consumer/residential AC (Voltas, Blue Star, EPACK) — B2C/B2B retail, brand-driven, seasonal. These are fundamentally different businesses with different risk profiles.</div>
+
+  <div class="sector-card">
+    <div class="sc-hdr"><div><div class="sc-nm">Subros — Auto OEM thermal leader</div><div class="sc-tg">₹5,144 Cr mcap · 41% PV AC share · Denso-Suzuki JV</div></div><span class="badge bb">Your analysis target</span></div>
+    <div class="sc-bd">India's only integrated auto AC manufacturer with Denso technology + Suzuki captive demand. ₹1,280 Cr EV compressor order from Maruti. Truck mandate creating new market. Railway expansion. Target 12% margins FY27. <strong>The dominant play on India's automotive AC content expansion, especially as EVs require 2.5x thermal content per vehicle.</strong></div>
+  </div>
+
+  <div class="sector-card">
+    <div class="sc-hdr"><div><div class="sc-nm">EPACK Durable — Consumer room AC OEM manufacturer</div><div class="sc-tg">₹2,077 Cr mcap · ₹1,947 Cr revenue · ALREADY IN GARVIT'S PORTFOLIO</div></div><span class="badge ba">You already own 250 shares — different business from Subros</span></div>
+    <div class="sc-bd">Q2 FY26: Revenue ₹213 Cr, Net loss ₹22.25 Cr — loss-making currently. Makes room AC indoor/outdoor units for brands like Lloyd, Voltas, etc. Completely different business from Subros — consumer B2B vs automotive B2B. <strong>EPACK and Subros are NOT peers.</strong> EPACK manufactures residential AC units. Subros manufactures automotive thermal systems. Separate investment theses. You hold EPACK for AC penetration story; Subros is the auto EV thermal play. No overlap confusion needed.</div>
+  </div>
+
+  <div class="sector-card">
+    <div class="sc-hdr"><div><div class="sc-nm">UNO Minda — Diversified auto components</div><div class="sc-tg">₹63,389 Cr mcap · ₹18,850 Cr revenue · 25% EPS CAGR guided</div></div><span class="badge ba">Good quality — wrong size for 3x</span></div>
+    <div class="sc-bd">Broad auto components play: switches, lighting, acoustics, alloy wheels, seating. Not specifically thermal management. Revenue +20%, PAT +19% Q3 FY26. 17% revenue CAGR guided FY26–FY28. EV exposure is diversified but not concentrated in high-value thermal systems. <strong>At ₹63,389 Cr mcap, 3x requires ₹1.9 lakh Cr — very difficult. Quality compounder for 5–7 year horizon, not 3x in 3 years.</strong></div>
+  </div>
+
+  <div class="sector-card">
+    <div class="sc-hdr"><div><div class="sc-nm">Minda Corporation — Auto electronic components</div><div class="sc-tg">₹12,861 Cr mcap · ₹5,803 Cr revenue · Q3 PAT +36%</div></div><span class="badge ba">Good growth but different sector</span></div>
+    <div class="sc-bd">Wiring harnesses, connectors, sensors, telematics. Q3 FY26: Revenue +24.6% YoY, PAT +36.1% — strong growth. EV exposure through wiring harnesses for EVs. Different from thermal management. Less tied to EV thermal content multiplier. <strong>Comparable growth rate to Subros bull case but in a different part of the EV value chain. Not the thermal management play.</strong></div>
+  </div>
+
+  <div class="sector-card">
+    <div class="sc-hdr"><div><div class="sc-nm">Sanden Vikas India — Auto compressor maker</div><div class="sc-tg">Listed · Niche auto compressor player</div></div><span class="badge bgray">Direct competitor — not publicly traded in relevant size</span></div>
+    <div class="sc-bd">Japanese-Indian JV making auto AC compressors. Subros's most direct competitor in the compressor segment. However, Sanden Vikas has a much smaller domestic market share and lacks the Suzuki/Maruti captive demand relationship. Not meaningfully investable as a competitor play at the scale needed for your portfolio.</div>
+  </div>
+
+  <div class="sector-card">
+    <div class="sc-hdr"><div><div class="sc-nm">KRN Heat Exchanger — Niche thermal play</div><div class="sc-tg">Small cap · Specialized heat exchangers for HVAC/industrial</div></div><span class="badge bgray">Adjacent — not automotive specific</span></div>
+    <div class="sc-bd">Makes heat exchangers for room ACs, industrial HVAC, and refrigeration. Different from automotive thermal. Growth driven by residential AC boom, not EV transition. Not a competitor to Subros but operates in the same broad thermal management space.</div>
+  </div>
+</div>
+
+<!-- FULL COMPARISON -->
+<div id="compare" class="panel">
+  <div class="sh">Subros vs auto sector peers — key metrics</div>
+  <div style="border:1px solid #ddd;border-radius:10px;overflow:hidden;font-size:11.5px">
+    <div class="comp-h">
+      <div class="cc-h" style="background:#f5f5f3">Metric</div>
+      <div class="cc-h" style="background:#E1F5EE;color:#0F6E56">Subros Ltd</div>
+      <div class="cc-h" style="background:#E6F1FB;color:#185FA5">UNO Minda</div>
+      <div class="cc-h" style="background:#f5f5f3">Minda Corporation</div>
+      <div class="cc-h" style="background:#FAEEDA;color:#854F0B">EPACK Durable*</div>
+    </div>
+
+    <div class="comp-row"><div class="cc cc-label">Market cap</div><div class="cc mid-cell">₹5,144 Cr</div><div class="cc loser-cell">₹63,389 Cr</div><div class="cc loser-cell">₹12,861 Cr</div><div class="cc winner-cell">₹2,077 Cr</div></div>
+    <div class="comp-row"><div class="cc cc-label">TTM revenue</div><div class="cc mid-cell">₹3,614 Cr</div><div class="cc winner-cell">₹18,850 Cr</div><div class="cc winner-cell">₹5,803 Cr</div><div class="cc mid-cell">₹1,947 Cr</div></div>
+    <div class="comp-row"><div class="cc cc-label">Revenue growth (latest)</div><div class="cc mid-cell">+15.4% Q3 FY26</div><div class="cc winner-cell">+19.9% Q3 FY26</div><div class="cc winner-cell">+24.6% Q3 FY26</div><div class="cc loser-cell">Loss-making currently</div></div>
+    <div class="comp-row"><div class="cc cc-label">EBITDA margin</div><div class="cc mid-cell">8.6–10% (rising)</div><div class="cc winner-cell">~11–12%</div><div class="cc winner-cell">~9–10%</div><div class="cc loser-cell">Loss / near zero</div></div>
+    <div class="comp-row"><div class="cc cc-label">PAT (TTM)</div><div class="cc mid-cell">₹163 Cr</div><div class="cc winner-cell">₹1,222 Cr</div><div class="cc winner-cell">₹286 Cr</div><div class="cc loser-cell">₹41 Cr (declining)</div></div>
+    <div class="comp-row"><div class="cc cc-label">Trailing PE</div><div class="cc mid-cell">~31.6x</div><div class="cc loser-cell">~52x (expensive)</div><div class="cc mid-cell">~45x</div><div class="cc mid-cell">~50x (on thin PAT)</div></div>
+    <div class="comp-row"><div class="cc cc-label">FY27 forward PE</div><div class="cc winner-cell">~20–23x</div><div class="cc loser-cell">~35–40x</div><div class="cc mid-cell">~28–32x</div><div class="cc mid-cell">Profitability uncertain</div></div>
+    <div class="comp-row"><div class="cc cc-label">EV content multiplier</div><div class="cc winner-cell">2.5–3x per vehicle</div><div class="cc mid-cell">Moderate (1.3x)</div><div class="cc mid-cell">Moderate (1.5x)</div><div class="cc loser-cell">Not applicable</div></div>
+    <div class="comp-row"><div class="cc cc-label">Technology JV partner</div><div class="cc winner-cell">Denso + Toyota Industries (world-class)</div><div class="cc mid-cell">Multiple JVs</div><div class="cc mid-cell">Multiple JVs</div><div class="cc loser-cell">Self-built (South Korean tech)</div></div>
+    <div class="comp-row"><div class="cc cc-label">Market share</div><div class="cc winner-cell">41% PV AC, 42% truck</div><div class="cc mid-cell">Diversified</div><div class="cc mid-cell">Diversified</div><div class="cc mid-cell">~5–7% in room AC OEM</div></div>
+    <div class="comp-row"><div class="cc cc-label">Promoter holding</div><div class="cc loser-cell">36.8% (Suri family)</div><div class="cc winner-cell">68.4%</div><div class="cc winner-cell">64.8%</div><div class="cc mid-cell">47.2%</div></div>
+    <div class="comp-row"><div class="cc cc-label">Debt status</div><div class="cc winner-cell">Almost debt-free</div><div class="cc winner-cell">Low</div><div class="cc mid-cell">Moderate</div><div class="cc loser-cell">Low interest coverage (concern)</div></div>
+    <div class="comp-row"><div class="cc cc-label">Customer dependency</div><div class="cc loser-cell">~85% Maruti (high)</div><div class="cc winner-cell">Diversified OEMs</div><div class="cc winner-cell">Diversified OEMs</div><div class="cc mid-cell">Concentrated OEMs</div></div>
+    <div class="comp-row"><div class="cc cc-label">3x probability (3yr)</div><div class="cc mid-cell">25–30% (margin expansion key)</div><div class="cc loser-cell">10–12% (too large)</div><div class="cc mid-cell">25–30% (good growth)</div><div class="cc mid-cell">35–40% (if profitability improves)</div></div>
+    <div class="comp-row"><div class="cc cc-label">Best for</div><div class="cc">EV thermal, market leader play</div><div class="cc">Broad auto content, quality growth</div><div class="cc">Auto electronics, EV sensors</div><div class="cc">Room AC penetration, consumer play</div></div>
+  </div>
+  <div style="font-size:11px;color:#888;margin-top:8px">*EPACK is in Garvit's portfolio. Different sector (residential AC) — not a direct Subros competitor.</div>
+</div>
+
+<!-- VERDICT -->
+<div id="verdict" class="panel">
+  <div class="sh">The definitive verdict for Garvit's 3x goal</div>
+
+  <div class="verdict-card" style="background:#E1F5EE;border:1px solid #5DCAA5">
+    <div class="vc-h" style="color:#0F6E56">Subros — Verdict: Hold current EPACK position + consider Subros separately as EV bet (₹25,000–40,000)</div>
+    <div class="vc-b">Subros is a genuinely high-quality business: market leader, Denso technology, debt-free, growing truck and railway segments, and now a critical participant in India's EV transition via the ₹1,280 Cr Maruti electric compressor order. The EV thermal story is real — each hybrid/EV requires 2.5x the thermal content of an ICE vehicle, structurally increasing Subros's revenue per OEM unit sold.<br><br>But here's the honest assessment for your 3x goal: <strong>Subros is not a 3x in 3 years story under a base case.</strong> Revenue grows at 11–15%, not 40–70%. The stock delivers 2–2.5x in 3 years in the base case and 3x only if margins jump from 9% to 13%+ AND EV volumes ramp fast AND PE re-rates on the EV narrative. That's three simultaneous catalysts.<br><br>For your portfolio where you're targeting aggressive 3x, Subros is better positioned as a <strong>satellite allocation (₹25–40K) rather than a core position</strong>. It's a quality compounder that protects capital while others swing for the fences.</div>
+  </div>
+
+  <div class="verdict-card" style="background:#FAEEDA;border:1px solid #EF9F27">
+    <div class="vc-h" style="color:#633806">EPACK Durable (already in portfolio) vs Subros — they are DIFFERENT businesses</div>
+    <div class="vc-b">You already own 250 shares of EPACK at ₹62,000 (current: ₹61,927 — flat). EPACK makes residential room AC units (ODUs/IDUs) for Indian brands. Subros makes automotive thermal systems. These are fundamentally different businesses serving different markets.<br><br><strong>Don't confuse them.</strong> EPACK's thesis: India residential AC penetration from 10% to 25%+. Subros's thesis: automotive AC content per vehicle rising 2.5x with EVs. Both valid — different vehicles. Keep EPACK for the consumer AC penetration story. Consider Subros separately for the automotive EV thermal bet.</div>
+  </div>
+
+  <div class="sh">For Garvit's portfolio — allocation recommendation</div>
+  <table>
+    <tr><th>Stock</th><th>Action</th><th>Amount</th><th>Rationale</th></tr>
+    <tr><td><strong>Subros</strong></td><td><span class="badge bb">Satellite position</span></td><td>₹25,000–40,000</td><td>Quality EV thermal play. 2–2.5x base case, 3x bull case. Hold for 3–4 years. Not a core position for 3x goal — too slow at base case. But excellent quality anchor.</td></tr>
+    <tr><td><strong>EPACK Durable</strong> (existing)</td><td><span class="badge ba">Hold existing</span></td><td>₹61,927 (250 shares)</td><td>Different thesis — residential AC penetration. Keep it. Don't confuse with Subros. Review after Q3 FY26 — loss-making; watch for profitability return in Q4.</td></tr>
+    <tr><td><strong>UNO Minda</strong></td><td><span class="badge bgray">Pass</span></td><td>₹0</td><td>Too large for 3x (₹63K Cr mcap). Good quality, wrong size.</td></tr>
+  </table>
+
+  <div class="sh">Three metrics to watch quarterly for Subros</div>
+  <table>
+    <tr><th>#</th><th>Metric</th><th>Current</th><th>Key trigger</th></tr>
+    <tr><td>1</td><td>EBITDA margin trend</td><td class="r">8.6% (compressing)</td><td>Re-rate if margin crosses 11% sustainably — first signal of 12% target being met</td></tr>
+    <tr><td>2</td><td>EV + Hybrid revenue %</td><td class="a">~5% currently</td><td>Add significantly if crosses 10–15% of total revenue — validates the thesis</td></tr>
+    <tr><td>3</td><td>Non-Maruti revenue %</td><td class="r">~15% (too low)</td><td>Positive signal if crosses 25% — structural risk reduction from Mahindra/Tata wins</td></tr>
+  </table>
+
+  <div class="warn success" style="margin-top:12px"><strong>One-line verdict:</strong> Subros is India's most defensible automotive thermal business with a clear EV growth pathway. For Garvit's aggressive 3x portfolio, it works best as a quality satellite (₹25–40K) that anchors the portfolio while core positions (Bondada, Enviro Infra, DEE Development) swing for 3x. If the EV compressor ramp and margin expansion both deliver, Subros adds a powerful additional 2.5–3x to the mix.</div>
+</div>
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/4.4.1/chart.umd.js"></script>
+<script>
+function show(id,btn){
+  document.querySelectorAll('.tab').forEach(t=>t.classList.remove('active'));
+  document.querySelectorAll('.panel').forEach(p=>p.classList.remove('active'));
+  btn.classList.add('active');document.getElementById(id).classList.add('active');
+}
+new Chart(document.getElementById('rc'),{
+  type:'bar',
+  data:{
+    labels:['FY22','FY23','FY24','FY25','9M FY26','FY26E','FY27E','FY28E'],
+    datasets:[
+      {label:'Revenue ₹ Cr',data:[2523,2827,3085,3368,2705,3825,4700,5800],backgroundColor:['#378ADD','#378ADD','#378ADD','#378ADD','#1D9E75','#9FE1CB','#9FE1CB','#9FE1CB'],borderRadius:4,yAxisID:'y'},
+      {label:'PAT ₹ Cr',data:[48,48,98,150,116,168,245,390],type:'line',borderColor:'#1D9E75',backgroundColor:'transparent',pointBackgroundColor:'#1D9E75',tension:0.3,yAxisID:'y2'}
+    ]
+  },
+  options:{responsive:true,maintainAspectRatio:false,plugins:{legend:{display:false}},scales:{y:{ticks:{font:{size:10}}},y2:{position:'right',ticks:{font:{size:10}},grid:{drawOnChartArea:false}},x:{ticks:{font:{size:10}}}}}
+});
+</script>
+</body></html>

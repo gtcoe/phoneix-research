@@ -1,0 +1,295 @@
+<!DOCTYPE html>
+<html><head><meta charset="utf-8"><style>
+*{box-sizing:border-box;margin:0;padding:0}
+body{font-family:system-ui,sans-serif;padding:20px;background:#fff;color:#1a1a1a}
+h1{font-size:22px;font-weight:500;margin-bottom:4px}
+.sub{font-size:13px;color:#666;margin-bottom:16px}
+.summary-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:10px;margin-bottom:20px}
+.sc{background:#f5f5f3;border-radius:8px;padding:12px 14px}
+.sl{font-size:11px;color:#666;margin-bottom:3px}
+.sv{font-size:18px;font-weight:500}
+.tab-row{display:flex;gap:6px;flex-wrap:wrap;margin-bottom:16px}
+.tab{font-size:12px;padding:5px 14px;border-radius:20px;border:1px solid #ddd;background:#fff;cursor:pointer}
+.tab.active{background:#1a1a1a;color:#fff;border-color:#1a1a1a}
+.panel{display:none}
+.panel.active{display:block}
+table{width:100%;border-collapse:collapse;font-size:12.5px;margin:12px 0}
+th{font-size:11px;font-weight:500;color:#666;padding:5px 8px;text-align:left;border-bottom:1px solid #eee}
+td{padding:8px 8px;border-bottom:1px solid #eee;color:#1a1a1a;vertical-align:top}
+.g{color:#0F6E56;font-weight:500} .r{color:#A32D2D;font-weight:500} .a{color:#854F0B;font-weight:500} .b{color:#185FA5;font-weight:500}
+.sh{font-size:11px;font-weight:500;color:#666;text-transform:uppercase;letter-spacing:.06em;margin:20px 0 8px;padding-bottom:5px;border-bottom:1px solid #eee}
+.warn{padding:12px 14px;margin:10px 0;border-left:3px solid;border-radius:0 6px 6px 0;font-size:12.5px;line-height:1.65}
+.warn.success{background:#E1F5EE;border-color:#1D9E75;color:#04342C}
+.warn.caution{background:#FAEEDA;border-color:#BA7517;color:#412402}
+.warn.danger{background:#FCEBEB;border-color:#A32D2D;color:#712B13}
+.warn.info{background:#E6F1FB;border-color:#185FA5;color:#042C53}
+.badge{display:inline-block;font-size:10px;padding:2px 7px;border-radius:10px}
+.bg{background:#E1F5EE;color:#0F6E56} .bb{background:#E6F1FB;color:#185FA5} .ba{background:#FAEEDA;color:#854F0B} .br{background:#FCEBEB;color:#A32D2D}
+.chart-wrap{position:relative;width:100%;height:260px;margin:12px 0}
+.metric-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:10px;margin:12px 0}
+.mc{background:#f5f5f3;border-radius:8px;padding:10px}
+.mc-l{font-size:10px;color:#666;margin-bottom:3px}
+.mc-v{font-size:16px;font-weight:500}
+.scenario{border:1px solid #ddd;border-radius:10px;padding:14px;margin-bottom:10px}
+.sc-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:8px;margin:10px 0}
+.sc-cell{background:#f5f5f3;border-radius:6px;padding:8px 10px}
+.sc-l{font-size:10px;color:#666}
+.sc-v{font-size:13px;font-weight:500;margin-top:2px}
+.point{display:flex;gap:10px;align-items:flex-start;padding:10px 0;border-bottom:1px solid #eee;font-size:12.5px}
+.point:last-child{border-bottom:none}
+.dot{width:20px;height:20px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:10px;font-weight:500;flex-shrink:0;margin-top:1px}
+.dg{background:#E1F5EE;color:#0F6E56} .dr{background:#FCEBEB;color:#A32D2D} .da{background:#FAEEDA;color:#854F0B} .db{background:#E6F1FB;color:#185FA5}
+</style></head><body>
+<h1>Sky Gold & Diamonds — Deep Investment Analysis</h1>
+<div class="sub">NSE: SKYGOLD · B2B jewellery manufacturer · Founded 2008 · Mumbai · ₹6,557 Cr mcap</div>
+
+<div class="summary-grid">
+  <div class="sc"><div class="sl">Your avg entry</div><div class="sv">₹344</div></div>
+  <div class="sc"><div class="sl">Current price</div><div class="sv" style="color:#1D9E75">~₹423</div></div>
+  <div class="sc"><div class="sl">FY25 revenue</div><div class="sv">₹3,548 Cr</div></div>
+  <div class="sc"><div class="sl">FY26E revenue</div><div class="sv">₹6,100 Cr</div></div>
+  <div class="sc"><div class="sl">FY27E revenue</div><div class="sv">₹8,100 Cr</div></div>
+  <div class="sc"><div class="sl">5yr PAT CAGR</div><div class="sv" style="color:#1D9E75">129%</div></div>
+  <div class="sc"><div class="sl">FY27 forward PE</div><div class="sv" style="color:#1D9E75">~19–21x</div></div>
+  <div class="sc"><div class="sl">PEG ratio</div><div class="sv" style="color:#1D9E75">~0.45x</div></div>
+</div>
+
+<div class="tab-row">
+  <button class="tab active" onclick="show('revenue',this)">Revenue & PAT history</button>
+  <button class="tab" onclick="show('guidance',this)">Guidance track record</button>
+  <button class="tab" onclick="show('clients',this)">Clients & moat</button>
+  <button class="tab" onclick="show('margins',this)">Margins & PE</button>
+  <button class="tab" onclick="show('risks',this)">Risks</button>
+  <button class="tab" onclick="show('scenarios',this)">3x scenarios</button>
+  <button class="tab" onclick="show('verdict',this)">Verdict</button>
+</div>
+
+<div id="revenue" class="panel active">
+  <div class="sh">Revenue journey — ₹796 Cr to ₹6,100 Cr in 4 years (45.3% CAGR)</div>
+  <div class="chart-wrap"><canvas id="rc"></canvas></div>
+  <div style="display:flex;gap:16px;font-size:12px;color:#666;margin-bottom:12px">
+    <span><span style="display:inline-block;width:10px;height:10px;border-radius:2px;background:#1D9E75;margin-right:4px"></span>Revenue ₹ Cr (left)</span>
+    <span><span style="display:inline-block;width:10px;height:10px;border-radius:2px;background:#378ADD;margin-right:4px"></span>PAT ₹ Cr (right)</span>
+    <span><span style="display:inline-block;width:10px;height:10px;border-radius:2px;background:#9FE1CB;margin-right:4px"></span>Projected</span>
+  </div>
+  <table>
+    <tr><th>Year</th><th>Revenue</th><th>Growth</th><th>PAT</th><th>PAT margin</th><th>EBITDA margin</th><th>Key event</th></tr>
+    <tr><td>FY21</td><td>₹796 Cr</td><td>—</td><td>₹5 Cr</td><td class="a">0.6%</td><td>2.6%</td><td>Base: small casting manufacturer</td></tr>
+    <tr><td>FY22</td><td>₹785 Cr</td><td class="r">-1.4%</td><td>₹8 Cr</td><td class="a">1.0%</td><td>3.2%</td><td>COVID recovery. Flat, but margins beginning.</td></tr>
+    <tr><td>FY23</td><td>₹1,154 Cr</td><td class="g">+47%</td><td>₹18.6 Cr</td><td class="a">1.6%</td><td>3.8%</td><td>Scale-up begins. New facility planned.</td></tr>
+    <tr><td>FY24</td><td>~₹1,990 Cr</td><td class="g">+72%</td><td>₹40.5 Cr</td><td class="a">2.0%</td><td>4.4%</td><td>New 80K sq ft Navi Mumbai facility. CaratLane added.</td></tr>
+    <tr><td>FY25</td><td>₹3,548 Cr</td><td class="g">+78%</td><td>₹132.7 Cr</td><td class="g">3.7%</td><td>5.5%</td><td>Star Mangalsutra + Sparkling Chains acquired. QIP ₹270 Cr.</td></tr>
+    <tr><td>9M FY26</td><td>₹4,383 Cr</td><td class="g">+76%</td><td>₹191 Cr</td><td class="g">4.4%</td><td>~6.8%</td><td>Reliance + Tanishq onboarded. Exports 12%.</td></tr>
+    <tr><td>FY26E</td><td>₹6,100 Cr</td><td class="g">~72%</td><td>~₹260 Cr</td><td class="g">~4.3%</td><td>~7%</td><td>Big 4 audit. Promoter zero-salary from FY27.</td></tr>
+    <tr><td>FY27E</td><td>₹8,100 Cr</td><td class="g">~33%</td><td>~₹344 Cr</td><td class="g">~4.25%</td><td>7–7.5%</td><td>Dubai office. 900 kg/month. 25% exports target.</td></tr>
+  </table>
+  <div class="warn success">
+    <strong>45.3% revenue CAGR and 129.2% PAT CAGR over 5 years.</strong> This is one of the most consistent growth trajectories in Indian small caps. Q3 FY26 saw revenue +77%, PAT +120%. 9M FY26 PAT already exceeds full-year FY25 PAT.
+  </div>
+</div>
+
+<div id="guidance" class="panel">
+  <div class="warn success"><strong>Most critical finding:</strong> Sky Gold management has beaten or met every guidance. Revisions have been upward — each triggered by verifiable events (client additions, capacity), not optimistic projections. This is the hallmark of a reliable management team.</div>
+  <table>
+    <tr><th>When given</th><th>Target</th><th>Original guidance</th><th>Final guidance</th><th>Actual</th><th>Result</th></tr>
+    <tr><td>FY24 calls</td><td>FY25</td><td>₹2,800–3,000 Cr</td><td>₹3,300 Cr (raised mid-year on capacity)</td><td>₹3,548 Cr</td><td><span class="badge bg">BEAT by 7.5%</span></td></tr>
+    <tr><td>Q3 FY25</td><td>FY26</td><td>₹5,400 Cr</td><td>₹6,100 Cr (raised Q1 FY26)</td><td>9M = ₹4,383 Cr → on track to beat</td><td><span class="badge bb">On track to beat</span></td></tr>
+    <tr><td>FY24</td><td>FY27</td><td>₹6,200 Cr</td><td>₹8,100 Cr (raised 4 times)</td><td>—</td><td><span class="badge bg">Each raise = real client win</span></td></tr>
+  </table>
+  <div class="sh">FY27 guidance evolution — 4 upward revisions driven by client additions</div>
+  <table>
+    <tr><th>Time</th><th>FY27 guidance</th><th>Driver</th></tr>
+    <tr><td>FY24</td><td>₹6,200 Cr</td><td>Baseline assumption with existing clients</td></tr>
+    <tr><td>Q3 FY25</td><td>₹6,300 Cr</td><td>New facility + acquisitions confirmed</td></tr>
+    <tr><td>Q4 FY25</td><td>₹7,200 Cr</td><td>CaratLane + Aditya Birla (Indriya) onboarded</td></tr>
+    <tr><td>Q1 FY26</td><td>₹7,600 Cr</td><td>Exports rising to 12%, Dubai office planned</td></tr>
+    <tr><td>Q3 FY26</td><td>₹8,100 Cr</td><td>Reliance Retail + Tanishq onboarded (not in previous guidance)</td></tr>
+  </table>
+  <div class="warn caution"><strong>Analyst caution on ₹8,100 Cr:</strong> 9M FY26 run-rate annualises to ~₹5,844 Cr. To reach ₹8,100 Cr in FY27 requires ~33% growth from FY26 run rate. This is consistent with management's 30-35% CAGR target and plausible given new clients. Conservative base: ₹7,200–7,500 Cr. Even at ₹7,200 Cr and 4% PAT, PAT = ₹288 Cr, implying FY27 PE of ~23x — still attractive.</div>
+</div>
+
+<div id="clients" class="panel">
+  <div class="warn info"><strong>Core insight:</strong> Sky Gold sells to the brands that sell to consumers. It has zero retail inventory risk and captures growth from every organized jeweller it supplies — regardless of which brand wins the consumer.</div>
+  <div class="sh">Core long-standing clients</div>
+  <table>
+    <tr><th>Client</th><th>Scale</th><th>How they work with Sky Gold</th><th>Status</th></tr>
+    <tr><td><strong>Malabar Gold & Diamonds</strong></td><td>700+ stores, ~₹32,000 Cr revenue</td><td>Replenishment system — exclusive designs per client, not shared with others. Stores auto-reorder performing designs. Buffer stock at regional level = constant demand pull.</td><td><span class="badge bg">Core anchor</span></td></tr>
+    <tr><td><strong>Kalyan Jewellers</strong></td><td>NSE listed, ₹40,000 Cr mcap</td><td>Multiple order system. New product lines (chains, mangalsutras) deepening wallet share.</td><td><span class="badge bg">Core anchor</span></td></tr>
+    <tr><td><strong>Joyalukkas</strong></td><td>750+ stores, India + ME</td><td>Multiple-order system. Middle East presence gives Sky Gold international exposure through existing clients.</td><td><span class="badge bg">Core anchor</span></td></tr>
+    <tr><td>GRT Jewellers</td><td>South India dominant</td><td>Regional chain — large volumes from South India market</td><td><span class="badge bg">Established</span></td></tr>
+    <tr><td>Senco Gold</td><td>NSE listed, East India</td><td>Pan-India expansion ongoing — growing order volumes</td><td><span class="badge bg">Established</span></td></tr>
+  </table>
+  <div class="sh">Game-changing new clients (FY25–FY26)</div>
+  <table>
+    <tr><th>Client</th><th>Parent</th><th>Why it matters</th><th>In previous guidance?</th></tr>
+    <tr><td><strong>Tanishq</strong></td><td>Titan Company (₹2L Cr mcap)</td><td>India's most trusted jewellery brand. Entry validates Sky Gold's quality at the highest standard in industry.</td><td><span class="badge br">NOT included</span></td></tr>
+    <tr><td><strong>Reliance Retail</strong></td><td>Reliance Industries</td><td>India's largest retailer, 18,000+ stores. Even 1% wallet share = massive volumes.</td><td><span class="badge br">NOT included</span></td></tr>
+    <tr><td><strong>CaratLane</strong></td><td>Tata Group (Titan subsidiary)</td><td>900+ stores + digital-first. Gen Z jewellery leader. Premium segment growth.</td><td><span class="badge bg">Now included</span></td></tr>
+    <tr><td><strong>Indriya</strong></td><td>Aditya Birla Group</td><td>India's fastest growing new jewellery chain. Aggressive expansion planned.</td><td><span class="badge bg">Now included</span></td></tr>
+    <tr><td>P.N. Gadgil, Thangamayil</td><td>Regional leaders</td><td>Maharashtra + Tamil Nadu coverage</td><td><span class="badge bg">Now included</span></td></tr>
+  </table>
+  <div class="sh">Client concentration metrics</div>
+  <table>
+    <tr><th>Metric</th><th>Value</th><th>Interpretation</th></tr>
+    <tr><td>Top 3 client revenue contribution</td><td class="g">25–27%</td><td>Low enough that losing one client doesn't break the business</td></tr>
+    <tr><td>Top 5 client revenue contribution</td><td class="g">30–32%</td><td>Far better than typical manufacturers (usually 60–70%)</td></tr>
+    <tr><td>Total store touchpoints</td><td class="g">2,000+ stores</td><td>Deeply embedded in India's organized jewellery network</td></tr>
+    <tr><td>Export share FY25 / Q1 FY26</td><td class="a">8% → 12%</td><td>Growing fast — target 25% by FY27</td></tr>
+  </table>
+  <div class="sh">The 5 structural moats</div>
+  <div class="point"><div class="dot dg">1</div><div><strong>9+ lakh design library:</strong> Built over 15+ years. Continuously refreshed by in-house R&D. A new competitor cannot replicate this in less than 7–10 years. This is the deepest moat.</div></div>
+  <div class="point"><div class="dot dg">2</div><div><strong>India's largest single-location jewellery manufacturer:</strong> 130,000 sq ft Navi Mumbai. Scale = cost advantage. New entrants at 10,000 sq ft compete at structurally higher cost.</div></div>
+  <div class="point"><div class="dot dg">3</div><div><strong>Exclusive design agreements:</strong> Designs made for Malabar are never shared with Kalyan. Switching manufacturers means losing access to exclusive designs — deeply painful for clients.</div></div>
+  <div class="point"><div class="dot dg">4</div><div><strong>Wallet share expansion:</strong> Casting jewellery = 40% of a store's inventory. Starmangalsutra = +15%. Sparkling Chains = +25%. Total potential = 80% of store inventory sourced from Sky Gold. Almost impossible for competitors to displace at this embedded level.</div></div>
+  <div class="point"><div class="dot db">5</div><div><strong>Organized retail tailwind:</strong> India's organized jewellery sector growing from ₹19 trillion (FY20) → ₹82 trillion (FY28). Sky Gold supplies exclusively to organized players. Every unorganized shop that loses market share = a win for Sky Gold.</div></div>
+</div>
+
+<div id="margins" class="panel">
+  <div class="sh">Margin expansion — 230 bps in 2 years, structural not cyclical</div>
+  <div class="metric-grid">
+    <div class="mc"><div class="mc-l">EBITDA margin FY22</div><div class="mc-v">2.6%</div></div>
+    <div class="mc"><div class="mc-l">EBITDA margin FY25</div><div class="mc-v" style="color:#BA7517">5.5%</div></div>
+    <div class="mc"><div class="mc-l">EBITDA margin 9M FY26</div><div class="mc-v" style="color:#1D9E75">6.8–7.3%</div></div>
+    <div class="mc"><div class="mc-l">Gross margin FY24→FY26</div><div class="mc-v" style="color:#1D9E75">5.97%→8.27%</div></div>
+    <div class="mc"><div class="mc-l">Gold loss reduced</div><div class="mc-v" style="color:#1D9E75">1.5%→0.5%</div></div>
+    <div class="mc"><div class="mc-l">Interest coverage FY25</div><div class="mc-v" style="color:#1D9E75">4.9x</div></div>
+    <div class="mc"><div class="mc-l">D/E ratio FY25</div><div class="mc-v" style="color:#1D9E75">0.9x</div></div>
+    <div class="mc"><div class="mc-l">Working capital days</div><div class="mc-v" style="color:#BA7517">66→63 days</div></div>
+  </div>
+  <table>
+    <tr><th>Margin driver</th><th>Impact</th><th>Status</th></tr>
+    <tr><td><strong>Gold loss 1.5%→0.5%</strong><br>ERP tracks every gram in and out. ₹60 Cr annual saving at ₹6,000 Cr scale on 1% saving.</td><td class="g">+100 bps</td><td><span class="badge bg">Done — structural</span></td></tr>
+    <tr><td><strong>Advanced gold model (12% of volumes)</strong><br>Customers supply gold upfront. Sky Gold earns only making charges. Zero gold inventory cost = zero interest on that inventory.</td><td class="g">+60 bps</td><td><span class="badge bb">Growing — target 20% by FY30</span></td></tr>
+    <tr><td><strong>18K + diamond jewellery (now 25% of mix)</strong><br>Was 2% historically. Higher making charges per gram = better revenue per kg produced.</td><td class="g">+70 bps</td><td><span class="badge bb">Target 35–40% by FY27</span></td></tr>
+    <tr><td><strong>GML replacing high-cost debt</strong><br>4.5% GML vs 9.5% WC loans. On ₹588 Cr debt → saves ~₹29 Cr interest annually = ~0.5% PAT improvement.</td><td class="g">Interest saving</td><td><span class="badge ba">In progress</span></td></tr>
+  </table>
+  <div class="sh">PE analysis</div>
+  <table>
+    <tr><th>Period</th><th>Approx PE</th><th>Context</th></tr>
+    <tr><td>FY23</td><td>15–20x</td><td>Revenue growing but margins thin. Market uncertain about sustainability.</td></tr>
+    <tr><td>FY25</td><td>35–40x</td><td>Market priced in growth story. Ashish Kacholia entered.</td></tr>
+    <tr><td>Current (Apr 2026)</td><td class="g">~25–28x trailing</td><td>Stock corrected despite improving fundamentals = attractive zone</td></tr>
+    <tr><td>FY27 forward PE</td><td class="g">19–21x</td><td>At ₹7,200–8,100 Cr revenue and 4–4.25% PAT margin = ₹288–344 Cr PAT. At ₹6,557 Cr mcap = 19–23x.</td></tr>
+  </table>
+  <div class="warn success"><strong>PEG ratio of ~0.45x.</strong> A PEG below 1 means buying growth cheaply. A 40%+ earnings growth company at 25x PE = PEG 0.45–0.6x. Peter Lynch: below 0.5 is a bargain. Sky Gold is in bargain territory for its growth rate. The moment OCF turns positive, expect PE re-rating to 30–35x.</div>
+</div>
+
+<div id="risks" class="panel">
+  <div class="sh">Risk 1 — Negative operating cash flow (most critical red flag)</div>
+  <div class="warn danger"><strong>Operating cash flow: -₹158 Cr (FY24) → -₹273 Cr (FY25).</strong> Getting worse despite profits doubling. FY25 PAT = ₹133 Cr but OCF = -₹273 Cr. Meaning ₹406 Cr of working capital was consumed to generate ₹133 Cr profit. Company relied on ₹426 Cr financing inflows (borrowings + equity). Short-term borrowings = ₹588 Cr (97% of all debt).<br><br>Management's fix: Gold Metal Loans (4.5% vs 9.5%), advanced gold model, working capital days from 66 → 63 → target 60. OCF positive targeted by FY28. <strong>If this doesn't improve, growth story stalls regardless of revenue. Watch this every quarter.</strong> Stop-loss trigger: working capital days above 75 for 2 consecutive quarters.</div>
+
+  <div class="sh">Risk 2 — Promoter holding decline (21.8% in 3 years)</div>
+  <div class="warn caution">Promoter holding: 73.5% (Q2 FY24) → 61.3% → 51.7% today. Each round of equity dilution reduces your share of future wealth.<br>Partial mitigation: From FY27, promoters adopt zero-salary — compensation only through dividends, directly aligning their interests with minority shareholders. Big 4 audit firm from April 2026 adds oversight. <strong>Watch: if holding falls below 50%, reduce position.</strong></div>
+
+  <div class="sh">Risk 3 — Debtor days increasing</div>
+  <div class="warn caution">Debtor days: 29.7 → 46.5 days. As Sky Gold onboards Reliance and Tanishq, these giants demand longer payment terms. Every 10-day increase = ~₹55–60 Cr additional working capital needed at current scale. This is the compounding source of the negative OCF problem.</div>
+
+  <div class="sh">Risk 4 — Related party acquisitions</div>
+  <div class="warn caution">Starmangalsutra and Sparkling Chains were promoter-owned. Acquired for ₹88 Cr EV against combined FY24 PAT of ₹7.5 Cr = ~12x PE — borderline but not egregious. Mitigation: Big 4 audit firm from April 2026 will independently verify all future RPTs.</div>
+
+  <div class="sh">Risk 5 — Gold price sensitivity</div>
+  <div class="warn info">Gold prices up 60–70% in FY26. Higher gold prices inflate revenue but balloon working capital requirements. A ₹1,000/gram rise with 200 kg inventory = ₹20 Cr more working capital needed overnight. Sky Gold's response: shift to lighter, lower-karat jewellery — 80% inventory below ₹1 lakh to stay accessible.</div>
+</div>
+
+<div id="scenarios" class="panel">
+  <div class="scenario" style="border-left:3px solid #1D9E75">
+    <div style="font-size:13px;font-weight:500;color:#1D9E75;margin-bottom:8px">Bull case — ₹900–1,200 per share by FY28 (2.6–3.5x from your entry ₹344)</div>
+    <div class="sc-grid">
+      <div class="sc-cell"><div class="sc-l">FY27 revenue</div><div class="sc-v">₹8,100 Cr (guidance met)</div></div>
+      <div class="sc-cell"><div class="sc-l">FY27 PAT</div><div class="sc-v">₹344 Cr (4.25% margin)</div></div>
+      <div class="sc-cell"><div class="sc-l">FY27 PE (OCF turns positive)</div><div class="sc-v">25–30x re-rating</div></div>
+      <div class="sc-cell"><div class="sc-l">FY27 mcap</div><div class="sc-v">₹8,600–10,300 Cr</div></div>
+      <div class="sc-cell"><div class="sc-l">FY28 revenue</div><div class="sc-v">₹11,000 Cr at 35% growth</div></div>
+      <div class="sc-cell"><div class="sc-l">FY28 mcap</div><div class="sc-v">₹11,000–14,000 Cr</div></div>
+    </div>
+    <div style="font-size:12px;color:#1a1a1a;margin-top:8px"><strong>Requires:</strong> Full guidance delivery, OCF turns positive FY27–FY28, Reliance + Tanishq ramp up significantly, exports hit 20%+, GML replaces expensive debt, 18K mix reaches 35%. <strong>Stock reaches ₹900–1,200 = 2.6–3.5x from your ₹344 entry.</strong></div>
+  </div>
+
+  <div class="scenario" style="border-left:3px solid #378ADD">
+    <div style="font-size:13px;font-weight:500;color:#185FA5;margin-bottom:8px">Base case — ₹650–850 per share by FY28 (1.9–2.5x from your entry ₹344)</div>
+    <div class="sc-grid">
+      <div class="sc-cell"><div class="sc-l">FY27 revenue</div><div class="sc-v">₹7,200 Cr (conservative)</div></div>
+      <div class="sc-cell"><div class="sc-l">FY27 PAT</div><div class="sc-v">₹288–306 Cr (4% margin)</div></div>
+      <div class="sc-cell"><div class="sc-l">FY27 PE</div><div class="sc-v">20–22x (stable)</div></div>
+      <div class="sc-cell"><div class="sc-l">FY27 mcap</div><div class="sc-v">₹5,760–6,730 Cr</div></div>
+      <div class="sc-cell"><div class="sc-l">FY28 revenue</div><div class="sc-v">₹9,500 Cr</div></div>
+      <div class="sc-cell"><div class="sc-l">FY28 mcap</div><div class="sc-v">₹8,000–11,000 Cr</div></div>
+    </div>
+    <div style="font-size:12px;color:#1a1a1a;margin-top:8px">Guidance 85–90% hit, OCF improving but not yet positive, new clients ramping slowly, exports 15–18%. <strong>From your entry ₹344, this delivers 1.9–2.5x by FY28. Your 3x goal requires bull case.</strong></div>
+  </div>
+
+  <div class="scenario" style="border-left:3px solid #A32D2D">
+    <div style="font-size:13px;font-weight:500;color:#A32D2D;margin-bottom:8px">Bear case — ₹280–340 per share (near or below your entry)</div>
+    <div class="sc-grid">
+      <div class="sc-cell"><div class="sc-l">Trigger</div><div class="sc-v">OCF worsens to -₹400 Cr</div></div>
+      <div class="sc-cell"><div class="sc-l">Trigger</div><div class="sc-v">Major client loss (Malabar crisis)</div></div>
+      <div class="sc-cell"><div class="sc-l">Trigger</div><div class="sc-v">Gold crash >30% + inventory write-down</div></div>
+      <div class="sc-cell"><div class="sc-l">FY27 revenue miss</div><div class="sc-v">₹5,500–6,000 Cr</div></div>
+      <div class="sc-cell"><div class="sc-l">PE de-rating</div><div class="sc-v">15–18x on earnings miss</div></div>
+      <div class="sc-cell"><div class="sc-l">Mcap</div><div class="sc-v">₹3,000–4,000 Cr</div></div>
+    </div>
+    <div style="font-size:12px;color:#1a1a1a;margin-top:8px">Requires multiple simultaneous failures — possible but not the base case. <strong>Your entry at ₹344 means near-breakeven in the bear case — limited downside compared to upside in bull/base.</strong></div>
+  </div>
+
+  <table style="margin-top:12px">
+    <tr><th>Milestone</th><th>Target</th><th>From your entry ₹344</th><th>Timeline</th><th>Probability</th></tr>
+    <tr><td>3x from entry</td><td>₹1,032</td><td class="g">+200%</td><td>FY28–FY29</td><td class="a">35%</td></tr>
+    <tr><td>2.5x from entry</td><td>₹860</td><td class="g">+150%</td><td>FY27–FY28</td><td class="g">50%</td></tr>
+    <tr><td>2x from entry</td><td>₹688</td><td class="g">+100%</td><td>FY27</td><td class="g">65%</td></tr>
+    <tr><td>Bear — flat/loss</td><td>₹300–344</td><td class="r">-13% to 0%</td><td>If OCF fails</td><td class="r">15%</td></tr>
+  </table>
+</div>
+
+<div id="verdict" class="panel">
+  <div class="warn success"><strong>Overall: High-conviction hold. Add on dips below ₹380–400. Position size should be ₹75,000–90,000 total invested (your current ₹34,410 is far too small for a core pick).</strong></div>
+
+  <div class="sh">7 reasons to hold and add</div>
+  <div class="point"><div class="dot dg">1</div><div><strong>Management has beaten every guidance.</strong> FY25: ₹3,300 Cr target → ₹3,548 Cr actual (+7.5%). Every FY27 revision was triggered by verified client additions — not marketing.</div></div>
+  <div class="point"><div class="dot dg">2</div><div><strong>Q3 FY26: revenue +77%, PAT +120%.</strong> Highest quarterly profit in company history. Gross margin hit 8.27% YTD vs 5.97% in FY24. Operating leverage is very real.</div></div>
+  <div class="point"><div class="dot dg">3</div><div><strong>Tanishq + Reliance are not in previous guidance.</strong> These two clients alone add hundreds of crores in incremental revenue not captured in older estimates. Guidance raise to ₹8,100 Cr is anchored in real orders.</div></div>
+  <div class="point"><div class="dot dg">4</div><div><strong>Governance being upgraded.</strong> Big 4 audit from April 2026. Promoters adopting zero-salary (dividend-only) from FY27. These are exactly the signals investors want from small-cap promoters.</div></div>
+  <div class="point"><div class="dot dg">5</div><div><strong>Gold loss 1.5%→0.5% is permanent structural improvement.</strong> ERP tracks every gram in and out. This 100 bps margin improvement is not reversible and flows directly to EBITDA every quarter going forward.</div></div>
+  <div class="point"><div class="dot db">6</div><div><strong>Ashish Kacholia holds 3.05%.</strong> One of India's best small-cap investors. He entered when this was less obvious. He hasn't exited. Motilal Oswal, Kotak Life also hold via QIP.</div></div>
+  <div class="point"><div class="dot db">7</div><div><strong>PEG of 0.45x = cheap for the growth rate.</strong> 40%+ earnings growth at 25x trailing PE is a bargain. Forward FY27 PE is 19–21x on base case. When OCF turns positive, expect PE re-rating to 30–35x.</div></div>
+
+  <div class="sh">3 non-negotiable watch metrics (quarterly)</div>
+  <table>
+    <tr><th>#</th><th>Metric</th><th>Current</th><th>Exit trigger</th></tr>
+    <tr><td>1</td><td>Working capital days</td><td class="a">63 days (Dec 25)</td><td>Above 75 for 2 consecutive quarters</td></tr>
+    <tr><td>2</td><td>Operating cash flow direction</td><td class="a">Negative, improving</td><td>If worsens to -₹350 Cr+ without revenue justification</td></tr>
+    <tr><td>3</td><td>Promoter holding</td><td class="a">51.7%</td><td>Falls below 50%</td></tr>
+  </table>
+
+  <div class="sh">Your action plan</div>
+  <table>
+    <tr><th>Action</th><th>Trigger</th><th>Amount</th></tr>
+    <tr><td><span class="badge bg">Add now</span></td><td>Current price ~₹423 — still cheap on FY27 PE</td><td>₹50,000 (brings total to ~₹84K)</td></div></tr>
+    <tr><td><span class="badge bb">Add more if dip</span></td><td>If stock falls to ₹380–400</td><td>Additional ₹30,000</td></tr>
+    <tr><td><span class="badge ba">Reduce</span></td><td>Promoter holding falls below 50%</td><td>Sell 50% of position</td></tr>
+    <tr><td><span class="badge br">Full exit</span></td><td>Working capital days >75 for 2 quarters AND OCF worsening</td><td>Exit all</td></tr>
+  </table>
+
+  <div class="warn success" style="margin-top:12px"><strong>The single event that could 2x the stock in one year:</strong> Operating cash flow turning positive. Right now, the market discounts Sky Gold's PE because of negative OCF. The day OCF turns positive — even marginally — the narrative shifts from "high-growth but cash-burning" to "high-growth, self-funding compounder." That's when PE re-rates from 25x → 35x, adding 40% upside purely from valuation expansion, on top of earnings growth.</div>
+</div>
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/4.4.1/chart.umd.js"></script>
+<script>
+function show(id,btn){
+  document.querySelectorAll('.tab').forEach(t=>t.classList.remove('active'));
+  document.querySelectorAll('.panel').forEach(p=>p.classList.remove('active'));
+  btn.classList.add('active');
+  document.getElementById(id).classList.add('active');
+}
+new Chart(document.getElementById('rc'),{
+  type:'bar',
+  data:{
+    labels:['FY21','FY22','FY23','FY24','FY25','9M FY26','FY26E','FY27E'],
+    datasets:[
+      {label:'Revenue ₹ Cr',data:[796,785,1154,1990,3548,4383,6100,8100],backgroundColor:['#1D9E75','#1D9E75','#1D9E75','#1D9E75','#1D9E75','#1D9E75','#9FE1CB','#9FE1CB'],borderRadius:4,yAxisID:'y'},
+      {label:'PAT ₹ Cr',data:[5,8,18.6,40.5,132.7,191,260,344],type:'line',borderColor:'#378ADD',backgroundColor:'transparent',pointBackgroundColor:'#378ADD',tension:0.3,yAxisID:'y2'}
+    ]
+  },
+  options:{responsive:true,maintainAspectRatio:false,plugins:{legend:{display:false}},scales:{y:{ticks:{font:{size:11}}},y2:{position:'right',ticks:{font:{size:11}},grid:{drawOnChartArea:false}},x:{ticks:{font:{size:10}}}}}
+});
+</script>
+</body></html>

@@ -1,0 +1,432 @@
+<!DOCTYPE html>
+<html><head><meta charset="utf-8"><style>
+*{box-sizing:border-box;margin:0;padding:0}
+body{font-family:system-ui,sans-serif;padding:16px;background:#fff;color:#1a1a1a;font-size:14px}
+h1{font-size:20px;font-weight:500;margin-bottom:3px}
+.sub{font-size:12px;color:#666;margin-bottom:14px}
+.sg{display:grid;grid-template-columns:repeat(auto-fill,minmax(110px,1fr));gap:8px;margin-bottom:16px}
+.sc{background:#f5f5f3;border-radius:8px;padding:10px 12px}
+.sl{font-size:10px;color:#666;margin-bottom:2px}
+.sv{font-size:17px;font-weight:500}
+.tab-row{display:flex;gap:5px;flex-wrap:wrap;margin-bottom:14px}
+.tab{font-size:11.5px;padding:5px 13px;border-radius:20px;border:1px solid #ddd;background:#fff;cursor:pointer;white-space:nowrap}
+.tab.active{background:#1a1a1a;color:#fff;border-color:#1a1a1a}
+.panel{display:none}.panel.active{display:block}
+.sh{font-size:10.5px;font-weight:500;color:#666;text-transform:uppercase;letter-spacing:.06em;margin:16px 0 7px;padding-bottom:5px;border-bottom:1px solid #eee}
+table{width:100%;border-collapse:collapse;font-size:12px;margin:8px 0}
+th{font-size:10.5px;font-weight:500;color:#666;padding:5px 7px;text-align:left;border-bottom:1px solid #eee;white-space:nowrap}
+td{padding:8px 7px;border-bottom:1px solid #eee;color:#1a1a1a;vertical-align:top}
+tr:last-child td{border-bottom:none}
+tr:hover td{background:#fafaf9}
+.g{color:#0F6E56;font-weight:500}.r{color:#A32D2D;font-weight:500}.a{color:#854F0B;font-weight:500}.b{color:#185FA5;font-weight:500}
+.badge{display:inline-block;font-size:10px;padding:2px 7px;border-radius:10px;white-space:nowrap}
+.bg{background:#E1F5EE;color:#0F6E56}.bb{background:#E6F1FB;color:#185FA5}.ba{background:#FAEEDA;color:#854F0B}.br{background:#FCEBEB;color:#A32D2D}.bgray{background:#f1f0e8;color:#5F5E5A}
+.warn{padding:10px 13px;margin:8px 0;border-left:3px solid;font-size:12px;line-height:1.65}
+.warn.success{background:#E1F5EE;border-color:#1D9E75;color:#04342C}
+.warn.caution{background:#FAEEDA;border-color:#BA7517;color:#412402}
+.warn.danger{background:#FCEBEB;border-color:#A32D2D;color:#712B13}
+.warn.info{background:#E6F1FB;border-color:#185FA5;color:#042C53}
+.warn strong{font-weight:500}
+.chart-wrap{position:relative;width:100%;height:240px;margin:8px 0}
+.mg{display:grid;grid-template-columns:repeat(auto-fill,minmax(120px,1fr));gap:8px;margin:10px 0}
+.mc{background:#f5f5f3;border-radius:8px;padding:9px 11px}
+.mc-l{font-size:10px;color:#666;margin-bottom:2px}
+.mc-v{font-size:15px;font-weight:500}
+.mc-s{font-size:10px;color:#666;margin-top:2px}
+.point{display:flex;gap:9px;align-items:flex-start;padding:9px 0;border-bottom:1px solid #eee;font-size:12px;line-height:1.6;color:#555}
+.point:last-child{border-bottom:none}
+.point strong{color:#1a1a1a;font-weight:500}
+.dot{width:19px;height:19px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:10px;font-weight:500;flex-shrink:0;margin-top:1px}
+.dg{background:#E1F5EE;color:#0F6E56}.dr{background:#FCEBEB;color:#A32D2D}.da{background:#FAEEDA;color:#854F0B}.db{background:#E6F1FB;color:#185FA5}
+.two-col{display:grid;grid-template-columns:1fr 1fr;gap:12px}
+.pane{border:1px solid #ddd;border-radius:10px;padding:13px}
+.pane-h{font-size:13px;font-weight:500;margin-bottom:9px}
+.kpi-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:10px;margin:10px 0}
+.kpi{background:#f5f5f3;border-radius:8px;padding:10px 12px;border-left:3px solid transparent}
+.kpi.green{border-left-color:#1D9E75}.kpi.amber{border-left-color:#EF9F27}.kpi.blue{border-left-color:#378ADD}.kpi.red{border-left-color:#A32D2D}
+.kpi-l{font-size:10px;color:#666;margin-bottom:3px}
+.kpi-v{font-size:17px;font-weight:500}
+.kpi-s{font-size:10px;color:#888;margin-top:2px}
+.pr-row{margin-bottom:10px}
+.pr-h{display:flex;justify-content:space-between;font-size:11px;color:#666;margin-bottom:4px}
+.pr-v{color:#1a1a1a;font-weight:500}
+.bar-t{background:#f5f5f3;border-radius:3px;height:7px;overflow:hidden}
+.bar-f{height:100%;border-radius:3px}
+.scenario{border:1px solid #ddd;border-radius:10px;padding:13px;margin-bottom:9px}
+.sc-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:7px;margin:9px 0}
+.sc-cell{background:#f5f5f3;border-radius:6px;padding:7px 9px}
+.sc-l{font-size:10px;color:#666}
+.sc-v{font-size:12px;font-weight:500;margin-top:2px}
+.comp-h{display:grid;grid-template-columns:175px repeat(4,1fr);background:#f5f5f3;border-radius:8px 8px 0 0;overflow:hidden}
+.comp-row{display:grid;grid-template-columns:175px repeat(4,1fr);border-bottom:1px solid #eee}
+.comp-row:last-child{border-bottom:none}
+.cc{padding:8px 10px;font-size:11.5px;border-right:1px solid #eee}
+.cc:last-child{border-right:none}
+.cc-h{font-size:10.5px;font-weight:500;color:#444;padding:8px 10px;border-right:1px solid #ddd}
+.cc-h:last-child{border-right:none}
+.cc-label{color:#666;font-size:11px}
+.winner-cell{background:#E1F5EE}.mid-cell{background:#FAEEDA}.loser-cell{background:#fff5f5}
+.verdict-card{border-radius:10px;padding:13px 15px;margin-bottom:10px}
+.vc-h{font-size:13px;font-weight:500;margin-bottom:6px}
+.vc-b{font-size:12px;line-height:1.65;color:#444}
+.tl{position:relative;padding-left:18px;margin:10px 0}
+.tl::before{content:'';position:absolute;left:6px;top:0;bottom:0;width:1px;background:#eee}
+.tl-item{position:relative;margin-bottom:14px}
+.tl-dot{position:absolute;left:-15px;top:3px;width:9px;height:9px;border-radius:50%;border:2px solid #fff}
+.tl-date{font-size:10px;color:#888;margin-bottom:2px}
+.tl-text{font-size:12px;color:#333;line-height:1.55}
+.client-pill{display:inline-flex;align-items:center;gap:5px;background:#f5f5f3;border:.5px solid #ddd;border-radius:20px;padding:3px 9px;margin:3px;font-size:11px;color:#333}
+.order-bar{display:flex;align-items:center;gap:8px;margin-bottom:8px;font-size:12px}
+.ob-label{width:130px;color:#666;flex-shrink:0}
+.ob-track{flex:1;background:#f5f5f3;border-radius:4px;height:16px;overflow:hidden}
+.ob-fill{height:100%;display:flex;align-items:center;padding-left:6px;font-size:10px;color:#fff;font-weight:500;border-radius:4px}
+.ob-val{width:70px;text-align:right;font-weight:500;color:#1a1a1a}
+.sector-card{border:1px solid #ddd;border-radius:10px;overflow:hidden;margin-bottom:10px}
+.sc-hdr{padding:10px 13px;display:flex;justify-content:space-between;align-items:center;background:#fafaf9}
+.sc-nm{font-size:13px;font-weight:500}
+.sc-tg{font-size:11px;color:#666}
+.sc-bd{padding:10px 13px;font-size:12px;line-height:1.65;color:#555;border-top:1px solid #eee}
+.sc-bd strong{color:#1a1a1a}
+</style></head><body>
+
+<h1>DEE Development Engineers Ltd — Deep Investment Analysis</h1>
+<div class="sub">NSE: DEEDEV · Process piping solutions · Founded 1988, listed June 2024 · Faridabad, Haryana · India's largest integrated process piping provider</div>
+
+<div class="sg">
+  <div class="sc"><div class="sl">Market cap</div><div class="sv">₹2,827 Cr</div></div>
+  <div class="sc"><div class="sl">TTM revenue</div><div class="sv">₹1,067 Cr</div></div>
+  <div class="sc"><div class="sl">TTM PAT</div><div class="sv" style="color:#1D9E75">₹81 Cr</div></div>
+  <div class="sc"><div class="sl">Q3 FY26 revenue</div><div class="sv" style="color:#1D9E75">₹286.7 Cr</div></div>
+  <div class="sc"><div class="sl">Q3 FY26 growth</div><div class="sv" style="color:#1D9E75">+77% YoY</div></div>
+  <div class="sc"><div class="sl">9M FY26 EBITDA margin</div><div class="sv" style="color:#1D9E75">16.3%</div></div>
+  <div class="sc"><div class="sl">Order book (Mar'26)</div><div class="sv" style="color:#185FA5">₹1,940 Cr</div></div>
+  <div class="sc"><div class="sl">FY27E guidance</div><div class="sv">₹1,500 Cr</div></div>
+  <div class="sc"><div class="sl">Trailing PE</div><div class="sv" style="color:#854F0B">~35x</div></div>
+  <div class="sc"><div class="sl">FY27 forward PE</div><div class="sv" style="color:#1D9E75">~13–19x</div></div>
+  <div class="sc"><div class="sl">Promoter holding</div><div class="sv" style="color:#1D9E75">70.2%</div></div>
+  <div class="sc"><div class="sl">1yr stock return</div><div class="sv" style="color:#1D9E75">+61.8%</div></div>
+</div>
+
+<div class="tab-row">
+  <button class="tab active" onclick="show('revenue',this)">Revenue history</button>
+  <button class="tab" onclick="show('sectorKPI',this)">Sector KPIs</button>
+  <button class="tab" onclick="show('business',this)">Business model</button>
+  <button class="tab" onclick="show('clients',this)">Clients & moat</button>
+  <button class="tab" onclick="show('risks',this)">Risks</button>
+  <button class="tab" onclick="show('scenarios',this)">3x scenarios</button>
+  <button class="tab" onclick="show('sectormap',this)">Sector landscape</button>
+  <button class="tab" onclick="show('compare',this)">Full comparison</button>
+  <button class="tab" onclick="show('verdict',this)">Final verdict</button>
+</div>
+
+<!-- REVENUE -->
+<div id="revenue" class="panel active">
+  <div class="sh">Revenue & profit history — high-quality growth with margin expansion</div>
+  <div class="chart-wrap"><canvas id="rc"></canvas></div>
+  <div style="display:flex;gap:14px;font-size:11.5px;color:#666;margin-bottom:10px">
+    <span><span style="display:inline-block;width:10px;height:10px;border-radius:2px;background:#378ADD;margin-right:4px"></span>Revenue ₹ Cr (left)</span>
+    <span><span style="display:inline-block;width:10px;height:10px;border-radius:2px;background:#1D9E75;margin-right:4px"></span>PAT ₹ Cr (right)</span>
+    <span><span style="display:inline-block;width:10px;height:10px;border-radius:2px;background:#9FE1CB;margin-right:4px"></span>Projected</span>
+  </div>
+  <table>
+    <tr><th>Year</th><th>Revenue</th><th>Growth</th><th>EBITDA</th><th>EBITDA%</th><th>PAT</th><th>PAT%</th><th>Capacity (MTPA)</th><th>Key event</th></tr>
+    <tr><td>FY22</td><td>~₹450 Cr</td><td>—</td><td>—</td><td>—</td><td>~₹13 Cr</td><td>~3%</td><td>~25,000</td><td>Post-COVID recovery. Core piping + biomass power</td></tr>
+    <tr><td>FY23</td><td>~₹595 Cr</td><td class="g">+32%</td><td>~₹69 Cr</td><td class="a">11.6%</td><td>~₹25 Cr</td><td>~4.2%</td><td>~28,000</td><td>Oil & gas capex cycle begins. Exports ramping.</td></tr>
+    <tr><td>FY24</td><td>~₹788 Cr</td><td class="g">+32%</td><td>~₹102 Cr</td><td class="a">12.9%</td><td>~₹44 Cr</td><td class="a">5.6%</td><td>30,000 (pre-expansion)</td><td>Listed June 2024. Power segment drag begins.</td></tr>
+    <tr><td>FY25</td><td>~₹827 Cr</td><td class="a">+5%</td><td>~₹124 Cr</td><td class="a">15%</td><td>~₹43 Cr</td><td class="a">5.2%</td><td>30,000</td><td>Biomass tariff dispute impacting PAT. Core business strong.</td></tr>
+    <tr><td>9M FY26</td><td>₹780 Cr</td><td class="g">+44% YoY</td><td>₹127.6 Cr</td><td class="g">16.3%</td><td>₹49.5 Cr</td><td class="g">6.4%</td><td>37,000 (Anjar 30K + legacy)</td><td>Q3: +77% YoY. Anjar doubled to 30,000 MTPA. Seamless plant commissioning.</td></tr>
+    <tr><td>FY26E</td><td>~₹1,100–1,158 Cr</td><td class="g">~33–40%</td><td>~₹185–210 Cr</td><td class="g">17–18%</td><td>~₹80–100 Cr</td><td class="g">7–9%</td><td>44,000+</td><td>Seamless pipe first orders. $40M US power OEM LoI. Order book ₹1,940 Cr.</td></tr>
+    <tr><td>FY27E</td><td>₹1,500 Cr (guided)</td><td class="g">~30%</td><td>~₹270–300 Cr</td><td class="g">18–20%</td><td>~₹145–180 Cr</td><td class="g">10–12%</td><td>~55,000+</td><td>Seamless plant ramps (₹450 Cr annual potential). Nuclear contracts start. Power segment restructured.</td></tr>
+  </table>
+  <div class="warn success"><strong>The PAT turnaround story is extraordinary.</strong> Q3 FY26: PAT of ₹18.28 Cr vs a LOSS of ₹13.33 Cr in Q3 FY25. 9M FY26 PAT ₹49.5 Cr already exceeds FY25 full year PAT of ~₹43 Cr. Sharekhan estimates PAT of ₹113.5 Cr for FY26 and ₹145.4 Cr for FY27 — at current ₹2,827 Cr mcap, that's 25x FY26E and 19x FY27E. EV/EBITDA FY27E drops to 7.7x. Genuinely cheap for this growth rate.</div>
+  <div class="warn caution"><strong>The power segment is distorting historical numbers.</strong> The biomass power plants (non-core) have been loss-making due to the Punjab electricity regulator (PSERC) tariff dispute. Excluding this drag, core business EBITDA grew 129.8% in 9M FY26. Management is restructuring the power segment — once this headwind clears, PAT jumps materially.</div>
+</div>
+
+<!-- SECTOR KPIs -->
+<div id="sectorKPI" class="panel">
+  <div class="sh">Process piping sector KPIs — how DEE scores on what matters</div>
+  <div class="warn info"><strong>Process piping is a project business.</strong> The five metrics that define it are: (1) Order book size (revenue visibility), (2) Book-to-bill ratio (demand vs capacity), (3) EBITDA margin (value-add per tonne), (4) Revenue per MT (product mix quality), and (5) Export revenue % (pricing power in global markets).</div>
+
+  <div class="kpi-grid">
+    <div class="kpi green"><div class="kpi-l">Order book (Mar 2026)</div><div class="kpi-v">₹1,940 Cr</div><div class="kpi-s">1.8x TTM revenue — strong visibility</div></div>
+    <div class="kpi amber"><div class="kpi-l">Book-to-bill ratio</div><div class="kpi-v" style="color:#1D9E75">1.8x</div><div class="kpi-s">FY26 order inflow ₹1,869 Cr vs execution ₹1,158 Cr</div></div>
+    <div class="kpi green"><div class="kpi-l">FY26 order inflow</div><div class="kpi-v">₹1,869 Cr</div><div class="kpi-s">+40%+ vs FY25 execution — accelerating</div></div>
+    <div class="kpi blue"><div class="kpi-l">EBITDA margin (9M FY26)</div><div class="kpi-v">16.3%</div><div class="kpi-s">+520 bps vs Q3 FY25's 3.5%</div></div>
+    <div class="kpi amber"><div class="kpi-l">Pipeline (L1 orders)</div><div class="kpi-v">₹209 Cr</div><div class="kpi-s">L1 = preferred bidder, likely to convert</div></div>
+    <div class="kpi green"><div class="kpi-l">$40M US power LoI</div><div class="kpi-v">~₹340 Cr</div><div class="kpi-s">HRSG piping for 16 units — largest ever export</div></div>
+  </div>
+
+  <div class="sh">Order book composition — sector diversification</div>
+  <div class="order-bar"><div class="ob-label">Oil & Gas</div><div class="ob-track"><div class="ob-fill" style="width:55%;background:#185FA5">~55%</div></div><div class="ob-val">~₹1,067 Cr</div></div>
+  <div class="order-bar"><div class="ob-label">Power (thermal/nuclear)</div><div class="ob-track"><div class="ob-fill" style="width:25%;background:#EF9F27">~25%</div></div><div class="ob-val">~₹485 Cr</div></div>
+  <div class="order-bar"><div class="ob-label">Process/Chemicals</div><div class="ob-track"><div class="ob-fill" style="width:12%;background:#1D9E75">~12%</div></div><div class="ob-val">~₹233 Cr</div></div>
+  <div class="order-bar"><div class="ob-label">Exports</div><div class="ob-track"><div class="ob-fill" style="width:8%;background:#A32D2D">~8%</div></div><div class="ob-val">~₹155 Cr</div></div>
+
+  <div class="sh">Revenue per tonne analysis — the value-add story</div>
+  <table>
+    <tr><th>Product</th><th>Revenue per tonne</th><th>EBITDA per tonne</th><th>Why it matters</th></tr>
+    <tr><td><strong>Fabricated piping assemblies</strong> (core DEE)</td><td class="g">₹4–8 Lakh/MT</td><td class="g">₹60,000–1.2 Lakh/MT</td><td>Highest value-add — engineering labour + material</td></tr>
+    <tr><td><strong>Pressure vessels / Stacks</strong></td><td class="g">₹5–12 Lakh/MT</td><td class="g">₹80,000–2 Lakh/MT</td><td>Custom engineering, compliance-heavy = margin premium</td></tr>
+    <tr><td><strong>Seamless pipes</strong> (new plant)</td><td class="a">₹80,000–2 Lakh/MT</td><td class="a">₹12,000–30,000/MT</td><td>Raw product, import substitution play — lower margin but ₹450 Cr revenue</td></tr>
+    <tr><td><strong>Induction bends</strong></td><td class="g">₹3–6 Lakh/MT</td><td class="g">₹45,000–90,000/MT</td><td>Specialty product — very few domestic manufacturers</td></tr>
+    <tr><td>Maharashtra Seamless (comparison)</td><td class="a">₹12,000–20,000/MT</td><td class="a">₹1,500–2,000/MT</td><td>Raw pipe only — 10-20x lower revenue per tonne than DEE</td></tr>
+  </table>
+  <div class="warn success"><strong>This is the fundamental advantage DEE has over raw pipe manufacturers.</strong> Ratnamani earns ₹20,000/tonne. Maharashtra Seamless earns ₹15,000/tonne. DEE earns ₹4–8 Lakh/tonne from fabricated assemblies — 20–40x more revenue per tonne of steel used. This is why DEE's 37,000 MTPA capacity generates ₹1,067 Cr revenue, while Maharashtra Seamless needs 400,000 MTPA to generate ₹5,000 Cr. Fabrication = a fundamentally superior business model at the same material input.</div>
+
+  <div class="sh">The seamless pipe plant — backward integration that changes the economics</div>
+  <div class="warn info">Currently, DEE must import high-wall-thickness seamless pipes (HWTSP) because India makes none. This is a critical raw material for pressure vessels and high-pressure piping. The new 7,000 MTPA seamless plant at Anjar will: (1) eliminate import cost (~15–20% saving on raw material), (2) generate its own revenue of ₹450 Cr/year at full utilization, and (3) reduce delivery timelines by 6–8 weeks vs imported pipes. First maiden order: ₹58 Cr. IRR management guides: 30–35%.</div>
+</div>
+
+<!-- BUSINESS MODEL -->
+<div id="business" class="panel">
+  <div class="sh">What DEE Development Engineers actually does</div>
+  <div class="warn success"><strong>India's largest integrated process piping solutions provider.</strong> DEE doesn't just make pipes — it engineers, fabricates, and delivers complete piping systems for some of the most complex industrial environments in the world: nuclear power plants, offshore oil rigs, supercritical thermal plants, chemical facilities. This distinction is critical to understanding why margins are 3–4x higher than raw pipe manufacturers.</div>
+
+  <div class="two-col" style="margin:12px 0">
+    <div class="pane">
+      <div class="pane-h">Core business — Process Piping & Fabrication</div>
+      <div class="point"><div class="dot dg">+</div><div><strong>What they make:</strong> High-pressure piping systems, pipe spools, induction bends, LSAW pipes, pressure vessels, industrial stacks, modular skids — all custom-engineered to project specifications.</div></div>
+      <div class="point"><div class="dot dg">+</div><div><strong>Materials handled:</strong> Carbon steel, stainless steel, super duplex SS, alloy steel, Inconel, and Hastelloy. These exotic materials require specialist certifications, equipment, and workforce that 99% of manufacturers cannot handle.</div></div>
+      <div class="point"><div class="dot dg">+</div><div><strong>Verticals served:</strong> Oil & gas (IOCL, BPCL, ONGC refineries, GAIL pipelines), Power (NTPC supercritical plants, HRSG systems), Nuclear (NPCIL in discussions), Chemicals & Process.</div></div>
+      <div class="point"><div class="dot da">!</div><div><strong>Non-core power segment:</strong> Two biomass power plants (~12 MW total). Currently in tariff dispute with PSERC — this has been dragging PAT. Power segment EBITDA loss of ~₹36 Cr in FY26. Being restructured/resolved.</div></div>
+    </div>
+    <div class="pane">
+      <div class="pane-h">New growth vectors (FY26–FY28)</div>
+      <div class="point"><div class="dot db">→</div><div><strong>Seamless Pipe Plant (₹90 Cr investment, 7,000 MTPA):</strong> Import substitution for high-wall seamless pipes. Zero domestic manufacturer currently. Maiden order ₹58 Cr. Target ₹450 Cr annual revenue at full utilization. IRR 30–35%.</div></div>
+      <div class="point"><div class="dot dg">+</div><div><strong>Nuclear sector entry:</strong> NPCIL discussions underway + private nuclear companies. Nuclear piping is the highest-specification, highest-margin piping segment. Contracts are 5–15 year duration. India's plan for 10 new nuclear plants = massive untapped opportunity.</div></div>
+      <div class="point"><div class="dot dg">+</div><div><strong>Green hydrogen:</strong> Entered hydrogen sector in Q1 FY26. Piping for electrolyzers and H2 storage requires exotic materials (Inconel, Hastelloy) — exactly DEE's specialization. First mover in domestic hydrogen piping.</div></div>
+      <div class="point"><div class="dot dg">+</div><div><strong>Export ramp-up:</strong> $40 million LoI from US OEM (HRSG piping, 16 units). Thailand subsidiary active. Semiconductor/pharma sector piping exploration in progress.</div></div>
+    </div>
+  </div>
+
+  <div class="sh">Manufacturing footprint — strategically positioned</div>
+  <table>
+    <tr><th>Facility</th><th>Location</th><th>Capacity</th><th>Advantage</th></tr>
+    <tr><td><strong>Palwal (legacy)</strong></td><td>Haryana</td><td>~7,000 MTPA</td><td>Near Delhi clients. Heavy fabrication. Being phased to Anjar as main base.</td></tr>
+    <tr><td><strong>Anjar (new — Process Piping)</strong></td><td>Kutch, Gujarat</td><td>30,000 MTPA</td><td>Kandla port proximity = 15-20% logistics cost saving on exports. Recently doubled from 15,000 MT.</td></tr>
+    <tr><td><strong>Anjar (Seamless Pipe Plant)</strong></td><td>Kutch, Gujarat</td><td>7,000 MTPA</td><td>India's first high-wall-thickness seamless pipe manufacturer. First maiden order ₹58 Cr secured.</td></tr>
+    <tr><td><strong>DEE Piping Systems (Thailand)</strong></td><td>Thailand</td><td>~5,000 MTPA</td><td>Southeast Asia access. HRSG piping for Taiwan project (€1.9M) secured. US OEM access via Thailand.</td></tr>
+  </table>
+</div>
+
+<!-- CLIENTS -->
+<div id="clients" class="panel">
+  <div class="sh">Clients — India's largest PSUs + global power majors</div>
+  <div class="warn success"><strong>DEE supplies to some of the most demanding buyers in the world.</strong> NPCIL quality standards for nuclear piping, IOCL/BPCL/HPCL for critical refinery processes, and a US power OEM (one of the world's largest) for HRSG systems. Getting on these vendors' approved lists requires 2–5 years of supplier qualification. Once qualified, DEE becomes part of capital project plans that span 3–7 years.</div>
+
+  <div class="sh">Domestic clients — oil & gas and power backbone</div>
+  <div>
+    <span class="client-pill"><div style="width:7px;height:7px;border-radius:50%;background:#185FA5;flex-shrink:0"></div>IOCL (Indian Oil)</span>
+    <span class="client-pill"><div style="width:7px;height:7px;border-radius:50%;background:#185FA5;flex-shrink:0"></div>BPCL</span>
+    <span class="client-pill"><div style="width:7px;height:7px;border-radius:50%;background:#185FA5;flex-shrink:0"></div>HPCL</span>
+    <span class="client-pill"><div style="width:7px;height:7px;border-radius:50%;background:#185FA5;flex-shrink:0"></div>ONGC</span>
+    <span class="client-pill"><div style="width:7px;height:7px;border-radius:50%;background:#185FA5;flex-shrink:0"></div>GAIL</span>
+    <span class="client-pill"><div style="width:7px;height:7px;border-radius:50%;background:#185FA5;flex-shrink:0"></div>NTPC</span>
+    <span class="client-pill"><div style="width:7px;height:7px;border-radius:50%;background:#185FA5;flex-shrink:0"></div>NPCIL (nuclear — discussions)</span>
+    <span class="client-pill"><div style="width:7px;height:7px;border-radius:50%;background:#185FA5;flex-shrink:0"></div>L&T (EPC contractor)</span>
+    <span class="client-pill"><div style="width:7px;height:7px;border-radius:50%;background:#185FA5;flex-shrink:0"></div>Thermal power players (₹170 Cr Q2 FY26 orders)</span>
+  </div>
+  <div class="sh" style="margin-top:10px">Export clients — the new growth frontier</div>
+  <div>
+    <span class="client-pill"><div style="width:7px;height:7px;border-radius:50%;background:#1D9E75;flex-shrink:0"></div>US OEM (largest power sector conglomerate HQ US) — $40M LoI</span>
+    <span class="client-pill"><div style="width:7px;height:7px;border-radius:50%;background:#1D9E75;flex-shrink:0"></div>International HRSG clients (Taiwan, 16 units)</span>
+    <span class="client-pill"><div style="width:7px;height:7px;border-radius:50%;background:#1D9E75;flex-shrink:0"></div>Southeast Asian refineries (via Thailand subsidiary)</span>
+    <span class="client-pill"><div style="width:7px;height:7px;border-radius:50%;background:#1D9E75;flex-shrink:0"></div>UK power sector (Doosan Babcock relationships)</span>
+  </div>
+
+  <div class="sh">The 5 structural moats</div>
+  <div class="point"><div class="dot dg">1</div><div><strong>Quality approvals take 3–5 years per client:</strong> ASME (American Society of Mechanical Engineers), PED (EU Pressure Equipment Directive), IBR (Indian Boiler Regulations), and nuclear-grade certifications are accumulated over decades. DEE is currently one of the very few Indian companies with ALL of these simultaneously — making it irreplaceable for complex international projects.</div></div>
+  <div class="point"><div class="dot dg">2</div><div><strong>Exotic materials capability is the real moat:</strong> Working with Inconel and Hastelloy requires specialized welding certifications (ASME Section IX), NDT capabilities, and heat treatment infrastructure. DEE processes materials that most Indian fabricators cannot touch. This eliminates 90% of domestic competition from its most profitable work.</div></div>
+  <div class="point"><div class="dot dg">3</div><div><strong>Anjar location = export cost advantage:</strong> Proximity to Kandla port saves ₹15–20% on logistics cost for exports versus competitors based in Delhi NCR or Chennai. This advantage grows as export share increases. Every tonne shipped internationally costs DEE less than its competitors — a structural pricing advantage.</div></div>
+  <div class="point"><div class="dot dg">4</div><div><strong>India's only integrated process piping + seamless pipe manufacturer:</strong> Once the Anjar seamless plant is fully operational, DEE will be the only company in India that can buy steel billet, manufacture seamless pipe, fabricate into piping assemblies, and deliver complete piping systems. This vertical integration compresses margins at every step of the chain in DEE's favour.</div></div>
+  <div class="point"><div class="dot db">5</div><div><strong>Nuclear and hydrogen first-mover positioning:</strong> Advanced discussions with NPCIL position DEE to capture a segment where competition is limited by certification requirements. Hydrogen piping requires the same exotic material capabilities DEE already has. Both segments command premium pricing (2–3x oil & gas rates) and long-duration contracts.</div></div>
+</div>
+
+<!-- RISKS -->
+<div id="risks" class="panel">
+  <div class="sh">Risks — what can go wrong</div>
+  <div class="point"><div class="dot dr">1</div><div><strong>Power segment biomass tariff dispute is an active financial drag (₹36 Cr EBITDA loss in FY26).</strong><br>PSERC set tariff at ₹5.224/kWh vs DEE's interim billing at ₹7.47/unit. The Punjab & Haryana High Court has granted a stay. But if the court ultimately sides with PSERC, this segment becomes a permanent ₹30–40 Cr annual EBITDA drag and requires either resolution or write-down. This is why management is restructuring the power business — until resolved, it creates earnings noise.</div></div>
+  <div class="point"><div class="dot dr">2</div><div><strong>FY26 revenue guidance of ₹1,300 Cr will likely be missed — comes in at ~₹1,100–1,158 Cr.</strong><br>9M FY26 = ₹780 Cr; even with a strong Q4, full year lands at ₹1,050–1,150 Cr vs ₹1,300 Cr guided. This is the kind of execution shortfall that creates stock volatility. The gap is primarily due to the power segment drag and slightly slower-than-expected Anjar ramp-up, not core business failure. But markets punish guidance misses regardless.</div></div>
+  <div class="point"><div class="dot da">3</div><div><strong>West Asia geopolitical risk directly impacted export orders.</strong><br>Groww's notes mention: "DEE shares dropped 10% as West Asia war disrupted export orders via the Strait of Hormuz." Export revenue concentration in Middle East means geopolitical events can create sudden order delays. The $40M US power OEM LoI diversifies this — but US orders are execution-sensitive (delay in project schedules on the buyer side delays DEE's billing).</div></div>
+  <div class="point"><div class="dot da">4</div><div><strong>Seamless pipe plant execution risk — first-ever product in India means no blueprint.</strong><br>The Anjar seamless plant is India's first high-wall-thickness seamless pipe manufacturer. There is no existing template for commissioning this equipment in India. Technology tie-ups are needed for operational know-how. If commissioning delays extend 6–9 months, the ₹450 Cr revenue potential shifts to FY28 instead of FY27.</div></div>
+  <div class="point"><div class="dot da">5</div><div><strong>Client concentration in Indian PSUs creates policy/budget dependency.</strong><br>IOCL, BPCL, HPCL, ONGC, NTPC, GAIL account for a large portion of order book. Indian PSU capex cycles are directly linked to government budgets, crude oil prices, and energy policy. Any slowdown in PSU capital spending (as happened in FY22-23 post-COVID) directly hits DEE's order inflows.</div></div>
+  <div class="point"><div class="dot dg">+</div><div><strong>Key mitigants:</strong><br>Promoter holding 70.2% (no pledge data cited — clean governance signals). FY26 order book ₹1,940 Cr = 1.8x TTM revenue → 18 months revenue visibility. Order pipeline L1 of ₹209 Cr = likely conversions. Export diversification reducing India-specific risk. Nuclear and hydrogen sectors provide high-margin pipeline independent of PSU capex cycles.</div></div>
+</div>
+
+<!-- SCENARIOS -->
+<div id="scenarios" class="panel">
+  <div class="sh">Three scenarios — from current ~₹343 (₹2,827 Cr mcap)</div>
+
+  <div class="scenario" style="border-left:3px solid #1D9E75">
+    <div style="font-size:13px;font-weight:500;color:#1D9E75;margin-bottom:8px">Bull case — 3–4x in 3 years (FY28–FY29)</div>
+    <div class="sc-grid">
+      <div class="sc-cell"><div class="sc-l">FY27 revenue</div><div class="sc-v">₹1,500 Cr (guided)</div></div>
+      <div class="sc-cell"><div class="sc-l">FY28 revenue</div><div class="sc-v">₹2,000–2,200 Cr</div></div>
+      <div class="sc-cell"><div class="sc-l">FY27 EBITDA margin</div><div class="sc-v">18–20%</div></div>
+      <div class="sc-cell"><div class="sc-l">FY27 PAT</div><div class="sc-v">₹145–180 Cr</div></div>
+      <div class="sc-cell"><div class="sc-l">FY27 PE (re-rating)</div><div class="sc-v">25–30x (nuclear catalyst)</div></div>
+      <div class="sc-cell"><div class="sc-l">Implied mcap</div><div class="sc-v">₹3,625–5,400 Cr</div></div>
+    </div>
+    <div style="font-size:11.5px;color:#333;margin-top:8px"><strong>What needs to happen:</strong> Seamless plant ramps to ₹200–300 Cr by FY27. NPCIL nuclear contract awarded. Power segment EBITDA loss eliminated. Export share crosses 15% of revenue. US power OEM $40M order executes in FY27. PE re-rates from 19x to 25–30x as nuclear premium gets priced in. <strong>3–4x from current ₹2,827 Cr mcap in 3 years = ₹8,500–11,000 Cr mcap.</strong></div>
+  </div>
+
+  <div class="scenario" style="border-left:3px solid #378ADD">
+    <div style="font-size:13px;font-weight:500;color:#185FA5;margin-bottom:8px">Base case — 2–2.5x in 3 years (FY27–FY28)</div>
+    <div class="sc-grid">
+      <div class="sc-cell"><div class="sc-l">FY27 revenue</div><div class="sc-v">₹1,300–1,400 Cr</div></div>
+      <div class="sc-cell"><div class="sc-l">FY27 EBITDA margin</div><div class="sc-v">17–18%</div></div>
+      <div class="sc-cell"><div class="sc-l">FY27 PAT</div><div class="sc-v">₹110–130 Cr</div></div>
+      <div class="sc-cell"><div class="sc-l">FY27 PE</div><div class="sc-v">20–22x (steady growth)</div></div>
+      <div class="sc-cell"><div class="sc-l">Implied mcap FY27</div><div class="sc-v">₹2,200–2,860 Cr</div></div>
+      <div class="sc-cell"><div class="sc-l">FY28 mcap</div><div class="sc-v">₹4,500–6,000 Cr</div></div>
+    </div>
+    <div style="font-size:11.5px;color:#333;margin-top:8px">Seamless plant ramps slower (₹100–150 Cr by FY27). Nuclear contract signed but revenue starts FY28. Power segment losses persist but smaller. Core oil & gas + power piping continues 25–30% growth. <strong>Base case: stock touches ₹550–700 by FY27 = 2–2.5x from ₹343. Achievable without major catalysts.</strong></div>
+  </div>
+
+  <div class="scenario" style="border-left:3px solid #A32D2D">
+    <div style="font-size:13px;font-weight:500;color:#A32D2D;margin-bottom:8px">Bear case — flat or -20% (multiple failures converge)</div>
+    <div class="sc-grid">
+      <div class="sc-cell"><div class="sc-l">Trigger</div><div class="sc-v">PSU capex slowdown (crude price crash)</div></div>
+      <div class="sc-cell"><div class="sc-l">Trigger</div><div class="sc-v">Seamless plant delayed to FY28</div></div>
+      <div class="sc-cell"><div class="sc-l">Trigger</div><div class="sc-v">Power PSERC case goes against DEE</div></div>
+      <div class="sc-cell"><div class="sc-l">Trigger</div><div class="sc-v">West Asia tensions hurt export orders</div></div>
+      <div class="sc-cell"><div class="sc-l">FY27 revenue</div><div class="sc-v">₹1,000–1,100 Cr (flat vs FY26)</div></div>
+      <div class="sc-cell"><div class="sc-l">Mcap implied</div><div class="sc-v">₹1,800–2,200 Cr (flat/down)</div></div>
+    </div>
+    <div style="font-size:11.5px;color:#333;margin-top:8px">Requires 3+ risk factors to hit simultaneously. DEE's 18-month revenue visibility (₹1,940 Cr order book) provides a floor. <strong>Even in the bear case, significant downside is limited by locked-in order book.</strong> Bear case probability: ~15%.</div>
+  </div>
+
+  <table style="margin-top:10px">
+    <tr><th>Target</th><th>Mcap needed</th><th>PAT/revenue required</th><th>Timeline</th><th>Probability</th></tr>
+    <tr><td>3x (₹8,500 Cr)</td><td>₹8,500 Cr</td><td>₹200 Cr PAT, ₹2,000 Cr rev</td><td>FY28–FY29</td><td class="a">40%</td></tr>
+    <tr><td>2.5x (₹7,067 Cr)</td><td>₹7,067 Cr</td><td>₹160 Cr PAT, ₹1,600 Cr rev</td><td>FY27–FY28</td><td class="g">55%</td></tr>
+    <tr><td>2x (₹5,654 Cr)</td><td>₹5,654 Cr</td><td>₹120 Cr PAT, ₹1,300 Cr rev</td><td>FY27</td><td class="g">65%</td></tr>
+    <tr><td>Bear flat/down</td><td>₹2,000–2,800 Cr</td><td>Execution failures</td><td>—</td><td class="r">15%</td></tr>
+  </table>
+</div>
+
+<!-- SECTOR MAP -->
+<div id="sectormap" class="panel">
+  <div class="sh">India's process piping / pipe manufacturing sector landscape</div>
+  <div class="warn info"><strong>The pipe sector has three distinct sub-businesses with completely different economics.</strong> Understanding this prevents mistaken comparisons. DEE is in the highest-value segment.</div>
+  <table>
+    <tr><th>Sub-sector</th><th>What they make</th><th>Revenue/tonne</th><th>Key players</th><th>Growth driver</th></tr>
+    <tr><td><strong>Process piping fabrication</strong></td><td>Custom piping systems for oil, power, nuclear, chemicals</td><td class="g">₹3–10 Lakh/MT</td><td>DEE Development (leader)</td><td>Refinery expansions, nuclear, hydrogen</td></tr>
+    <tr><td><strong>Specialty pipes (SS/alloy)</strong></td><td>SS, Inconel pipes for industrial use</td><td class="a">₹80K–2 Lakh/MT</td><td>Ratnamani Metals & Tubes</td><td>Nuclear, defence, pharma, oil & gas</td></tr>
+    <tr><td><strong>Seamless pipes (carbon steel)</strong></td><td>Oil country tubular goods (OCTG), process pipes</td><td class="a">₹15,000–25,000/MT</td><td>Maharashtra Seamless (55% share)</td><td>Oil & gas, power, import substitution</td></tr>
+    <tr><td><strong>ERW / large-diameter pipes</strong></td><td>Water, gas transmission pipelines</td><td class="r">₹8,000–18,000/MT</td><td>Jindal SAW, Welspun</td><td>Jal Jeevan, city gas distribution</td></tr>
+  </table>
+
+  <div class="sh">Key listed piping / process engineering stocks</div>
+
+  <div class="sector-card">
+    <div class="sc-hdr"><div><div class="sc-nm">DEE Development Engineers — Fabrication Leader</div><div class="sc-tg">₹2,827 Cr mcap · ₹1,067 Cr TTM revenue</div></div><span class="badge bb">Your stock — core position</span></div>
+    <div class="sc-bd">Q3 FY26: Revenue +77% YoY, PAT turnaround from loss to ₹18 Cr. 9M FY26 EBITDA margin 16.3%. Order book ₹1,940 Cr = 1.8x revenue. New seamless plant, nuclear, hydrogen vectors. Export ramp ($40M US LoI). FY27E revenue ₹1,500 Cr at 18–20% EBITDA margin = PAT ~₹145 Cr. <strong>At current ₹2,827 Cr mcap, FY27 forward PE ≈ 19x. Genuinely attractive for this growth profile.</strong></div>
+  </div>
+
+  <div class="sector-card">
+    <div class="sc-hdr"><div><div class="sc-nm">Ratnamani Metals & Tubes — SS/Carbon Pipe Leader</div><div class="sc-tg">₹17,313 Cr mcap · Revenue ₹4,800+ Cr</div></div><span class="badge ba">Quality — wrong size for 3x</span></div>
+    <div class="sc-bd">Q2 FY26: Revenue ₹1,192 Cr (+22.7% YoY), PAT ₹136 Cr (+35.7% YoY). SS pipes 61,500 TPA, carbon steel 510,000 TPA. Exports to 35+ countries. Almost debt-free. PE ~28x. Nuclear, defence, pharma, oil & gas exposure — all DEE's sectors but at the raw pipe level. <strong>Excellent business but at ₹17,313 Cr, 3x means ₹52,000 Cr — very ambitious in 3 years. Better for 2–3 year wealth preservation.</strong></div>
+  </div>
+
+  <div class="sector-card">
+    <div class="sc-hdr"><div><div class="sc-nm">Maharashtra Seamless — Market Leader Facing Headwinds</div><div class="sc-tg">₹7,412 Cr mcap · Revenue ~₹5,000 Cr · 55% market share in seamless</div></div><span class="badge ba">Cheap but challenged — value trap risk</span></div>
+    <div class="sc-bd">Q3 FY26: Revenue ₹1,290 Cr (-8.5% YoY). PAT ₹243 Cr (+30% YoY — driven by treasury income). EBITDA margin ~9%. ₹3,115 Cr net cash on balance sheet. PE 9.5x — cheapest in sector. But: Chinese dumping killing margins, oil & gas sector slowdown, revenue declining. <strong>Very cheap on PE (9.5x) but the business is facing structural competition. Treasury income (₹235 Cr in H1) is masking operational weakness. Not a growth story.</strong></div>
+  </div>
+
+  <div class="sector-card">
+    <div class="sc-hdr"><div><div class="sc-nm">Sterlite Power / KEC International / Thermax — Adjacent plays</div><div class="sc-tg">Broader capital goods / energy infrastructure</div></div><span class="badge bgray">Different sector — context only</span></div>
+    <div class="sc-bd">For broader energy capex exposure: KEC International (power transmission), Thermax (heat exchangers, boilers), BHEL (large power equipment) all benefit from the same demand drivers as DEE — India's refinery and power capex cycle. But these are much larger and serve different segments of the project. DEE is specifically the piping layer of these massive projects.</div>
+  </div>
+</div>
+
+<!-- COMPARISON -->
+<div id="compare" class="panel">
+  <div class="sh">DEE vs sector peers — head-to-head</div>
+  <div style="border:1px solid #ddd;border-radius:10px;overflow:hidden;font-size:11.5px">
+    <div class="comp-h">
+      <div class="cc-h" style="background:#f5f5f3">Metric</div>
+      <div class="cc-h" style="background:#E1F5EE;color:#0F6E56">DEE Development</div>
+      <div class="cc-h" style="background:#E6F1FB;color:#185FA5">Ratnamani Metals</div>
+      <div class="cc-h" style="background:#f5f5f3">Maharashtra Seamless</div>
+      <div class="cc-h" style="background:#f5f5f3">Sector average</div>
+    </div>
+
+    <div class="comp-row"><div class="cc cc-label">Market cap</div><div class="cc mid-cell">₹2,827 Cr</div><div class="cc loser-cell">₹17,313 Cr</div><div class="cc mid-cell">₹7,412 Cr</div><div class="cc">—</div></div>
+    <div class="comp-row"><div class="cc cc-label">TTM revenue</div><div class="cc mid-cell">₹1,067 Cr</div><div class="cc winner-cell">₹4,800+ Cr</div><div class="cc winner-cell">~₹5,000 Cr</div><div class="cc">—</div></div>
+    <div class="comp-row"><div class="cc cc-label">Revenue growth (latest)</div><div class="cc winner-cell">+77% Q3 FY26</div><div class="cc winner-cell">+22.7% Q2 FY26</div><div class="cc loser-cell">-8.5% Q3 FY26</div><div class="cc">~12%</div></div>
+    <div class="comp-row"><div class="cc cc-label">EBITDA margin</div><div class="cc winner-cell">16.3% (rising →18%)</div><div class="cc winner-cell">~17–18%</div><div class="cc loser-cell">~9–11% (declining)</div><div class="cc">~15%</div></div>
+    <div class="comp-row"><div class="cc cc-label">PAT margin</div><div class="cc mid-cell">6–8% (excl. power)</div><div class="cc winner-cell">~11–12%</div><div class="cc mid-cell">~6–8% (ex treasury)</div><div class="cc">~9%</div></div>
+    <div class="comp-row"><div class="cc cc-label">Revenue per tonne</div><div class="cc winner-cell">₹3–10 Lakh/MT</div><div class="cc mid-cell">₹80K–2L/MT</div><div class="cc loser-cell">₹15–25K/MT</div><div class="cc">—</div></div>
+    <div class="comp-row"><div class="cc cc-label">Trailing PE</div><div class="cc mid-cell">~35x (FY26 earnings inflecting)</div><div class="cc mid-cell">~28x</div><div class="cc winner-cell">~9.5x (cheap)</div><div class="cc">~22x</div></div>
+    <div class="comp-row"><div class="cc cc-label">FY27 forward PE</div><div class="cc winner-cell">~13–19x</div><div class="cc mid-cell">~20–22x</div><div class="cc mid-cell">~10–12x</div><div class="cc">—</div></div>
+    <div class="comp-row"><div class="cc cc-label">Order book / Revenue</div><div class="cc winner-cell">1.8x (₹1,940 Cr)</div><div class="cc mid-cell">~0.6x</div><div class="cc mid-cell">~0.8x</div><div class="cc">~0.7x</div></div>
+    <div class="comp-row"><div class="cc cc-label">Net debt position</div><div class="cc mid-cell">~Net debt (moderate)</div><div class="cc winner-cell">Almost debt-free</div><div class="cc winner-cell">Net cash ₹3,115 Cr</div><div class="cc">—</div></div>
+    <div class="comp-row"><div class="cc cc-label">Nuclear exposure</div><div class="cc winner-cell">Active discussions (NPCIL)</div><div class="cc winner-cell">Yes — existing</div><div class="cc loser-cell">Limited</div><div class="cc">—</div></div>
+    <div class="comp-row"><div class="cc cc-label">Export %</div><div class="cc mid-cell">~8–10% (scaling)</div><div class="cc winner-cell">35+ countries, large</div><div class="cc mid-cell">~10% (disrupted)</div><div class="cc">—</div></div>
+    <div class="comp-row"><div class="cc cc-label">Backward integration</div><div class="cc winner-cell">Seamless pipe plant (new)</div><div class="cc winner-cell">Fully integrated</div><div class="cc mid-cell">Yes — seamless pipes</div><div class="cc">—</div></div>
+    <div class="comp-row"><div class="cc cc-label">Chinese dumping risk</div><div class="cc winner-cell">Low — fabrication moat</div><div class="cc mid-cell">Moderate — SS pipes</div><div class="cc loser-cell">High — commodity pipes</div><div class="cc">—</div></div>
+    <div class="comp-row"><div class="cc cc-label">Promoter holding</div><div class="cc winner-cell">70.2%</div><div class="cc mid-cell">~57%</div><div class="cc winner-cell">69.05–69.81%</div><div class="cc">—</div></div>
+    <div class="comp-row"><div class="cc cc-label">3x probability (3yr)</div><div class="cc winner-cell">50–55%</div><div class="cc loser-cell">15–20% (too large)</div><div class="cc loser-cell">10% (revenue declining)</div><div class="cc">—</div></div>
+    <div class="comp-row"><div class="cc cc-label">Stock liquidity</div><div class="cc mid-cell">Moderate — main board NSE</div><div class="cc winner-cell">High</div><div class="cc winner-cell">High</div><div class="cc">—</div></div>
+  </div>
+</div>
+
+<!-- VERDICT -->
+<div id="verdict" class="panel">
+  <div class="sh">The definitive verdict for Garvit's 3x goal</div>
+
+  <div class="verdict-card" style="background:#E1F5EE;border:1px solid #5DCAA5">
+    <div class="vc-h" style="color:#0F6E56">DEE Development Engineers — Verdict: Strong conviction buy. ₹50,000–75,000 allocation. Core position.</div>
+    <div class="vc-b">DEE is the most asymmetric opportunity in the piping sector for your 3x goal. Revenue +77% in Q3 FY26. PAT turnaround from loss to profit. Order book 1.8x revenue (18 months visibility). Anjar seamless plant adding ₹450 Cr revenue potential. Nuclear and hydrogen entries providing margin-accretive future revenue. FY27 forward PE of 13–19x at ₹1,500 Cr revenue and 18–20% EBITDA margin is genuinely cheap. The power segment drag is being resolved. The export ramp ($40M US OEM, Thailand) is diversifying from PSU dependence. <strong>This ticks every box for your goal: small-to-mid cap, high growth, expanding order book, PE re-rating potential, specialist moat. 2–3x in 3 years is the base case. 3–4x is achievable if nuclear contracts and seamless plant both deliver.</strong></div>
+  </div>
+
+  <div class="verdict-card" style="background:#E6F1FB;border:1px solid #85B7EB">
+    <div class="vc-h" style="color:#185FA5">Ratnamani Metals — Verdict: Excellent quality but wrong size for 3x (₹0 for 3x goal)</div>
+    <div class="vc-b">Ratnamani is the better-quality business (almost debt-free, global exporter, SS pipe leadership, nuclear-qualified). But at ₹17,313 Cr mcap, 3x requires ₹52,000 Cr. That's not happening in 3 years without extraordinary events. For long-term wealth preservation or a 5–7 year horizon, Ratnamani is excellent. For Garvit's 3x in 3 years — DEE is the better vehicle.</div>
+  </div>
+
+  <div class="verdict-card" style="background:#FAEEDA;border:1px solid #EF9F27">
+    <div class="vc-h" style="color:#633806">Maharashtra Seamless — Verdict: Value trap warning (avoid despite cheap PE of 9.5x)</div>
+    <div class="vc-b">9.5x PE looks cheap but revenue is declining (-8.5% Q3 FY26). EBITDA margin down to 9%. Chinese dumping is structural. The only thing making PAT look ok is ₹3,115 Cr treasury income (other income of ₹235 Cr in H1). The operating business is struggling. <strong>Cheap for a reason — cheap PE on declining earnings is not a bargain.</strong> Avoid.</div>
+  </div>
+
+  <div class="sh">For Garvit's portfolio — final allocation in process piping</div>
+  <table>
+    <tr><th>Stock</th><th>Action</th><th>Amount</th><th>Rationale</th></tr>
+    <tr><td><strong>DEE Development Engineers</strong></td><td><span class="badge bg">Core conviction buy</span></td><td>₹50,000–75,000</td><td>FY27 forward PE 13–19x, order book 1.8x revenue, nuclear+hydrogen+export catalysts. 2–3x base case. This fits perfectly in your high-conviction small-cap strategy.</td></tr>
+    <tr><td><strong>Ratnamani Metals</strong></td><td><span class="badge bgray">Pass for 3x goal</span></td><td>₹0</td><td>Excellent quality, too large for 3x. Consider only for wealth preservation post-goal.</td></tr>
+    <tr><td><strong>Maharashtra Seamless</strong></td><td><span class="badge br">Avoid</span></td><td>₹0</td><td>Revenue declining, margins under pressure, Chinese competition structural. Cheap PE is a trap.</td></tr>
+  </table>
+
+  <div class="sh">Three metrics to watch every quarter for DEE</div>
+  <table>
+    <tr><th>#</th><th>Metric</th><th>Current</th><th>Key trigger</th></tr>
+    <tr><td>1</td><td>Order book absolute value</td><td class="g">₹1,940 Cr (Mar 2026)</td><td>Add to position if consistently crosses ₹2,500 Cr+ (means ₹1,500 Cr+ revenue is secured)</td></tr>
+    <tr><td>2</td><td>Power segment EBITDA loss</td><td class="r">-₹36 Cr drag in FY26</td><td>If PSERC case resolved in favour → immediate ₹36 Cr addition to FY27 PAT = ~25% PAT boost</td></tr>
+    <tr><td>3</td><td>Seamless plant revenue contribution</td><td class="a">₹58 Cr first order (commercial start)</td><td>Re-rate if seamless plant contributes ₹100+ Cr in FY27 — validates the ₹450 Cr potential</td></tr>
+  </table>
+
+  <div class="warn success" style="margin-top:12px"><strong>One-line verdict:</strong> DEE Development Engineers is the single most attractive process piping/engineering stock for Garvit's 3x goal. It combines strong order visibility (1.8x book-to-bill), a structural moat (exotic materials + certifications + Anjar export advantage), multiple growth catalysts (nuclear, hydrogen, seamless pipes, US exports), and genuinely cheap forward valuation (13–19x FY27). Allocate ₹50,000–75,000 and hold for 3 years.</div>
+</div>
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/4.4.1/chart.umd.js"></script>
+<script>
+function show(id,btn){
+  document.querySelectorAll('.tab').forEach(t=>t.classList.remove('active'));
+  document.querySelectorAll('.panel').forEach(p=>p.classList.remove('active'));
+  btn.classList.add('active');document.getElementById(id).classList.add('active');
+}
+new Chart(document.getElementById('rc'),{
+  type:'bar',
+  data:{
+    labels:['FY22','FY23','FY24','FY25','9M FY26','FY26E','FY27E'],
+    datasets:[
+      {label:'Revenue ₹ Cr',data:[450,595,788,827,780,1130,1500],backgroundColor:['#378ADD','#378ADD','#378ADD','#378ADD','#1D9E75','#9FE1CB','#9FE1CB'],borderRadius:4,yAxisID:'y'},
+      {label:'PAT ₹ Cr',data:[13,25,44,43,49.5,85,150],type:'line',borderColor:'#1D9E75',backgroundColor:'transparent',pointBackgroundColor:'#1D9E75',tension:0.3,yAxisID:'y2'}
+    ]
+  },
+  options:{responsive:true,maintainAspectRatio:false,plugins:{legend:{display:false}},scales:{y:{ticks:{font:{size:10}}},y2:{position:'right',ticks:{font:{size:10}},grid:{drawOnChartArea:false}},x:{ticks:{font:{size:10}}}}}
+});
+</script>
+</body></html>

@@ -1,0 +1,41 @@
+@import "tailwindcss";
+
+@theme inline {
+  --color-background: #ffffff;
+  --color-foreground: #111827;
+  --color-surface: #f9fafb;
+  --color-border: #e5e7eb;
+  --color-muted: #6b7280;
+
+  /* Recommendation badge colors */
+  --color-buy-bg: #dcfce7;
+  --color-buy-text: #15803d;
+  --color-hold-bg: #fef9c3;
+  --color-hold-text: #a16207;
+  --color-sell-bg: #fee2e2;
+  --color-sell-text: #b91c1c;
+  --color-watch-bg: #dbeafe;
+  --color-watch-text: #1d4ed8;
+
+  --font-sans: var(--font-geist-sans), system-ui, sans-serif;
+  --font-mono: var(--font-geist-mono), monospace;
+}
+
+*,
+*::before,
+*::after {
+  box-sizing: border-box;
+}
+
+html,
+body {
+  height: 100%;
+}
+
+body {
+  background: var(--color-background);
+  color: var(--color-foreground);
+  font-family: var(--font-sans);
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
