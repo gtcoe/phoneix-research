@@ -1,0 +1,494 @@
+<!DOCTYPE html>
+<html><head><meta charset="utf-8"><style>
+*{box-sizing:border-box;margin:0;padding:0}
+body{font-family:system-ui,sans-serif;padding:16px;background:#fff;color:#1a1a1a;font-size:14px}
+h1{font-size:20px;font-weight:500;margin-bottom:3px}
+.sub{font-size:12px;color:#666;margin-bottom:14px}
+.sg{display:grid;grid-template-columns:repeat(auto-fill,minmax(110px,1fr));gap:8px;margin-bottom:16px}
+.sc{background:#f5f5f3;border-radius:8px;padding:10px 12px}
+.sl{font-size:10px;color:#666;margin-bottom:2px}
+.sv{font-size:17px;font-weight:500}
+.tab-row{display:flex;gap:5px;flex-wrap:wrap;margin-bottom:14px}
+.tab{font-size:11.5px;padding:5px 13px;border-radius:20px;border:1px solid #ddd;background:#fff;cursor:pointer;white-space:nowrap}
+.tab.active{background:#1a1a1a;color:#fff;border-color:#1a1a1a}
+.panel{display:none}.panel.active{display:block}
+.sh{font-size:10.5px;font-weight:500;color:#666;text-transform:uppercase;letter-spacing:.06em;margin:16px 0 7px;padding-bottom:5px;border-bottom:1px solid #eee}
+table{width:100%;border-collapse:collapse;font-size:12px;margin:8px 0}
+th{font-size:10.5px;font-weight:500;color:#666;padding:5px 7px;text-align:left;border-bottom:1px solid #eee;white-space:nowrap}
+td{padding:8px 7px;border-bottom:1px solid #eee;color:#1a1a1a;vertical-align:top}
+tr:last-child td{border-bottom:none}
+tr:hover td{background:#fafaf9}
+.g{color:#0F6E56;font-weight:500}.r{color:#A32D2D;font-weight:500}.a{color:#854F0B;font-weight:500}.b{color:#185FA5;font-weight:500}
+.badge{display:inline-block;font-size:10px;padding:2px 7px;border-radius:10px;white-space:nowrap}
+.bg{background:#E1F5EE;color:#0F6E56}.bb{background:#E6F1FB;color:#185FA5}.ba{background:#FAEEDA;color:#854F0B}.br{background:#FCEBEB;color:#A32D2D}.bgray{background:#f1f0e8;color:#5F5E5A}.bsun{background:#FEF3C7;color:#92400E}
+.warn{padding:10px 13px;margin:8px 0;border-left:3px solid;font-size:12px;line-height:1.65}
+.warn.success{background:#E1F5EE;border-color:#1D9E75;color:#04342C}
+.warn.caution{background:#FAEEDA;border-color:#BA7517;color:#412402}
+.warn.danger{background:#FCEBEB;border-color:#A32D2D;color:#712B13}
+.warn.info{background:#E6F1FB;border-color:#185FA5;color:#042C53}
+.warn.solar{background:#FEF3C7;border-color:#D97706;color:#92400E}
+.warn strong{font-weight:500}
+.chart-wrap{position:relative;width:100%;height:240px;margin:8px 0}
+.kpi-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:10px;margin:10px 0}
+.kpi{background:#f5f5f3;border-radius:8px;padding:10px 12px;border-left:3px solid transparent}
+.kpi.green{border-left-color:#1D9E75}.kpi.amber{border-left-color:#EF9F27}.kpi.blue{border-left-color:#378ADD}.kpi.red{border-left-color:#A32D2D}.kpi.sun{border-left-color:#D97706}
+.kpi-l{font-size:10px;color:#666;margin-bottom:3px}
+.kpi-v{font-size:17px;font-weight:500}
+.kpi-s{font-size:10px;color:#888;margin-top:2px}
+.point{display:flex;gap:9px;align-items:flex-start;padding:9px 0;border-bottom:1px solid #eee;font-size:12px;line-height:1.6;color:#555}
+.point:last-child{border-bottom:none}
+.point strong{color:#1a1a1a;font-weight:500}
+.dot{width:19px;height:19px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:10px;font-weight:500;flex-shrink:0;margin-top:1px}
+.dg{background:#E1F5EE;color:#0F6E56}.dr{background:#FCEBEB;color:#A32D2D}.da{background:#FAEEDA;color:#854F0B}.db{background:#E6F1FB;color:#185FA5}
+.two-col{display:grid;grid-template-columns:1fr 1fr;gap:12px}
+.pane{border:1px solid #ddd;border-radius:10px;padding:13px}
+.pane-h{font-size:13px;font-weight:500;margin-bottom:9px}
+.scenario{border:1px solid #ddd;border-radius:10px;padding:13px;margin-bottom:9px}
+.sc-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:7px;margin:9px 0}
+.sc-cell{background:#f5f5f3;border-radius:6px;padding:7px 9px}
+.sc-l{font-size:10px;color:#666}
+.sc-v{font-size:12px;font-weight:500;margin-top:2px}
+.comp-h{display:grid;grid-template-columns:160px repeat(4,1fr);background:#f5f5f3;border-radius:8px 8px 0 0;overflow:hidden}
+.comp-row{display:grid;grid-template-columns:160px repeat(4,1fr);border-bottom:1px solid #eee}
+.comp-row:last-child{border-bottom:none}
+.cc{padding:8px 10px;font-size:11px;border-right:1px solid #eee}
+.cc:last-child{border-right:none}
+.cc-h{font-size:10px;font-weight:500;color:#444;padding:8px 10px;border-right:1px solid #ddd}
+.cc-h:last-child{border-right:none}
+.cc-label{color:#666;font-size:11px}
+.winner-cell{background:#E1F5EE}.mid-cell{background:#FAEEDA}.loser-cell{background:#fff5f5}
+.verdict-card{border-radius:10px;padding:13px 15px;margin-bottom:10px}
+.vc-h{font-size:13px;font-weight:500;margin-bottom:6px}
+.vc-b{font-size:12px;line-height:1.65;color:#444}
+.tl{position:relative;padding-left:18px;margin:10px 0}
+.tl::before{content:'';position:absolute;left:6px;top:0;bottom:0;width:1px;background:#eee}
+.tl-item{position:relative;margin-bottom:14px}
+.tl-dot{position:absolute;left:-15px;top:3px;width:9px;height:9px;border-radius:50%;border:2px solid #fff}
+.tl-date{font-size:10px;color:#888;margin-bottom:2px}
+.tl-text{font-size:12px;color:#333;line-height:1.55}
+.sector-card{border:1px solid #ddd;border-radius:10px;overflow:hidden;margin-bottom:10px}
+.sc-hdr{padding:10px 13px;display:flex;justify-content:space-between;align-items:center;background:#fafaf9}
+.sc-nm{font-size:13px;font-weight:500}
+.sc-tg{font-size:11px;color:#666;margin-top:2px}
+.sc-bd{padding:10px 13px;font-size:12px;line-height:1.65;color:#555;border-top:1px solid #eee}
+.sc-bd strong{color:#1a1a1a}
+.guid-card{background:#FEF3C7;border-radius:10px;padding:12px 14px;margin-bottom:8px;border-left:3px solid #D97706}
+.guid-h{font-size:11.5px;font-weight:500;margin-bottom:4px;color:#92400E}
+.guid-b{font-size:11.5px;color:#333;line-height:1.6}
+.guid-s{font-size:10px;color:#888;margin-top:4px}
+.guid-card.beat{background:#E1F5EE;border-left-color:#1D9E75}
+.guid-card.beat .guid-h{color:#0F6E56}
+.guid-card.miss{background:#FCEBEB;border-left-color:#A32D2D}
+.guid-card.miss .guid-h{color:#A32D2D}
+.cap-bar{display:flex;align-items:center;gap:8px;margin-bottom:8px}
+.cap-label{font-size:11px;color:#666;width:110px;flex-shrink:0}
+.cap-track{flex:1;background:#f5f5f3;border-radius:4px;height:18px;overflow:hidden}
+.cap-fill{height:100%;display:flex;align-items:center;padding-left:8px;font-size:10px;color:#fff;font-weight:500;border-radius:4px}
+.cap-val{font-size:11px;font-weight:500;width:65px;text-align:right}
+</style></head><body>
+
+<h1>Websol Energy System Ltd — Deep Investment Analysis</h1>
+<div class="sub">NSE: WEBELSOLAR · Solar cell & module manufacturer · Founded 1990, listed 2007 · Falta SEZ, West Bengal · India's pioneering pure-play solar cell manufacturer with 3-decade track record</div>
+
+<div class="sg">
+  <div class="sc"><div class="sl">Market cap</div><div class="sv">~₹3,200 Cr</div></div>
+  <div class="sc"><div class="sl">FY26 revenue (9M)</div><div class="sv" style="color:#1D9E75">~₹700 Cr</div></div>
+  <div class="sc"><div class="sl">Q3 FY26 revenue</div><div class="sv" style="color:#1D9E75">₹261 Cr</div></div>
+  <div class="sc"><div class="sl">Q3 FY26 growth</div><div class="sv" style="color:#1D9E75">+77% YoY</div></div>
+  <div class="sc"><div class="sl">9M FY26 EBITDA%</div><div class="sv" style="color:#1D9E75">43.6%</div></div>
+  <div class="sc"><div class="sl">9M FY26 PAT%</div><div class="sv" style="color:#1D9E75">35.9%</div></div>
+  <div class="sc"><div class="sl">Current capacity</div><div class="sv" style="color:#185FA5">1.2 GW cells</div></div>
+  <div class="sc"><div class="sl">Target capacity</div><div class="sv" style="color:#185FA5">5.2 GW (2028)</div></div>
+  <div class="sc"><div class="sl">Cell utilisation</div><div class="sv" style="color:#1D9E75">Line1: 97%</div></div>
+  <div class="sc"><div class="sl">Trailing PE</div><div class="sv" style="color:#1D9E75">~16x</div></div>
+  <div class="sc"><div class="sl">D/E ratio</div><div class="sv" style="color:#1D9E75">0.29x</div></div>
+  <div class="sc"><div class="sl">ALMM List-II</div><div class="sv" style="color:#1D9E75">Approved ✓</div></div>
+</div>
+
+<div class="tab-row">
+  <button class="tab active" onclick="show('revenue',this)">Revenue history</button>
+  <button class="tab" onclick="show('sectorKPI',this)">Sector KPIs</button>
+  <button class="tab" onclick="show('business',this)">Business model</button>
+  <button class="tab" onclick="show('guidance',this)">Guidance analysis</button>
+  <button class="tab" onclick="show('risks',this)">Risks</button>
+  <button class="tab" onclick="show('scenarios',this)">3x scenarios</button>
+  <button class="tab" onclick="show('sectormap',this)">Sector landscape</button>
+  <button class="tab" onclick="show('compare',this)">Full comparison</button>
+  <button class="tab" onclick="show('verdict',this)">Final verdict</button>
+</div>
+
+<!-- REVENUE -->
+<div id="revenue" class="panel active">
+  <div class="sh">Revenue & profit journey — from loss-maker to high-margin solar champion</div>
+  <div class="chart-wrap"><canvas id="rc"></canvas></div>
+  <div style="display:flex;gap:14px;font-size:11.5px;color:#666;margin-bottom:10px">
+    <span><span style="display:inline-block;width:10px;height:10px;border-radius:2px;background:#D97706;margin-right:4px"></span>Revenue ₹ Cr (left)</span>
+    <span><span style="display:inline-block;width:10px;height:10px;border-radius:2px;background:#1D9E75;margin-right:4px"></span>PAT ₹ Cr (right)</span>
+    <span><span style="display:inline-block;width:10px;height:10px;border-radius:2px;background:#9FE1CB;margin-right:4px"></span>Projected</span>
+  </div>
+  <table>
+    <tr><th>Year</th><th>Revenue</th><th>Growth</th><th>EBITDA</th><th>EBITDA%</th><th>PAT</th><th>PAT%</th><th>Capacity (cells)</th><th>Key event</th></tr>
+    <tr><td>FY21</td><td>~₹213 Cr</td><td>—</td><td>—</td><td>—</td><td>~₹27 Cr</td><td class="a">12.7%</td><td>250 MW (old)</td><td>Old polycrystalline line. Declining technology.</td></tr>
+    <tr><td>FY22</td><td>~₹213 Cr</td><td>0%</td><td>—</td><td>—</td><td>~₹4.5 Cr</td><td class="r">2.1%</td><td>250 MW (old)</td><td>Technology becoming obsolete vs Chinese Mono PERC.</td></tr>
+    <tr><td>FY23</td><td>~₹17 Cr</td><td class="r">-92%</td><td>—</td><td>—</td><td class="r">Loss</td><td class="r">—</td><td>250 MW → 0</td><td><strong>Brave pivot:</strong> Entire old 250 MW line scrapped. Shopfloor redesigned for Mono PERC.</td></tr>
+    <tr><td>FY24</td><td>~₹26 Cr</td><td>—</td><td>—</td><td>—</td><td class="r">Loss</td><td class="r">—</td><td>0 → 600 MW</td><td>600 MW Phase I PERC commissioned. Revenue still ramp-up.</td></tr>
+    <tr><td>FY25</td><td>~₹575 Cr</td><td class="g">+2,111%</td><td>~₹193 Cr</td><td class="g">33.6%</td><td>~₹155 Cr</td><td class="g">27%</td><td>600 MW (90% util.)</td><td>Massive revenue comeback. First profitable year on new platform. EPS ₹36.66.</td></tr>
+    <tr><td>Q3 FY26</td><td>₹261 Cr</td><td class="g">+77% YoY</td><td>₹106 Cr</td><td class="g">40.6%</td><td>₹65 Cr</td><td class="g">24.9%</td><td>1.2 GW (Line1: 97%, Line2: 54%)</td><td>Phase II commissioned Sep 2025. 23.6% peak efficiency. Funded from accruals.</td></tr>
+    <tr><td>9M FY26</td><td>~₹685 Cr</td><td class="g">+65% YoY</td><td>~₹299 Cr</td><td class="g">43.6%</td><td>~₹246 Cr</td><td class="g">35.9%</td><td>1.2 GW (ramping)</td><td>D/E improved to 0.29x. AP 4GW approval. G12R foray announced for FY27.</td></tr>
+    <tr><td>FY26E</td><td>~₹900–960 Cr</td><td class="g">~57–67%</td><td>~₹380–420 Cr</td><td class="g">~42–44%</td><td>~₹320–350 Cr</td><td class="g">~35%</td><td>1.2 GW (full util.)</td><td>Line 2 reaching full utilisation. DCR demand strong. AP approvals secured.</td></tr>
+    <tr><td>FY27E</td><td>~₹1,800–2,200 Cr</td><td class="g">~100–130%</td><td>~₹540–660 Cr</td><td class="g">~30%</td><td>~₹400–500 Cr</td><td class="g">~22–25%</td><td>3.2 GW (Phase III)</td><td>2 GW TOPCon Phase III at AP (if on schedule). G12R upgrade at Falta.</td></tr>
+    <tr><td>FY28E</td><td>~₹4,000–5,000 Cr</td><td class="g">~100%+</td><td>~₹1,000–1,250 Cr</td><td class="g">~25%</td><td>~₹700–900 Cr</td><td class="g">~18–20%</td><td>5.2 GW (Phase IV)</td><td>4 GW AP TOPCon fully operational. Backward integration (wafer/ingot).</td></tr>
+  </table>
+  <div class="warn solar"><strong>Websol's story is one of the boldest technology pivots in Indian manufacturing.</strong> Management scrapped 100% of existing 250 MW capacity in FY23 (deliberately zero-ing revenue) to upgrade to Mono PERC — a decision that required enormous conviction and caused 2 loss-making years. The reward: a business that emerged with 44% EBITDA margins and 35% PAT margins — significantly higher than its former self, and extraordinarily high for any Indian manufacturer. This discipline is the most important qualitative signal about Websol's management.</div>
+</div>
+
+<!-- SECTOR KPIs -->
+<div id="sectorKPI" class="panel">
+  <div class="sh">Solar manufacturing KPIs — how Websol scores on what matters</div>
+  <div class="warn info"><strong>The five metrics that define a solar cell/module manufacturer:</strong> (1) Cell efficiency % (determines premium vs commodity pricing), (2) Capacity utilisation % (fixed cost leverage), (3) EBITDA margin (business model quality), (4) ALMM / DCR approval status (regulatory access to premium-priced govt projects), and (5) Technology roadmap (PERC → TOPCon → HJT).</div>
+  <div class="kpi-grid">
+    <div class="kpi sun"><div class="kpi-l">Cell efficiency (peak, FY26)</div><div class="kpi-v">23.6%</div><div class="kpi-s">Achieved within 3 months of Phase II commissioning</div></div>
+    <div class="kpi green"><div class="kpi-l">Cell Line 1 utilisation</div><div class="kpi-v" style="color:#1D9E75">97%</div><div class="kpi-s">Near full — exceptional execution</div></div>
+    <div class="kpi amber"><div class="kpi-l">Cell Line 2 utilisation (Q3)</div><div class="kpi-v" style="color:#854F0B">54%</div><div class="kpi-s">Ramp-up phase — will reach 90%+ by FY27</div></div>
+    <div class="kpi green"><div class="kpi-l">9M FY26 EBITDA margin</div><div class="kpi-v">43.6%</div><div class="kpi-s">Extraordinary for manufacturing</div></div>
+    <div class="kpi green"><div class="kpi-l">ALMM List-II (cells)</div><div class="kpi-v" style="color:#1D9E75">Approved ✓</div><div class="kpi-s">One of only ~8 approved cell manufacturers</div></div>
+    <div class="kpi green"><div class="kpi-l">D/E ratio (Dec 2025)</div><div class="kpi-v" style="color:#1D9E75">0.29x</div><div class="kpi-s">Very clean balance sheet — room for ₹3,000 Cr capex</div></div>
+  </div>
+
+  <div class="sh">Capacity expansion roadmap — from 600 MW to 5.2 GW</div>
+  <div class="cap-bar"><div class="cap-label">Phase I (600 MW PERC)</div><div class="cap-track"><div class="cap-fill" style="width:12%;background:#1D9E75">Live</div></div><div class="cap-val g">Operational</div></div>
+  <div class="cap-bar"><div class="cap-label">Phase II (600 MW PERC)</div><div class="cap-track"><div class="cap-fill" style="width:12%;background:#1D9E75">Sep '25</div></div><div class="cap-val g">Ramping</div></div>
+  <div class="cap-bar"><div class="cap-label">Phase III (2 GW TOPCon)</div><div class="cap-track"><div class="cap-fill" style="width:40%;background:#EF9F27">FY27</div></div><div class="cap-val a">₹1,500 Cr</div></div>
+  <div class="cap-bar"><div class="cap-label">Phase IV (2 GW TOPCon)</div><div class="cap-track"><div class="cap-fill" style="width:40%;background:#9FE1CB">FY28</div></div><div class="cap-val a">₹1,500 Cr</div></div>
+  <div class="cap-bar"><div class="cap-label">TOTAL target (2028)</div><div class="cap-track"><div class="cap-fill" style="width:100%;background:#185FA5">5.2 GW cells + 4.5 GW modules</div></div><div class="cap-val b">₹3,000 Cr+</div></div>
+
+  <div class="sh">The ALMM List-II — why it's a game-changing regulatory moat</div>
+  <div class="warn solar"><strong>From June 2026, ALL government solar projects must use cells from ALMM List-II approved manufacturers.</strong> Currently, only ~8 Indian manufacturers are approved. Websol is one of them. This creates a structural demand floor — every government, CPSU, PM-KUSUM, PM Surya Ghar project in India (projected at ₹37 GW/year from FY26–FY30) must source cells from List-II manufacturers or face project cancellation. China-manufactured cells are explicitly excluded. This is regulatory protection at its most powerful — the government has effectively mandated that Websol's customers have no alternative to buying from them for key projects.</div>
+
+  <div class="sh">Why Websol's 44% EBITDA margin is genuinely extraordinary</div>
+  <table>
+    <tr><th>Manufacturer</th><th>EBITDA margin</th><th>Reason</th></tr>
+    <tr><td>Websol Energy (FY25–FY26)</td><td class="g">33–44%</td><td>DCR/ALMM premium pricing + high utilisation + lean opex at Falta SEZ</td></tr>
+    <tr><td>Premier Energies</td><td class="g">~20–25%</td><td>Integrated model, larger scale, mix of DCR and non-DCR</td></tr>
+    <tr><td>Waaree Energies</td><td class="a">~14–17%</td><td>Primarily module-focused, higher export mix, larger raw material procurement</td></tr>
+    <tr><td>Chinese tier-1 (LONGi, Jinko)</td><td class="r">~5–10%</td><td>Commodity pricing, oversupply, thin margins globally</td></tr>
+  </table>
+  <div class="warn info">The DCR premium is the key: Websol sells cells to Indian module manufacturers who need them to comply with Domestic Content Requirements. These cells command a 30–50% price premium over Chinese-imported cells because they're essential for accessing government projects. As long as DCR enforcement continues (and it's getting stricter), this premium persists.</div>
+</div>
+
+<!-- BUSINESS MODEL -->
+<div id="business" class="panel">
+  <div class="sh">What Websol does — pure-play solar cell manufacturer in a regulated market</div>
+  <div class="warn solar"><strong>Websol is NOT a solar EPC company (it doesn't install solar panels).</strong> It manufactures the solar cells that go inside solar modules, which then go into solar power plants. This is an upstream manufacturing play — more like a semiconductor fab than a construction company. The key distinction: Websol benefits from rising solar demand even if EPC companies are struggling, because more solar projects = more demand for their cells.</div>
+
+  <div class="two-col" style="margin:12px 0">
+    <div class="pane">
+      <div class="pane-h">The business in detail</div>
+      <div class="point"><div class="dot dg">1</div><div><strong>What they make:</strong> Mono PERC (currently) and TOPCon (from FY27) solar photovoltaic cells and modules. A cell is the fundamental unit of a solar panel — multiple cells form a module. Websol makes both but cells are the higher-value, higher-margin product.</div></div>
+      <div class="point"><div class="dot dg">2</div><div><strong>Revenue model:</strong> Sell cells to module manufacturers (Rayzon, Goldi, Luminous, Exide, Panasonic) who need Indian-made cells to meet DCR requirements. The module manufacturers then supply to solar project developers. Websol = B2B upstream manufacturer, not consumer-facing.</div></div>
+      <div class="point"><div class="dot dg">3</div><div><strong>Location advantage — Falta SEZ, West Bengal:</strong> Special Economic Zone status provides customs duty exemptions on imported raw materials (silicon wafers, silver paste, anti-reflection coatings). Lower input costs vs mainland-based manufacturers.</div></div>
+      <div class="point"><div class="dot da">!</div><div><strong>The raw material dependency:</strong> Websol currently imports silicon wafers from China (primary feedstock). The MoU with Linton aims to eventually manufacture ingots and wafers in India — backward integration that would further reduce costs and risks.</div></div>
+    </div>
+    <div class="pane">
+      <div class="pane-h">The technology leap — PERC to TOPCon</div>
+      <div class="point"><div class="dot db">→</div><div><strong>Mono PERC (current):</strong> Passivated Emitter and Rear Cell technology. Websol's efficiency: 23.2–23.6%. Market standard. All current 1.2 GW runs on PERC.</div></div>
+      <div class="point"><div class="dot dg">+</div><div><strong>TOPCon (Phase III & IV):</strong> Tunnel Oxide Passivated Contact. Higher efficiency (24–25%+). Lower degradation per year. Commands 5–10% price premium over PERC. Global shift happening now — TOPCon is the dominant new technology. The 4 GW AP expansion will be entirely TOPCon.</div></div>
+      <div class="point"><div class="dot dg">+</div><div><strong>G12R transition (Falta, FY27):</strong> Larger wafer format (G12R = 210×105mm). Required by module manufacturers for higher-wattage modules that are now standard in utility projects. One existing Falta line being ramped to G12R by mid-FY27.</div></div>
+      <div class="point"><div class="dot dg">+</div><div><strong>Backward integration — Ingot/Wafer (MoU with Linton):</strong> Currently Websol imports wafers from China. Linton (global leader in ingot/wafer) MoU explores making wafers domestically. If successful: ~₹5/Wp saving on raw material + DCR compliance from wafer level.</div></div>
+    </div>
+  </div>
+
+  <div class="sh">Key clients — module manufacturers who need DCR cells</div>
+  <div style="display:flex;flex-wrap:wrap;gap:6px;margin:8px 0">
+    <span class="badge bsun">Rayzon Solar</span>
+    <span class="badge bsun">Goldi Solar</span>
+    <span class="badge bsun">Luminous Power</span>
+    <span class="badge bsun">Exide Industries</span>
+    <span class="badge bsun">Panasonic India</span>
+    <span class="badge bsun">Bekem Infra Projects</span>
+    <span class="badge bsun">Sri Avantika Contractors</span>
+    <span class="badge bsun">Kosol Energie</span>
+  </div>
+  <div class="warn success"><strong>Client stickiness is high in DCR solar cells.</strong> Module manufacturers who use Websol's cells have built their production lines around Websol's cell format and efficiency specifications. Switching supplier requires re-qualifying cells (3–6 months), re-calibrating lines, and risking project delays. This is not a spot commodity market — it's a relationship business.</div>
+</div>
+
+<!-- GUIDANCE -->
+<div id="guidance" class="panel">
+  <div class="sh">Management guidance — historical track record & future commitments</div>
+  <div class="warn caution"><strong>Context is critical for Websol's guidance history.</strong> The company has been in a transformation phase — scrapping old technology, building new, and now scaling aggressively. Some guidance misses were due to deliberate strategy (delaying production to get the technology right), not execution failure. Evaluating guidance credibility requires separating technology-related delays from operational misses.</div>
+
+  <div class="sh">Past guidance vs actual — the transformation era (FY23–FY25)</div>
+  <div class="guid-card miss">
+    <div class="guid-h">✗ FY23 Guidance: "Minimal revenue disruption during transition"</div>
+    <div class="guid-b">Actual: Revenue fell from ₹213 Cr to ₹17 Cr (-92%). The decision to completely dismantle the old 250 MW line caused a near-zero revenue year. However, this was strategically correct — running the old inferior technology would have produced low-margin output that competed poorly. The "miss" was a necessary sacrifice.</div>
+    <div class="guid-s">Credibility verdict: Not a real miss — management was honest about the severity of the pivot in hindsight. Strategic call was right.</div>
+  </div>
+  <div class="guid-card">
+    <div class="guid-h">⏱ FY24 Guidance: 600 MW PERC Phase I commissioned by H1 FY24</div>
+    <div class="guid-b">Actual: Commissioned by Jan 2024 (minor delay vs initial June 2023 target). The delay was primarily because management chose to self-fund (internal accruals) after getting IREDA ₹179 Cr loan rather than rush. Phase I delivered 90% utilisation once stabilised — demonstrating excellent operational execution post-commission.</div>
+    <div class="guid-s">Credibility verdict: 6-month delay, but execution quality once live was exceptional.</div>
+  </div>
+  <div class="guid-card beat">
+    <div class="guid-h">✓ FY25 Guidance: ₹500+ Cr revenue, margins recover significantly</div>
+    <div class="guid-b">Actual: Revenue ₹575 Cr (+15% beat), EBITDA 33.6%, PAT ₹155 Cr (massive beat). The Phase I line hit 90% utilisation quickly, margins exceeded expectations because DCR demand was stronger than projected. This was the year the market re-rated Websol from "turnaround story" to "high-quality manufacturer."</div>
+    <div class="guid-s">Credibility verdict: Strong beat. Management underguided revenue by ~15%.</div>
+  </div>
+  <div class="guid-card beat">
+    <div class="guid-h">✓ Q3 FY26: Phase II commissioned in under 12 months, self-funded</div>
+    <div class="guid-b">Phase II (600 MW) was guided for Oct 2025. Actual: commissioned Sep 27, 2025 — one week EARLY. Funded entirely from internal accruals (no equity dilution). Achieved 23.6% peak cell efficiency within 3 months of commissioning (very fast ramp). Line 1 maintained 97% utilisation while Line 2 ramped. This is excellent execution credibility.</div>
+    <div class="guid-s">Credibility verdict: Beat on timing, beat on cost (self-funded), beat on efficiency. Best possible outcome.</div>
+  </div>
+
+  <div class="sh">Forward guidance — what management is committing to</div>
+  <div class="guid-card">
+    <div class="guid-h">🎯 Phase III — 2 GW TOPCon at Andhra Pradesh by June 2027</div>
+    <div class="guid-b">70:30 debt-equity mix. ₹1,500 Cr capex. Land allotted at MPSEZ Naidupeta. Government incentives: capital investment subsidy, land benefits, duty exemptions. Captive 100 MW solar plant planned. Technology: TOPCon (next-gen, 24–25% efficiency). G12R format. If commissioned by June 2027, FY28 revenue nearly doubles from FY27. This is the most critical guidance item to track.</div>
+    <div class="guid-s">Credibility: Medium-High (7/10). Land secured, incentives granted, Websol has proven Phase II execution. But 2 GW greenfield in a new state is 3x the scale of anything done before. June 2027 is aggressive — H2 FY28 is the more likely commissioning.</div>
+  </div>
+  <div class="guid-card">
+    <div class="guid-h">🎯 Phase IV — 2 GW TOPCon at Andhra Pradesh by June 2028</div>
+    <div class="guid-b">Builds on Phase III at same site. ₹1,500 Cr additional capex. By FY28 completion, Websol will have 5.2 GW cell and 4.5 GW module capacity — placing it among India's top 3 solar manufacturers. Total capex across phases III+IV = ₹3,000+ Cr, funded 70% debt / 30% equity.</div>
+    <div class="guid-s">Credibility: Medium (6/10). Phase IV is contingent on Phase III success. June 2028 target is more achievable but still depends on debt financing, TOPCon technology stabilisation, and continued DCR demand.</div>
+  </div>
+  <div class="guid-card">
+    <div class="guid-h">🎯 G12R transition at Falta — one line by mid-FY27</div>
+    <div class="guid-b">One existing Falta PERC line being upgraded to G12R format (larger wafer = higher wattage modules) by mid-FY27. No new capex required — this is a reconfiguration. G12R commands 5–8% price premium and is increasingly required by large module manufacturers for utility-scale projects.</div>
+    <div class="guid-s">Credibility: High (8/10). Low-risk upgrade. Websol has done this kind of reconfiguration before (they rebuilt their entire shopfloor in FY23). No new capital required.</div>
+  </div>
+  <div class="guid-card">
+    <div class="guid-h">🎯 Backward integration — Linton MoU (ingot/wafer manufacturing)</div>
+    <div class="guid-b">Signed MoU with Linton (global PV ingot/wafer leader) to explore domestic wafer manufacturing in India. If executed, Websol eliminates its primary raw material import dependency from China (wafers = ~60–70% of cell manufacturing cost). This would also qualify Websol for even stricter DCR compliance from the wafer level, further strengthening its regulatory moat.</div>
+    <div class="guid-s">Credibility: Low-Medium (4/10). MoU ≠ execution. Ingot/wafer manufacturing requires entirely new technology and capex. This is 3–5 year option value, not near-term catalyst. Timeline undefined.</div>
+  </div>
+
+  <div class="sh">Guidance scorecard summary</div>
+  <table>
+    <tr><th>Guidance item</th><th>Credibility score</th><th>Base case</th><th>Bull case</th><th>Risk</th></tr>
+    <tr><td>Phase II execution (done)</td><td class="g">9/10 — delivered</td><td>Complete ✓</td><td>23.6% efficiency achieved</td><td>None — already done</td></tr>
+    <tr><td>Phase III (2 GW AP, FY27)</td><td class="a">7/10 — likely delay</td><td>H2 FY28 commission</td><td>June 2027 on schedule</td><td>Debt financing + new state logistics</td></tr>
+    <tr><td>G12R Falta upgrade</td><td class="g">8/10 — low risk</td><td>Mid-FY27 done</td><td>Price premium uplift</td><td>Minimal</td></tr>
+    <tr><td>Phase IV (2 GW AP, FY28)</td><td class="a">6/10</td><td>FY29 actual</td><td>FY28 on schedule</td><td>Phase III execution dependency</td></tr>
+    <tr><td>Ingot/wafer backward integration</td><td class="r">4/10 — very long term</td><td>FY28–FY30</td><td>FY27 pilot</td><td>New technology, new capex, partner alignment</td></tr>
+  </table>
+</div>
+
+<!-- RISKS -->
+<div id="risks" class="panel">
+  <div class="sh">Risks — the full picture</div>
+
+  <div class="point"><div class="dot dr">1</div><div><strong>₹3,000 Cr capex is 94% of current market cap — massive execution risk.</strong><br>Websol's total market cap is ~₹3,200 Cr. The Phase III + IV expansion costs ₹3,000+ Cr. Even at 70:30 debt-equity, the equity requirement (~₹900 Cr) could trigger significant dilution. Long-term debt will rise from current 0.29x D/E to potentially 3–4x D/E during the expansion. If the new plants are delayed by 12–18 months, the company will be servicing large debt without commensurate revenue — a cash flow stress scenario.</div></div>
+
+  <div class="point"><div class="dot dr">2</div><div><strong>Chinese solar cell competition is severe and structural.</strong><br>Chinese TOPCon cells currently cost ~$0.042/Wp (₹3.57/Wp) vs Websol's DCR-premium pricing at an estimated ₹7–10/Wp. That's a 2–2.5x price gap. Websol can only maintain its premium as long as DCR/ALMM regulations force Indian module manufacturers to source domestically. If regulations are relaxed (possible under WTO pressure), Websol's premium evaporates. The government has strengthened DCR enforcement in recent years, but this is always a policy risk.</div></div>
+
+  <div class="point"><div class="dot da">3</div><div><strong>EBITDA margin compression as scale increases is almost certain.</strong><br>At 1.2 GW, Websol's 44% EBITDA margin is extraordinary because: (a) DCR premium pricing, (b) low overhead on a small revenue base, (c) Falta SEZ duty exemptions. At 5.2 GW (2028E), the TOPCon lines at AP will have: (a) higher capex depreciation, (b) higher interest costs, (c) potentially tighter DCR pricing as more Indian manufacturers compete. Management acknowledges 25–30% EBITDA margins at full scale (vs current 44%). Revenue will be 5–6x higher, but PAT margin will compress — overall PAT can still be 3–4x higher than today in absolute terms.</div></div>
+
+  <div class="point"><div class="dot da">4</div><div><strong>Silver price volatility — the silent input cost risk.</strong><br>Silver is the primary metal in solar cell manufacturing (used for conductor paste). Silver prices have been elevated globally. Websol's profitability is directly sensitive to silver prices — a 20% increase in silver cost could reduce EBITDA margins by 3–5 percentage points. Management mentioned this as a key cost risk in Q3 FY26 earnings call. Hedging capabilities for a company this size are limited.</div></div>
+
+  <div class="point"><div class="dot da">5</div><div><strong>US tariff risk — indirect but real.</strong><br>Management clarified Websol has no US exports currently, so the 2025 Trump tariffs don't directly affect them. But: Indian solar exports to the US account for ~40% of Waaree's revenue. If US tariffs reduce Waaree's US business, Waaree may redirect capacity toward domestic India market, increasing competition for DCR cells. Indirectly, any disruption in India's solar export market could increase domestic competition and compress Websol's DCR premium.</div></div>
+
+  <div class="point"><div class="dot dg">+</div><div><strong>Key mitigants:</strong><br>ALMM List-II approval = regulatory protected demand. D/E 0.29x = significant debt headroom for the ₹3,000 Cr expansion without immediate distress. Self-funded Phase II demonstrates execution discipline. AP government incentives (capital subsidy, duty exemptions, land) reduce Phase III/IV effective cost. 30-year track record in solar manufacturing = technology credibility that new entrants lack. 37 GW/year solar addition required FY26–FY30 = enormous sustained demand.</div></div>
+</div>
+
+<!-- SCENARIOS -->
+<div id="scenarios" class="panel">
+  <div class="sh">Three scenarios — from current ~₹225 (₹3,200 Cr mcap)</div>
+
+  <div class="scenario" style="border-left:3px solid #1D9E75">
+    <div style="font-size:13px;font-weight:500;color:#1D9E75;margin-bottom:8px">Bull case — 3–5x in 3 years (FY28) — Phase III on schedule + margins hold</div>
+    <div class="sc-grid">
+      <div class="sc-cell"><div class="sc-l">FY27 revenue</div><div class="sc-v">₹1,800–2,200 Cr</div></div>
+      <div class="sc-cell"><div class="sc-l">FY27 PAT</div><div class="sc-v">₹400–500 Cr</div></div>
+      <div class="sc-cell"><div class="sc-l">FY28 revenue</div><div class="sc-v">₹4,000–5,000 Cr</div></div>
+      <div class="sc-cell"><div class="sc-l">FY28 PAT</div><div class="sc-v">₹700–900 Cr</div></div>
+      <div class="sc-cell"><div class="sc-l">PE at full scale</div><div class="sc-v">15–20x (earnings visible)</div></div>
+      <div class="sc-cell"><div class="sc-l">FY28 mcap implied</div><div class="sc-v">₹10,500–18,000 Cr</div></div>
+    </div>
+    <div style="font-size:11.5px;color:#333;margin-top:8px"><strong>What must happen:</strong> Phase III (2 GW TOPCon AP) commissions by June–Dec 2027. Line 2 at Falta hits 90%+ utilisation by Q2 FY27. DCR demand stays strong (no policy reversal). Debt financing secured at reasonable rates. G12R upgrade at Falta delivers price premium. Silver prices stable. <strong>3x from ₹3,200 Cr = ₹9,600 Cr target. FY28 PAT of ₹700+ Cr at 14x PE delivers this.</strong></div>
+  </div>
+
+  <div class="scenario" style="border-left:3px solid #378ADD">
+    <div style="font-size:13px;font-weight:500;color:#185FA5;margin-bottom:8px">Base case — 1.5–2.5x in 3 years (even without Phase III contribution)</div>
+    <div class="sc-grid">
+      <div class="sc-cell"><div class="sc-l">FY26 revenue</div><div class="sc-v">~₹950 Cr (1.2 GW full)</div></div>
+      <div class="sc-cell"><div class="sc-l">FY26 PAT</div><div class="sc-v">~₹330–350 Cr</div></div>
+      <div class="sc-cell"><div class="sc-l">FY27 revenue</div><div class="sc-v">₹1,100–1,400 Cr (G12R + full util.)</div></div>
+      <div class="sc-cell"><div class="sc-l">FY27 PAT</div><div class="sc-v">~₹350–420 Cr</div></div>
+      <div class="sc-cell"><div class="sc-l">PE (FY27, no AP)</div><div class="sc-v">14–16x</div></div>
+      <div class="sc-cell"><div class="sc-l">FY27 mcap</div><div class="sc-v">₹4,900–6,720 Cr</div></div>
+    </div>
+    <div style="font-size:11.5px;color:#333;margin-top:8px">Even without Phase III, the 1.2 GW at full utilisation + G12R premium drives PAT to ₹350–420 Cr in FY27. At 14–16x PE on ₹400 Cr PAT = ₹5,600–6,400 Cr mcap = 1.75–2x. <strong>Base case alone delivers 2x within 2 years purely on Falta's existing capacity at full utilisation. Phase III is the option value for 3x+.</strong></div>
+  </div>
+
+  <div class="scenario" style="border-left:3px solid #A32D2D">
+    <div style="font-size:13px;font-weight:500;color:#A32D2D;margin-bottom:8px">Bear case — flat to -30% (DCR relaxed + margin compression)</div>
+    <div class="sc-grid">
+      <div class="sc-cell"><div class="sc-l">Trigger</div><div class="sc-v">DCR/ALMM policy reversal</div></div>
+      <div class="sc-cell"><div class="sc-l">Trigger</div><div class="sc-v">Chinese cell dumping intensifies</div></div>
+      <div class="sc-cell"><div class="sc-l">Trigger</div><div class="sc-v">Silver prices surge 30%+</div></div>
+      <div class="sc-cell"><div class="sc-l">FY27 revenue</div><div class="sc-v">₹800–1,000 Cr (premium lost)</div></div>
+      <div class="sc-cell"><div class="sc-l">FY27 PAT</div><div class="sc-v">₹100–150 Cr (margins 12–15%)</div></div>
+      <div class="sc-cell"><div class="sc-l">Mcap implied</div><div class="sc-v">₹1,500–2,500 Cr</div></div>
+    </div>
+    <div style="font-size:11.5px;color:#333;margin-top:8px">If DCR premium collapses to commodity pricing, EBITDA margin falls from 44% to 12–15% (global commodity levels). Stock de-rates to 10–12x PE on lower earnings. <strong>Bear probability: 15–20%. The government has been strengthening, not weakening, DCR enforcement — but regulatory risk is always binary.</strong></div>
+  </div>
+
+  <table style="margin-top:10px">
+    <tr><th>Target</th><th>Mcap needed</th><th>Driver</th><th>Timeline</th><th>Probability</th></tr>
+    <tr><td>4x (₹12,800 Cr)</td><td>₹12,800 Cr</td><td>Phase III on schedule + PAT ₹700+ Cr</td><td>FY28</td><td class="a">25%</td></tr>
+    <tr><td>3x (₹9,600 Cr)</td><td>₹9,600 Cr</td><td>Phase III commissioned + ₹500 Cr PAT</td><td>FY27–FY28</td><td class="a">35%</td></tr>
+    <tr><td>2x (₹6,400 Cr)</td><td>₹6,400 Cr</td><td>1.2 GW full + G12R premium (no Phase III)</td><td>FY27</td><td class="g">55%</td></tr>
+    <tr><td>Bear flat/down</td><td>₹2,000–2,500 Cr</td><td>DCR relaxation + margin collapse</td><td>—</td><td class="r">15%</td></tr>
+  </table>
+</div>
+
+<!-- SECTOR MAP -->
+<div id="sectormap" class="panel">
+  <div class="sh">India solar manufacturing sector — understanding the value chain</div>
+  <div class="warn solar"><strong>Solar manufacturing is a 5-layer value chain.</strong> Understanding where each company plays determines their margin profile and risk. Websol is at the cell layer — the highest-margin position in Indian domestic manufacturing under current DCR rules.</div>
+  <table>
+    <tr><th>Layer</th><th>What it produces</th><th>Indian players</th><th>Margin profile</th><th>China competition</th></tr>
+    <tr><td><strong>Polysilicon</strong></td><td>Raw silicon feedstock</td><td>None yet (Reliance planned)</td><td>30–40% globally</td><td>Very high — 90% China-dominated</td></tr>
+    <tr><td><strong>Ingot → Wafer</strong></td><td>Silicon wafers (Websol's raw material)</td><td>Premier Energies (JV), Websol (exploring)</td><td>15–25%</td><td>Very high</td></tr>
+    <tr><td><strong>Solar Cell ← Websol</strong></td><td>Converts wafer to electricity-generating unit</td><td>Websol, Premier, Waaree, Emmvee</td><td class="g">30–44% (DCR premium)</td><td>High but blocked by DCR/ALMM</td></tr>
+    <tr><td><strong>Module</strong></td><td>Multiple cells + glass + frame = panel</td><td>Waaree, Adani, Vikram, many others</td><td class="a">10–20%</td><td>High but blocked by ALMM List-I</td></tr>
+    <tr><td><strong>EPC/IPP</strong></td><td>Install and operate solar plants</td><td>NTPC, Adani, Greenko, etc.</td><td>8–15%</td><td>Low (local execution)</td></tr>
+  </table>
+
+  <div class="sh">Key listed solar manufacturing peers</div>
+
+  <div class="sector-card">
+    <div class="sc-hdr"><div><div class="sc-nm">Waaree Energies — India's largest solar manufacturer</div><div class="sc-tg">₹52,000+ Cr mcap · 16.7 GW modules · 5.4 GW cells · US + India focus</div></div><span class="badge ba">Quality — too large for 3x</span></div>
+    <div class="sc-bd">Q1 FY26: Revenue +31% YoY, PAT +94% YoY. 5.4 GW cell capacity commissioning. Large US export business (40% revenue) — significantly exposed to US tariff risk. EBITDA margin 14–17% (much lower than Websol's 44% because modules have lower margin than cells). At ₹52,000+ Cr mcap, 3x requires ₹1.56 lakh Cr — impossible in 3 years. <strong>India's premier solar company but wrong size and lower margin for Garvit's goal.</strong></div>
+  </div>
+
+  <div class="sector-card">
+    <div class="sc-hdr"><div><div class="sc-nm">Premier Energies — Integrated cell + module player</div><div class="sc-tg">₹15,000+ Cr mcap · 1.7 GW cells · 3.5 GW modules · Order book ₹13,700 Cr</div></div><span class="badge ba">Strong competitor — too large for 3x</span></div>
+    <div class="sc-bd">Order book ₹13,700 Cr = huge visibility. Integrating ingot-wafer (JV with Sino-American Silicon). TOPCon expansion underway. JM Financial "reduce" at ₹865 target. 20–25% EBITDA margin (better than Waaree, lower than Websol). At ₹15,000+ Cr mcap, 3x needs ₹45,000 Cr. Revenue ₹2,000+ Cr in FY25. <strong>High quality, correct sector, but too large for Garvit's 3x goal. Better 2x candidate in 2–3 years.</strong></div>
+  </div>
+
+  <div class="sector-card">
+    <div class="sc-hdr"><div><div class="sc-nm">Oriana Power — Solar EPC + BESS + Green Molecules</div><div class="sc-tg">₹4,308 Cr mcap · ₹1,409 Cr TTM revenue · FY26 guidance ₹2,500–2,600 Cr</div></div><span class="badge bb">Downstream player — different model</span></div>
+    <div class="sc-bd">FY25: Revenue ₹987 Cr (+158% YoY), PAT ₹158 Cr (+192% YoY). Order book ₹3,000+ Cr solar + 1 GWh BESS pipeline. Executing grid-scale BESS in Karnataka and Rajasthan (BOO model). ₹3,135 Cr green ammonia offtake with SECI. International presence in Kenya, Guyana, Canada. Debtor days rising (107 → 146 days) is the key watch item. <strong>Oriana is the downstream complement to Websol — Oriana builds the projects that use the cells Websol makes. Not an ALMM manufacturer but a diversified solar developer/EPC company with exciting BESS and green hydrogen options.</strong></div>
+  </div>
+
+  <div class="sector-card">
+    <div class="sc-hdr"><div><div class="sc-nm">Websol Energy System — Your stock</div><div class="sc-tg">₹3,200 Cr mcap · 1.2 GW cells · 44% EBITDA margin · 5.2 GW target 2028</div></div><span class="badge bg">Best 3x candidate in the sector</span></div>
+    <div class="sc-bd">Highest EBITDA margins in the sector (44% vs 14–25% for peers). Approved ALMM List-II. Clean balance sheet (D/E 0.29x). Self-funded Phase II — proven capital discipline. Phase III/IV expansion = 4x capacity by FY28. 30-year track record. Small enough for 3x mathematics. <strong>The ideal solar manufacturing play for Garvit's goal — right size, highest margins, regulatory protection, and proven management.</strong></div>
+  </div>
+</div>
+
+<!-- COMPARE -->
+<div id="compare" class="panel">
+  <div class="sh">Websol vs peers — comprehensive comparison</div>
+  <div class="warn caution" style="margin-bottom:10px"><strong>Important:</strong> Oriana Power (solar EPC + BOOT developer) is a fundamentally different business from Websol (cell/module manufacturer). Websol sits upstream in the value chain making the equipment; Oriana uses that equipment to build and operate solar plants. They are included together because both are pure-play listed solar companies that often appear in the same investor screens — but their risk profiles, margin structures, and growth drivers are distinct.</div>
+  <div style="border:1px solid #ddd;border-radius:10px;overflow:hidden;font-size:11px">
+    <div class="comp-h">
+      <div class="cc-h" style="background:#f5f5f3">Metric</div>
+      <div class="cc-h" style="background:#FEF3C7;color:#92400E">Websol ← Your stock</div>
+      <div class="cc-h" style="background:#E6F1FB;color:#185FA5">Premier Energies</div>
+      <div class="cc-h" style="background:#f5f5f3">Waaree Energies</div>
+      <div class="cc-h" style="background:#E1F5EE;color:#0F6E56">Oriana Power</div>
+    </div>
+    <div class="comp-row"><div class="cc cc-label">Market cap</div><div class="cc mid-cell">₹3,200 Cr</div><div class="cc loser-cell">₹15,000+ Cr</div><div class="cc loser-cell">₹52,000+ Cr</div><div class="cc mid-cell">₹4,308 Cr</div></div>
+    <div class="comp-row"><div class="cc cc-label">TTM / FY25 revenue</div><div class="cc loser-cell">₹575 Cr (FY25)</div><div class="cc mid-cell">₹2,000+ Cr</div><div class="cc winner-cell">₹11,000+ Cr</div><div class="cc winner-cell">₹1,409 Cr (TTM)</div></div>
+    <div class="comp-row"><div class="cc cc-label">Revenue growth FY25</div><div class="cc winner-cell">+2,111% (pivot year)</div><div class="cc mid-cell">~+30%</div><div class="cc mid-cell">+31% YoY</div><div class="cc winner-cell">+157% YoY</div></div>
+    <div class="comp-row"><div class="cc cc-label">PAT (TTM / FY25)</div><div class="cc mid-cell">~₹155 Cr (FY25)</div><div class="cc winner-cell">~₹400+ Cr</div><div class="cc winner-cell">₹1,000+ Cr</div><div class="cc winner-cell">₹232 Cr (TTM)</div></div>
+    <div class="comp-row"><div class="cc cc-label">EBITDA margin</div><div class="cc winner-cell">43.6% (9M FY26)</div><div class="cc mid-cell">~20–25%</div><div class="cc loser-cell">~14–17%</div><div class="cc mid-cell">~20–22%</div></div>
+    <div class="comp-row"><div class="cc cc-label">PAT margin</div><div class="cc winner-cell">35.9% (9M FY26)</div><div class="cc mid-cell">~15–18%</div><div class="cc loser-cell">~8–10%</div><div class="cc mid-cell">~16–18%</div></div>
+    <div class="comp-row"><div class="cc cc-label">Trailing PE</div><div class="cc winner-cell">~16x</div><div class="cc loser-cell">~35–40x</div><div class="cc loser-cell">~40–50x</div><div class="cc mid-cell">~18–19x</div></div>
+    <div class="comp-row"><div class="cc cc-label">Business type</div><div class="cc">Cell/module manufacturer (upstream)</div><div class="cc">Integrated mfr (cell + module)</div><div class="cc">Module mfr + EPC + IPP</div><div class="cc">Solar EPC + BOOT/RESCO + BESS (downstream)</div></div>
+    <div class="comp-row"><div class="cc cc-label">Revenue nature</div><div class="cc mid-cell">B2B manufacturing — recurring contracts</div><div class="cc mid-cell">Manufacturing + project delivery</div><div class="cc mid-cell">Manufacturing + export</div><div class="cc winner-cell">EPC (project) + RESCO (annuity 15–25 yr)</div></div>
+    <div class="comp-row"><div class="cc cc-label">Order book</div><div class="cc mid-cell">Not disclosed (DCR demand-driven)</div><div class="cc winner-cell">₹13,700 Cr</div><div class="cc winner-cell">₹17,000+ Cr</div><div class="cc winner-cell">₹3,000+ Cr solar + 1 GWh BESS</div></div>
+    <div class="comp-row"><div class="cc cc-label">FY26 guidance</div><div class="cc mid-cell">~₹950 Cr+ (1.2 GW full)</div><div class="cc mid-cell">~₹2,500 Cr+</div><div class="cc mid-cell">~₹14,000+ Cr</div><div class="cc winner-cell">₹2,500–2,600 Cr (management guided)</div></div>
+    <div class="comp-row"><div class="cc cc-label">BESS / storage exposure</div><div class="cc loser-cell">None</div><div class="cc loser-cell">Limited</div><div class="cc mid-cell">Some</div><div class="cc winner-cell">403 MWh FY25; 1 GWh target FY26</div></div>
+    <div class="comp-row"><div class="cc cc-label">Green H2 / green molecules</div><div class="cc loser-cell">None</div><div class="cc loser-cell">None</div><div class="cc loser-cell">None</div><div class="cc winner-cell">₹3,135 Cr green ammonia deal (SECI); e-methanol pilot</div></div>
+    <div class="comp-row"><div class="cc cc-label">D/E ratio</div><div class="cc winner-cell">0.29x (very low)</div><div class="cc mid-cell">~1.0x</div><div class="cc mid-cell">Moderate</div><div class="cc mid-cell">Moderate (BOOT model uses project debt)</div></div>
+    <div class="comp-row"><div class="cc cc-label">Debtor days risk</div><div class="cc winner-cell">Low — manufacturing B2B</div><div class="cc mid-cell">Moderate</div><div class="cc mid-cell">Low–moderate</div><div class="cc loser-cell">107 → 146 days (rising — watch)</div></div>
+    <div class="comp-row"><div class="cc cc-label">US export exposure</div><div class="cc winner-cell">Zero</div><div class="cc mid-cell">Some</div><div class="cc loser-cell">High (~40% revenue)</div><div class="cc winner-cell">Zero (domestic + Africa/Guyana)</div></div>
+    <div class="comp-row"><div class="cc cc-label">ALMM List-II (cells)</div><div class="cc winner-cell">✓ Approved manufacturer</div><div class="cc winner-cell">✓ Approved</div><div class="cc winner-cell">✓ Approved</div><div class="cc mid-cell">N/A — buyer, not manufacturer</div></div>
+    <div class="comp-row"><div class="cc cc-label">Promoter holding</div><div class="cc mid-cell">Not disclosed (search needed)</div><div class="cc mid-cell">~50%+</div><div class="cc mid-cell">~55%</div><div class="cc mid-cell">58.0%</div></div>
+    <div class="comp-row"><div class="cc cc-label">3x probability (3yr)</div><div class="cc winner-cell">35–40% (Phase III key)</div><div class="cc mid-cell">15–20% (too large)</div><div class="cc loser-cell">8–10% (too large)</div><div class="cc mid-cell">30–35% (if BESS + green H2 deliver)</div></div>
+    <div class="comp-row"><div class="cc cc-label">Best for Garvit's goal</div><div class="cc">3x target — upstream manufacturing, DCR moat, margin leader</div><div class="cc">2x quality compounder</div><div class="cc">Long-term wealth, wrong size for 3x</div><div class="cc">3x possible if BESS + green H2 scale — different risk profile to Websol</div></div>
+  </div>
+
+  <div class="sh">Oriana Power — deeper context (why it's different from Websol)</div>
+  <div class="two-col" style="margin:10px 0">
+    <div class="pane">
+      <div class="pane-h" style="color:#0F6E56">Oriana's strengths vs Websol</div>
+      <div class="point"><div class="dot dg">+</div><div><strong>Diversified revenue model:</strong> EPC (one-time project revenue) + RESCO/BOOT (15–25 year annuity contracts). Websol has only manufacturing revenue. Oriana's RESCO/annuity component creates durable recurring income Websol lacks.</div></div>
+      <div class="point"><div class="dot dg">+</div><div><strong>BESS first-mover:</strong> 403 MWh BESS orders in FY25. Target 1 GWh FY26, 3.5 GWh by FY30. BESS is structurally the next massive value creator in India's energy sector — Oriana has early positioning.</div></div>
+      <div class="point"><div class="dot dg">+</div><div><strong>FY26 revenue guidance ₹2,500–2,600 Cr:</strong> On ₹4,308 Cr mcap, this is a P/S of ~1.7x on forward revenue — very cheap. FY25 PAT ₹232 Cr (TTM), 18–19x PE is reasonable.</div></div>
+      <div class="point"><div class="dot dg">+</div><div><strong>Green molecules optionality:</strong> ₹3,135 Cr green ammonia deal with SECI, e-methanol pilot. If green hydrogen scales, Oriana has early positioning that Websol completely lacks.</div></div>
+    </div>
+    <div class="pane">
+      <div class="pane-h" style="color:#A32D2D">Oriana's risks vs Websol</div>
+      <div class="point"><div class="dot dr">!</div><div><strong>Debtor days: 107 → 146 days — rising sharply.</strong> EPC companies collect cash when projects are certified complete. Delays in project completion = cash gets locked up. At ₹1,409 Cr revenue, 146-day debtors = ₹560+ Cr in receivables. This is a real cash flow stress risk that Websol (manufacturing B2B) doesn't have.</div></div>
+      <div class="point"><div class="dot dr">!</div><div><strong>EPC is not a recurring business:</strong> Each project must be won freshly. Order book of ₹3,000 Cr sounds large but is ~2x revenue — less visibility than Websol's DCR-protected demand floor. If order wins slow down, revenue growth stalls instantly.</div></div>
+      <div class="point"><div class="dot da">!</div><div><strong>Execution complexity across too many segments:</strong> Solar EPC, BESS, green ammonia, e-methanol, biogas, floating solar — Oriana is running 6–7 business lines simultaneously. Management bandwidth is a real concern at ₹4,308 Cr market cap.</div></div>
+      <div class="point"><div class="dot da">!</div><div><strong>Green H2 / ammonia is pre-revenue:</strong> The ₹3,135 Cr green ammonia deal is an offtake agreement — not current revenue. Building green ammonia infrastructure requires years and billions. At current stage, this is option value, not near-term earnings.</div></div>
+    </div>
+  </div>
+  <div class="warn info"><strong>Bottom line on Oriana vs Websol for Garvit's 3x goal:</strong> Both have 30–40% 3x probability in 3 years. Websol wins on: margin quality (44% vs 22% EBITDA), balance sheet cleanliness (D/E 0.29x vs Oriana's project debt), and regulatory moat (ALMM List-II). Oriana wins on: business model diversification, BESS first-mover positioning, and annuity revenue from RESCO. If choosing one — Websol for higher confidence. If running a satellite in Oriana — it's a credible speculative addition given BESS growth and FY26 revenue guidance of ₹2,500 Cr at ~19x PE.</div>
+</div>
+
+<!-- VERDICT -->
+<div id="verdict" class="panel">
+  <div class="sh">The definitive verdict for Garvit's 3x goal</div>
+
+  <div class="verdict-card" style="background:#FEF3C7;border:1px solid #D97706">
+    <div class="vc-h" style="color:#92400E">Websol Energy — Verdict: High conviction buy. ₹40,000–60,000. Best solar manufacturing play for 3x.</div>
+    <div class="vc-b">Websol is the best-positioned solar manufacturing stock for an aggressive 3x goal in the Indian listed universe. Here's why it wins over Waaree and Premier:<br><br><strong>1. Margins:</strong> 44% EBITDA margin vs 14–25% for peers — Websol extracts nearly 3x more EBITDA per rupee of revenue. This is because cell manufacturing (Websol's core) has higher value-add than module assembly (Waaree's core).<br><br><strong>2. Size advantage for 3x math:</strong> At ₹3,200 Cr mcap, 3x = ₹9,600 Cr. Achievable if Phase III delivers and PAT reaches ₹600–700 Cr. At Waaree's ₹52,000 Cr, 3x = ₹1.56 lakh Cr — practically impossible.<br><br><strong>3. Clean balance sheet entering a capital-intensive phase:</strong> D/E 0.29x means Websol can absorb ₹2,000–2,500 Cr of new debt for Phase III/IV without financial distress. Contrast with competitors who already carry heavy debt.<br><br><strong>4. Regulatory moat:</strong> ALMM List-II approval. Zero US export exposure. Entirely India-focused DCR business — no tariff risk.<br><br><strong>The risk:</strong> ₹3,000 Cr capex is a big bet for a ₹3,200 Cr company. Phase III delays of 12–18 months would defer the 3x outcome by 1–2 years but not break the thesis. The 1.2 GW Falta business alone can deliver 2x in 2 years.</div>
+  </div>
+
+  <div class="verdict-card" style="background:#E6F1FB;border:1px solid #85B7EB">
+    <div class="vc-h" style="color:#185FA5">Premier Energies — Better for 2x, not 3x (₹0 for Garvit's aggressive goal)</div>
+    <div class="vc-b">Premier is the better-quality, more integrated, better-orderbooked company at ₹13,700 Cr order book. But at ₹15,000+ Cr mcap, 3x needs ₹45,000 Cr — very ambitious. Better as a 2x play in a more conservative portfolio. JM Financial's "reduce" call at current levels reflects expensive valuation (35–40x PE) relative to earnings delivery.</div>
+  </div>
+
+  <div class="verdict-card" style="background:#FCEBEB;border:1px solid #F5A5A5">
+    <div class="vc-h" style="color:#A32D2D">Waaree Energies — Best company, worst 3x math (₹0 for this goal)</div>
+    <div class="vc-b">Waaree is India's largest solar manufacturer with dominant scale. But at ₹52,000+ Cr mcap, 3x = ₹1.56 lakh Cr. And US tariff risk on 40% of revenue is a real near-term headwind. EBITDA margin at 14–17% is the lowest in the sector. Own Waaree for 5+ year compounding, not 3x in 3 years.</div>
+  </div>
+
+  <div class="sh">Allocation recommendation</div>
+  <table>
+    <tr><th>Stock</th><th>Action</th><th>Amount</th><th>Rationale</th></tr>
+    <tr><td><strong>Websol Energy</strong></td><td><span class="badge bsun">High conviction buy</span></td><td>₹40,000–60,000</td><td>Highest EBITDA margin in sector. 3x math works. Clean balance sheet. ALMM protected. Phase III = option value for 3x. 2x base case purely on Falta.</td></tr>
+    <tr><td><strong>Premier Energies</strong></td><td><span class="badge bgray">Pass for 3x goal</span></td><td>₹0</td><td>Too large (₹15K Cr mcap), expensive PE. Good for 2x in longer horizon.</td></tr>
+    <tr><td><strong>Waaree Energies</strong></td><td><span class="badge bgray">Pass for 3x goal</span></td><td>₹0</td><td>Too large (₹52K Cr mcap), US tariff risk, lower margins. Best solar company — wrong for this goal.</td></tr>
+    <tr><td><strong>Oriana Power</strong></td><td><span class="badge bb">Satellite speculative</span></td><td>₹0–20,000</td><td>Different business (solar EPC + BESS + green H2). 30–35% 3x probability. BESS first-mover is exciting. Watch debtor days (146 now) — if they stabilise, credible ₹20K satellite position. Not a substitute for Websol.</td></tr>
+  </table>
+
+  <div class="sh">Five metrics to watch quarterly</div>
+  <table>
+    <tr><th>#</th><th>Metric</th><th>Current</th><th>Trigger</th></tr>
+    <tr><td>1</td><td>Cell Line 2 utilisation rate</td><td class="a">54% (ramping)</td><td>Bullish if >85% by Q1 FY27 — FY26 PAT beats</td></tr>
+    <tr><td>2</td><td>Phase III AP — construction update</td><td class="a">Land allotted, incentives granted</td><td>Re-rate if debt tied up and civil work begins — confirms FY27 timeline</td></tr>
+    <tr><td>3</td><td>EBITDA margin sustainability</td><td class="g">43–44% (extraordinary)</td><td>Watch if drops below 35% — signals DCR premium compression</td></tr>
+    <tr><td>4</td><td>DCR / ALMM policy updates</td><td class="g">Strengthening — June 2026 List-II mandatory</td><td>Buy more aggressively if new DCR rules further restrict imports</td></tr>
+    <tr><td>5</td><td>Linton MoU progress (ingot/wafer)</td><td class="a">MoU signed — exploratory</td><td>Very bullish if JV announced with capex timeline — full integration unlocked</td></tr>
+  </table>
+
+  <div class="warn solar" style="margin-top:12px"><strong>One-line verdict:</strong> Websol Energy System is India's highest-margin solar cell manufacturer with regulatory protection (ALMM List-II), a clean balance sheet (D/E 0.29x), 44% EBITDA margins, and a 4x capacity expansion plan targeting 5.2 GW by 2028. At ₹3,200 Cr mcap, the 3x math works even on a base case. The Phase III/IV expansion is the option value that makes 4–5x possible. Allocate ₹40,000–60,000. This is among the strongest risk-reward propositions in your entire portfolio.</div>
+</div>
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/4.4.1/chart.umd.js"></script>
+<script>
+function show(id,btn){
+  document.querySelectorAll('.tab').forEach(t=>t.classList.remove('active'));
+  document.querySelectorAll('.panel').forEach(p=>p.classList.remove('active'));
+  btn.classList.add('active');document.getElementById(id).classList.add('active');
+}
+new Chart(document.getElementById('rc'),{
+  type:'bar',
+  data:{
+    labels:['FY21','FY22','FY23','FY24','FY25','9M FY26','FY26E','FY27E','FY28E'],
+    datasets:[
+      {label:'Revenue ₹ Cr',data:[213,213,17,26,575,685,930,2000,4500],backgroundColor:['#D97706','#D97706','#A32D2D','#A32D2D','#D97706','#1D9E75','#9FE1CB','#9FE1CB','#9FE1CB'],borderRadius:4,yAxisID:'y'},
+      {label:'PAT ₹ Cr',data:[27,4.5,-8,-5,155,246,340,450,800],type:'line',borderColor:'#1D9E75',backgroundColor:'transparent',pointBackgroundColor:'#1D9E75',tension:0.3,yAxisID:'y2'}
+    ]
+  },
+  options:{responsive:true,maintainAspectRatio:false,plugins:{legend:{display:false}},scales:{y:{ticks:{font:{size:10}}},y2:{position:'right',ticks:{font:{size:10}},grid:{drawOnChartArea:false}},x:{ticks:{font:{size:10}}}}}
+});
+</script>
+</body></html>

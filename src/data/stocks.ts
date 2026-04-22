@@ -97,6 +97,30 @@ export const stocks: Stock[] = [
       "100% capacity utilisation before new capacity commissioned — demand before supply. 74% revenue CAGR projected FY25–28 by Nuvama. The CCL Products of 2020: private label instant coffee exporter at capacity inflection with German equipment moat.",
     mcap: "₹1,981 Cr",
   },
+  {
+    slug: "indotech",
+    name: "Indo Tech Transformers",
+    ticker: "INDOTECH",
+    exchange: "NSE",
+    sector: "Capital Goods / Power Transformers",
+    dateAnalyzed: "April 2026",
+    recommendation: "watch",
+    thesis:
+      "Solid underlying business — 7 consecutive quarters of PAT improvement, 18% EBITDA margins, 24.4% revenue CAGR. But 77% promoter pledge creates a direct governance risk unlike any other holding. Speculative only.",
+    mcap: "₹1,406 Cr",
+  },
+  {
+    slug: "websol",
+    name: "Websol Energy System",
+    ticker: "WEBELSOLAR",
+    exchange: "NSE",
+    sector: "Renewable Energy / Solar Manufacturing",
+    dateAnalyzed: "April 2026",
+    recommendation: "buy",
+    thesis:
+      "India's pioneering pure-play solar cell manufacturer with a 3-decade track record. Falta SEZ location provides cost advantages. Best solar manufacturing play for a 3x goal with strong policy tailwinds.",
+    mcap: "₹3,200 Cr",
+  },
 ];
 
 export function getStockBySlug(slug: string): Stock | undefined {
