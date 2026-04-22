@@ -1,0 +1,420 @@
+<!DOCTYPE html>
+<html><head><meta charset="utf-8"><style>
+*{box-sizing:border-box;margin:0;padding:0}
+body{font-family:system-ui,sans-serif;padding:16px;background:#fff;color:#1a1a1a;font-size:14px}
+h1{font-size:20px;font-weight:500;margin-bottom:3px}
+.sub{font-size:12px;color:#666;margin-bottom:14px}
+.sg{display:grid;grid-template-columns:repeat(auto-fill,minmax(110px,1fr));gap:8px;margin-bottom:16px}
+.sc{background:#f5f5f3;border-radius:8px;padding:10px 12px}
+.sl{font-size:10px;color:#666;margin-bottom:2px}
+.sv{font-size:17px;font-weight:500}
+.tab-row{display:flex;gap:5px;flex-wrap:wrap;margin-bottom:14px}
+.tab{font-size:11.5px;padding:5px 13px;border-radius:20px;border:1px solid #ddd;background:#fff;cursor:pointer;white-space:nowrap}
+.tab.active{background:#1a1a1a;color:#fff;border-color:#1a1a1a}
+.panel{display:none}.panel.active{display:block}
+.sh{font-size:10.5px;font-weight:500;color:#666;text-transform:uppercase;letter-spacing:.06em;margin:16px 0 7px;padding-bottom:5px;border-bottom:1px solid #eee}
+table{width:100%;border-collapse:collapse;font-size:12px;margin:8px 0}
+th{font-size:10.5px;font-weight:500;color:#666;padding:5px 7px;text-align:left;border-bottom:1px solid #eee;white-space:nowrap}
+td{padding:8px 7px;border-bottom:1px solid #eee;color:#1a1a1a;vertical-align:top}
+tr:last-child td{border-bottom:none}
+tr:hover td{background:#fafaf9}
+.g{color:#0F6E56;font-weight:500}.r{color:#A32D2D;font-weight:500}.a{color:#854F0B;font-weight:500}.b{color:#185FA5;font-weight:500}
+.badge{display:inline-block;font-size:10px;padding:2px 7px;border-radius:10px;white-space:nowrap}
+.bg{background:#E1F5EE;color:#0F6E56}.bb{background:#E6F1FB;color:#185FA5}.ba{background:#FAEEDA;color:#854F0B}.br{background:#FCEBEB;color:#A32D2D}.bgray{background:#f1f0e8;color:#5F5E5A}
+.warn{padding:10px 13px;margin:8px 0;border-left:3px solid;font-size:12px;line-height:1.65}
+.warn.success{background:#E1F5EE;border-color:#1D9E75;color:#04342C}
+.warn.caution{background:#FAEEDA;border-color:#BA7517;color:#412402}
+.warn.danger{background:#FCEBEB;border-color:#A32D2D;color:#712B13}
+.warn.info{background:#E6F1FB;border-color:#185FA5;color:#042C53}
+.warn strong{font-weight:500}
+.chart-wrap{position:relative;width:100%;height:240px;margin:8px 0}
+.kpi-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:10px;margin:10px 0}
+.kpi{background:#f5f5f3;border-radius:8px;padding:10px 12px;border-left:3px solid transparent}
+.kpi.green{border-left-color:#1D9E75}.kpi.amber{border-left-color:#EF9F27}.kpi.blue{border-left-color:#378ADD}.kpi.red{border-left-color:#A32D2D}
+.kpi-l{font-size:10px;color:#666;margin-bottom:3px}
+.kpi-v{font-size:17px;font-weight:500}
+.kpi-s{font-size:10px;color:#888;margin-top:2px}
+.point{display:flex;gap:9px;align-items:flex-start;padding:9px 0;border-bottom:1px solid #eee;font-size:12px;line-height:1.6;color:#555}
+.point:last-child{border-bottom:none}
+.point strong{color:#1a1a1a;font-weight:500}
+.dot{width:19px;height:19px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:10px;font-weight:500;flex-shrink:0;margin-top:1px}
+.dg{background:#E1F5EE;color:#0F6E56}.dr{background:#FCEBEB;color:#A32D2D}.da{background:#FAEEDA;color:#854F0B}.db{background:#E6F1FB;color:#185FA5}
+.two-col{display:grid;grid-template-columns:1fr 1fr;gap:12px}
+.pane{border:1px solid #ddd;border-radius:10px;padding:13px}
+.pane-h{font-size:13px;font-weight:500;margin-bottom:9px}
+.scenario{border:1px solid #ddd;border-radius:10px;padding:13px;margin-bottom:9px}
+.sc-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:7px;margin:9px 0}
+.sc-cell{background:#f5f5f3;border-radius:6px;padding:7px 9px}
+.sc-l{font-size:10px;color:#666}
+.sc-v{font-size:12px;font-weight:500;margin-top:2px}
+.comp-h{display:grid;grid-template-columns:165px repeat(3,1fr);background:#f5f5f3;border-radius:8px 8px 0 0;overflow:hidden}
+.comp-row{display:grid;grid-template-columns:165px repeat(3,1fr);border-bottom:1px solid #eee}
+.comp-row:last-child{border-bottom:none}
+.cc{padding:8px 10px;font-size:11px;border-right:1px solid #eee}
+.cc:last-child{border-right:none}
+.cc-h{font-size:10px;font-weight:500;color:#444;padding:8px 10px;border-right:1px solid #ddd}
+.cc-h:last-child{border-right:none}
+.cc-label{color:#666;font-size:11px}
+.winner-cell{background:#E1F5EE}.mid-cell{background:#FAEEDA}.loser-cell{background:#fff5f5}
+.verdict-card{border-radius:10px;padding:13px 15px;margin-bottom:10px}
+.vc-h{font-size:13px;font-weight:500;margin-bottom:6px}
+.vc-b{font-size:12px;line-height:1.65;color:#444}
+.sector-card{border:1px solid #ddd;border-radius:10px;overflow:hidden;margin-bottom:10px}
+.sc-hdr{padding:10px 13px;display:flex;justify-content:space-between;align-items:center;background:#fafaf9}
+.sc-nm{font-size:13px;font-weight:500}
+.sc-tg{font-size:11px;color:#666;margin-top:2px}
+.sc-bd{padding:10px 13px;font-size:12px;line-height:1.65;color:#555;border-top:1px solid #eee}
+.sc-bd strong{color:#1a1a1a}
+.guid-card{background:#f5f5f3;border-radius:10px;padding:12px 14px;margin-bottom:8px;border-left:3px solid #1D9E75}
+.guid-h{font-size:11.5px;font-weight:500;margin-bottom:4px;color:#1a1a1a}
+.guid-b{font-size:11.5px;color:#333;line-height:1.6}
+.guid-s{font-size:10px;color:#888;margin-top:4px}
+.guid-card.miss{background:#FCEBEB;border-left-color:#A32D2D}
+.guid-card.miss .guid-h{color:#A32D2D}
+.guid-card.warn-g{background:#FAEEDA;border-left-color:#BA7517}
+.guid-card.warn-g .guid-h{color:#854F0B}
+.alert-box{background:#FCEBEB;border:2px solid #A32D2D;border-radius:10px;padding:13px;margin:8px 0}
+.alert-h{font-size:14px;font-weight:500;color:#A32D2D;margin-bottom:6px}
+.alert-b{font-size:12px;color:#333;line-height:1.65}
+.cat-pill{display:inline-flex;align-items:center;gap:5px;background:#f5f5f3;border:.5px solid #ddd;border-radius:20px;padding:3px 9px;margin:3px;font-size:11px;color:#333}
+</style></head><body>
+
+<h1>Cellecor Gadgets Ltd — Deep Investment Analysis</h1>
+<div class="sub">NSE EMERGE (SME): CELLECOR · Consumer electronics trading & branding · Founded 2020 (corporate), origin 2012 · New Delhi · Budget TVs, phones, wearables, home appliances</div>
+
+<div class="sg">
+  <div class="sc"><div class="sl">Market cap</div><div class="sv">~₹671–703 Cr</div></div>
+  <div class="sc"><div class="sl">TTM revenue</div><div class="sv">~₹1,400–1,777 Cr</div></div>
+  <div class="sc"><div class="sl">FY25 PAT</div><div class="sv" style="color:#854F0B">₹30.9 Cr</div></div>
+  <div class="sc"><div class="sl">H1 FY26 revenue</div><div class="sv" style="color:#1D9E75">₹641.5 Cr</div></div>
+  <div class="sc"><div class="sl">H1 FY26 growth</div><div class="sv" style="color:#1D9E75">+50.7% YoY</div></div>
+  <div class="sc"><div class="sl">H1 FY26 PAT</div><div class="sv" style="color:#854F0B">₹19.6 Cr</div></div>
+  <div class="sc"><div class="sl">PAT margin</div><div class="sv" style="color:#A32D2D">~3–4%</div></div>
+  <div class="sc"><div class="sl">FCF status</div><div class="sv" style="color:#A32D2D">Negative ⚠️</div></div>
+  <div class="sc"><div class="sl">NSE SME board</div><div class="sv" style="color:#854F0B">EMERGE</div></div>
+  <div class="sc"><div class="sl">Promoter holding</div><div class="sv" style="color:#A32D2D">46.3% (↓)</div></div>
+  <div class="sc"><div class="sl">1yr stock return</div><div class="sv" style="color:#A32D2D">-43.4%</div></div>
+  <div class="sc"><div class="sl">FY26 revenue target</div><div class="sv" style="color:#854F0B">₹1,500 Cr</div></div>
+</div>
+
+<div class="tab-row">
+  <button class="tab active" onclick="show('revenue',this)">Revenue history</button>
+  <button class="tab" onclick="show('sectorKPI',this)">Sector KPIs</button>
+  <button class="tab" onclick="show('business',this)">Business model</button>
+  <button class="tab" onclick="show('guidance',this)">Guidance analysis</button>
+  <button class="tab" onclick="show('risks',this)">Risks</button>
+  <button class="tab" onclick="show('scenarios',this)">3x scenarios</button>
+  <button class="tab" onclick="show('sectormap',this)">Sector landscape</button>
+  <button class="tab" onclick="show('compare',this)">Full comparison</button>
+  <button class="tab" onclick="show('verdict',this)">Final verdict</button>
+</div>
+
+<!-- REVENUE -->
+<div id="revenue" class="panel active">
+  <div class="sh">Revenue & profit history — explosive top-line growth, thin margin reality</div>
+  <div class="chart-wrap"><canvas id="rc"></canvas></div>
+  <div style="display:flex;gap:14px;font-size:11.5px;color:#666;margin-bottom:10px">
+    <span><span style="display:inline-block;width:10px;height:10px;border-radius:2px;background:#378ADD;margin-right:4px"></span>Revenue ₹ Cr (left)</span>
+    <span><span style="display:inline-block;width:10px;height:10px;border-radius:2px;background:#1D9E75;margin-right:4px"></span>PAT ₹ Cr (right)</span>
+    <span><span style="display:inline-block;width:10px;height:10px;border-radius:2px;background:#9FE1CB;margin-right:4px"></span>Projected</span>
+  </div>
+  <table>
+    <tr><th>Period</th><th>Revenue</th><th>Growth</th><th>EBITDA</th><th>EBITDA%</th><th>PAT</th><th>PAT%</th><th>Key event</th></tr>
+    <tr><td>FY22</td><td>~₹121 Cr</td><td>—</td><td>—</td><td>—</td><td>~₹3 Cr</td><td class="a">2.5%</td><td>Early-stage trading operation</td></tr>
+    <tr><td>FY23</td><td>~₹264 Cr</td><td class="g">+118%</td><td>—</td><td>—</td><td>~₹8 Cr</td><td class="a">3%</td><td>IPO in Sep 2023 on NSE EMERGE at ₹92/share</td></tr>
+    <tr><td>FY24</td><td>~₹500 Cr</td><td class="g">+89%</td><td>~₹29 Cr</td><td class="a">5.8%</td><td>~₹16 Cr</td><td class="a">3.2%</td><td>Distribution network expansion to 65,000+ retailers. SKU expansion to 600+.</td></tr>
+    <tr><td>FY25</td><td>₹1,026 Cr</td><td class="g">+105%</td><td>₹54.3 Cr</td><td class="a">5.3%</td><td>₹30.9 Cr</td><td class="a">3.0%</td><td>Revenue doubles. Celebrity brand ambassadors (Kareena, Varun, Tamannaah). 28 states, 2 UTs.</td></tr>
+    <tr><td>H1 FY26</td><td>₹641.5 Cr</td><td class="g">+50.7% YoY</td><td>₹34.1 Cr</td><td class="a">5.3%</td><td>₹19.6 Cr</td><td class="a">3.1%</td><td>Tier II/III expansion. 8 exclusive stores. 70,000+ retail touchpoints.</td></tr>
+    <tr><td>FY26E</td><td>~₹1,400–1,500 Cr</td><td class="g">~36–46%</td><td>~₹75–85 Cr</td><td class="a">~5.3%</td><td>~₹42–52 Cr</td><td class="a">~3.2%</td><td>Target ₹1,500 Cr + ₹50 Cr PAT (management guided). FCCB + warrant fundraise in progress.</td></tr>
+    <tr><td>FY27E</td><td>~₹2,000–2,200 Cr</td><td class="g">~40–50%</td><td>~₹105–120 Cr</td><td class="a">~5.3%</td><td>~₹65–80 Cr</td><td class="a">~3.3%</td><td>₹5,000 Cr aspiration by FY28–29. Fundraise deployment into brand + inventory.</td></tr>
+  </table>
+  <div class="warn danger"><strong>The most important number here is NOT revenue — it's the PAT margin at 3%.</strong> Cellecor is generating ₹1,026 Cr in revenue with just ₹30.9 Cr in PAT — a 3% margin. For comparison: Dixon Technologies 5% margins on manufacturing; Havells 8%; Voltas 7%. A pure trading company with no manufacturing, selling commoditised electronics at thin margins, growing revenue 100% means the absolute PAT doubles too — but from ₹16 Cr to ₹30 Cr. That's still a ₹671 Cr market cap business with ₹30 Cr profit = 22x PE. On ₹1,400–1,500 Cr revenue target with same 3% margin = ₹45–50 Cr PAT. At 22x PE = ₹990–1,100 Cr mcap. That's 40–55% upside — not 3x.</div>
+  <div class="warn caution"><strong>Revenue growth is spectacular but PAT margin has NOT improved over 3 years (FY22 to FY25: consistently 2.5–3.2%).</strong> This is the fundamental challenge with a pure-play consumer electronics trading business — high competition, commoditised products, and no pricing power keep margins structurally thin. Volume growth without margin expansion means earnings scale linearly, not exponentially.</div>
+</div>
+
+<!-- SECTOR KPIs -->
+<div id="sectorKPI" class="panel">
+  <div class="sh">Consumer electronics branding sector KPIs — how Cellecor scores</div>
+  <div class="warn info"><strong>The four metrics that define a consumer electronics branding company:</strong> (1) Distribution reach (retailer + distributor count), (2) PAT margin (thin = trading quality, improving = brand premium developing), (3) SKU breadth (diversification across categories), and (4) Negative FCF (working capital intensive = cash burn).</div>
+  <div class="kpi-grid">
+    <div class="kpi green"><div class="kpi-l">Retail touchpoints</div><div class="kpi-v">70,000+</div><div class="kpi-s">Offline network — key moat</div></div>
+    <div class="kpi green"><div class="kpi-l">Distributors</div><div class="kpi-v">1,800+</div><div class="kpi-s">Pan India distribution backbone</div></div>
+    <div class="kpi amber"><div class="kpi-l">PAT margin</div><div class="kpi-v" style="color:#A32D2D">~3%</div><div class="kpi-s">Flat for 3+ years — concern</div></div>
+    <div class="kpi amber"><div class="kpi-l">EBITDA margin</div><div class="kpi-v">~5.3%</div><div class="kpi-s">Thin — trading model</div></div>
+    <div class="kpi red"><div class="kpi-l">Free cash flow</div><div class="kpi-v" style="color:#A32D2D">Negative</div><div class="kpi-s">Profits not converting to cash</div></div>
+    <div class="kpi green"><div class="kpi-l">SKU count</div><div class="kpi-v">600+</div><div class="kpi-s">Across TVs, phones, wearables, appliances</div></div>
+  </div>
+
+  <div class="sh">The free cash flow problem — why ₹30 Cr PAT is not ₹30 Cr cash</div>
+  <div class="warn danger"><strong>Critical finding: Cellecor generated ₹-51.4 Cr in free cash flow over 12 months to Sep 2025, despite reporting ₹36 Cr PAT.</strong> The accrual ratio of 0.39 is a significant red flag. In plain terms: the profits are not turning into cash because working capital is expanding as fast as revenue. For a trading company, this means: (a) inventory is building up (buying more stock than selling), (b) debtors are rising faster than revenue (customers not paying on time), or (c) the reported profits have questionable accounting quality. Until FCF turns positive, growth is being funded by debt/equity issuance — not self-generated cash.</div>
+
+  <div class="sh">Product portfolio — brand presence across categories</div>
+  <div>
+    <span class="cat-pill">📺 Smart TVs (35 SKUs)</span>
+    <span class="cat-pill">📱 Mobile phones (70 SKUs)</span>
+    <span class="cat-pill">🎵 Sound systems (15 SKUs)</span>
+    <span class="cat-pill">⌚ Smart watches</span>
+    <span class="cat-pill">🎧 TWS earbuds, neckbands</span>
+    <span class="cat-pill">🔋 Power banks, cables</span>
+    <span class="cat-pill">🌀 Air fryers (new)</span>
+    <span class="cat-pill">🍳 Kitchen appliances (new)</span>
+    <span class="cat-pill">💻 Laptops (new)</span>
+  </div>
+
+  <div class="sh">India consumer electronics market — why the sector is attractive</div>
+  <div class="point"><div class="dot dg">+</div><div><strong>India consumer electronics market growing at 11–15% CAGR through 2028.</strong> Rising disposable income, aspiring middle class, urbanisation, and government's FAME/PLI schemes are structural tailwinds. Tier II/III cities (Cellecor's focus) are the fastest-growing consumption markets.</div></div>
+  <div class="point"><div class="dot dg">+</div><div><strong>India TV market alone: 14–15 million units/year and growing.</strong> Smart TV penetration rising from 50% to 75%+ of total TV sales by 2025. Budget brands like Cellecor, iFFALCON, Thomson India target the ₹15,000–₹30,000 price segment that is seeing fastest adoption.</div></div>
+  <div class="point"><div class="dot da">!</div><div><strong>But the consumer electronics space is brutally competitive.</strong> Samsung, LG, Sony, Xiaomi, Realme, OnePlus — all global brands with massive scale. Local budget brands like Cellecor compete with: iFFALCON (owned by TCL), VU TV, Kodak TV, Thomson India, Haier. All are fighting for the same ₹10,000–₹25,000 TV buyer. No moat beyond distribution.</div></div>
+</div>
+
+<!-- BUSINESS MODEL -->
+<div id="business" class="panel">
+  <div class="sh">The Cellecor business model — asset-light trading with brand overlay</div>
+  <div class="warn caution"><strong>This is fundamentally different from Websol, DEE Development, or Vintage Coffee.</strong> Cellecor does NOT manufacture anything. It sources products from third-party OEM/ODM manufacturers (primarily in China and India), applies the CELLECOR brand, and distributes through its retail network. This is the "design + source + brand + sell" model — similar to how Reliance's RECONNECT or Karbonn operates. Revenue can scale fast (just buy more and sell more) but margins stay thin because there's no manufacturing moat.</div>
+
+  <div class="two-col" style="margin:12px 0">
+    <div class="pane">
+      <div class="pane-h">How Cellecor generates revenue</div>
+      <div class="point"><div class="dot dg">1</div><div><strong>Source from OEM/ODM:</strong> Products are manufactured by third-party assembly companies (likely in China or Indian contract manufacturers). Cellecor pays unit cost + freight + customs. No manufacturing capex, no R&D. Asset-light.</div></div>
+      <div class="point"><div class="dot dg">2</div><div><strong>Brand, package, and configure:</strong> Applies "CELLECOR" branding. May do minor customisation (software, UI). Organises packaging, warranty cards, service network (1,200+ service centres).</div></div>
+      <div class="point"><div class="dot dg">3</div><div><strong>Distribute through offline network:</strong> 1,800+ distributors → 70,000+ retailers. Tier II and Tier III focus. Cash-and-carry model in many cases. Distribution is the primary value-add.</div></div>
+      <div class="point"><div class="dot dg">4</div><div><strong>Online and B2B:</strong> Amazon, Flipkart, JioMart presence. Institutional/B2B sales to government schemes, housing societies, etc. Seven exclusive brand stores.</div></div>
+    </div>
+    <div class="pane">
+      <div class="pane-h">Why 3% margins are structural, not temporary</div>
+      <div class="point"><div class="dot dr">!</div><div><strong>No manufacturing = no cost leadership:</strong> Samsung has semiconductor-to-panel integration. Cellecor has none. OEM purchases at spot price + logistics + margins to distributors/retailers leaves 3% PAT. This is typical for branded trading companies globally.</div></div>
+      <div class="point"><div class="dot dr">!</div><div><strong>Brand is not yet premium enough to charge more:</strong> A Cellecor TV at ₹20,000 competes directly with Xiaomi Fire TV at ₹22,000 and Samsung at ₹25,000. The consumer chooses Samsung or Xiaomi — Cellecor's margin to take a premium is limited.</div></div>
+      <div class="point"><div class="dot da">!</div><div><strong>Celebrity endorsements increase cost, not revenue per unit:</strong> Kareena Kapoor + Varun Dhawan + Tamannaah Bhatia = significant marketing spend that's further compressing margins without building durable pricing power. Brand awareness ≠ brand equity at this stage.</div></div>
+      <div class="point"><div class="dot dg">+</div><div><strong>Manufacturing plans (stated):</strong> Management has indicated an intent to enter manufacturing. The ₹250 Cr fundraise (₹98 Cr warrants + USD 33M FCCBs) is partly for "capacity expansion." If manufacturing is successfully entered, margin improvement is possible — but this is option value, not current reality.</div></div>
+    </div>
+  </div>
+</div>
+
+<!-- GUIDANCE -->
+<div id="guidance" class="panel">
+  <div class="sh">Guidance analysis — ambitious targets, mixed execution history</div>
+  <div class="warn caution"><strong>Context for evaluating Cellecor's guidance:</strong> This is a young company (listed Sep 2023) with only ~2 years of public track record. Management has been bold on targets. Revenue execution has been excellent. But margin guidance has consistently disappointed because the fundamental trading model keeps margins thin regardless of revenue scale.</div>
+
+  <div class="sh">Past guidance vs actual — what management said, what happened</div>
+  <div class="guid-card">
+    <div class="guid-h">✓ Revenue growth guidance — consistently delivered or exceeded</div>
+    <div class="guid-b">FY24: Revenue ₹500 Cr (from ~₹264 Cr in FY23) → Delivered ₹500 Cr ✓. FY25: "Continue doubling" → Delivered ₹1,026 Cr (105% growth) ✓. H1 FY26: Revenue ₹641 Cr (+50.7% YoY) → Tracking well vs ₹1,500 Cr full-year target. Revenue guidance credibility: HIGH. Management is genuinely building distribution at scale.</div>
+    <div class="guid-s">Credibility: 9/10 on revenue. The distribution flywheel is working — more retailers = more volume = more revenue. This is a real business.</div>
+  </div>
+  <div class="guid-card miss">
+    <div class="guid-h">✗ PAT margin guidance — consistently disappointed</div>
+    <div class="guid-b">FY24: Implied improved profitability with scale → Actual PAT margin 3.2% (flat vs FY23's ~3%). FY25: "Margin improvement with operational efficiency" → Actual 3.0% (actually DECLINED slightly). H1 FY26: 3.1% (no improvement). Target ₹50 Cr PAT in FY26 on ₹1,500 Cr revenue = 3.33% margin — barely an improvement. The management narrative of margin expansion has not materialised for 3 consecutive years.</div>
+    <div class="guid-s">Credibility: 3/10 on margins. The trading model structurally limits margins. Unless manufacturing is entered or brand premium improves, 3% is the ceiling.</div>
+  </div>
+  <div class="guid-card warn-g">
+    <div class="guid-h">⚠️ FY26 target: ₹1,500 Cr revenue + ₹50 Cr PAT</div>
+    <div class="guid-b">Revenue target: With ₹641 Cr in H1 FY26 (+50.7% YoY), full-year ₹1,400–1,500 Cr is achievable if H2 continues at similar pace. Festive season (Q3) typically boosts electronics sales. Revenue target: LIKELY. PAT target of ₹50 Cr: Requires 3.33% margin — slightly above recent 3.1%. Given ongoing brand spending (celebrities), this is optimistic. More likely to land ₹42–47 Cr PAT. PAT target: PARTIALLY MET.</div>
+    <div class="guid-s">Base case FY26: Revenue ₹1,400 Cr (+36%), PAT ₹43–47 Cr (+38–52%). Not bad growth, but the absolute PAT is small on a ₹671 Cr market cap.</div>
+  </div>
+  <div class="guid-card warn-g">
+    <div class="guid-h">⚠️ ₹5,000 Cr revenue in 3–4 years (FY28–FY29)</div>
+    <div class="guid-b">This is the boldest guidance — implying 3.4x revenue growth from FY25's ₹1,026 Cr in 3–4 years. Is it possible? Arithmetically: if they sustain 35–40% annual revenue growth, they reach ₹2,600–3,000 Cr by FY28. ₹5,000 Cr requires 70%+ CAGR — the same pace as FY24/FY25 doubling. Unlikely to sustain: base effect gets harder, competition intensifies, marketing costs scale, financing costs from ₹1,000 Cr borrowing target will compress margins further.</div>
+    <div class="guid-s">Credibility: 3/10. ₹5,000 Cr is a marketing statement, not a business plan. More realistic: ₹2,500–3,000 Cr by FY28–29 at 30–35% CAGR.</div>
+  </div>
+  <div class="guid-card miss">
+    <div class="guid-h">✗ FCCBs (USD 33 million) + ₹1,000 Cr borrowing plan — concerning signals</div>
+    <div class="guid-b">Cellecor approved USD 33M ($270 Cr) FCCBs at 2% coupon (April 2026), convertible into equity at future date. Also disclosed plans to raise ₹1,000 Cr in borrowing for scaling. For a company with ₹30–45 Cr PAT, ₹1,000 Cr in borrowing = 22–33x annual PAT in debt. Interest costs alone (at 10%) = ₹100 Cr/year — more than 2x the current PAT. This borrowing plan, if executed, would make Cellecor debt-laden while remaining margin-thin. The FCCB conversion will also heavily dilute equity. These fundraising moves are red flags, not growth signals.</div>
+    <div class="guid-s">Very concerning: ₹1,000 Cr borrowing on ₹30–45 Cr PAT is financially unsustainable. Watch quarterly interest coverage ratio closely.</div>
+  </div>
+
+  <div class="sh">Guidance scorecard summary</div>
+  <table>
+    <tr><th>Guidance item</th><th>Credibility</th><th>Base case</th><th>Risk</th></tr>
+    <tr><td>Revenue ₹1,500 Cr FY26</td><td class="g">8/10 — on track</td><td>₹1,380–1,450 Cr</td><td>Low — H2 festive season supports</td></tr>
+    <tr><td>PAT ₹50 Cr FY26</td><td class="a">5/10 — optimistic</td><td>₹42–47 Cr</td><td>Medium — margins structurally 3%</td></tr>
+    <tr><td>₹5,000 Cr by FY28–29</td><td class="r">3/10 — aspirational</td><td>₹2,500 Cr at best</td><td>High — marketing statement</td></tr>
+    <tr><td>Margin improvement</td><td class="r">2/10 — never delivered</td><td>3–3.5% (flat)</td><td>High — trading model ceiling</td></tr>
+    <tr><td>₹100 Cr capex plan</td><td class="a">6/10 — FCCB provides funds</td><td>Deployed in brand + inventory</td><td>Medium — if manufacturing not started, limited margin impact</td></tr>
+    <tr><td>₹1,000 Cr borrowing</td><td class="r">2/10 — unsustainable</td><td>Should not exceed ₹200–300 Cr</td><td>Very High — could destroy PAT with interest costs</td></tr>
+  </table>
+</div>
+
+<!-- RISKS -->
+<div id="risks" class="panel">
+  <div class="sh">Risks — the full and honest picture</div>
+  <div class="alert-box">
+    <div class="alert-h">⚠️ Fundamental concern: This is a trading company, not an investment-grade stock for a 3x goal</div>
+    <div class="alert-b">Cellecor's business is real — ₹1,026 Cr revenue, 70,000 retailers, growing fast. But for Garvit's 3x goal, the math is challenging: ₹671 Cr mcap on ₹30 Cr PAT = 22x PE. Reaching 3x (₹2,013 Cr mcap) requires either: (a) PAT growing to ₹90+ Cr (3x from current) while PE stays at 22x, OR (b) PE re-rating to 65x on ₹31 Cr PAT (speculative). Route (a) requires revenue of ₹3,000 Cr at 3% margin = ₹90 Cr PAT — possible in FY28 but not certain. Route (b) is speculative compression. Neither is straightforward.</div>
+  </div>
+
+  <div class="point"><div class="dot dr">1</div><div><strong>Negative free cash flow with 0.39 accrual ratio — profits may be overstated.</strong><br>Over 12 months to Sep 2025, Cellecor had -₹51.4 Cr FCF while reporting ₹36 Cr PAT. This disconnect is the biggest accounting risk. Possible explanations: (a) receivables growing faster than revenue (distributors not paying promptly), (b) inventory buildup (buying more than selling), (c) capitalised costs that should be expensed. Any of these would imply reported profits are higher than economic reality. Cash is the ultimate truth — and it's going the wrong direction.</div></div>
+
+  <div class="point"><div class="dot dr">2</div><div><strong>Promoter holding declining — from 51.54% to 46.3% over 18 months.</strong><br>Promoters have been reducing their stake. While the new warrant issuance (3.5 Cr warrants to Ravi Agarwal at ₹28) will rebuild promoter holding post-conversion, the interim decline signals that the primary capital source is external equity dilution. Every new fundraise dilutes existing shareholders. The FCCB + warrant combo will add significant equity overhang.</div></div>
+
+  <div class="point"><div class="dot dr">3</div><div><strong>The ₹1,000 Cr borrowing plan is potentially catastrophic for PAT.</strong><br>Interest on ₹1,000 Cr at 10% = ₹100 Cr/year in interest. Current PAT = ₹30–45 Cr. If fully executed, interest costs alone would wipe out PAT and turn the company loss-making. Even at ₹300–400 Cr borrowing (₹30–40 Cr interest), it consumes 70–90% of current PAT. This borrowing plan, as stated, is incompatible with maintaining PAT growth.</div></div>
+
+  <div class="point"><div class="dot da">4</div><div><strong>NSE EMERGE (SME board) listing — liquidity and regulatory limitations.</strong><br>Cellecor is listed on NSE EMERGE, not the main NSE board. This means: (a) lower liquidity — daily trading volumes are thin, (b) regulatory constraints on how long before migration to main board, (c) less analyst coverage, (d) harder to exit a large position without significant market impact. For a ₹671 Cr mcap stock on SME board, position sizing must be limited.</div></div>
+
+  <div class="point"><div class="dot da">5</div><div><strong>Commoditised product market with zero pricing power.</strong><br>Cellecor sells TVs, phones, and wearables that are functionally identical to dozens of competitors. The only differentiation is distribution reach and price. As distribution scales, competitors will respond with more aggressive pricing. Chinese brands (Xiaomi, Haier, Hisense) can undercut on price indefinitely. Premium Indian brands (Samsung India, LG India) have aspirational value that Cellecor lacks. Cellecor is caught in the middle — not premium enough to charge more, not Chinese enough to be cheapest.</div></div>
+
+  <div class="point"><div class="dot dg">+</div><div><strong>Genuine strengths worth acknowledging:</strong><br>Revenue doubling two years in a row is real. 70,000 retailers is a genuine distribution network that took years to build — this is the primary moat. The Tier II/III consumer electronics market IS growing at 15–20% annually. Celebrity brand strategy (however costly) is increasing awareness. ROE at 19–25% shows capital efficiency within the working capital model. Management's ₹98 Cr promoter warrant at ₹28 = at current market price, promoter is putting real skin in the game.</div></div>
+</div>
+
+<!-- SCENARIOS -->
+<div id="scenarios" class="panel">
+  <div class="sh">Three scenarios — from current ~₹32 (₹671 Cr mcap)</div>
+
+  <div class="scenario" style="border-left:3px solid #1D9E75">
+    <div style="font-size:13px;font-weight:500;color:#1D9E75;margin-bottom:8px">Bull case — 2.5–3x in 3 years (FY28): Revenue ₹3,000 Cr + margin improvement to 4%</div>
+    <div class="sc-grid">
+      <div class="sc-cell"><div class="sc-l">FY28 revenue</div><div class="sc-v">₹2,800–3,000 Cr</div></div>
+      <div class="sc-cell"><div class="sc-l">FY28 PAT margin</div><div class="sc-v">4% (if manufacturing starts)</div></div>
+      <div class="sc-cell"><div class="sc-l">FY28 PAT</div><div class="sc-v">₹112–120 Cr</div></div>
+      <div class="sc-cell"><div class="sc-l">PE (brand re-rating)</div><div class="sc-v">18–22x</div></div>
+      <div class="sc-cell"><div class="sc-l">Implied mcap</div><div class="sc-v">₹2,016–2,640 Cr</div></div>
+      <div class="sc-cell"><div class="sc-l">Return from ₹671 Cr</div><div class="sc-v">3–3.9x</div></div>
+    </div>
+    <div style="font-size:11.5px;color:#333;margin-top:8px"><strong>What must happen:</strong> Revenue sustains 35–40% CAGR. Manufacturing is entered via ₹100 Cr capex (PLI scheme, ODM-to-OEM pivot) → margins improve from 3% to 4%. FCF turns positive. Borrowing stays manageable (under ₹300 Cr). Brand recognition improves in Tier II/III. FCCBs don't dilute excessively. PE re-rates as brand premium emerges. <strong>3x is barely achievable and requires margin improvement — the one thing that has NOT happened in 3 years of operation.</strong></div>
+  </div>
+
+  <div class="scenario" style="border-left:3px solid #378ADD">
+    <div style="font-size:13px;font-weight:500;color:#185FA5;margin-bottom:8px">Base case — 1.3–1.8x in 3 years: Revenue scales, margins stay thin</div>
+    <div class="sc-grid">
+      <div class="sc-cell"><div class="sc-l">FY27 revenue</div><div class="sc-v">₹2,000 Cr</div></div>
+      <div class="sc-cell"><div class="sc-l">FY27 PAT margin</div><div class="sc-v">3.2% (no change)</div></div>
+      <div class="sc-cell"><div class="sc-l">FY27 PAT</div><div class="sc-v">₹64 Cr</div></div>
+      <div class="sc-cell"><div class="sc-l">PE (SME board)</div><div class="sc-v">18–20x</div></div>
+      <div class="sc-cell"><div class="sc-l">FY27 mcap</div><div class="sc-v">₹1,152–1,280 Cr</div></div>
+      <div class="sc-cell"><div class="sc-l">Return</div><div class="sc-v">1.7–1.9x</div></div>
+    </div>
+    <div style="font-size:11.5px;color:#333;margin-top:8px">Revenue grows 30–35% annually. Margins stay flat at 3%. FCF remains negative (inventory build). FCCB dilution reduces per-share earnings growth below headline PAT growth. <strong>Base case delivers 1.7–1.9x — insufficient for 3x target. This is the most likely outcome.</strong></div>
+  </div>
+
+  <div class="scenario" style="border-left:3px solid #A32D2D">
+    <div style="font-size:13px;font-weight:500;color:#A32D2D;margin-bottom:8px">Bear case — -30 to -50%: Margin squeeze + debt burden + dilution</div>
+    <div class="sc-grid">
+      <div class="sc-cell"><div class="sc-l">Trigger</div><div class="sc-v">Borrowing ₹500+ Cr taken</div></div>
+      <div class="sc-cell"><div class="sc-l">Trigger</div><div class="sc-v">Interest cost ₹50 Cr+/year</div></div>
+      <div class="sc-cell"><div class="sc-l">Trigger</div><div class="sc-v">FCCB conversion dilutes EPS</div></div>
+      <div class="sc-cell"><div class="sc-l">FY27 PAT</div><div class="sc-v">₹30–40 Cr (flat/decline)</div></div>
+      <div class="sc-cell"><div class="sc-l">Revenue growth</div><div class="sc-v">Slows to 20–25%</div></div>
+      <div class="sc-cell"><div class="sc-l">Mcap implied</div><div class="sc-v">₹400–500 Cr</div></div>
+    </div>
+    <div style="font-size:11.5px;color:#333;margin-top:8px">If large borrowings are taken as guided, interest costs consume PAT growth. FCCB conversion adds shares without proportional earnings. EPS growth stagnates. Stock de-rates on SME board with thin liquidity. <strong>Bear case probability: 25–30%.</strong></div>
+  </div>
+
+  <table style="margin-top:10px">
+    <tr><th>Target</th><th>Mcap needed</th><th>Driver</th><th>Timeline</th><th>Probability</th></tr>
+    <tr><td>3x (₹2,013 Cr)</td><td>₹2,013 Cr</td><td>Revenue ₹3,000 Cr + margin 4%</td><td>FY28</td><td class="r">15–20%</td></tr>
+    <tr><td>2x (₹1,342 Cr)</td><td>₹1,342 Cr</td><td>Revenue ₹2,000+ Cr + 3.2% margin</td><td>FY27</td><td class="a">30–35%</td></tr>
+    <tr><td>1.5x (₹1,006 Cr)</td><td>₹1,006 Cr</td><td>Revenue ₹1,500 Cr, margins hold</td><td>FY26–27</td><td class="g">40%</td></tr>
+    <tr><td>Bear -30 to -50%</td><td>₹335–470 Cr</td><td>Debt burden + FCCB dilution</td><td>FY26–27</td><td class="r">25–30%</td></tr>
+  </table>
+</div>
+
+<!-- SECTOR MAP -->
+<div id="sectormap" class="panel">
+  <div class="sh">India consumer electronics sector — understanding where Cellecor sits</div>
+  <div class="warn info"><strong>The consumer electronics sector has three distinct tiers.</strong> Cellecor competes at the most competitive, lowest-margin tier. Understanding this stratification is critical for realistic return expectations.</div>
+  <table>
+    <tr><th>Tier</th><th>Who plays here</th><th>Margin profile</th><th>Moat</th></tr>
+    <tr><td><strong>Tier 1: Global brand leaders</strong></td><td>Samsung, LG, Sony, Apple</td><td class="g">15–25% EBITDA</td><td>Technology, global brand premium, ecosystem lock-in</td></tr>
+    <tr><td><strong>Tier 2: Established Indian/Chinese</strong></td><td>Xiaomi, Realme, Voltas, Havells, Syska</td><td class="a">8–15% EBITDA</td><td>Scale manufacturing, PLI benefits, strong distribution</td></tr>
+    <tr><td><strong>Tier 3: Budget brands ← Cellecor</strong></td><td>Cellecor, VU TV, Thomson India, iFFALCON, Kodak TV</td><td class="r">3–6% EBITDA</td><td>Distribution network only. No manufacturing. Price = primary differentiator.</td></tr>
+    <tr><td><strong>EMS/manufacturing</strong></td><td>Dixon, Amber, PGEL, Kaynes</td><td class="a">5–15% EBITDA</td><td>PLI scheme, backward integration, client diversification</td></tr>
+  </table>
+
+  <div class="sector-card">
+    <div class="sc-hdr"><div><div class="sc-nm">Dixon Technologies — India's #1 EMS company</div><div class="sc-tg">₹54,000+ Cr mcap · Q3 FY26 revenue ₹10,678 Cr · Mobile division 92% of revenue</div></div><span class="badge bb">EMS giant — different model</span></div>
+    <div class="sc-bd">India's largest electronics manufacturer. Makes phones for Samsung, Motorola, Nokia under contract. 5.1% EBITDA margin improving. Revenue CAGR 40%+. PLI benefits locked in. Backward integrating into camera, display modules, lithium-ion. <strong>Dixon is what Cellecor aspires to be eventually — but Dixon started with manufacturing. Cellecor started with trading. The paths to scale are fundamentally different. Dixon's manufacturing moat creates 5%+ EBITDA; Cellecor's trading model caps at 3%. At ₹54,000 Cr mcap, 3x = ₹1.62 lakh Cr — impossible in 3 years.</strong></div>
+  </div>
+
+  <div class="sector-card">
+    <div class="sc-hdr"><div><div class="sc-nm">PG Electroplast (PGEL) — Consumer durables EMS challenger</div><div class="sc-tg">₹8,000+ Cr mcap · ₹3,600+ Cr revenue · Air conditioners + washing machines</div></div><span class="badge ba">Better EMS model at right scale</span></div>
+    <div class="sc-bd">Contract manufactures ACs, washing machines for Voltas, LG, Samsung. ~11–13% EBITDA margins vs Cellecor's 5.3%. Backward integrating into components. PLI scheme beneficiary. Revenue +49% in Q3 FY26. <strong>PGEL is a more compelling investment than Cellecor because it has actual manufacturing, genuine margin expansion potential, and institutional coverage. At ₹8,000 Cr mcap, 3x needs ₹24,000 Cr — challenging but more achievable than Cellecor's 3x math which requires margin improvement that has never happened.</strong></div>
+  </div>
+
+  <div class="sector-card">
+    <div class="sc-hdr"><div><div class="sc-nm">Cellecor Gadgets — Your stock</div><div class="sc-tg">₹671 Cr mcap · ₹1,026 Cr FY25 revenue · Trading + branding model · NSE EMERGE</div></div><span class="badge br">High revenue growth, poor margins, high risk</span></div>
+    <div class="sc-bd">Revenue doubling two years in a row is real. 70,000 retailers is a real distribution network. But 3% PAT margin, negative FCF, declining promoter stake, planned heavy borrowing, and NSE EMERGE illiquidity make this a speculative micro-cap bet — not a quality investment for a 3x goal. The bear case (debt destroys PAT) is as likely as the bull case (margins improve).</div>
+  </div>
+</div>
+
+<!-- COMPARE -->
+<div id="compare" class="panel">
+  <div class="sh">Cellecor vs consumer electronics peers — the full picture</div>
+  <div class="warn caution"><strong>Important framing:</strong> Cellecor (trading/branding) and Dixon/PGEL (manufacturing) are different business models. They compete for the same end consumer but operate at different layers. Comparing them is like comparing a brand owner vs a factory. We include both for completeness because an investor in Cellecor should be aware of what they're NOT getting vs peers.</div>
+  <div style="border:1px solid #ddd;border-radius:10px;overflow:hidden;font-size:11px">
+    <div class="comp-h">
+      <div class="cc-h" style="background:#f5f5f3">Metric</div>
+      <div class="cc-h" style="background:#FAEEDA;color:#854F0B">Cellecor ← Your stock</div>
+      <div class="cc-h" style="background:#E6F1FB;color:#185FA5">Dixon Technologies</div>
+      <div class="cc-h" style="background:#E1F5EE;color:#0F6E56">PG Electroplast</div>
+    </div>
+    <div class="comp-row"><div class="cc cc-label">Market cap</div><div class="cc winner-cell">₹671 Cr (smallest)</div><div class="cc loser-cell">₹54,000+ Cr</div><div class="cc mid-cell">₹8,000+ Cr</div></div>
+    <div class="comp-row"><div class="cc cc-label">Revenue (Q3 FY26)</div><div class="cc loser-cell">~₹350 Cr (est.)</div><div class="cc winner-cell">₹10,678 Cr</div><div class="cc mid-cell">~₹900 Cr</div></div>
+    <div class="comp-row"><div class="cc cc-label">Revenue growth</div><div class="cc winner-cell">+50.7% H1 FY26</div><div class="cc mid-cell">Flat Q3 FY26</div><div class="cc winner-cell">+49% Q3 FY26</div></div>
+    <div class="comp-row"><div class="cc cc-label">EBITDA margin</div><div class="cc loser-cell">~5.3% (thin)</div><div class="cc mid-cell">~5.1% (improving)</div><div class="cc winner-cell">~11–13%</div></div>
+    <div class="comp-row"><div class="cc cc-label">PAT margin</div><div class="cc loser-cell">~3% (flat 3 years)</div><div class="cc mid-cell">~3% (improving)</div><div class="cc winner-cell">~6–8%</div></div>
+    <div class="comp-row"><div class="cc cc-label">Business model</div><div class="cc loser-cell">Pure trading/branding</div><div class="cc winner-cell">Manufacturing (PLI)</div><div class="cc winner-cell">Manufacturing (PLI)</div></div>
+    <div class="comp-row"><div class="cc cc-label">Free cash flow</div><div class="cc loser-cell">Negative (-₹51 Cr)</div><div class="cc winner-cell">Positive and growing</div><div class="cc winner-cell">Positive</div></div>
+    <div class="comp-row"><div class="cc cc-label">PLI scheme access</div><div class="cc loser-cell">No (needs manufacturing)</div><div class="cc winner-cell">Yes — major beneficiary</div><div class="cc winner-cell">Yes</div></div>
+    <div class="comp-row"><div class="cc cc-label">Manufacturing capability</div><div class="cc loser-cell">None (yet)</div><div class="cc winner-cell">Fully integrated</div><div class="cc winner-cell">Consumer durables OEM</div></div>
+    <div class="comp-row"><div class="cc cc-label">Trailing PE</div><div class="cc mid-cell">~22x</div><div class="cc loser-cell">~90–100x</div><div class="cc mid-cell">~50–60x</div></div>
+    <div class="comp-row"><div class="cc cc-label">Promoter holding</div><div class="cc loser-cell">46.3% (declining)</div><div class="cc mid-cell">~35% (stable)</div><div class="cc winner-cell">~55%+</div></div>
+    <div class="comp-row"><div class="cc cc-label">Stock liquidity</div><div class="cc loser-cell">Very thin (SME board)</div><div class="cc winner-cell">High (main board, F&O)</div><div class="cc mid-cell">Moderate</div></div>
+    <div class="comp-row"><div class="cc cc-label">Institutional coverage</div><div class="cc loser-cell">Negligible</div><div class="cc winner-cell">Heavy coverage</div><div class="cc winner-cell">Growing coverage</div></div>
+    <div class="comp-row"><div class="cc cc-label">3x probability (3yr)</div><div class="cc loser-cell">15–20%</div><div class="cc loser-cell">8–10% (too large)</div><div class="cc mid-cell">20–25%</div></div>
+    <div class="comp-row"><div class="cc cc-label">Best for Garvit's goal</div><div class="cc">Speculative only — no</div><div class="cc">Long-term compounder — no (size)</div><div class="cc">Better risk-adjusted — maybe</div></div>
+  </div>
+</div>
+
+<!-- VERDICT -->
+<div id="verdict" class="panel">
+  <div class="sh">The definitive verdict for Garvit's 3x goal</div>
+
+  <div class="verdict-card" style="background:#FCEBEB;border:1px solid #F5A5A5">
+    <div class="vc-h" style="color:#A32D2D">Cellecor Gadgets — Verdict: DO NOT invest for 3x goal. Maximum ₹0–15,000 if you want speculative micro-cap exposure.</div>
+    <div class="vc-b">Let me be direct: Cellecor does not fit the investment profile for Garvit's 3x goal. Here's the honest analysis:<br><br><strong>The positives are real but limited:</strong> Revenue is genuinely doubling year-over-year. Distribution reach is impressive. Management is energetic and building brand aggressively. The Indian budget electronics market IS growing.<br><br><strong>But the fundamental math doesn't work for 3x:</strong> 3% PAT margin is structural to a trading business. It has not improved in 3 years despite 10x revenue growth from ₹121 Cr to ₹1,026 Cr. Reaching 3x on ₹671 Cr mcap requires PAT to reach ₹90–100 Cr (3x from current ₹30 Cr) — which means revenue of ₹3,000 Cr at 3% margin. That's FY28 at best, and assumes margins don't deteriorate from the proposed ₹1,000 Cr borrowing plan.<br><br><strong>The FCCB + warrant issuance is dilutive:</strong> USD 33M FCCBs (₹270 Cr) + 3.5 Cr warrants at ₹28 = significant equity dilution ahead. EPS growth will be muted even if revenue and PAT grow, because the share count expands substantially.<br><br><strong>Negative FCF with 0.39 accrual ratio:</strong> The company is generating accounting profits but not cash. This is the clearest signal that the business is more complex than revenue growth suggests. A profitable business with -₹51 Cr FCF is borrowing to fund its growth — exactly what the ₹1,000 Cr borrowing plan confirms.<br><br><strong>Compare to other stocks in your portfolio:</strong> Bondada, Vintage Coffee, DEE Development, and Websol all have structural moats, improving margins, and genuine manufacturing or technology positions. Cellecor has none of these — it's a distribution-heavy brand play in a commoditised market.</div>
+  </div>
+
+  <div class="verdict-card" style="background:#FAEEDA;border:1px solid #EF9F27">
+    <div class="vc-h" style="color:#633806">What would change the verdict? Three things to watch</div>
+    <div class="vc-b">If any of these three events occur, revisit Cellecor with fresh eyes:<br><br><strong>1. Manufacturing announcement:</strong> If Cellecor announces a proper manufacturing facility with PLI scheme application (not just "capex for expansion"), margins could improve from 3% to 5–6%. This would be a genuine re-rating event.<br><br><strong>2. PAT margin improvement to 4%+:</strong> If H2 FY26 shows EBITDA margin above 6% and PAT margin above 4% (rather than the flat 3%), the margin narrative changes. Watch next quarterly results closely.<br><br><strong>3. Borrowing stays below ₹200 Cr:</strong> If the ₹1,000 Cr borrowing plan is walked back and actual debt stays manageable, the interest cost risk disappears. Monitor quarterly interest costs in P&L.</div>
+  </div>
+
+  <div class="sh">Allocation recommendation</div>
+  <table>
+    <tr><th>Stock</th><th>Action</th><th>Amount</th><th>Rationale</th></tr>
+    <tr><td><strong>Cellecor Gadgets</strong></td><td><span class="badge br">Avoid / max ₹10–15K speculative</span></td><td>₹0–15,000</td><td>Trading model limits margins to 3%. Negative FCF. FCCB dilution pending. ₹1,000 Cr borrowing plan is dangerous. 3x probability only 15–20%. Not suitable for portfolio where you have better quality alternatives.</td></tr>
+    <tr><td><strong>PG Electroplast</strong></td><td><span class="badge ba">Consider as alternative</span></td><td>₹0 (for this goal)</td><td>Better margins (11–13%), manufacturing moat, PLI access. ₹8,000 Cr mcap makes 3x hard but 2x very achievable in 2 years. Monitor after achieving 3x in other holdings.</td></tr>
+  </table>
+
+  <div class="sh">If you already hold Cellecor — what to watch quarterly</div>
+  <table>
+    <tr><th>#</th><th>Metric</th><th>Current</th><th>Exit trigger</th></tr>
+    <tr><td>1</td><td>EBITDA margin</td><td class="r">5.3% (flat)</td><td>Exit 50% if falls below 4% — margin deterioration with debt costs</td></tr>
+    <tr><td>2</td><td>Total debt on balance sheet</td><td class="a">Low currently (D/E 0.79x)</td><td>Exit if total debt exceeds ₹400 Cr — interest will kill PAT</td></tr>
+    <tr><td>3</td><td>FCCB conversion progress</td><td class="a">USD 33M FCCBs allotted Apr 2026</td><td>Track dilution — each conversion adds shares, reducing EPS</td></tr>
+    <tr><td>4</td><td>Free cash flow</td><td class="r">Negative (-₹51 Cr)</td><td>Must turn positive for the investment thesis to hold</td></tr>
+    <tr><td>5</td><td>Revenue growth rate</td><td class="g">+50% H1 FY26</td><td>Positive if sustains 30%+ growth — the one genuine strength</td></tr>
+  </table>
+
+  <div class="warn danger" style="margin-top:12px"><strong>One-line verdict:</strong> Cellecor Gadgets has spectacular revenue growth but a structurally broken profitability model for an aggressive 3x investor. With 3% PAT margins unchanged over 3 years, negative free cash flow, an impending equity dilution via FCCBs + warrants, and a planned ₹1,000 Cr borrowing that would dwarf current profits — this is a momentum trade at best, not a quality investment. Your existing positions in Bondada Engineering, Vintage Coffee, DEE Development, and Websol all have better quality-to-risk profiles. Allocate ₹0 to Cellecor for the 3x goal; at most ₹10–15K if you must participate in the growth story with eyes open to the risks.</div>
+</div>
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/4.4.1/chart.umd.js"></script>
+<script>
+function show(id,btn){
+  document.querySelectorAll('.tab').forEach(t=>t.classList.remove('active'));
+  document.querySelectorAll('.panel').forEach(p=>p.classList.remove('active'));
+  btn.classList.add('active');document.getElementById(id).classList.add('active');
+}
+new Chart(document.getElementById('rc'),{
+  type:'bar',
+  data:{
+    labels:['FY22','FY23','FY24','FY25','H1 FY26','FY26E','FY27E'],
+    datasets:[
+      {label:'Revenue ₹ Cr',data:[121,264,500,1026,641,1420,2000],backgroundColor:['#378ADD','#378ADD','#378ADD','#378ADD','#1D9E75','#9FE1CB','#9FE1CB'],borderRadius:4,yAxisID:'y'},
+      {label:'PAT ₹ Cr',data:[3,8,16,30.9,19.6,45,64],type:'line',borderColor:'#EF9F27',backgroundColor:'transparent',pointBackgroundColor:'#EF9F27',tension:0.3,yAxisID:'y2'}
+    ]
+  },
+  options:{responsive:true,maintainAspectRatio:false,plugins:{legend:{display:false}},scales:{y:{ticks:{font:{size:10}}},y2:{position:'right',ticks:{font:{size:10}},grid:{drawOnChartArea:false}},x:{ticks:{font:{size:10}}}}}
+});
+</script>
+</body></html>

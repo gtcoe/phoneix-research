@@ -1,11 +1,13 @@
 import { stocks } from "@/data/stocks";
 import StockGrid from "@/components/StockGrid";
+import StatsStrip from "@/components/StatsStrip";
+import PortfolioInsights from "@/components/PortfolioInsights";
 
 export default function HomePage() {
   return (
     <div className="mx-auto w-full max-w-7xl px-4 py-10 sm:px-6 lg:px-8">
       {/* Hero */}
-      <div className="mb-10">
+      <div className="mb-8">
         <h1 className="text-3xl font-semibold tracking-tight text-gray-900 sm:text-4xl">
           Stock Research
         </h1>
@@ -15,6 +17,8 @@ export default function HomePage() {
         </p>
       </div>
 
+      <StatsStrip stocks={stocks} />
+      <PortfolioInsights stocks={stocks} />
       <StockGrid stocks={stocks} />
     </div>
   );

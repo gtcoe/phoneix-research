@@ -10,4 +10,8 @@ export interface Stock {
   recommendation: Recommendation;
   thesis: string;
   mcap?: string;
+  entryPrice?: string;
+  targetMultiple?: string;
+  horizon?: string;
+  convictionScore?: number; // 1–10, set manually
 }

@@ -44,16 +44,26 @@ export default function StockCard({ stock }: StockCardProps) {
       className="rounded-xl border border-gray-200 bg-white overflow-hidden"
     >
       <Link href={`/stocks/${stock.slug}`} className="block p-5">
-        {/* Header row: name + rec badge */}
+        {/* Header row: name + badges */}
         <div className="flex items-start justify-between gap-3 mb-1">
           <h2 className="text-base font-semibold text-gray-900 leading-snug">
             {stock.name}
           </h2>
-          <span
-            className={`shrink-0 rounded-full px-2.5 py-0.5 text-xs font-semibold tracking-wide ${rec.bgColor} ${rec.textColor}`}
-          >
-            {rec.label}
-          </span>
+          <div className="flex items-center gap-1.5 shrink-0">
+            {stock.convictionScore !== undefined && (
+              <span
+                className="flex items-center justify-center w-6 h-6 rounded-full text-xs font-bold bg-gray-900 text-white"
+                title={`Conviction: ${stock.convictionScore}/10`}
+              >
+                {stock.convictionScore}
+              </span>
+            )}
+            <span
+              className={`rounded-full px-2.5 py-0.5 text-xs font-semibold tracking-wide ${rec.bgColor} ${rec.textColor}`}
+            >
+              {rec.label}
+            </span>
+          </div>
         </div>
 
         {/* Ticker + exchange */}
@@ -81,6 +91,27 @@ export default function StockCard({ stock }: StockCardProps) {
         <p className="text-sm text-gray-600 leading-relaxed line-clamp-3">
           {stock.thesis}
         </p>
+
+        {/* Position details */}
+        {(stock.entryPrice || stock.targetMultiple || stock.horizon) && (
+          <div className="mt-3 flex flex-wrap gap-2">
+            {stock.entryPrice && (
+              <span className="rounded border border-gray-200 bg-gray-50 px-2 py-0.5 text-xs text-gray-600">
+                Entry {stock.entryPrice}
+              </span>
+            )}
+            {stock.targetMultiple && (
+              <span className="rounded border border-green-100 bg-green-50 px-2 py-0.5 text-xs font-medium text-green-700">
+                Target {stock.targetMultiple}
+              </span>
+            )}
+            {stock.horizon && (
+              <span className="rounded border border-gray-200 bg-gray-50 px-2 py-0.5 text-xs text-gray-500">
+                {stock.horizon}
+              </span>
+            )}
+          </div>
+        )}
 
         {/* Footer: date */}
         <div className="mt-4 flex items-center justify-between">
