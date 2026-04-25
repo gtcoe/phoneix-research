@@ -1,0 +1,426 @@
+<!DOCTYPE html>
+<html><head><meta charset="utf-8">
+<style>
+*{box-sizing:border-box;margin:0;padding:0}
+body{font-family:system-ui,sans-serif;padding:16px;background:#fff;color:#1a1a1a;font-size:14px}
+h1{font-size:20px;font-weight:500;margin-bottom:3px}
+.sub{font-size:12px;color:#666;margin-bottom:14px}
+.sg{display:grid;grid-template-columns:repeat(auto-fill,minmax(110px,1fr));gap:8px;margin-bottom:16px}
+.sc{background:#f5f5f3;border-radius:8px;padding:10px 12px}
+.sl{font-size:10px;color:#666;margin-bottom:2px}
+.sv{font-size:17px;font-weight:500}
+.tab-row{display:flex;gap:5px;flex-wrap:wrap;margin-bottom:14px}
+.tab{font-size:11.5px;padding:5px 13px;border-radius:20px;border:1px solid #ddd;background:#fff;cursor:pointer;white-space:nowrap}
+.tab.active{background:#1a1a1a;color:#fff;border-color:#1a1a1a}
+.panel{display:none}.panel.active{display:block}
+.sh{font-size:10.5px;font-weight:500;color:#666;text-transform:uppercase;letter-spacing:.06em;margin:16px 0 7px;padding-bottom:5px;border-bottom:1px solid #eee}
+table{width:100%;border-collapse:collapse;font-size:12px;margin:8px 0}
+th{font-size:10.5px;font-weight:500;color:#666;padding:5px 7px;text-align:left;border-bottom:1px solid #eee;white-space:nowrap}
+td{padding:8px 7px;border-bottom:1px solid #eee;color:#1a1a1a;vertical-align:top}
+tr:last-child td{border-bottom:none}
+tr:hover td{background:#fafaf9}
+.g{color:#0F6E56;font-weight:500}.r{color:#A32D2D;font-weight:500}.a{color:#854F0B;font-weight:500}.b{color:#185FA5;font-weight:500}
+.badge{display:inline-block;font-size:10px;padding:2px 7px;border-radius:10px;white-space:nowrap}
+.bg{background:#E1F5EE;color:#0F6E56}.bb{background:#E6F1FB;color:#185FA5}.ba{background:#FAEEDA;color:#854F0B}.br{background:#FCEBEB;color:#A32D2D}.bgray{background:#f1f0e8;color:#5F5E5A}.borange{background:#FFF3E0;color:#E65100}
+.warn{padding:10px 13px;margin:8px 0;border-left:3px solid;font-size:12px;line-height:1.65}
+.warn.success{background:#E1F5EE;border-color:#1D9E75;color:#04342C}
+.warn.caution{background:#FAEEDA;border-color:#BA7517;color:#412402}
+.warn.danger{background:#FCEBEB;border-color:#A32D2D;color:#712B13}
+.warn.info{background:#E6F1FB;border-color:#185FA5;color:#042C53}
+.warn.orange{background:#FFF3E0;border-color:#F57C00;color:#3E2723}
+.warn strong{font-weight:500}
+.chart-wrap{position:relative;width:100%;height:240px;margin:8px 0}
+.kpi-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:10px;margin:10px 0}
+.kpi{background:#f5f5f3;border-radius:8px;padding:10px 12px;border-left:3px solid transparent}
+.kpi.green{border-left-color:#1D9E75}.kpi.amber{border-left-color:#EF9F27}.kpi.blue{border-left-color:#378ADD}.kpi.red{border-left-color:#A32D2D}.kpi.orange{border-left-color:#F57C00}
+.kpi-l{font-size:10px;color:#666;margin-bottom:3px}
+.kpi-v{font-size:17px;font-weight:500}
+.kpi-s{font-size:10px;color:#888;margin-top:2px}
+.point{display:flex;gap:9px;align-items:flex-start;padding:9px 0;border-bottom:1px solid #eee;font-size:12px;line-height:1.6;color:#555}
+.point:last-child{border-bottom:none}
+.point strong{color:#1a1a1a;font-weight:500}
+.dot{width:19px;height:19px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:10px;font-weight:500;flex-shrink:0;margin-top:1px}
+.dg{background:#E1F5EE;color:#0F6E56}.dr{background:#FCEBEB;color:#A32D2D}.da{background:#FAEEDA;color:#854F0B}.db{background:#E6F1FB;color:#185FA5}.do{background:#FFF3E0;color:#E65100}
+.two-col{display:grid;grid-template-columns:1fr 1fr;gap:12px}
+.pane{border:1px solid #ddd;border-radius:10px;padding:13px}
+.pane-h{font-size:13px;font-weight:500;margin-bottom:9px}
+.scenario{border:1px solid #ddd;border-radius:10px;padding:13px;margin-bottom:9px}
+.sc-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:7px;margin:9px 0}
+.sc-cell{background:#f5f5f3;border-radius:6px;padding:7px 9px}
+.sc-l{font-size:10px;color:#666}
+.sc-v{font-size:12px;font-weight:500;margin-top:2px}
+.comp-h{display:grid;grid-template-columns:160px repeat(3,1fr);background:#f5f5f3;border-radius:8px 8px 0 0;overflow:hidden}
+.comp-row{display:grid;grid-template-columns:160px repeat(3,1fr);border-bottom:1px solid #eee}
+.comp-row:last-child{border-bottom:none}
+.cc{padding:8px 10px;font-size:11px;border-right:1px solid #eee}
+.cc:last-child{border-right:none}
+.cc-h{font-size:10px;font-weight:500;color:#444;padding:8px 10px;border-right:1px solid #ddd}
+.cc-h:last-child{border-right:none}
+.cc-label{color:#666;font-size:11px}
+.winner-cell{background:#E1F5EE}.mid-cell{background:#FAEEDA}.loser-cell{background:#fff5f5}
+.verdict-card{border-radius:10px;padding:13px 15px;margin-bottom:10px}
+.vc-h{font-size:13px;font-weight:500;margin-bottom:6px}
+.vc-b{font-size:12px;line-height:1.65;color:#444}
+.sector-card{border:1px solid #ddd;border-radius:10px;overflow:hidden;margin-bottom:10px}
+.sc-hdr{padding:10px 13px;display:flex;justify-content:space-between;align-items:center;background:#fafaf9}
+.sc-nm{font-size:13px;font-weight:500}
+.sc-tg{font-size:11px;color:#666;margin-top:2px}
+.sc-bd{padding:10px 13px;font-size:12px;line-height:1.65;color:#555;border-top:1px solid #eee}
+.sc-bd strong{color:#1a1a1a}
+.guid-card{border-radius:10px;padding:12px 14px;margin-bottom:8px;border-left:3px solid #1D9E75;background:#f5f5f3}
+.guid-h{font-size:11.5px;font-weight:500;margin-bottom:4px}
+.guid-b{font-size:11.5px;color:#333;line-height:1.6}
+.guid-s{font-size:10px;color:#888;margin-top:4px}
+.guid-card.beat{background:#E1F5EE;border-left-color:#1D9E75}.guid-card.beat .guid-h{color:#0F6E56}
+.guid-card.miss{background:#FCEBEB;border-left-color:#A32D2D}.guid-card.miss .guid-h{color:#A32D2D}
+.guid-card.watch{background:#FAEEDA;border-left-color:#BA7517}.guid-card.watch .guid-h{color:#854F0B}
+.flag-box{background:#FCEBEB;border:2px solid #A32D2D;border-radius:10px;padding:13px;margin:10px 0}
+.flag-h{font-size:13px;font-weight:500;color:#A32D2D;margin-bottom:6px}
+.flag-b{font-size:12px;color:#333;line-height:1.65}
+.segment-grid{display:grid;grid-template-columns:1fr 1fr;gap:9px;margin:10px 0}
+.seg-card{border:1px solid #ddd;border-radius:8px;padding:11px 13px}
+.seg-nm{font-weight:500;font-size:12px;margin-bottom:3px}
+.seg-tag{font-size:10px;color:#666;margin-bottom:5px}
+.seg-bd{font-size:11.5px;color:#555;line-height:1.55}
+.seg-val{font-size:12px;font-weight:500;color:#0F6E56;margin-top:5px}
+.ongc-box{background:#E6F1FB;border:2px solid #185FA5;border-radius:10px;padding:13px;margin:10px 0}
+.ongc-h{font-size:14px;font-weight:500;color:#185FA5;margin-bottom:6px}
+.ongc-b{font-size:12px;color:#333;line-height:1.65}
+</style>
+</head>
+<body>
+
+<h1>RBM Infracon Ltd — Deep Investment Analysis</h1>
+<div class="sub">NSE: RBMINFRA · SME-listed (Dec 2022) · EPC & O&M for oil/gas refineries, petrochemicals, power plants · Founded 2013 · CMD: Jaybajrang Ramaishish Mani · Lucknow, UP (registered) · Gujarat operations</div>
+
+<div class="sg">
+  <div class="sc"><div class="sl">Market cap</div><div class="sv" style="color:#854F0B">~₹448 Cr</div></div>
+  <div class="sc"><div class="sl">FY26 revenue (est.)</div><div class="sv" style="color:#1D9E75">~₹500 Cr</div></div>
+  <div class="sc"><div class="sl">FY26 PAT (est.)</div><div class="sv" style="color:#1D9E75">~₹46 Cr</div></div>
+  <div class="sc"><div class="sl">H1 FY26 rev. growth</div><div class="sv" style="color:#1D9E75">+175% YoY</div></div>
+  <div class="sc"><div class="sl">Order book (H1 FY26)</div><div class="sv" style="color:#185FA5">₹4,531 Cr</div></div>
+  <div class="sc"><div class="sl">Order/Mcap ratio</div><div class="sv" style="color:#1D9E75">10.1x (!)</div></div>
+  <div class="sc"><div class="sl">Trailing PE</div><div class="sv" style="color:#1D9E75">~11x</div></div>
+  <div class="sc"><div class="sl">Promoter holding</div><div class="sv" style="color:#1D9E75">62.5%</div></div>
+  <div class="sc"><div class="sl">ONGC Nandej contract</div><div class="sv" style="color:#185FA5">₹3,498 Cr</div></div>
+  <div class="sc"><div class="sl">Debt position</div><div class="sv" style="color:#1D9E75">Net debt-free</div></div>
+  <div class="sc"><div class="sl">52-week range</div><div class="sv" style="color:#A32D2D">₹267–₹525</div></div>
+  <div class="sc"><div class="sl">⚠ GST demand</div><div class="sv" style="color:#A32D2D">₹9.94 Cr</div></div>
+</div>
+
+<div class="tab-row">
+  <button class="tab active" onclick="show('revenue',this)">Revenue history</button>
+  <button class="tab" onclick="show('sectorKPI',this)">Sector KPIs</button>
+  <button class="tab" onclick="show('business',this)">Business model</button>
+  <button class="tab" onclick="show('guidance',this)">Guidance</button>
+  <button class="tab" onclick="show('risks',this)">Risks & red flags</button>
+  <button class="tab" onclick="show('scenarios',this)">3x scenarios</button>
+  <button class="tab" onclick="show('sectormap',this)">Sector landscape</button>
+  <button class="tab" onclick="show('compare',this)">Full comparison</button>
+  <button class="tab" onclick="show('verdict',this)">Final verdict</button>
+</div>
+
+<!-- REVENUE -->
+<div id="revenue" class="panel active">
+  <div class="sh">Revenue & profit history — extraordinary growth driven by a single transformative contract</div>
+
+  <div class="ongc-box">
+    <div class="ongc-h">🛢️ The ONGC Nandej Contract — the centrepiece of the entire RBM thesis</div>
+    <div class="ongc-b">In September 2024, RBM Infracon won a 15-year Production Enhancement Contract from ONGC for the Nandej oil field in Gujarat. Contract value: <strong>₹3,498 Cr</strong> (₹3,371 Cr crude + ₹127 Cr gas). RBM took over operations on January 17, 2025 and holds a <strong>66% revenue share</strong>. The company has since drilled 2 wells (NJ134 and NJ135) with a combined peak potential of <strong>100 barrels per day (BOPD)</strong> from April 2026. This single contract is worth 7.8x RBM's entire market cap and is the primary reason the order book exploded from essentially nothing to ₹4,531 Cr. Every metric in the analysis must be understood in this context.</div>
+  </div>
+
+  <div class="chart-wrap"><canvas id="rc"></canvas></div>
+  <div style="display:flex;gap:14px;font-size:11.5px;color:#666;margin-bottom:10px">
+    <span><span style="display:inline-block;width:10px;height:10px;border-radius:2px;background:#185FA5;margin-right:4px"></span>Revenue ₹ Cr (left)</span>
+    <span><span style="display:inline-block;width:10px;height:10px;border-radius:2px;background:#1D9E75;margin-right:4px"></span>PAT ₹ Cr (right)</span>
+    <span><span style="display:inline-block;width:10px;height:10px;border-radius:2px;background:#93c5fd;margin-right:4px"></span>Projected</span>
+  </div>
+
+  <table>
+    <tr><th>Period</th><th>Revenue</th><th>Growth</th><th>EBITDA%</th><th>PAT</th><th>PAT%</th><th>Key event</th></tr>
+    <tr><td>FY22</td><td>~₹40 Cr</td><td>—</td><td>~10%</td><td>~₹3 Cr</td><td class="a">7.5%</td><td>Small EPC contractor serving Reliance, Nayara Energy. Refinery maintenance, turnaround services.</td></tr>
+    <tr><td>FY23</td><td>~₹85 Cr</td><td class="g">+113%</td><td>~11%</td><td>~₹7 Cr</td><td class="a">8.2%</td><td>IPO on SME platform — raised ₹8.37 Cr. Started expanding industrial maintenance contracts.</td></tr>
+    <tr><td>FY24</td><td>~₹160 Cr</td><td class="g">+88%</td><td>~12%</td><td>~₹14 Cr</td><td class="a">8.8%</td><td>Strong growth in EPC + turnaround. Multiple refinery shutdowns executed. Q4 FY24 very strong.</td></tr>
+    <tr><td>Q3 FY25 (H1 FY25)</td><td>₹103.79 Cr (H1)</td><td>—</td><td>~12.5%</td><td>₹9.9 Cr (H1)</td><td class="a">9.5%</td><td>Pre-ONGC contract. Core EPC/O&M business chugging along. Awaiting ONGC formal takeover.</td></tr>
+    <tr><td>Q4 FY25</td><td>₹153.54 Cr</td><td class="g">+167% YoY</td><td>~13%</td><td>₹12.87 Cr</td><td class="a">8.4%</td><td>ONGC Nandej takeover from Jan 17, 2025. Revenue begins consolidating. PAT +215% YoY.</td></tr>
+    <tr><td>H1 FY26</td><td>₹284.19 Cr</td><td class="g">+175% YoY</td><td>13.4%</td><td>₹26.91 Cr</td><td class="g">9.5%</td><td>ONGC full consolidation. EBITDA ₹38.07 Cr (+165%). 17 ongoing projects. 87 completed. Order book ₹4,531 Cr.</td></tr>
+    <tr><td>FY26 (full year est.)</td><td>~₹500–550 Cr</td><td class="g">~3x+ YoY</td><td>~13–14%</td><td>~₹46–52 Cr</td><td class="a">~9%</td><td>Full year ONGC + core EPC. Q4 FY26 showed 167% YoY growth per disclosure. Nandej wells adding oil revenue.</td></tr>
+    <tr><td>FY27E</td><td>~₹600–750 Cr</td><td class="g">~20–50%</td><td>~13–15%</td><td>~₹55–80 Cr</td><td class="a">~9–11%</td><td>Full ONGC year + incremental Nandej well production + Oman subsidiary + new EPC orders. Semiconductor plant (speculative).</td></tr>
+    <tr><td>FY28–29E</td><td>~₹800–1,000 Cr</td><td>—</td><td>~14–16%</td><td>~₹80–120 Cr</td><td class="g">~10–12%</td><td>If ONGC production scales and additional wells drilled. Aerospace/drone (2027+). Oil production direct revenues.</td></tr>
+  </table>
+
+  <div class="warn caution"><strong>Critical data quality note:</strong> RBM Infracon is an SME-listed company. Results release is delayed — Q3 FY26 results were only posted in April 2026 (a 3-month+ delay). Auditor-noted GST demand of ₹9.94 Cr appeared in April 2026. This delay in disclosures and pending tax liability are governance concerns that a main-board company would be less susceptible to. Also note: the "₹33,498 Cr" figure in one news source is a typo — the correct ONGC contract value is ₹3,498 Cr.</div>
+</div>
+
+<!-- SECTOR KPIs -->
+<div id="sectorKPI" class="panel">
+  <div class="sh">EPC / industrial services sector KPIs — how RBM stands out</div>
+  <div class="warn info"><strong>Key metrics for an EPC and O&M contractor:</strong> (1) Order book-to-revenue ratio — higher = better revenue visibility, (2) EBITDA margin — reflects contract quality and execution efficiency, (3) Working capital intensity — EPC is capital-heavy, (4) Client concentration risk — too few = dangerous, (5) Contract tenure — longer = revenue predictability.</div>
+  <div class="kpi-grid">
+    <div class="kpi green"><div class="kpi-l">Order book (H1 FY26)</div><div class="kpi-v">₹4,531 Cr</div><div class="kpi-s">~9x TTM revenue — exceptional visibility</div></div>
+    <div class="kpi orange"><div class="kpi-l">EBITDA margin</div><div class="kpi-v">~13–14%</div><div class="kpi-s">Good for EPC; improving with ONGC</div></div>
+    <div class="kpi green"><div class="kpi-l">ONGC contract tenure</div><div class="kpi-v">15 years</div><div class="kpi-s">Extendable by 5 years — long visibility</div></div>
+    <div class="kpi green"><div class="kpi-l">Revenue share from ONGC</div><div class="kpi-v">66%</div><div class="kpi-s">Market-linked crude pricing</div></div>
+    <div class="kpi red"><div class="kpi-l">Client concentration</div><div class="kpi-v" style="color:#A32D2D">High</div><div class="kpi-s">ONGC + Reliance dominate order book</div></div>
+    <div class="kpi green"><div class="kpi-l">Net debt position</div><div class="kpi-v">Net debt-free</div><div class="kpi-s">Strong balance sheet for growth</div></div>
+  </div>
+
+  <div class="sh">The order book composition — understanding ₹4,531 Cr</div>
+  <div class="warn info"><strong>Most of the ₹4,531 Cr order book is the ONGC Nandej contract</strong> — ₹3,498 Cr (77%). The remaining ₹1,033 Cr is legacy EPC, refinery maintenance, turnaround, and new industrial contracts. This distinction is critical. The ONGC contract generates revenue based on oil production (market-linked crude pricing) — it is not a fixed construction contract. Revenue from this segment fluctuates with oil prices and well production rates.</div>
+  <table>
+    <tr><th>Segment</th><th>Estimated order share</th><th>Revenue type</th><th>Margin profile</th><th>Risk</th></tr>
+    <tr><td>ONGC Nandej (Production Enhancement)</td><td class="g">~₹3,498 Cr (77%)</td><td>Market-linked crude oil revenue, 66% share</td><td class="g">~15–20% EBITDA (if crude high)</td><td>Crude price risk + field depletion risk</td></tr>
+    <tr><td>Core EPC (refinery/plant construction)</td><td class="a">~₹600–700 Cr (14%)</td><td>Fixed-price EPC contracts</td><td class="a">~10–12% EBITDA</td><td>Execution delays, cost overruns</td></tr>
+    <tr><td>O&M / Turnaround / ARC maintenance</td><td class="a">~₹200–300 Cr (6%)</td><td>Recurring annual contracts</td><td class="g">~14–16% EBITDA</td><td>Client renewal risk</td></tr>
+    <tr><td>New: Semiconductor + Aerospace + Oman (LOI)</td><td class="r">~₹0 (0% — speculative)</td><td>Not yet generating revenue</td><td>Unknown</td><td>Extremely high (speculative)</td></tr>
+  </table>
+</div>
+
+<!-- BUSINESS MODEL -->
+<div id="business" class="panel">
+  <div class="sh">What RBM Infracon does — three distinct business layers</div>
+  <div class="warn orange"><strong>RBM Infracon has rapidly evolved from a simple EPC contractor to a multi-business entity</strong> — and therein lies both the opportunity and the concern. In April 2026 alone, it signed a $1B semiconductor LOI, incorporated a subsidiary in Oman, and disclosed oil well production from Nandej. For a ₹448 Cr market cap company, this pace of diversification is extraordinary — and raises questions about management bandwidth and core focus.</div>
+
+  <div class="segment-grid">
+    <div class="seg-card">
+      <div class="seg-nm" style="color:#185FA5">🏭 Core EPC & O&M Services (legacy business)</div>
+      <div class="seg-tag">Oil/gas refineries · Petrochemicals · Fertilizers · Power plants · Cement</div>
+      <div class="seg-bd">Engineering, procurement, construction + operation & maintenance for industrial plants. Specialises in mechanical and rotary equipment — pumps, compressors, heat exchangers, columns, reactors. Services: structural fabrication, piping, blasting/painting, insulation, electrical/instrumentation. Clients: Reliance Industries, Nayara Energy (formerly Essar Oil), L&T, TATA Projects, YARA Fertilizers, Afcons. 25+ years of promoter experience in this space. 87 completed projects, 17 ongoing as of H1 FY26.</div>
+      <div class="seg-val">~₹150–200 Cr annual revenue (excl. ONGC)</div>
+    </div>
+    <div class="seg-card">
+      <div class="seg-nm" style="color:#0F6E56">🛢️ ONGC Nandej Oil Production (new, transformative)</div>
+      <div class="seg-tag">Production Enhancement Contract · 15 years · 66% revenue share · Gujarat</div>
+      <div class="seg-bd">RBM took over ONGC's Nandej oil field in January 2025. The contract allows RBM to extract oil and gas, sell it at market prices, and keep 66% of revenues. RBM is responsible for drilling, production, and field operations. Two wells drilled Jan–Feb 2026: NJ134 (25 BOPD from Kalol-IX zone) + NJ135 (75 BOPD) = 100 BOPD combined peak. At crude prices of $70–80/barrel and 100 BOPD, this generates ~₹18–22 Cr annually at current production — small but growing as more wells are drilled.</div>
+      <div class="seg-val">₹3,498 Cr contract value over 15 years (~₹230 Cr/year theoretical)</div>
+    </div>
+    <div class="seg-card">
+      <div class="seg-nm" style="color:#854F0B">🏗️ Green Energy Diversification</div>
+      <div class="seg-tag">Solar · Green hydrogen · Renewable EPC</div>
+      <div class="seg-bd">RBM has announced intent to enter green energy — solar EPC and green hydrogen. No significant revenue generated yet. This is a directionally sound move given India's energy transition, but no specific contracts or capacity targets have been disclosed. Consistent with their industrial services background (can build solar plants the same way they build refineries). Need to track actual order wins in this segment.</div>
+      <div class="seg-val">₹0 current revenue — early intent stage</div>
+    </div>
+    <div class="seg-card">
+      <div class="seg-nm" style="color:#A32D2D">⚠️ New Announcements (April 2026) — High Speculation</div>
+      <div class="seg-tag">$1B Semiconductor LOI · Aerospace/Drones · Oman subsidiary</div>
+      <div class="seg-bd">Three major announcements in one week (April 2026): (1) Binding LOI with SUJOK Global for USD 1B semiconductor packaging facility — RBM holds 30%, SUJOK 70%, with USD 600M FDI committed. Focus on AI/HPC chips, chiplets. Subject to 90-day due diligence. (2) Incorporation of RBM Infracon LLC in Oman — international expansion into Middle East EPC. (3) MoA amendment to add aircraft, drone, and aerospace engineering. All three are speculative at this stage — no revenue, no customers, no track record.</div>
+      <div class="seg-val" style="color:#A32D2D">₹0 current revenue — subject to due diligence/approvals</div>
+    </div>
+  </div>
+
+  <div class="sh">The semiconductor LOI — how to interpret it</div>
+  <div class="flag-box">
+    <div class="flag-h">🚨 The $1B semiconductor LOI — be very cautious</div>
+    <div class="flag-b">SUJOK Global is relatively unknown. The LOI was signed April 18, 2026 — just 6 days before the portfolio review. The project is for "USD 1B advanced semiconductor packaging" — advanced chip packaging (QFNLFBGA, hybrid bonding) for AI/HPC applications. RBM holds 30% stake vs SUJOK's 70%. The deal includes USD 600M "committed FDI" from SUJOK — this needs verification as an unknown company. Key facts: (1) The LOI is subject to 90-day due diligence — it is NOT a firm deal yet, (2) RBM has zero semiconductor expertise or track record, (3) The stock jumped 17% on this news — that reaction may be premature, (4) SUJOK Global's credibility, funding capacity, and technology partnerships need independent verification before attributing any value to this. India's semiconductor ecosystem (the India Semiconductor Mission) is real — but a ₹448 Cr EPC contractor pivoting to advanced chip packaging requires extraordinary scrutiny.</div>
+  </div>
+</div>
+
+<!-- GUIDANCE -->
+<div id="guidance" class="panel">
+  <div class="sh">Guidance analysis — management is bullish, execution on core is solid</div>
+  <div class="warn orange"><strong>RBM Infracon is an SME-listed company with limited formal investor communication.</strong> Unlike Borana Weaves or DEE Development, there are no structured quarterly earnings calls. Guidance comes primarily through exchange filings, press releases, and MD statements. This limits analysis depth but the financial trajectory is clear from the numbers themselves.</div>
+
+  <div class="guid-card beat">
+    <div class="guid-h">✓ ONGC contract won and executed ahead of schedule — biggest milestone</div>
+    <div class="guid-b">The 15-year ONGC Nandej Production Enhancement Contract was awarded September 2024, officially taken over January 17, 2025. The company then drilled 2 wells within 3 months (Jan–Feb 2026), both producing ahead of initial expectations (NJ135 producing 75 BOPD vs ~50 BOPD initial plan). This is genuine execution competence — managing an oil field is a different skill from EPC construction, and RBM appears to have handled the transition. The CMD stated: "Our robust order book, strategic initiatives, and positive industry trends provide a strong foundation for sustained growth."</div>
+    <div class="guid-s">Credibility on core ONGC execution: 8/10. Delivered ahead of schedule on well drilling.</div>
+  </div>
+
+  <div class="guid-card beat">
+    <div class="guid-h">✓ H1 FY26 revenue growth — delivered 175% YoY, far exceeding expectations</div>
+    <div class="guid-b">When the ONGC contract was won (Sep 2024), analysts expected modest initial revenue contribution. Instead, H1 FY26 delivered ₹284 Cr vs ₹103 Cr in H1 FY25 — a 175% surge. This reflects both ONGC revenue beginning to flow AND continued strong core EPC execution (87 completed projects, 17 ongoing). PAT margin of 9.5% is consistent with prior years — the business model economics have not changed, just the scale.</div>
+    <div class="guid-s">Credibility: 9/10. Spectacular delivery on first ONGC year.</div>
+  </div>
+
+  <div class="guid-card watch">
+    <div class="guid-h">⚠ FY27 guidance — implied 20–50% growth from ONGC + new orders</div>
+    <div class="guid-b">Management has not given specific FY27 guidance but implied continued growth driven by: (1) Full year ONGC production from Nandej (including new wells), (2) Oman subsidiary capturing Middle East oil/gas EPC, (3) New green energy and aerospace orders. Base case: ₹600–750 Cr revenue in FY27. Risk: ONGC production revenue is market-linked — if crude prices fall below $60/barrel, revenue and margin compress. Bull case: additional Nandej wells drilled; semiconductor project advances toward financial close.</div>
+    <div class="guid-s">Credibility: 6/10 on FY27 because of dependence on external crude prices and speculative new ventures.</div>
+  </div>
+
+  <div class="guid-card">
+    <div class="guid-h">🎯 Long-term: 15-year ONGC contract = unprecedented revenue visibility for this size company</div>
+    <div class="guid-b">The ₹3,498 Cr ONGC contract is 15 years (extendable 5 more). At ₹230 Cr/year average implied contract value, this alone could sustain 40–50% of RBM's FY27 target revenue — for 15 years. This is extraordinary revenue certainty for a company this size. The key variable: production volume from Nandej field. More wells = more production = more revenue. Company is planning additional drilling. If the reservoir proves rich (geological surveys need study), this could be transformational over a decade.</div>
+    <div class="guid-s">Key: Monitor Nandej production data quarterly. Each additional well drilled is a material revenue upside catalyst.</div>
+  </div>
+
+  <div class="sh">Guidance scorecard</div>
+  <table>
+    <tr><th>Guidance item</th><th>Credibility</th><th>Base case</th><th>Key risk</th></tr>
+    <tr><td>Core EPC/O&M growth (FY27)</td><td class="g">8/10 — track record strong</td><td>₹200–250 Cr</td><td>Project delays, labour availability, material costs</td></tr>
+    <tr><td>ONGC Nandej production revenue</td><td class="a">6/10 — production-dependent</td><td>₹300–400 Cr/year (FY27)</td><td>Crude oil price collapse; reservoir underperformance</td></tr>
+    <tr><td>Semiconductor LOI → actual project</td><td class="r">2/10 — extremely speculative</td><td>Nothing by FY27</td><td>Due diligence may fail; SUJOK credibility unverified</td></tr>
+    <tr><td>Oman subsidiary revenue</td><td class="a">4/10 — early stage</td><td>₹50–100 Cr by FY28</td><td>Middle East geopolitics; new market execution risk</td></tr>
+    <tr><td>Aerospace/drone revenue</td><td class="r">1/10 — MoA addition only</td><td>₹0 by FY27</td><td>No technical capability, no contracts — pure optionality</td></tr>
+  </table>
+</div>
+
+<!-- RISKS -->
+<div id="risks" class="panel">
+  <div class="sh">Risks — this is a higher-risk stock than it appears on the headline numbers</div>
+
+  <div class="point"><div class="dot dr">1</div><div><strong>Extreme client concentration — ONGC is 77% of order book.</strong><br>The ₹4,531 Cr order book sounds massive. But ₹3,498 Cr of it is one contract — ONGC Nandej. If ONGC terminates, disputes the contract, or if the oil field underperforms, RBM's revenue drops to ~₹150–200 Cr instantly. Every egg is in the ONGC basket. Compare this to DEE Development, which has a diversified order book across 50+ clients in oil/gas, nuclear, and water sectors. Single-client dependency is the most significant structural risk for RBM.</div></div>
+
+  <div class="point"><div class="dot dr">2</div><div><strong>Crude oil price risk — ONGC revenue is market-linked.</strong><br>The Nandej contract generates revenue at market-linked crude prices. At $80/barrel = strong margins. At $55/barrel = compressed margins. At $40/barrel (a scenario we've seen) = potential loss-making in that segment. RBM has no hedging mechanism for crude prices. This introduces commodity price risk to what looks like a construction/EPC company — an unusual and often unappreciated risk factor. With India's oil import dependence, a global crude crash also hits refinery client capex (reducing EPC orders) simultaneously. Double hit scenario is possible.</div></div>
+
+  <div class="point"><div class="dot dr">3</div><div><strong>SME-listed company with very low liquidity — ₹7,000 shares/day trading volume.</strong><br>RBM Infracon raised only ₹8.37 Cr in its 2022 IPO on the SME platform. It has not yet migrated to the main board (planned but not done). Trading volume is ~7,000 shares/day — at ₹422/share, that's ₹29.5 lakh of daily liquidity. Garvit holds 400 shares worth ~₹1.69 lakh. In a falling market, selling 400 shares could itself move the price 5–10%. This illiquidity means: (a) pricing is volatile, (b) institutional investors cannot enter, (c) exit in a panic is painful. The 52-week range of ₹267–₹525 (nearly 2x swing) reflects this volatility.</div></div>
+
+  <div class="point"><div class="dot dr">4</div><div><strong>April 2026 diversification sprint — classic "kitchen sink" pattern.</strong><br>In one week (April 16–22, 2026): MoA amended to add aerospace/drones, Oman LLC incorporated, $1B semiconductor LOI signed, oil well production announced. This is either a brilliantly opportunistic company seizing multiple opportunities — or a small company flinging announcements to maintain stock momentum. The semiconductor LOI is the most concerning: SUJOK Global is unverified, the technology (advanced chip packaging) is completely unrelated to RBM's core EPC business, and the LOI is subject to 90-day due diligence. These announcements drove the 17% single-day surge — but whether any materialise into real business by FY27 is a separate question.</div></div>
+
+  <div class="point"><div class="dot da">5</div><div><strong>GST demand of ₹9.94 Cr — auditor-noted liability.</strong><br>The GST demand (₹9.94 Cr, with ₹4.30 Cr already paid) appeared in the April 2026 disclosure as an auditor note. For a company with PAT of ~₹46 Cr, a ₹9.94 Cr demand is material (~22% of annual profit). The full demand could be contested but represents a genuine liability. It also raises questions about tax compliance quality — something that wouldn't typically surface in auditor notes for well-governed companies.</div></div>
+
+  <div class="point"><div class="dot da">6</div><div><strong>Oil field operations = new competency, not proven track record.</strong><br>Operating an oil field (drilling, extraction, production management) is fundamentally different from EPC construction. RBM has 25+ years of EPC experience but zero prior oil production experience before the Nandej contract. The fact that they drilled 2 successful wells within 3 months is encouraging — but long-term oil field management (well workovers, enhanced recovery, reservoir management) requires expertise that takes years to build. Any well integrity failure or production disappointment at Nandej directly impacts the core investment thesis.</div></div>
+
+  <div class="point"><div class="dot dg">+</div><div><strong>Genuine strengths that make this interesting despite the risks:</strong><br>Net debt-free balance sheet. ONGC as anchor client provides AAA-rated counterparty for the 15-year contract. Proven EPC execution (87 projects completed). 175% revenue growth H1 FY26 is real. Reliance Industries as client = quality signal. Order book of 10x market cap is unusual. Planned main board migration = will attract institutional investors. Management equity stake at 62.5% = aligned promoter. The Nandej production enhancement model (if it works at scale) is genuinely interesting — RBM produces the oil and keeps 66% of revenue without owning the field outright.</div></div>
+</div>
+
+<!-- SCENARIOS -->
+<div id="scenarios" class="panel">
+  <div class="sh">Three scenarios — from Garvit's cost of ~₹402 (₹1,60,780 for 400 shares)</div>
+  <div class="warn caution"><strong>Important framing for RBM Infracon:</strong> The stock has already corrected sharply from its 52-week high of ₹524.80 to ₹422 — a -20% fall. Garvit bought at approximately ₹401.95 and is currently +5.2%. The valuation at 11x trailing PE is cheap on the surface — but the ONGC revenue quality (crude-price-linked) and concentration risk justify this discount vs higher-quality EPC companies like DEE Development.</div>
+
+  <div class="scenario" style="border-left:3px solid #1D9E75">
+    <div style="font-size:13px;font-weight:500;color:#0F6E56;margin-bottom:8px">Bull case — 2.5–3x in 2 years: Nandej scales, more wells, main board migration</div>
+    <div class="sc-grid">
+      <div class="sc-cell"><div class="sc-l">FY27 revenue</div><div class="sc-v">₹700–800 Cr</div></div>
+      <div class="sc-cell"><div class="sc-l">FY27 EBITDA%</div><div class="sc-v">~14–15%</div></div>
+      <div class="sc-cell"><div class="sc-l">FY27 PAT</div><div class="sc-v">₹65–85 Cr</div></div>
+      <div class="sc-cell"><div class="sc-l">Forward PE</div><div class="sc-v">12–15x</div></div>
+      <div class="sc-cell"><div class="sc-l">Mcap implied</div><div class="sc-v">₹780–1,275 Cr</div></div>
+      <div class="sc-cell"><div class="sc-l">Return</div><div class="sc-v">1.7–2.8x</div></div>
+    </div>
+    <div style="font-size:11.5px;color:#333;margin-top:8px"><strong>What must happen:</strong> Nandej additional wells drilled (each well adds ~25–75 BOPD at crude $75+), main board migration completes attracting institutional interest, Oman subsidiary wins 1–2 Middle East contracts, new EPC orders from Reliance/refineries continue. Crude sustains above $70. Semiconductor LOI converts to actual project (very unlikely in 2 years but could be a stock catalyst). At 15x PE on ₹80 Cr PAT = ₹1,200 Cr mcap = 2.7x from current ₹448 Cr. <strong>3x is possible but requires Nandej scaling significantly and main board PE re-rating.</strong></div>
+  </div>
+
+  <div class="scenario" style="border-left:3px solid #378ADD">
+    <div style="font-size:13px;font-weight:500;color:#185FA5;margin-bottom:8px">Base case — 1.5–2x in 2 years: Steady ONGC revenues + core EPC growth</div>
+    <div class="sc-grid">
+      <div class="sc-cell"><div class="sc-l">FY27 revenue</div><div class="sc-v">₹600–700 Cr</div></div>
+      <div class="sc-cell"><div class="sc-l">FY27 PAT</div><div class="sc-v">₹55–70 Cr</div></div>
+      <div class="sc-cell"><div class="sc-l">Forward PE</div><div class="sc-v">11–13x</div></div>
+      <div class="sc-cell"><div class="sc-l">Mcap implied</div><div class="sc-v">₹600–910 Cr</div></div>
+      <div class="sc-cell"><div class="sc-l">Return</div><div class="sc-v">1.3–2.0x</div></div>
+      <div class="sc-cell"><div class="sc-l">Timeline</div><div class="sc-v">FY27</div></div>
+    </div>
+    <div style="font-size:11.5px;color:#333;margin-top:8px">Nandej stays at 100 BOPD (no new wells drilled yet). Core EPC grows 20–25% organically. PAT ₹60 Cr at 12x PE = ₹720 Cr mcap = 1.6x. <strong>Base case is 1.5–2x — reasonable but below Garvit's 3x goal.</strong> The primary driver of upside is whether Nandej scales beyond 2 wells.</div>
+  </div>
+
+  <div class="scenario" style="border-left:3px solid #A32D2D">
+    <div style="font-size:13px;font-weight:500;color:#A32D2D;margin-bottom:8px">Bear case — -30 to -50%: Crude crash + semiconductor LOI falls through + liquidity squeeze</div>
+    <div class="sc-grid">
+      <div class="sc-cell"><div class="sc-l">Trigger</div><div class="sc-v">Crude falls to $50/barrel</div></div>
+      <div class="sc-cell"><div class="sc-l">Trigger</div><div class="sc-v">SUJOK LOI fails due diligence</div></div>
+      <div class="sc-cell"><div class="sc-l">Trigger</div><div class="sc-v">GST demand escalates</div></div>
+      <div class="sc-cell"><div class="sc-l">FY27 revenue</div><div class="sc-v">₹350–450 Cr</div></div>
+      <div class="sc-cell"><div class="sc-l">FY27 PAT</div><div class="sc-v">₹25–35 Cr</div></div>
+      <div class="sc-cell"><div class="sc-l">Mcap</div><div class="sc-v">₹250–350 Cr</div></div>
+    </div>
+    <div style="font-size:11.5px;color:#333;margin-top:8px"><strong>Bear probability: 25–30%.</strong> If crude falls sharply, ONGC revenue shrinks, semiconductor LOI (which drove 17% rally) fails due diligence, and sentiment collapses on SME illiquid stock — the stock revisits ₹267 (52-week low) = -37% from Garvit's cost. GST demand remaining unresolved adds pressure. This bear case has happened recently — stock was at ₹267 just months ago.</div>
+  </div>
+
+  <table style="margin-top:10px">
+    <tr><th>Target from Garvit's cost (₹402)</th><th>Target price</th><th>Driver</th><th>Timeline</th><th>Probability</th></tr>
+    <tr><td>3x (₹1,206)</td><td>₹1,206/share</td><td>Nandej scales to 500 BOPD + PE expansion to 20x</td><td>FY28–29</td><td class="r">10–15%</td></tr>
+    <tr><td>2x (₹804)</td><td>₹804/share</td><td>FY27 PAT ₹65 Cr at 14x PE = ₹910 Cr mcap</td><td>FY27</td><td class="a">25–30%</td></tr>
+    <tr><td>1.5x (₹603)</td><td>₹603/share</td><td>Steady ONGC + core EPC execution at 12x PE</td><td>FY27</td><td class="g">35–40%</td></tr>
+    <tr><td>Bear (-30%: ₹281)</td><td>₹281/share</td><td>Crude crash + LOI disappointment + illiquidity</td><td>—</td><td class="a">25–30%</td></tr>
+  </table>
+</div>
+
+<!-- SECTOR LANDSCAPE -->
+<div id="sectormap" class="panel">
+  <div class="sh">Industrial EPC / Oil & Gas services sector — the competitive map</div>
+  <div class="warn info"><strong>RBM Infracon operates in two overlapping sectors:</strong> (1) Industrial EPC/maintenance — a fragmented, competitive market dominated by L&T, Afcons, and specialised mid-tier players like DEE Development, and (2) Upstream oil field services — a high-barrier market dominated by global oilfield service companies (Halliburton, Baker Hughes, Schlumberger) with a few Indian players like ONGC-related subsidiaries and smaller Production Enhancement Contract operators.</div>
+
+  <div class="sector-card">
+    <div class="sc-hdr"><div><div class="sc-nm">DEE Development Engineers — Direct peer, already analyzed (9.0/10 conviction)</div><div class="sc-tg">₹2,827 Cr mcap · Oil/gas piping · Nuclear · ₹50-75K allocation recommended</div></div><span class="badge ba">Strong comparable — better quality</span></div>
+    <div class="sc-bd">DEE Development is the closest listed peer to RBM Infracon's EPC/industrial services business. Both serve oil refineries, petrochemicals, and process industries. Key differences: DEE has diversified clients (50+), is entering nuclear sector, has better EBITDA margins (13–17%), and trades at 13–19x forward PE. DEE's order book (~₹700 Cr) is smaller but more diversified. <strong>DEE Development has significantly better governance (formal earnings calls, diversified order book, no SME listing concerns) for similar sector exposure. If choosing between the two, DEE is the better quality bet.</strong></div>
+  </div>
+
+  <div class="sector-card">
+    <div class="sc-hdr"><div><div class="sc-nm">RBM Infracon — Your stock</div><div class="sc-tg">₹448 Cr mcap · ₹4,531 Cr order book (10x mcap) · 11x PE · SME listed</div></div><span class="badge ba">Intriguing but speculative</span></div>
+    <div class="sc-bd">RBM's order book-to-mcap ratio of 10x is extraordinary. But the quality of that order book matters: 77% is ONGC Nandej (crude-price-dependent production contract), not traditional fixed-price EPC. The remaining 23% is solid EPC. The company is transitioning from pure EPC contractor to integrated industrial services + oil production company. This transition, if successful, could re-rate the stock significantly. But it introduces new risks (oilfield operations, crude exposure) that didn't exist two years ago.</div>
+  </div>
+</div>
+
+<!-- FULL COMPARISON -->
+<div id="compare" class="panel">
+  <div class="sh">RBM Infracon vs industrial EPC peers — full comparison</div>
+  <div style="border:1px solid #ddd;border-radius:10px;overflow:hidden;font-size:11px">
+    <div class="comp-h">
+      <div class="cc-h" style="background:#f5f5f3">Metric</div>
+      <div class="cc-h" style="background:#FFF3E0;color:#E65100">RBM Infracon ← Your stock</div>
+      <div class="cc-h" style="background:#E6F1FB;color:#185FA5">DEE Development</div>
+      <div class="cc-h" style="background:#f5f5f3">Capacite Infraprojects</div>
+    </div>
+    <div class="comp-row"><div class="cc cc-label">Market cap</div><div class="cc winner-cell">₹448 Cr</div><div class="cc mid-cell">₹2,827 Cr</div><div class="cc mid-cell">~₹1,200 Cr</div></div>
+    <div class="comp-row"><div class="cc cc-label">Revenue (FY26E)</div><div class="cc mid-cell">~₹500 Cr (+3x YoY)</div><div class="cc winner-cell">~₹800–900 Cr</div><div class="cc winner-cell">~₹2,000+ Cr</div></div>
+    <div class="comp-row"><div class="cc cc-label">Revenue growth quality</div><div class="cc loser-cell">Concentrated in 1 ONGC contract</div><div class="cc winner-cell">Diversified across 50+ clients</div><div class="cc mid-cell">Real estate/infra mix</div></div>
+    <div class="comp-row"><div class="cc cc-label">EBITDA margin</div><div class="cc mid-cell">~13–14%</div><div class="cc winner-cell">~14–17% (improving)</div><div class="cc mid-cell">~12–14%</div></div>
+    <div class="comp-row"><div class="cc cc-label">Trailing PE</div><div class="cc winner-cell">~11x (cheapest)</div><div class="cc mid-cell">~18–20x</div><div class="cc mid-cell">~15–18x</div></div>
+    <div class="comp-row"><div class="cc cc-label">Order book</div><div class="cc winner-cell">₹4,531 Cr (10x mcap)</div><div class="cc winner-cell">~₹700 Cr (diversified)</div><div class="cc winner-cell">₹5,000+ Cr</div></div>
+    <div class="comp-row"><div class="cc cc-label">Order book quality</div><div class="cc loser-cell">77% single client (ONGC)</div><div class="cc winner-cell">Diversified: oil/gas, nuclear, water</div><div class="cc winner-cell">Multiple real estate + infra clients</div></div>
+    <div class="comp-row"><div class="cc cc-label">Client concentration</div><div class="cc loser-cell">Very high (ONGC + Reliance)</div><div class="cc winner-cell">Low — 50+ clients</div><div class="cc mid-cell">Medium</div></div>
+    <div class="comp-row"><div class="cc cc-label">Listing platform</div><div class="cc loser-cell">SME (illiquid, ~7K shares/day)</div><div class="cc winner-cell">Main board (liquid)</div><div class="cc winner-cell">Main board (liquid)</div></div>
+    <div class="comp-row"><div class="cc cc-label">Promoter holding</div><div class="cc mid-cell">62.5%</div><div class="cc mid-cell">~70%+</div><div class="cc mid-cell">~55%</div></div>
+    <div class="comp-row"><div class="cc cc-label">Governance quality</div><div class="cc loser-cell">SME, delayed results, GST demand</div><div class="cc winner-cell">Main board, regular earnings calls</div><div class="cc winner-cell">Main board, quarterly results</div></div>
+    <div class="comp-row"><div class="cc cc-label">Commodity exposure</div><div class="cc loser-cell">Crude oil price (ONGC revenue)</div><div class="cc winner-cell">None — service-based only</div><div class="cc winner-cell">Steel/cement costs only</div></div>
+    <div class="comp-row"><div class="cc cc-label">New ventures risk</div><div class="cc loser-cell">Semiconductor, aerospace, drones (unproven)</div><div class="cc winner-cell">Nuclear (adjacent, logical)</div><div class="cc winner-cell">Focused on core</div></div>
+    <div class="comp-row"><div class="cc cc-label">3x probability (3yr)</div><div class="cc mid-cell">15–20% (requires Nandej scale)</div><div class="cc mid-cell">25–30% (quality EPC)</div><div class="cc loser-cell">10–15% (too large)</div></div>
+    <div class="comp-row"><div class="cc cc-label">Best for Garvit's goal</div><div class="cc">Speculative hold — ONGC contract interesting but risks are elevated</div><div class="cc">Better quality play in same sector — already in portfolio</div><div class="cc">Not a 3x play — wrong size</div></div>
+  </div>
+  <div class="warn caution" style="margin-top:12px"><strong>The most important comparison fact:</strong> Garvit already holds DEE Development — our 9.0/10 conviction pick for the industrial EPC/oil & gas services sector. DEE Development and RBM Infracon serve overlapping sectors. DEE has better governance, better client diversification, and a more predictable growth trajectory. Holding both creates sector redundancy. The question is whether RBM's ONGC production contract (a different, higher-risk, higher-ceiling business) justifies holding it alongside DEE. The answer depends entirely on conviction in the Nandej production story.</div>
+</div>
+
+<!-- VERDICT -->
+<div id="verdict" class="panel">
+  <div class="sh">The definitive verdict for Garvit's portfolio</div>
+
+  <div class="verdict-card" style="background:#FAEEDA;border:1px solid #F59E0B">
+    <div class="vc-h" style="color:#854F0B">RBM Infracon — Verdict: Speculative hold at current position (400 shares). Do NOT add significantly. Re-evaluate after Q4 FY26 results and semiconductor LOI due diligence outcome.</div>
+    <div class="vc-b">This is one of the most interesting yet most complex stocks in the portfolio to evaluate. Here's the complete, honest picture:<br><br><strong>The bull case is real but narrow:</strong><br>An ₹448 Cr company with a ₹4,531 Cr order book — 10x coverage — is genuinely unusual. The ONGC 15-year contract at 66% revenue share is a legitimate recurring revenue stream. If the Nandej field has rich reserves (geological surveys would tell us more), and if RBM drills 10–20 wells instead of just 2, this becomes a small oil production company as much as an EPC contractor — and small oil production companies at a ₹448 Cr mcap are worth multiples of current price if they prove reserves.<br><br><strong>The problems are also real:</strong><br>1. You already own DEE Development at ₹43K — which covers the same industrial EPC/oil & gas sector better (diversified, governed, main board). Two stocks for the same thesis is portfolio noise.<br>2. The semiconductor LOI is concerning — a ₹448 Cr company signing a "$1B semiconductor deal" with an unverified counterparty should trigger caution, not excitement. The 17% stock surge on this news may reverse if due diligence fails in 90 days.<br>3. SME illiquidity means your ₹1.69L position is hard to exit quickly without impacting the price.<br>4. The GST demand of ₹9.94 Cr appearing in auditor notes is a governance flag.<br><br><strong>The portfolio-specific recommendation:</strong><br>Your cost is ₹402/share. Current price ~₹422. You are +5.2%. This is a reasonable holding gain on an illiquid small-cap. Given: (a) it's your largest India holding at ₹1.69L, (b) you haven't formally analyzed it before, (c) the ONGC contract makes the business fundamentally more interesting than a plain EPC contractor, the right move is to:<br>• Hold your 400 shares (do not buy more at this stage)<br>• Wait for the semiconductor LOI due diligence outcome (90 days from April 18 = mid-July 2026)<br>• Monitor Nandej well production data quarterly<br>• If semiconductor LOI collapses → consider trimming to ₹80–90K (sell 150 shares) and redirecting to EFC I or RPSG Ventures<br>• If ONGC production scales to 200+ BOPD → this becomes a hold and potentially a top-up</div>
+  </div>
+
+  <div class="sh">Allocation recommendation</div>
+  <table>
+    <tr><th>Stock</th><th>Action</th><th>Amount</th><th>Rationale</th></tr>
+    <tr><td><strong>RBM Infracon (currently held)</strong></td><td><span class="badge ba">HOLD 400 shares — do not add</span></td><td>Hold ₹1,69,180 as is</td><td>ONGC contract interesting but illiquid SME with governance concerns and semiconductor LOI speculation. Let the 90-day due diligence play out. +5.2% is already a decent gain to protect. Review in July 2026 after LOI outcome and Q4 FY26 results.</td></tr>
+    <tr><td><strong>DEE Development (portfolio overlap)</strong></td><td><span class="badge bg">Preferred EPC play — add ₹25K</span></td><td>Increase from ₹43K → ₹68K</td><td>Same sector, better quality, main board, diversified clients, nuclear ambition. DEE Development should be your primary EPC exposure, not RBM Infracon.</td></tr>
+  </table>
+
+  <div class="sh">Six triggers to watch quarterly</div>
+  <table>
+    <tr><th>#</th><th>Trigger</th><th>Status</th><th>Impact if triggered</th></tr>
+    <tr><td>1</td><td>Semiconductor LOI due diligence outcome (90 days)</td><td class="a">Mid-July 2026 deadline</td><td>🔴 If LOI fails → sell 150 shares. 🟢 If project advances to financial close → strong re-rating signal</td></tr>
+    <tr><td>2</td><td>Nandej well production data (BOPD)</td><td class="g">100 BOPD currently (April 2026)</td><td>🟢 Each additional well (25–75 BOPD) = meaningful revenue. Watch quarterly disclosure for additional drilling plans.</td></tr>
+    <tr><td>3</td><td>Main board migration announcement</td><td class="a">Planned but no timeline</td><td>🟢 Main board listing = institutional entry possible, liquidity improves, PE re-rates. Major catalyst.</td></tr>
+    <tr><td>4</td><td>GST demand resolution</td><td class="r">₹9.94 Cr demand, ₹4.30 Cr paid</td><td>🟢 Full resolution = removes audit risk. 🔴 Escalation or additional demands = sell signal.</td></tr>
+    <tr><td>5</td><td>Crude oil prices (WTI/Brent)</td><td class="a">~$65–70/barrel (Apr 2026)</td><td>🔴 Below $55 = ONGC revenue shrinks materially. 🟢 Above $80 = ONGC margins expand, revenue beats.</td></tr>
+    <tr><td>6</td><td>Q4 FY26 full year results</td><td class="a">Pending disclosure</td><td>🟢 FY26 PAT >₹50 Cr confirms thesis. 🔴 If PAT <₹35 Cr (margin issues) = reassess position size.</td></tr>
+  </table>
+
+  <div class="warn orange" style="margin-top:12px"><strong>One-line verdict for Garvit's portfolio:</strong> RBM Infracon is a genuinely interesting company — a small EPC contractor transformed by a 15-year ONGC oil field contract worth ₹3,498 Cr — but it carries SME illiquidity, single-client concentration, crude oil price exposure, and an April 2026 diversification sprint (semiconductor, drones, Oman) that is more announcement than reality. Your 400-share position at ₹1.69L is the right size for current conviction. Hold it. Watch the three key triggers (semiconductor due diligence, Nandej production scale, main board migration). Do not add more until at least two of the three resolve positively — and continue to prefer DEE Development for new industrial EPC allocation.</div>
+</div>
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/4.4.1/chart.umd.js"></script>
+<script>
+function show(id,btn){
+  document.querySelectorAll('.tab').forEach(t=>t.classList.remove('active'));
+  document.querySelectorAll('.panel').forEach(p=>p.classList.remove('active'));
+  btn.classList.add('active');
+  document.getElementById(id).classList.add('active');
+}
+new Chart(document.getElementById('rc').getContext('2d'),{
+  type:'bar',
+  data:{
+    labels:['FY22','FY23','FY24','H1 FY25','Q4 FY25','H1 FY26','FY26E','FY27E','FY28E'],
+    datasets:[
+      {label:'Revenue ₹ Cr',data:[40,85,160,103.79,153.54,284.19,520,675,850],backgroundColor:['#185FA5','#185FA5','#185FA5','#185FA5','#1D9E75','#1D9E75','#93c5fd','#93c5fd','#93c5fd'],borderRadius:4,yAxisID:'y'},
+      {label:'PAT ₹ Cr',data:[3,7,14,9.9,12.87,26.91,48,68,90],type:'line',borderColor:'#1D9E75',backgroundColor:'transparent',pointBackgroundColor:'#1D9E75',tension:0.3,yAxisID:'y2'}
+    ]
+  },
+  options:{responsive:true,maintainAspectRatio:false,plugins:{legend:{display:false}},scales:{y:{ticks:{font:{size:10}}},y2:{position:'right',ticks:{font:{size:10}},grid:{drawOnChartArea:false}},x:{ticks:{font:{size:10}}}}}
+});
+</script>
+</body>
+</html>

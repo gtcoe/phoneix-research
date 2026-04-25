@@ -1,0 +1,546 @@
+<!DOCTYPE html>
+<html><head><meta charset="utf-8">
+<style>
+*{box-sizing:border-box;margin:0;padding:0}
+body{font-family:system-ui,sans-serif;padding:16px;background:#fff;color:#1a1a1a;font-size:14px}
+h1{font-size:20px;font-weight:500;margin-bottom:3px}
+.sub{font-size:12px;color:#666;margin-bottom:14px}
+.sg{display:grid;grid-template-columns:repeat(auto-fill,minmax(110px,1fr));gap:8px;margin-bottom:16px}
+.sc{background:#f5f5f3;border-radius:8px;padding:10px 12px}
+.sl{font-size:10px;color:#666;margin-bottom:2px}
+.sv{font-size:17px;font-weight:500}
+.tab-row{display:flex;gap:5px;flex-wrap:wrap;margin-bottom:14px}
+.tab{font-size:11.5px;padding:5px 13px;border-radius:20px;border:1px solid #ddd;background:#fff;cursor:pointer;white-space:nowrap}
+.tab.active{background:#1a1a1a;color:#fff;border-color:#1a1a1a}
+.panel{display:none}.panel.active{display:block}
+.sh{font-size:10.5px;font-weight:500;color:#666;text-transform:uppercase;letter-spacing:.06em;margin:16px 0 7px;padding-bottom:5px;border-bottom:1px solid #eee}
+table{width:100%;border-collapse:collapse;font-size:12px;margin:8px 0}
+th{font-size:10.5px;font-weight:500;color:#666;padding:5px 7px;text-align:left;border-bottom:1px solid #eee;white-space:nowrap}
+td{padding:8px 7px;border-bottom:1px solid #eee;color:#1a1a1a;vertical-align:top}
+tr:last-child td{border-bottom:none}
+tr:hover td{background:#fafaf9}
+.g{color:#0F6E56;font-weight:500}.r{color:#A32D2D;font-weight:500}.a{color:#854F0B;font-weight:500}.b{color:#185FA5;font-weight:500}
+.badge{display:inline-block;font-size:10px;padding:2px 7px;border-radius:10px;white-space:nowrap}
+.bg{background:#E1F5EE;color:#0F6E56}.bb{background:#E6F1FB;color:#185FA5}.ba{background:#FAEEDA;color:#854F0B}.br{background:#FCEBEB;color:#A32D2D}.bgray{background:#f1f0e8;color:#5F5E5A}.bgold{background:#FFF8E1;color:#7B5E00}
+.warn{padding:10px 13px;margin:8px 0;border-left:3px solid;font-size:12px;line-height:1.65}
+.warn.success{background:#E1F5EE;border-color:#1D9E75;color:#04342C}
+.warn.caution{background:#FAEEDA;border-color:#BA7517;color:#412402}
+.warn.danger{background:#FCEBEB;border-color:#A32D2D;color:#712B13}
+.warn.info{background:#E6F1FB;border-color:#185FA5;color:#042C53}
+.warn.gold{background:#FFF8E1;border-color:#F9A825;color:#4A3000}
+.warn strong{font-weight:500}
+.chart-wrap{position:relative;width:100%;height:240px;margin:8px 0}
+.kpi-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:10px;margin:10px 0}
+.kpi{background:#f5f5f3;border-radius:8px;padding:10px 12px;border-left:3px solid transparent}
+.kpi.green{border-left-color:#1D9E75}.kpi.amber{border-left-color:#EF9F27}.kpi.blue{border-left-color:#378ADD}.kpi.red{border-left-color:#A32D2D}.kpi.gold{border-left-color:#F9A825}
+.kpi-l{font-size:10px;color:#666;margin-bottom:3px}
+.kpi-v{font-size:17px;font-weight:500}
+.kpi-s{font-size:10px;color:#888;margin-top:2px}
+.point{display:flex;gap:9px;align-items:flex-start;padding:9px 0;border-bottom:1px solid #eee;font-size:12px;line-height:1.6;color:#555}
+.point:last-child{border-bottom:none}
+.point strong{color:#1a1a1a;font-weight:500}
+.dot{width:19px;height:19px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:10px;font-weight:500;flex-shrink:0;margin-top:1px}
+.dg{background:#E1F5EE;color:#0F6E56}.dr{background:#FCEBEB;color:#A32D2D}.da{background:#FAEEDA;color:#854F0B}.db{background:#E6F1FB;color:#185FA5}.dgold{background:#FFF8E1;color:#7B5E00}
+.two-col{display:grid;grid-template-columns:1fr 1fr;gap:12px}
+.pane{border:1px solid #ddd;border-radius:10px;padding:13px}
+.pane-h{font-size:13px;font-weight:500;margin-bottom:9px}
+.scenario{border:1px solid #ddd;border-radius:10px;padding:13px;margin-bottom:9px}
+.sc-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:7px;margin:9px 0}
+.sc-cell{background:#f5f5f3;border-radius:6px;padding:7px 9px}
+.sc-l{font-size:10px;color:#666}
+.sc-v{font-size:12px;font-weight:500;margin-top:2px}
+.comp-h{display:grid;grid-template-columns:160px repeat(3,1fr);background:#f5f5f3;border-radius:8px 8px 0 0;overflow:hidden}
+.comp-row{display:grid;grid-template-columns:160px repeat(3,1fr);border-bottom:1px solid #eee}
+.comp-row:last-child{border-bottom:none}
+.cc{padding:8px 10px;font-size:11px;border-right:1px solid #eee}
+.cc:last-child{border-right:none}
+.cc-h{font-size:10px;font-weight:500;color:#444;padding:8px 10px;border-right:1px solid #ddd}
+.cc-h:last-child{border-right:none}
+.cc-label{color:#666;font-size:11px}
+.winner-cell{background:#E1F5EE}.mid-cell{background:#FAEEDA}.loser-cell{background:#fff5f5}
+.verdict-card{border-radius:10px;padding:13px 15px;margin-bottom:10px}
+.vc-h{font-size:13px;font-weight:500;margin-bottom:6px}
+.vc-b{font-size:12px;line-height:1.65;color:#444}
+.sector-card{border:1px solid #ddd;border-radius:10px;overflow:hidden;margin-bottom:10px}
+.sc-hdr{padding:10px 13px;display:flex;justify-content:space-between;align-items:center;background:#fafaf9}
+.sc-nm{font-size:13px;font-weight:500}
+.sc-tg{font-size:11px;color:#666;margin-top:2px}
+.sc-bd{padding:10px 13px;font-size:12px;line-height:1.65;color:#555;border-top:1px solid #eee}
+.sc-bd strong{color:#1a1a1a}
+.nav-row{display:grid;grid-template-columns:200px 1fr 1fr 1fr;border-bottom:1px solid #eee;font-size:11.5px}
+.nav-h{display:grid;grid-template-columns:200px 1fr 1fr 1fr;background:#f5f5f3;border-radius:8px 8px 0 0;overflow:hidden;font-size:10px;font-weight:500;color:#555}
+.nc{padding:9px 10px;border-right:1px solid #eee}
+.nc:last-child{border-right:none}
+.nav-total{background:#FFF8E1;font-weight:500;border-top:2px solid #F9A825}
+.sub-box{border:1px solid #ddd;border-radius:8px;padding:10px 12px;margin-bottom:8px;font-size:12px}
+.sub-nm{font-size:12px;font-weight:500;margin-bottom:3px}
+.sub-meta{font-size:10px;color:#666;margin-bottom:5px}
+.sub-bd{font-size:11.5px;color:#555;line-height:1.55}
+.sub-val{font-size:13px;font-weight:500;float:right}
+.guid-card{border-radius:10px;padding:12px 14px;margin-bottom:8px;border-left:3px solid #1D9E75;background:#f5f5f3}
+.guid-h{font-size:11.5px;font-weight:500;margin-bottom:4px}
+.guid-b{font-size:11.5px;color:#333;line-height:1.6}
+.guid-s{font-size:10px;color:#888;margin-top:4px}
+.guid-card.watch{background:#FAEEDA;border-left-color:#BA7517}.guid-card.watch .guid-h{color:#854F0B}
+.discount-bar{display:flex;align-items:center;gap:8px;margin:8px 0}
+.d-label{font-size:11px;width:150px;flex-shrink:0;color:#555}
+.d-track{flex:1;background:#f5f5f3;border-radius:4px;height:18px;overflow:hidden;position:relative}
+.d-nav{height:100%;background:#E1F5EE;display:flex;align-items:center;justify-content:flex-end;padding-right:6px;font-size:9px;color:#0F6E56;font-weight:500}
+.d-mkt{position:absolute;left:0;top:0;height:100%;display:flex;align-items:center;padding-left:6px;font-size:9px;color:#fff;font-weight:500}
+.disc-pct{font-size:11px;font-weight:500;width:80px;text-align:right;color:#A32D2D}
+</style>
+</head>
+<body>
+
+<h1>RPSG Ventures Ltd — Deep Investment Analysis</h1>
+<div class="sub">NSE: RPSGVENT · Holding company of RP-Sanjiv Goenka Group · Incorporated 2017 · Chairman: Sanjiv Goenka · Kolkata · Subsidiaries: Firstsource, LSG IPL, Too Yumm, Dr. Vaidya's, Mohun Bagan, Quest Mall + more</div>
+
+<div class="sg">
+  <div class="sc"><div class="sl">Market cap</div><div class="sv" style="color:#854F0B">~₹3,094 Cr</div></div>
+  <div class="sc"><div class="sl">Consolidated revenue</div><div class="sv" style="color:#1D9E75">₹10,937 Cr</div></div>
+  <div class="sc"><div class="sl">Consolidated PAT (TTM)</div><div class="sv" style="color:#854F0B">₹86 Cr</div></div>
+  <div class="sc"><div class="sl">Q3 FY26 PAT</div><div class="sv" style="color:#A32D2D">-₹111 Cr (loss)</div></div>
+  <div class="sc"><div class="sl">PB ratio</div><div class="sv" style="color:#1D9E75">~1.3x</div></div>
+  <div class="sc"><div class="sl">FSL stake value</div><div class="sv" style="color:#1D9E75">~₹7,950 Cr</div></div>
+  <div class="sc"><div class="sl">LSG IPL franchise</div><div class="sv" style="color:#F9A825">₹7,090 Cr cost</div></div>
+  <div class="sc"><div class="sl">52-week range</div><div class="sv" style="color:#854F0B">₹552–₹1,123</div></div>
+  <div class="sc"><div class="sl">Promoter holding</div><div class="sv" style="color:#1D9E75">63.5%</div></div>
+  <div class="sc"><div class="sl">NAV discount est.</div><div class="sv" style="color:#1D9E75">~80%</div></div>
+  <div class="sc"><div class="sl">Subsidiary count</div><div class="sv" style="color:#854F0B">30+ entities</div></div>
+  <div class="sc"><div class="sl">Credit rating</div><div class="sv" style="color:#1D9E75">IND A/Stable</div></div>
+</div>
+
+<div class="tab-row">
+  <button class="tab active" onclick="show('howto',this)">How to read this</button>
+  <button class="tab" onclick="show('nav',this)">NAV breakdown</button>
+  <button class="tab" onclick="show('subs',this)">Subsidiary deep dive</button>
+  <button class="tab" onclick="show('financials',this)">Financials</button>
+  <button class="tab" onclick="show('guidance',this)">Guidance</button>
+  <button class="tab" onclick="show('risks',this)">Risks</button>
+  <button class="tab" onclick="show('scenarios',this)">3x scenarios</button>
+  <button class="tab" onclick="show('compare',this)">Holding co. peers</button>
+  <button class="tab" onclick="show('verdict',this)">Final verdict</button>
+</div>
+
+<!-- HOW TO READ -->
+<div id="howto" class="panel active">
+  <div class="sh">CRITICAL: RPSG Ventures is a holding company — you must read it differently</div>
+  <div class="warn gold"><strong>Standard metrics (PE, revenue growth, PAT margin) are MEANINGLESS for RPSG Ventures.</strong> This is not a business — it is a collection of businesses. A negative consolidated PAT doesn't mean the company is doing badly. It means some subsidiaries are burning cash (Too Yumm FMCG) while others are generating excellent returns (Firstsource). The only correct way to value RPSG Ventures is Sum-of-Parts NAV Analysis — estimating the value of each subsidiary separately and then summing them up.</div>
+
+  <div class="sh">The holding company framework — how professionals value it</div>
+  <div class="two-col" style="margin:12px 0">
+    <div class="pane">
+      <div class="pane-h">What you ADD UP (NAV = sum of parts)</div>
+      <div class="point"><div class="dot dg">1</div><div><strong>Listed subsidiary stakes at market price:</strong> Firstsource Solutions (NSE: FSL) is publicly traded. RPSG holds ~53%. At FSL's current market price, this stake has a precise rupee value.</div></div>
+      <div class="point"><div class="dot dg">2</div><div><strong>Unlisted subsidiaries at estimated value:</strong> LSG IPL franchise, Too Yumm, Quest Mall, Dr. Vaidya's, etc. — valued using comparable transactions, revenue multiples, or industry benchmarks.</div></div>
+      <div class="point"><div class="dot dg">3</div><div><strong>Net debt adjustment:</strong> Subtract all consolidated debt, add cash holdings. RPSG Ventures has ₹1,155 Cr bank loans — reduces NAV.</div></div>
+      <div class="point"><div class="dot da">!</div><div><strong>Holding company discount applied:</strong> Indian holding cos trade at 20–50% discount to their intrinsic NAV. RPSG trades at ~80% discount — unusually steep.</div></div>
+    </div>
+    <div class="pane">
+      <div class="pane-h">Why the stock has been so volatile (₹552 → ₹1,123 in 1 year)</div>
+      <div class="point"><div class="dot dgold">1</div><div><strong>IPL franchise value re-rating:</strong> RCB sold at ₹16,660 Cr (Apr 2026). Rajasthan Royals valued at ₹14,000+ Cr. LSG franchise, bought for ₹7,090 Cr in 2021, could be worth ₹10,000–14,000 Cr today. This single fact has massively re-rated RPSG.</div></div>
+      <div class="point"><div class="dot dg">2</div><div><strong>Firstsource strong performance:</strong> FSL hit US$1B annualised revenue run-rate in FY25. Stock rallied. RPSG's 53% stake value rose proportionally.</div></div>
+      <div class="point"><div class="dot da">!</div><div><strong>Consolidated losses confuse retail investors:</strong> Q3 FY26 consolidated loss of ₹111 Cr looks scary. But it reflects Too Yumm brand investment and sports ops — not destruction of the underlying assets. Professional investors look through this.</div></div>
+      <div class="point"><div class="dot dgold">4</div><div><strong>Manchester Originals acquisition (₹1,200 Cr+ for The Hundred):</strong> RPSG bought 70% of Manchester Originals in Feb 2025 — expanding sports portfolio to the UK. More asset value being added that isn't yet visible in financials.</div></div>
+    </div>
+  </div>
+  <div class="warn info"><strong>Read this analysis like a private equity investor:</strong> What are all the underlying assets worth if sold today? That number (NAV) vs current market cap = the discount or premium. If NAV is ₹15,000+ Cr and market cap is ₹3,094 Cr, the discount of 80% is the investment opportunity — regardless of whether the consolidated P&L shows a loss or profit this quarter.</div>
+</div>
+
+<!-- NAV BREAKDOWN -->
+<div id="nav" class="panel">
+  <div class="sh">Sum-of-parts NAV analysis — the real value inside RPSG Ventures</div>
+
+  <div class="nav-h">
+    <div class="nc">Asset / Subsidiary</div>
+    <div class="nc">Methodology</div>
+    <div class="nc">Bear estimate</div>
+    <div class="nc">Bull estimate</div>
+  </div>
+
+  <div class="nav-row">
+    <div class="nc" style="color:#0F6E56;font-weight:500">🏢 Firstsource Solutions (53% stake)</div>
+    <div class="nc">Listed on NSE/BSE at ~₹215/share. 726 Cr shares × ₹215 = ₹15,609 Cr mcap. RPSG holds ~53% = ₹8,273 Cr.</div>
+    <div class="nc" style="color:#854F0B">₹7,000 Cr (at ₹190/FSL)</div>
+    <div class="nc" style="color:#0F6E56">₹9,500 Cr (at ₹260/FSL on 15% growth)</div>
+  </div>
+  <div class="nav-row">
+    <div class="nc" style="color:#F9A825;font-weight:500">🏏 Lucknow Super Giants (IPL franchise)</div>
+    <div class="nc">RCB sold ₹16,660 Cr (Apr '26). RR valued ₹14,000 Cr. LSG (UP market, consistent playoff contender, Rishabh Pant) = conservative ₹10,000–14,000 Cr. Net of ₹7,090 Cr acquisition debt/equity.</div>
+    <div class="nc" style="color:#854F0B">₹8,000 Cr (conservative)</div>
+    <div class="nc" style="color:#0F6E56">₹14,000 Cr (comparable to RR)</div>
+  </div>
+  <div class="nav-row">
+    <div class="nc" style="color:#185FA5;font-weight:500">🏟️ Manchester Originals (70%, The Hundred UK)</div>
+    <div class="nc">Paid £116M (~₹1,250 Cr) for full franchise. RPSG holds 70% = ~₹875 Cr cost. Growing sports asset. ECB's The Hundred gaining traction globally. Conservative at cost; upside at 1.5–2x.</div>
+    <div class="nc" style="color:#854F0B">₹875 Cr (at cost)</div>
+    <div class="nc" style="color:#0F6E56">₹1,750 Cr (2x on growth)</div>
+  </div>
+  <div class="nav-row">
+    <div class="nc" style="color:#5E35B1;font-weight:500">⚽ ATK Mohun Bagan (ISL football)</div>
+    <div class="nc">India's most iconic football club. ISL franchise value. Media rights, sponsorships, Kolkata fan base. Comparable: ISL franchises valued ₹200–700 Cr. Conservative.</div>
+    <div class="nc" style="color:#854F0B">₹300 Cr</div>
+    <div class="nc" style="color:#0F6E56">₹800 Cr</div>
+  </div>
+  <div class="nav-row">
+    <div class="nc" style="color:#D32F2F;font-weight:500">🛍️ Guiltfree Industries (Too Yumm, Evita, Naturali)</div>
+    <div class="nc">Revenue ~₹400–500 Cr, loss-making but growing brand. Similar brands (ITC Bingo, Lay's territory). At 2x revenue (discount for losses). Brand investment is building long-term value.</div>
+    <div class="nc" style="color:#A32D2D">₹0 (loss-making)</div>
+    <div class="nc" style="color:#854F0B">₹800 Cr (2x revenue on brand potential)</div>
+  </div>
+  <div class="nav-row">
+    <div class="nc" style="color:#2E7D32;font-weight:500">🌿 Dr. Vaidya's (Herbolab India — ayurveda)</div>
+    <div class="nc">Growing D2C ayurveda brand. Revenue ~₹100–150 Cr. Comparable brands: Kapiva (unlisted, ~₹800–1,000 Cr valuation). At 4–6x revenue.</div>
+    <div class="nc" style="color:#854F0B">₹300 Cr</div>
+    <div class="nc" style="color:#0F6E56">₹600 Cr</div>
+  </div>
+  <div class="nav-row">
+    <div class="nc" style="color:#795548;font-weight:500">🏙️ Quest Properties (Quest Mall Kolkata + Haldia)</div>
+    <div class="nc">Kolkata's first luxury mall + residential project in Haldia. Real estate + recurring mall income. Conservative NAV of land + building value.</div>
+    <div class="nc" style="color:#854F0B">₹400 Cr</div>
+    <div class="nc" style="color:#0F6E56">₹800 Cr</div>
+  </div>
+  <div class="nav-row">
+    <div class="nc" style="color:#7B1FA2;font-weight:500">👗 FSP Design (Falguni Shane Peacock, 40% stake)</div>
+    <div class="nc">India's premium luxury couture house. Falguni Shane Peacock IPO rumours at ₹3,000–5,000 Cr valuation. RPSG holds 40%. Small stake but luxury segment scarcity value.</div>
+    <div class="nc" style="color:#854F0B">₹400 Cr</div>
+    <div class="nc" style="color:#0F6E56">₹1,000 Cr</div>
+  </div>
+  <div class="nav-row">
+    <div class="nc" style="color:#F57C00;font-weight:500">🏏 Durban Super Giants (SA20 league, SA)</div>
+    <div class="nc">South Africa T20 league franchise. Early stage, growing media rights. Conservative.</div>
+    <div class="nc" style="color:#854F0B">₹200 Cr</div>
+    <div class="nc" style="color:#0F6E56">₹500 Cr</div>
+  </div>
+  <div class="nav-row">
+    <div class="nc" style="color:#424242;font-weight:500">💻 IT services (standalone RPSG Ventures entity)</div>
+    <div class="nc">Provides IT services to CESC group. Stable recurring income. Small but quality annuity revenue. At 15x standalone earnings.</div>
+    <div class="nc" style="color:#854F0B">₹200 Cr</div>
+    <div class="nc" style="color:#0F6E56">₹400 Cr</div>
+  </div>
+  <div class="nav-row" style="background:#FAEEDA">
+    <div class="nc" style="color:#A32D2D;font-weight:500">❌ Less: Net debt (bank loans ₹1,155 Cr + sports capex debt)</div>
+    <div class="nc">Total bank loans ₹1,155 Cr + sports franchise debt + FMCG working capital = estimated ₹2,000–3,000 Cr total net debt.</div>
+    <div class="nc" style="color:#A32D2D">-₹3,000 Cr</div>
+    <div class="nc" style="color:#A32D2D">-₹2,000 Cr</div>
+  </div>
+  <div class="nav-row nav-total">
+    <div class="nc" style="color:#0F6E56;font-weight:500">🎯 TOTAL ESTIMATED NAV</div>
+    <div class="nc" style="font-size:10px;color:#555">Sum of all parts minus net debt</div>
+    <div class="nc" style="color:#854F0B;font-size:14px;font-weight:600">~₹14,000–16,000 Cr (bear)</div>
+    <div class="nc" style="color:#0F6E56;font-size:14px;font-weight:600">~₹25,000–30,000 Cr (bull)</div>
+  </div>
+
+  <div class="sh">The discount: Market cap vs NAV</div>
+  <div class="warn gold"><strong>RPSG Ventures market cap: ~₹3,094 Cr. Bear case NAV: ₹14,000–16,000 Cr. That is a 78–81% discount to NAV.</strong> For context: Bajaj Holdings trades at ~35% NAV discount. Tata Investment at ~40%. RPSG at 80% is one of the steepest holding company discounts on the Indian market. The market is essentially valuing the sports portfolio, Too Yumm, Dr. Vaidya's, Manchester Originals, Quest Mall, and FSP Design at NEGATIVE ₹5,000 Cr — as if they are liabilities rather than assets. This is the investment opportunity.</div>
+
+  <div class="discount-bar">
+    <div class="d-label">Bajaj Holdings</div>
+    <div class="d-track"><div class="d-nav" style="width:65%">NAV</div><div class="d-mkt" style="width:65%;background:#1D9E75">65% (mkt)</div></div>
+    <div class="disc-pct">35% disc.</div>
+  </div>
+  <div class="discount-bar">
+    <div class="d-label">Tata Investment Corp</div>
+    <div class="d-track"><div class="d-nav" style="width:60%">NAV</div><div class="d-mkt" style="width:60%;background:#1D9E75">60% (mkt)</div></div>
+    <div class="disc-pct">40% disc.</div>
+  </div>
+  <div class="discount-bar">
+    <div class="d-label">RPSG Ventures</div>
+    <div class="d-track"><div class="d-nav" style="width:20%">NAV</div><div class="d-mkt" style="width:20%;background:#A32D2D">20% (mkt)</div></div>
+    <div class="disc-pct">~80% disc.</div>
+  </div>
+  <div class="discount-bar">
+    <div class="d-label">Godrej Industries</div>
+    <div class="d-track"><div class="d-nav" style="width:55%">NAV</div><div class="d-mkt" style="width:55%;background:#1D9E75">55% (mkt)</div></div>
+    <div class="disc-pct">45% disc.</div>
+  </div>
+</div>
+
+<!-- SUBSIDIARIES -->
+<div id="subs" class="panel">
+  <div class="sh">The 30+ subsidiaries — what each does and its significance</div>
+  <div class="warn info"><strong>RPSG Ventures has two types of subsidiaries:</strong> (1) Value creators — profitable, growing businesses that anchor the NAV (Firstsource, LSG IPL), and (2) Value builders — brands/assets being invested in that are burning cash now but building long-term equity (Too Yumm, Dr. Vaidya's, Manchester Originals). Understanding which category each falls into is essential.</div>
+
+  <div class="sh">Tier 1 — Value anchors (listed or near-listed, immediately assessable)</div>
+
+  <div class="sub-box">
+    <div class="sub-nm">Firstsource Solutions (NSE: FSL) — 53% stake <span class="sub-val" style="color:#0F6E56">~₹8,273 Cr stake value</span></div>
+    <div class="sub-meta">Global BPM leader · 34,651 employees · US, UK, India, Philippines, Mexico presence · 200+ clients including Fortune 500</div>
+    <div class="sub-bd">FY25: Revenue ₹8,600 Cr (+29% YoY), PAT ₹500+ Cr. Q3 FY26: Revenue +16.2% YoY, EBIT margin 11.9%. FY26 guidance: 14.5–15.5% revenue growth in constant currency, EBIT 11.5–12%. Acquisitions: Pastdue Credit Solutions (UK debt recovery), TeleMedik. Growing US healthcare BPM, banking automation. AI-driven "UnBPO" differentiation. <strong>This single stake at ~₹8,273 Cr is worth 2.7x RPSG Ventures' entire market cap. Buying RPSG is cheaper than buying FSL directly.</strong></div>
+  </div>
+
+  <div class="sh">Tier 2 — Sports assets (high value but illiquid, transaction-dependent)</div>
+
+  <div class="sub-box">
+    <div class="sub-nm">Lucknow Super Giants (IPL franchise) <span class="sub-val" style="color:#F9A825">~₹10,000–14,000 Cr estimated value</span></div>
+    <div class="sub-meta">Via RPSG Sports Private Limited · IPL franchise · Acquired 2021 for ₹7,090 Cr · Home: Ekana Stadium, Lucknow</div>
+    <div class="sub-bd">LSG has made playoffs in 2022 and 2023. Signed Rishabh Pant for ₹27 Cr (2024 auction — highest ever buy). Targets Uttar Pradesh's 240+ million population fan base. Revenue from BCCI broadcast rights share (~₹400–500 Cr/year guaranteed across IPL teams), sponsorships, ticket sales. IPL media rights deal: ₹48,390 Cr (2023–2027). <strong>RCB sold April 2026 at ₹16,660 Cr. Rajasthan Royals at ₹14,000+ Cr. LSG — with UP market, consistent performance, and star players — is conservatively worth ₹10,000–14,000 Cr. This is hidden wealth inside RPSG Ventures that the consolidated P&L cannot show.</strong></div>
+  </div>
+
+  <div class="sub-box">
+    <div class="sub-nm">Manchester Originals (70% stake, The Hundred UK) <span class="sub-val" style="color:#185FA5">~₹875 Cr (at cost)</span></div>
+    <div class="sub-meta">Via RPSG Sports Ventures Pvt Ltd · The Hundred cricket league (England & Wales) · 2025 acquisition</div>
+    <div class="sub-bd">RPSG paid £116M for 70% of Manchester Originals. Manchester — home of Man City, Man United — premium sports city. The Hundred is ECB's 100-ball cricket format gaining global interest. RPSG brings India market access and sports management expertise. Strategic: If The Hundred becomes a global franchise cricket platform (like IPL), Manchester Originals could be worth multiples of acquisition price. Long-term option value.</div>
+  </div>
+
+  <div class="sub-box">
+    <div class="sub-nm">ATK Mohun Bagan (ISL football) + Durban Super Giants (SA20) <span class="sub-val" style="color:#5E35B1">₹500–1,300 Cr combined</span></div>
+    <div class="sub-meta">ATK Mohun Bagan: India's most iconic football club · Durban Super Giants: SA20 cricket franchise · 2022</div>
+    <div class="sub-bd">ATK Mohun Bagan: 130+ year old club, massive Bengali fan base, ISL contenders, strong media value. ISL franchise values rising with new broadcast deals. Durban Super Giants: Early stage, SA20 growing with BCCI support. Together: meaningful sports diversification that few can replicate.</div>
+  </div>
+
+  <div class="sh">Tier 3 — Value builders (loss-making brands being built for the future)</div>
+
+  <div class="sub-box">
+    <div class="sub-nm">Guiltfree Industries (Too Yumm, Evita, Naturali) <span class="sub-val" style="color:#854F0B">₹0–800 Cr</span></div>
+    <div class="sub-meta">100% owned · Packaged snacks, personal care · Revenue ~₹400–500 Cr · Loss-making</div>
+    <div class="sub-bd">Too Yumm launched 2017 — low-calorie, baked/air-fried snacks. Targeted at health-conscious consumers. Evita: Traditional snacks. Naturali: Personal care. Within Beauty: Premium skincare (2024). Revenue growing but marketing/distribution investments keep it loss-making. <strong>This is where most of the consolidated losses come from. But the brands are real — Too Yumm competes directly with Lay's, Bingo!, and is backed by strong distribution. The question is whether RPSG will fund it to profitability or sell it.</strong></div>
+  </div>
+
+  <div class="sub-box">
+    <div class="sub-nm">Dr. Vaidya's (Herbolab India) + FSP Design (40% — Falguni Shane Peacock) <span class="sub-val" style="color:#2E7D32">₹700–1,600 Cr</span></div>
+    <div class="sub-meta">Dr. Vaidya's: D2C ayurveda brand · FSP Design: India's premier luxury couture (40% stake)</div>
+    <div class="sub-bd">Dr. Vaidya's: Growing in India's ₹30,000+ Cr ayurveda market. 20 new products in FY25 (gummies, toffees, MyPrash range). Three60/three60+ brands added. Competitive with Kapiva, Himalaya, Dabur youth brands. FSP Design: Falguni Shane Peacock — India's most prestigious fashion designer label. 40% stake acquired late 2025. Right to acquire additional 10% in 18–24 months. If FSP Design IPO happens at ₹3,000–5,000 Cr valuation, RPSG's 40% = ₹1,200–2,000 Cr. This is significant option value.</div>
+  </div>
+</div>
+
+<!-- FINANCIALS -->
+<div id="financials" class="panel">
+  <div class="sh">Financial history — why P&L is misleading, balance sheet is what matters</div>
+  <div class="warn caution"><strong>RPSG Ventures' consolidated P&L is a distorted picture</strong> because it mixes: (a) Firstsource (₹8,600 Cr revenue, profitable), (b) Sports (capital-intensive, below-the-line costs, massive asset value not in P&L), and (c) FMCG brands (investing phase, loss-making). The resulting consolidation produces sporadic profits/losses that do not reflect underlying asset value growth.</div>
+
+  <div class="chart-wrap"><canvas id="rc"></canvas></div>
+
+  <table>
+    <tr><th>Year</th><th>Revenue (cons.)</th><th>PAT (cons.)</th><th>Key driver</th><th>Underlying NAV change</th></tr>
+    <tr><td>FY21</td><td>₹5,663 Cr</td><td>₹58 Cr</td><td>Firstsource + IT services. Pre-sports capital.</td><td>Baseline. FSL growing steadily.</td></tr>
+    <tr><td>FY22</td><td>~₹6,800 Cr</td><td>~₹70 Cr</td><td>LSG franchise bid (₹7,090 Cr). Sports debt increases.</td><td>LSG asset added (₹7,090 Cr sunk). FSL growing.</td></tr>
+    <tr><td>FY23</td><td>~₹7,800 Cr</td><td>~₹90 Cr</td><td>LSG first IPL season. ATK Mohun Bagan. Durban.</td><td>LSG asset value debated. FSL +25%.</td></tr>
+    <tr><td>FY24</td><td>~₹8,800 Cr</td><td>Losses</td><td>Too Yumm losses + sports capex intensifying.</td><td>FSL gaining traction. Too Yumm brand building.</td></tr>
+    <tr><td>FY25</td><td>~₹9,710 Cr</td><td>~₹86 Cr (TTM)</td><td>FSL hits $1B revenue milestone. Manchester bid.</td><td>FSL mcap rises. Manchester Originals added (₹1,250 Cr). FSP Design stake.</td></tr>
+    <tr><td>Q3 FY26</td><td>₹2,756 Cr (quarterly)</td><td class="r">-₹111 Cr (loss)</td><td>Too Yumm/FMCG brand investment + sports losses.</td><td>LSG franchise value: implicit re-rating after RCB at ₹16,660 Cr.</td></tr>
+  </table>
+
+  <div class="sh">What the standalone entity looks like (cleaner picture)</div>
+  <div class="warn success"><strong>RPSG Ventures standalone entity (IT services to CESC group) is profitable and stable.</strong> This is the "boring core" that generates regular cash flows from providing IT infrastructure, billing software, analytics, and operations management to CESC's power distribution business. Stable, annuity-like income. It is the subsidiaries — especially Too Yumm FMCG — that create consolidated losses.</div>
+
+  <table>
+    <tr><th>Metric</th><th>Standalone entity</th><th>What it means</th></tr>
+    <tr><td>Business</td><td>IT services to CESC power group</td><td>Captive client = zero churn risk</td></tr>
+    <tr><td>Revenue</td><td>~₹150–200 Cr/year</td><td>Stable, growing with CESC's expansion</td></tr>
+    <tr><td>PAT</td><td>~₹30–50 Cr/year</td><td>20–25% PAT margin on standalone ops</td></tr>
+    <tr><td>Strategic value</td><td>CESC dependency = captive revenue</td><td>Low risk, low growth — annuity type</td></tr>
+  </table>
+
+  <div class="sh">Firstsource Solutions (FSL) — the anchor subsidiary financials</div>
+  <table>
+    <tr><th>Period</th><th>Revenue (USD)</th><th>Revenue (₹ Cr)</th><th>EBIT margin</th><th>PAT</th><th>FY26 guidance</th></tr>
+    <tr><td>FY24</td><td>~$750 M</td><td>~₹6,640 Cr</td><td>~10%</td><td>~₹400 Cr</td><td>—</td></tr>
+    <tr><td>FY25</td><td>$1B annualised</td><td>~₹8,600 Cr</td><td>~11%</td><td>~₹520 Cr</td><td>12–15% CC growth guided</td></tr>
+    <tr><td>Q3 FY26</td><td>$274 M quarterly</td><td>₹2,443 Cr</td><td>11.9%</td><td>₹120 Cr</td><td>14.5–15.5% CC growth; EBIT 11.5–12%</td></tr>
+    <tr><td>FY26E</td><td>~$1.15–1.2B</td><td>~₹9,800–10,200 Cr</td><td>~11.5%</td><td>~₹600+ Cr</td><td>Acquisitions: Pastdue Credit, TeleMedik</td></tr>
+  </table>
+  <div class="warn info"><strong>RPSG's 53% of FSL's FY26E PAT of ₹600 Cr = ₹318 Cr attributable to RPSG annually</strong> — on a total market cap of only ₹3,094 Cr. That's effectively a 10x PE on just the FSL contribution. Add sports, FMCG, and real estate at zero valuation and you're getting those for free.</div>
+</div>
+
+<!-- GUIDANCE -->
+<div id="guidance" class="panel">
+  <div class="sh">Guidance — holding companies don't give traditional guidance, but subsidiaries do</div>
+  <div class="warn gold"><strong>RPSG Ventures itself doesn't provide formal consolidated revenue/PAT guidance</strong> — because with 30+ subsidiaries, each moving at different paces, consolidated guidance would be misleading. But the major subsidiaries provide clear guidance that drives the value.</div>
+
+  <div class="sh">Firstsource Solutions guidance — the most important signal</div>
+  <div class="guid-card" style="background:#E1F5EE;border-left-color:#1D9E75">
+    <div class="guid-h" style="color:#0F6E56">✓ FSL FY26 guidance: 14.5–15.5% constant currency revenue growth, EBIT 11.5–12%</div>
+    <div class="guid-b">Firstsource began FY26 guiding 12–15% growth. Q1 FY26 they upgraded to 13–15%. Q3 FY26 further upgraded to 14.5–15.5% CC. This progressive upgrade trend is a positive signal. Organic growth is accelerating. Acquisitions (Pastdue Credit + TeleMedik) add ~1.5% incremental. FY26 full year FSL revenue should reach ₹9,800–10,200 Cr at current USD/INR. If FSL achieves 20%+ PAT growth, RPSG's attributable PAT contribution increases proportionally.</div>
+    <div class="guid-s">Credibility: 9/10. FSL has delivered on every guidance upgrade for 6 consecutive quarters.</div>
+  </div>
+  <div class="guid-card watch">
+    <div class="guid-h">⚠️ Sports portfolio — no formal guidance, but IPL franchise value catalysts are external</div>
+    <div class="guid-b">RPSG does not guide on LSG franchise value. But the IPL ecosystem provides catalysts: (1) IPL 2023–2027 broadcast rights at ₹48,390 Cr provides ₹400–500 Cr/year guaranteed income for each franchise, (2) RCB's sale at ₹16,660 Cr creates a market comparable for LSG's valuation, (3) IPL 2027 broadcast rights re-tender (expected ₹80,000+ Cr) would be the biggest single catalyst — it would revalue all 10 franchises simultaneously. RPSG's LSG would benefit enormously. Monitor: Next IPL broadcast rights auction timeline (expected late 2026 or early 2027).</div>
+    <div class="guid-s">Key watch: IPL broadcast rights renewal is the single biggest external catalyst for RPSG Ventures' NAV.</div>
+  </div>
+  <div class="guid-card watch">
+    <div class="guid-h">⚠️ Too Yumm path to profitability — no timeline given but critical for discount narrowing</div>
+    <div class="guid-b">RPSG Group states: "aims to become a large FMCG conglomerate with a multi-category play." No timeline for Too Yumm profitability has been given. The brand is investing in distribution (28 states, 2 UTs), celebrity marketing, new categories (microwave snacks, air fryers, puffs). If Too Yumm reaches profitability (say ₹600 Cr revenue at 5% PAT = ₹30 Cr), it stops being a drag and becomes a contributor. Any IPO announcement for Too Yumm or Dr. Vaidya's would be a massive re-rating trigger.</div>
+    <div class="guid-s">Watch trigger: Any announcement of Too Yumm becoming EBITDA positive, or any IPO filing for FMCG subsidiaries.</div>
+  </div>
+  <div class="guid-card">
+    <div class="guid-h">🎯 CESC renewable energy IPO (renewables business)</div>
+    <div class="guid-b">Chairman Sanjiv Goenka hinted at IPO for RPSG's renewables business in 12–18 months (Sep 2025 interview). CESC subsidiary "Purvah Green Power Private Limited" is building 3,200 MW hybrid renewable capacity by FY29. If this IPO happens and RPSG Ventures has any ownership linkage (possible through CESC → RPSG Ventures structure), it could unlock significant additional value. This is a watch item rather than confirmed guidance.</div>
+    <div class="guid-s">Monitor: Any announcement from Sanjiv Goenka on CESC renewables listing and RPSG Ventures' equity participation.</div>
+  </div>
+</div>
+
+<!-- RISKS -->
+<div id="risks" class="panel">
+  <div class="sh">Risks — what can keep the discount wide or widen it further</div>
+
+  <div class="point"><div class="dot dr">1</div><div><strong>Too Yumm losses are open-ended — how long will it burn cash?</strong><br>The consolidated loss in Q3 FY26 of ₹111 Cr is primarily from the FMCG brand investment. Too Yumm has been loss-making since 2017 — 8+ years. Without a clear path to profitability or a strategic sale, the market will continue pricing this as a liability. RPSG has not disclosed a timeline for Too Yumm turning EBITDA positive. If losses continue for another 3–5 years, it could absorb ₹1,000–2,000 Cr of capital that could have been distributed to RPSG Ventures shareholders.</div></div>
+
+  <div class="point"><div class="dot dr">2</div><div><strong>Holding company discount could persist or widen — India has limited precedents for large discount narrowing.</strong><br>Indian holding companies have historically maintained 30–60% discounts to NAV. RPSG's 80% discount, while extreme, may not narrow quickly. Without a catalyst (corporate restructuring, demerger, FMCG IPO, FSL stake sale), the discount simply persists. Investors looking for 3x in 3 years might find the timeline too uncertain. The IPL franchise is the wild card — its value won't be "realised" until there's a transaction (sale of partial stake, listing, or next broadcast rights cycle).</div></div>
+
+  <div class="point"><div class="dot da">3</div><div><strong>Firstsource growth dependent on US BPM market — Trump era policy risk.</strong><br>Firstsource earns ~60–65% of its revenue from the US market (healthcare BPM primarily). Any healthcare reform, insurance market disruption, or "Buy American" IT/BPO outsourcing restrictions could impact FSL's top line. Additionally, AI automation (of which FSL is a beneficiary, not victim, per management) remains a structural risk to the traditional BPM model if its "UnBPO" differentiation fails to hold. FSL is the anchor — if FSL underperforms, the entire RPSG Ventures NAV shrinks.</div></div>
+
+  <div class="point"><div class="dot da">4</div><div><strong>LSG sports performance risk — no IPL title affects brand value and sponsorships.</strong><br>LSG has never won an IPL title. It has missed playoffs in the last two seasons (2024, 2025). Poor on-field performance affects: (a) sponsorship renewal rates, (b) fan engagement, (c) BCCI's perception for renewal of franchise terms. While broadcast rights income is fixed, variable income from sponsorships and tickets depends on performance. Rishabh Pant's captaincy (bought for ₹27 Cr) is both a risk (what if he underperforms?) and an opportunity (if he leads LSG to title, franchise value jumps 20–30%).</div></div>
+
+  <div class="point"><div class="dot da">5</div><div><strong>Conglomerate complexity = permanent opacity discount.</strong><br>With 30+ subsidiaries across IT services, FMCG brands, sports franchises in 3 countries, real estate, luxury fashion, and ayurveda — RPSG Ventures is one of India's most complex listed entities. No sell-side analyst covers it comprehensively. Institutional investors struggle to value it. This complexity itself creates a discount that may never fully close without significant corporate simplification. Every new acquisition (Manchester, FSP Design) adds to complexity rather than reducing it.</div></div>
+
+  <div class="point"><div class="dot dg">+</div><div><strong>Genuine strengths that argue for discount narrowing:</strong><br>FSL at $1B revenue growing 15% = powerful anchor. IPL franchise comparable transactions re-rating LSG. Promoter at 63.5% — aligned, no pledge, quality governance at group level. Credit rating IND A/Stable — balance sheet credible. Sanjiv Goenka's reputation as a deal-maker (CESC acquisition of Rajasthan power distribution, Firstsource acquisition, IPL bid all proved prescient). Manchester Originals is the only Indian-owned UK cricket franchise — early mover. FSP Design stake in India's premier luxury brand is timing-sensitive option value.</div></div>
+</div>
+
+<!-- SCENARIOS -->
+<div id="scenarios" class="panel">
+  <div class="sh">Three scenarios — from current ~₹940 (₹3,094 Cr mcap)</div>
+  <div class="warn gold"><strong>RPSG Ventures' 3x scenario depends primarily on NAV discount narrowing, not earnings growth.</strong> Earnings (consolidated) may stay volatile/negative for years. But if the market re-rates from 80% NAV discount to 60% discount — triggered by FSL growth, IPL revaluation, or FMCG milestone — the stock re-rates massively without any fundamental change in cash earnings.</div>
+
+  <div class="scenario" style="border-left:3px solid #F9A825">
+    <div style="font-size:13px;font-weight:500;color:#7B5E00;margin-bottom:8px">Bull case — 4–6x in 3 years: IPL revaluation + FSL growth + FMCG milestone</div>
+    <div class="sc-grid">
+      <div class="sc-cell"><div class="sc-l">FSL stake (FY27)</div><div class="sc-v">₹10,000 Cr (FSL at ₹280)</div></div>
+      <div class="sc-cell"><div class="sc-l">LSG franchise (revalued)</div><div class="sc-v">₹14,000 Cr (comparable RR)</div></div>
+      <div class="sc-cell"><div class="sc-l">Others (FMCG+RE+sports)</div><div class="sc-v">₹3,000 Cr</div></div>
+      <div class="sc-cell"><div class="sc-l">Gross NAV</div><div class="sc-v">~₹27,000 Cr</div></div>
+      <div class="sc-cell"><div class="sc-l">Less: net debt</div><div class="sc-v">-₹2,500 Cr</div></div>
+      <div class="sc-cell"><div class="sc-l">Net NAV</div><div class="sc-v">~₹24,500 Cr</div></div>
+    </div>
+    <div style="font-size:11.5px;color:#333;margin-top:8px"><strong>At 40% NAV discount:</strong> Market cap = ₹14,700 Cr = <strong>4.7x from ₹3,094 Cr.</strong> What triggers this: (1) Next IPL broadcast rights tender (FY27) revalues all franchises, (2) FSL hits $1.5B revenue and trades at 30x PE, (3) Too Yumm achieves EBITDA break-even or is sold, (4) FSP Design IPO at ₹4,000 Cr valuation. All four aren't needed — any two of these four triggers would compress the discount from 80% to 50%, delivering 3x on its own.</div>
+  </div>
+
+  <div class="scenario" style="border-left:3px solid #378ADD">
+    <div style="font-size:13px;font-weight:500;color:#185FA5;margin-bottom:8px">Base case — 2–3x in 3 years: FSL grows, discount narrows modestly to 65%</div>
+    <div class="sc-grid">
+      <div class="sc-cell"><div class="sc-l">FSL stake (FY27)</div><div class="sc-v">₹9,000 Cr</div></div>
+      <div class="sc-cell"><div class="sc-l">LSG franchise</div><div class="sc-v">₹10,000 Cr (stable)</div></div>
+      <div class="sc-cell"><div class="sc-l">Others</div><div class="sc-v">₹2,000 Cr</div></div>
+      <div class="sc-cell"><div class="sc-l">Gross NAV</div><div class="sc-v">~₹21,000 Cr</div></div>
+      <div class="sc-cell"><div class="sc-l">At 65% discount</div><div class="sc-v">35% of NAV = ₹7,350 Cr</div></div>
+      <div class="sc-cell"><div class="sc-l">Return</div><div class="sc-v">2.4x from ₹3,094 Cr</div></div>
+    </div>
+    <div style="font-size:11.5px;color:#333;margin-top:8px">FSL grows 15% annually and trades at 30x PE. LSG franchise value recognised at ₹10,000 Cr. Discount narrows from 80% to 65% as institutional investors begin coverage. No major FMCG or sports catalysts. <strong>Base case delivers 2–2.4x — short of 3x but still compelling relative to absolute capital deployment.</strong></div>
+  </div>
+
+  <div class="scenario" style="border-left:3px solid #A32D2D">
+    <div style="font-size:13px;font-weight:500;color:#A32D2D;margin-bottom:8px">Bear case — flat to -30%: FSL disappoints + Too Yumm losses deepen</div>
+    <div class="sc-grid">
+      <div class="sc-cell"><div class="sc-l">Trigger</div><div class="sc-v">FSL US healthcare disruption</div></div>
+      <div class="sc-cell"><div class="sc-l">Trigger</div><div class="sc-v">Too Yumm losses ₹300+ Cr/yr</div></div>
+      <div class="sc-cell"><div class="sc-l">Trigger</div><div class="sc-v">IPL franchise value plateaus</div></div>
+      <div class="sc-cell"><div class="sc-l">FSL stake</div><div class="sc-v">₹5,500 Cr (FSL falls to ₹150)</div></div>
+      <div class="sc-cell"><div class="sc-l">Net NAV</div><div class="sc-v">~₹12,000 Cr</div></div>
+      <div class="sc-cell"><div class="sc-l">At 80% discount</div><div class="sc-v">₹2,400 Cr = -22%</div></div>
+    </div>
+    <div style="font-size:11.5px;color:#333;margin-top:8px"><strong>Bear probability: 20%.</strong> If FSL faces US macro headwinds AND Too Yumm burns another ₹1,000 Cr AND IPL value doesn't get transacted, the stock stays range-bound or falls. The bear case is driven by operational underperformance, not any governance collapse. Probability is low because FSL's guidance visibility is excellent.</div>
+  </div>
+
+  <table style="margin-top:10px">
+    <tr><th>Target</th><th>Mcap needed</th><th>Trigger</th><th>Timeline</th><th>Probability</th></tr>
+    <tr><td>5x (₹15,470 Cr)</td><td>₹15,470 Cr</td><td>IPL revaluation + FSL at ₹280 + FMCG milestone</td><td>FY28–FY29</td><td class="a">20–25%</td></tr>
+    <tr><td>3x (₹9,282 Cr)</td><td>₹9,282 Cr</td><td>FSL growth + 60% NAV discount vs current 80%</td><td>FY27</td><td class="g">35–40%</td></tr>
+    <tr><td>2x (₹6,188 Cr)</td><td>₹6,188 Cr</td><td>FSL at ₹240 + modest discount narrowing</td><td>FY26–FY27</td><td class="g">50%</td></tr>
+    <tr><td>Bear (flat/-30%)</td><td>₹2,166–3,094 Cr</td><td>FSL falls + FMCG losses worsen</td><td>—</td><td class="a">20%</td></tr>
+  </table>
+</div>
+
+<!-- HOLDING CO PEERS -->
+<div id="compare" class="panel">
+  <div class="sh">Indian holding company peers — how RPSG Ventures compares</div>
+  <div class="warn gold"><strong>Holding companies must be compared on: (1) NAV discount %, (2) Quality of underlying assets, (3) Clarity of path to discount narrowing.</strong> Revenue and PE are irrelevant comparisons.</div>
+  <div style="border:1px solid #ddd;border-radius:10px;overflow:hidden;font-size:11px">
+    <div class="comp-h">
+      <div class="cc-h" style="background:#f5f5f3">Metric</div>
+      <div class="cc-h" style="background:#FFF8E1;color:#7B5E00">RPSG Ventures ← Your stock</div>
+      <div class="cc-h" style="background:#E6F1FB;color:#185FA5">Bajaj Holdings</div>
+      <div class="cc-h" style="background:#f5f5f3">Tata Investment Corp</div>
+    </div>
+    <div class="comp-row"><div class="cc cc-label">Market cap</div><div class="cc winner-cell">₹3,094 Cr (small)</div><div class="cc loser-cell">₹55,000+ Cr</div><div class="cc mid-cell">₹40,000+ Cr</div></div>
+    <div class="comp-row"><div class="cc cc-label">Primary listed asset</div><div class="cc mid-cell">Firstsource Solutions (53%)</div><div class="cc winner-cell">Bajaj Finance + Bajaj Finserv (high quality)</div><div class="cc winner-cell">Tata Group stocks (diversified)</div></div>
+    <div class="comp-row"><div class="cc cc-label">Asset quality</div><div class="cc mid-cell">Good (FSL) + speculative (sports, FMCG)</div><div class="cc winner-cell">Excellent (India's top NBFC group)</div><div class="cc winner-cell">Excellent (Tata brand)</div></div>
+    <div class="comp-row"><div class="cc cc-label">Hidden/unlisted value</div><div class="cc winner-cell">Very large (LSG IPL ₹10,000+ Cr, brands)</div><div class="cc loser-cell">Limited (most assets listed)</div><div class="cc loser-cell">Limited (most assets listed)</div></div>
+    <div class="comp-row"><div class="cc cc-label">NAV discount (approx)</div><div class="cc winner-cell">~80% (massive discount)</div><div class="cc loser-cell">~35% (standard)</div><div class="cc loser-cell">~40% (standard)</div></div>
+    <div class="comp-row"><div class="cc cc-label">Complexity</div><div class="cc loser-cell">Extreme (30+ subs, sports + FMCG + IT + RE)</div><div class="cc winner-cell">Relatively simple</div><div class="cc mid-cell">Moderate</div></div>
+    <div class="comp-row"><div class="cc cc-label">Consolidated PAT trend</div><div class="cc loser-cell">Volatile / losses (FMCG + sports drag)</div><div class="cc winner-cell">Growing steadily</div><div class="cc winner-cell">Growing steadily</div></div>
+    <div class="comp-row"><div class="cc cc-label">3x probability (3yr)</div><div class="cc winner-cell">35–40% (large discount + catalysts)</div><div class="cc mid-cell">15–20% (high quality, large mcap)</div><div class="cc loser-cell">10–12% (too large)</div></div>
+    <div class="comp-row"><div class="cc cc-label">Catalyst clarity</div><div class="cc mid-cell">Medium (IPL + FSL growth + FMCG)</div><div class="cc winner-cell">High (quarterly NBFC results)</div><div class="cc winner-cell">High (Tata group performance)</div></div>
+    <div class="comp-row"><div class="cc cc-label">Best suited for</div><div class="cc">High-conviction value discovery play — patience required</div><div class="cc">Conservative holding company compounding</div><div class="cc">Tata group indirect exposure</div></div>
+  </div>
+
+  <div class="sh">Sector peers in sports/entertainment holding companies</div>
+  <div class="sector-card">
+    <div class="sc-hdr"><div><div class="sc-nm">Just Sports (unlisted) / IMG Reliance (unlisted)</div><div class="sc-tg">Sports entertainment companies — no direct listed comparables in India</div></div><span class="badge bgray">No listed peer exists</span></div>
+    <div class="sc-bd">There is no other listed Indian company that owns an IPL franchise AND a listed BPM company AND FMCG brands simultaneously. RPSG Ventures is genuinely unique — and that uniqueness is both a moat and a reason for its discount. Investors who understand the sports + digital + consumer convergence could see this as early positioning for a media/entertainment conglomerate transition.</div>
+  </div>
+</div>
+
+<!-- VERDICT -->
+<div id="verdict" class="panel">
+  <div class="sh">The definitive verdict for Garvit's 3x goal</div>
+
+  <div class="verdict-card" style="background:#FFF8E1;border:1px solid #F9A825">
+    <div class="vc-h" style="color:#7B5E00">RPSG Ventures — Verdict: Speculative high-conviction buy. ₹30,000–50,000. The most undervalued listed entity relative to its asset base in this entire session.</div>
+    <div class="vc-b">Let me give you the complete, honest picture on this uniquely complex stock.<br><br><strong>The core thesis in one sentence:</strong> You are buying ₹14,000–25,000 Cr of NAV for ₹3,094 Cr of market cap — an 80% discount — and if the discount narrows to even 55–60% (still a large discount), you triple your money without any earnings growth.<br><br><strong>Why the discount is so large and has persisted:</strong><br>1. Too Yumm losses create quarterly losses that scare off retail investors<br>2. Sports assets (IPL franchise) are effectively invisible in the P&L<br>3. 30+ subsidiaries create analytical paralysis<br>4. No dedicated sell-side coverage<br>5. Most institutional investors can't own illiquid sports assets<br><br><strong>What changes the narrative:</strong><br>1. IPL broadcast rights next tender (FY27) — will revalue all 10 franchises. LSG at ₹12,000+ Cr = alone > 4x RPSG's market cap<br>2. Firstsource sustained growth — every ₹10 rise in FSL adds ₹380+ Cr to RPSG's NAV<br>3. Too Yumm EBITDA break-even — removes the primary P&L drag<br>4. FSP Design IPO — luxury fashion is in early-innings premium in India<br>5. Manchester Originals appreciation — The Hundred gaining global traction<br><br><strong>What makes this different from other stocks this session:</strong> RPSG Ventures is the ONLY stock where you're buying already-existing, already-valuable assets at a massive discount. In Websol, DEE Development, or Vintage Coffee, you're betting on future execution. In RPSG Ventures, Firstsource's ₹8,273 Cr NAV contribution already exists, FSL's quarterly results are already excellent. The bet is simply that the discount narrows — not that the business succeeds.</div>
+  </div>
+
+  <div class="sh">Allocation recommendation</div>
+  <table>
+    <tr><th>Stock</th><th>Action</th><th>Amount</th><th>Rationale</th></tr>
+    <tr><td><strong>RPSG Ventures</strong></td><td><span class="badge bgold">High conviction speculative buy</span></td><td>₹30,000–50,000</td><td>~80% NAV discount is extreme. FSL alone is worth 2.7x RPSG's market cap. IPL franchise value unrecognised. 3x probability 35–40% via NAV discount narrowing. Stage entry: ₹20K now, add ₹15–30K on any dip below ₹800. Exit trigger: IPL broadcast rights event OR Too Yumm turned profitable — at that point reassess exit/continue.</td></tr>
+  </table>
+
+  <div class="sh">Six triggers to watch — these are what move RPSG Ventures' stock</div>
+  <table>
+    <tr><th>#</th><th>Trigger</th><th>Status</th><th>Expected impact if triggered</th></tr>
+    <tr><td>1</td><td>IPL broadcast rights renewal (FY27)</td><td class="a">Anticipated late 2026/early 2027</td><td>🔥 Massive — revalues all 10 franchises simultaneously. LSG at ₹12,000+ Cr = 4x RPSG market cap from this alone</td></tr>
+    <tr><td>2</td><td>FSL stock price (NSE: FSL)</td><td class="g">₹215, growing 15%/yr</td><td>Every ₹10 rise in FSL share = ₹380 Cr rise in RPSG's NAV. Watch FSL quarterly results closely.</td></tr>
+    <tr><td>3</td><td>Too Yumm EBITDA break-even / IPO</td><td class="r">Still loss-making (no timeline)</td><td>Any IPO filing or EBITDA-positive milestone removes consolidated drag — significant re-rating</td></tr>
+    <tr><td>4</td><td>FSP Design (Falguni Shane Peacock) IPO</td><td class="a">No timeline announced</td><td>At ₹4,000 Cr valuation: RPSG's 40% = ₹1,600 Cr = 50% of current market cap unlocked</td></tr>
+    <tr><td>5</td><td>Dr. Vaidya's / ayurveda brand monetisation</td><td class="a">Growing D2C, no IPO</td><td>Moderate — any strategic stake sale or listing at ₹500+ Cr valuation positive</td></tr>
+    <tr><td>6</td><td>CESC renewables IPO (group linkage)</td><td class="a">12–18 months per Goenka (Sep 2025)</td><td>If RPSG has indirect ownership via structure, adds further NAV component</td></tr>
+  </table>
+
+  <div class="warn gold" style="margin-top:12px"><strong>One-line verdict:</strong> RPSG Ventures is India's most underappreciated holding company — trading at an 80% discount to a conservative NAV that includes a ₹8,273 Cr FSL stake (alone worth 2.7x market cap) and an IPL franchise that comparable transactions suggest is worth ₹10,000–14,000 Cr. The confusion around consolidated losses, 30+ subsidiaries, and zero sell-side coverage creates an opportunity for patient investors. At current prices, you get Firstsource at 37 paise to the rupee, and the Lucknow Super Giants, Dr. Vaidya's, Too Yumm, Manchester Originals, Quest Mall, and Falguni Shane Peacock for free. Allocate ₹30,000–50,000 with patience — the triggers are real, and they're coming.</div>
+</div>
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/4.4.1/chart.umd.js"></script>
+<script>
+function show(id,btn){
+  document.querySelectorAll('.tab').forEach(t=>t.classList.remove('active'));
+  document.querySelectorAll('.panel').forEach(p=>p.classList.remove('active'));
+  btn.classList.add('active');
+  document.getElementById(id).classList.add('active');
+}
+new Chart(document.getElementById('rc').getContext('2d'),{
+  type:'bar',
+  data:{
+    labels:['FY21','FY22','FY23','FY24','FY25','Q3FY26(qtr)'],
+    datasets:[
+      {
+        label:'Revenue ₹ Cr (consolidated)',
+        data:[5663,6800,7800,8800,9710,2756],
+        backgroundColor:['#F9A825','#F9A825','#F9A825','#F9A825','#1D9E75','#EF9F27'],
+        borderRadius:4,yAxisID:'y'
+      },
+      {
+        label:'PAT ₹ Cr',
+        data:[58,70,90,-50,86,-111],
+        type:'line',
+        borderColor:'#A32D2D',
+        backgroundColor:'transparent',
+        pointBackgroundColor:'#A32D2D',
+        tension:0.3,yAxisID:'y2'
+      }
+    ]
+  },
+  options:{
+    responsive:true,
+    maintainAspectRatio:false,
+    plugins:{legend:{display:false}},
+    scales:{
+      y:{ticks:{font:{size:10}}},
+      y2:{position:'right',ticks:{font:{size:10}},grid:{drawOnChartArea:false}},
+      x:{ticks:{font:{size:10}}}
+    }
+  }
+});
+</script>
+</body>
+</html>

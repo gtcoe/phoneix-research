@@ -1,0 +1,447 @@
+<!DOCTYPE html>
+<html><head><meta charset="utf-8">
+<style>
+*{box-sizing:border-box;margin:0;padding:0}
+body{font-family:system-ui,sans-serif;padding:16px;background:#fff;color:#1a1a1a;font-size:14px}
+h1{font-size:20px;font-weight:500;margin-bottom:3px}
+.sub{font-size:12px;color:#666;margin-bottom:14px}
+.sg{display:grid;grid-template-columns:repeat(auto-fill,minmax(110px,1fr));gap:8px;margin-bottom:16px}
+.sc{background:#f5f5f3;border-radius:8px;padding:10px 12px}
+.sl{font-size:10px;color:#666;margin-bottom:2px}
+.sv{font-size:17px;font-weight:500}
+.tab-row{display:flex;gap:5px;flex-wrap:wrap;margin-bottom:14px}
+.tab{font-size:11.5px;padding:5px 13px;border-radius:20px;border:1px solid #ddd;background:#fff;cursor:pointer;white-space:nowrap}
+.tab.active{background:#1a1a1a;color:#fff;border-color:#1a1a1a}
+.panel{display:none}.panel.active{display:block}
+.sh{font-size:10.5px;font-weight:500;color:#666;text-transform:uppercase;letter-spacing:.06em;margin:16px 0 7px;padding-bottom:5px;border-bottom:1px solid #eee}
+table{width:100%;border-collapse:collapse;font-size:12px;margin:8px 0}
+th{font-size:10.5px;font-weight:500;color:#666;padding:5px 7px;text-align:left;border-bottom:1px solid #eee;white-space:nowrap}
+td{padding:8px 7px;border-bottom:1px solid #eee;color:#1a1a1a;vertical-align:top}
+tr:last-child td{border-bottom:none}
+tr:hover td{background:#fafaf9}
+.g{color:#0F6E56;font-weight:500}.r{color:#A32D2D;font-weight:500}.a{color:#854F0B;font-weight:500}.b{color:#185FA5;font-weight:500}
+.badge{display:inline-block;font-size:10px;padding:2px 7px;border-radius:10px;white-space:nowrap}
+.bg{background:#E1F5EE;color:#0F6E56}.bb{background:#E6F1FB;color:#185FA5}.ba{background:#FAEEDA;color:#854F0B}.br{background:#FCEBEB;color:#A32D2D}.bgray{background:#f1f0e8;color:#5F5E5A}.bsky{background:#E0F7FA;color:#006064}.bdefense{background:#E8EAF6;color:#283593}
+.warn{padding:10px 13px;margin:8px 0;border-left:3px solid;font-size:12px;line-height:1.65}
+.warn.success{background:#E1F5EE;border-color:#1D9E75;color:#04342C}
+.warn.caution{background:#FAEEDA;border-color:#BA7517;color:#412402}
+.warn.danger{background:#FCEBEB;border-color:#A32D2D;color:#712B13}
+.warn.info{background:#E6F1FB;border-color:#185FA5;color:#042C53}
+.warn.sky{background:#E0F7FA;border-color:#0097A7;color:#004D56}
+.warn.defense{background:#E8EAF6;border-color:#3949AB;color:#1A237E}
+.warn strong{font-weight:500}
+.chart-wrap{position:relative;width:100%;height:240px;margin:8px 0}
+.kpi-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:10px;margin:10px 0}
+.kpi{background:#f5f5f3;border-radius:8px;padding:10px 12px;border-left:3px solid transparent}
+.kpi.green{border-left-color:#1D9E75}.kpi.amber{border-left-color:#EF9F27}.kpi.blue{border-left-color:#378ADD}.kpi.red{border-left-color:#A32D2D}.kpi.sky{border-left-color:#0097A7}.kpi.defense{border-left-color:#3949AB}
+.kpi-l{font-size:10px;color:#666;margin-bottom:3px}
+.kpi-v{font-size:17px;font-weight:500}
+.kpi-s{font-size:10px;color:#888;margin-top:2px}
+.point{display:flex;gap:9px;align-items:flex-start;padding:9px 0;border-bottom:1px solid #eee;font-size:12px;line-height:1.6;color:#555}
+.point:last-child{border-bottom:none}
+.point strong{color:#1a1a1a;font-weight:500}
+.dot{width:19px;height:19px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:10px;font-weight:500;flex-shrink:0;margin-top:1px}
+.dg{background:#E1F5EE;color:#0F6E56}.dr{background:#FCEBEB;color:#A32D2D}.da{background:#FAEEDA;color:#854F0B}.db{background:#E6F1FB;color:#185FA5}.ds{background:#E0F7FA;color:#006064}.dd{background:#E8EAF6;color:#283593}
+.two-col{display:grid;grid-template-columns:1fr 1fr;gap:12px}
+.pane{border:1px solid #ddd;border-radius:10px;padding:13px}
+.pane-h{font-size:13px;font-weight:500;margin-bottom:9px}
+.scenario{border:1px solid #ddd;border-radius:10px;padding:13px;margin-bottom:9px}
+.sc-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:7px;margin:9px 0}
+.sc-cell{background:#f5f5f3;border-radius:6px;padding:7px 9px}
+.sc-l{font-size:10px;color:#666}
+.sc-v{font-size:12px;font-weight:500;margin-top:2px}
+.comp-h{display:grid;grid-template-columns:160px repeat(3,1fr);background:#f5f5f3;border-radius:8px 8px 0 0;overflow:hidden}
+.comp-row{display:grid;grid-template-columns:160px repeat(3,1fr);border-bottom:1px solid #eee}
+.comp-row:last-child{border-bottom:none}
+.cc{padding:8px 10px;font-size:11px;border-right:1px solid #eee}
+.cc:last-child{border-right:none}
+.cc-h{font-size:10px;font-weight:500;color:#444;padding:8px 10px;border-right:1px solid #ddd}
+.cc-h:last-child{border-right:none}
+.cc-label{color:#666;font-size:11px}
+.winner-cell{background:#E1F5EE}.mid-cell{background:#FAEEDA}.loser-cell{background:#fff5f5}
+.verdict-card{border-radius:10px;padding:13px 15px;margin-bottom:10px}
+.vc-h{font-size:13px;font-weight:500;margin-bottom:6px}
+.vc-b{font-size:12px;line-height:1.65;color:#444}
+.sector-card{border:1px solid #ddd;border-radius:10px;overflow:hidden;margin-bottom:10px}
+.sc-hdr{padding:10px 13px;display:flex;justify-content:space-between;align-items:center;background:#fafaf9}
+.sc-nm{font-size:13px;font-weight:500}
+.sc-tg{font-size:11px;color:#666;margin-top:2px}
+.sc-bd{padding:10px 13px;font-size:12px;line-height:1.65;color:#555;border-top:1px solid #eee}
+.sc-bd strong{color:#1a1a1a}
+.guid-card{border-radius:10px;padding:12px 14px;margin-bottom:8px;border-left:3px solid #3949AB;background:#E8EAF6}
+.guid-h{font-size:11.5px;font-weight:500;margin-bottom:4px;color:#1A237E}
+.guid-b{font-size:11.5px;color:#333;line-height:1.6}
+.guid-s{font-size:10px;color:#888;margin-top:4px}
+.guid-card.miss{background:#FCEBEB;border-left-color:#A32D2D}.guid-card.miss .guid-h{color:#A32D2D}
+.guid-card.watch{background:#FAEEDA;border-left-color:#BA7517}.guid-card.watch .guid-h{color:#854F0B}
+.guid-card.beat{background:#E1F5EE;border-left-color:#1D9E75}.guid-card.beat .guid-h{color:#0F6E56}
+.sindoor-box{background:#E8EAF6;border:2px solid #3949AB;border-radius:10px;padding:13px;margin:10px 0}
+.sindoor-h{font-size:14px;font-weight:500;color:#1A237E;margin-bottom:6px}
+.sindoor-b{font-size:12px;color:#333;line-height:1.65}
+.prod-grid{display:grid;grid-template-columns:repeat(2,1fr);gap:8px;margin:10px 0}
+.prod-card{border:1px solid #ddd;border-radius:8px;padding:10px;font-size:12px}
+.prod-nm{font-weight:500;font-size:12px;margin-bottom:3px}
+.prod-tag{font-size:10px;color:#666;margin-bottom:5px}
+.prod-bd{font-size:11.5px;color:#555;line-height:1.5}
+</style>
+</head>
+<body>
+
+<h1>ideaForge Technology Ltd — Deep Investment Analysis</h1>
+<div class="sub">NSE: IDEAFORGE · BSE: 543932 · India's #1 drone/UAV manufacturer · Founded 2007 (IIT Bombay) · IPO July 2023 · CEO: Ankit Mehta · Navi Mumbai, Bengaluru, Delhi, US operations</div>
+
+<div class="sg">
+  <div class="sc"><div class="sl">Market cap</div><div class="sv" style="color:#3949AB">~₹2,357 Cr</div></div>
+  <div class="sc"><div class="sl">FY26 revenue (est.)</div><div class="sv" style="color:#854F0B">~₹182 Cr</div></div>
+  <div class="sc"><div class="sl">FY26 PAT</div><div class="sv" style="color:#A32D2D">~-₹62 Cr (loss)</div></div>
+  <div class="sc"><div class="sl">Order book (Dec '25)</div><div class="sv" style="color:#1D9E75">₹440 Cr</div></div>
+  <div class="sc"><div class="sl">Order book jump</div><div class="sv" style="color:#1D9E75">965% in 9M FY26</div></div>
+  <div class="sc"><div class="sl">India market share</div><div class="sv" style="color:#1D9E75">~50%</div></div>
+  <div class="sc"><div class="sl">Global rank (dual-use)</div><div class="sv" style="color:#1D9E75">#3 globally</div></div>
+  <div class="sc"><div class="sl">Promoter holding</div><div class="sv" style="color:#A32D2D">33.3% (low)</div></div>
+  <div class="sc"><div class="sl">Debt position</div><div class="sv" style="color:#1D9E75">Debt-free</div></div>
+  <div class="sc"><div class="sl">Working capital days</div><div class="sv" style="color:#A32D2D">403 days ↑</div></div>
+  <div class="sc"><div class="sl">MoD FY27 procurement</div><div class="sv" style="color:#1D9E75">₹20,000 Cr</div></div>
+  <div class="sc"><div class="sl">EP6 allocation</div><div class="sv" style="color:#1D9E75">₹40,000 Cr</div></div>
+</div>
+
+<div class="tab-row">
+  <button class="tab active" onclick="show('revenue',this)">Revenue history</button>
+  <button class="tab" onclick="show('sectorKPI',this)">Sector KPIs</button>
+  <button class="tab" onclick="show('business',this)">Business & products</button>
+  <button class="tab" onclick="show('guidance',this)">Guidance analysis</button>
+  <button class="tab" onclick="show('risks',this)">Risks</button>
+  <button class="tab" onclick="show('scenarios',this)">3x scenarios</button>
+  <button class="tab" onclick="show('sectormap',this)">Sector landscape</button>
+  <button class="tab" onclick="show('compare',this)">Full comparison</button>
+  <button class="tab" onclick="show('verdict',this)">Final verdict</button>
+</div>
+
+<!-- REVENUE -->
+<div id="revenue" class="panel active">
+  <div class="sh">Revenue & financial history — extreme lumpiness driven by government procurement cycles</div>
+  <div class="warn defense"><strong>The most important thing about reading ideaForge's financials: this is a defense contractor, not a consumer company.</strong> Revenue comes in large, lumpy batches tied to government procurement cycles. A quarter with near-zero revenue (Q1 FY26: ₹12.78 Cr) followed by a massive Q4 (FY24 Q4: ~₹100 Cr) is normal. Standard sequential quarterly analysis is misleading — you must look at order book build-up and annual patterns. The election year of FY25 caused an industry-wide freeze in procurement, creating a trough that severely distorts the trend.</div>
+
+  <div class="chart-wrap"><canvas id="rc"></canvas></div>
+  <div style="display:flex;gap:14px;font-size:11.5px;color:#666;margin-bottom:10px">
+    <span><span style="display:inline-block;width:10px;height:10px;border-radius:2px;background:#3949AB;margin-right:4px"></span>Revenue ₹ Cr</span>
+    <span><span style="display:inline-block;width:10px;height:10px;border-radius:2px;background:#EF9F27;margin-right:4px"></span>Order book ₹ Cr</span>
+    <span><span style="display:inline-block;width:10px;height:10px;border-radius:2px;background:#9FA8DA;margin-right:4px"></span>Projected</span>
+  </div>
+
+  <table>
+    <tr><th>Period</th><th>Revenue</th><th>Gross margin</th><th>EBITDA</th><th>PAT</th><th>Order book</th><th>Key event</th></tr>
+    <tr><td>FY22</td><td>~₹50 Cr</td><td>~60%</td><td class="r">Negative</td><td class="r">-₹32 Cr</td><td>—</td><td>Pre-IPO building phase. Primarily CAPF/CRPF surveillance contracts.</td></tr>
+    <tr><td>FY23</td><td>~₹100 Cr</td><td>~56%</td><td class="a">~Break-even</td><td class="r">-₹12 Cr</td><td>—</td><td>IPO in July 2023 at ₹672/share (₹567 Cr fresh + OFS). Raised for capacity + R&D.</td></tr>
+    <tr><td>FY24</td><td>~₹205 Cr</td><td>~52%</td><td class="g">~₹16 Cr</td><td class="g">~₹12 Cr</td><td>~₹150 Cr</td><td>Peak performance year. Q4 FY24 = ₹86 Cr (single quarter). First profitable year post-IPO.</td></tr>
+    <tr><td>FY25</td><td>~₹86 Cr</td><td>~40%</td><td class="r">-₹50 Cr</td><td class="r">-₹103 Cr</td><td>₹13.6 Cr</td><td><strong>Election-year crash.</strong> Govt procurement frozen. Order book at all-time low. Industry-wide slowdown. Stock crashed from ₹700+ to ₹355.</td></tr>
+    <tr><td>Q1 FY26</td><td>₹12.78 Cr</td><td>61.7%</td><td class="r">-₹15.1 Cr</td><td class="r">-₹23.6 Cr</td><td>₹144.8 Cr</td><td>₹137 Cr EP5 order from Army. <strong>Operation Sindoor deployment of ideaForge UAVs.</strong> Order book jumps 965%.</td></tr>
+    <tr><td>Q2 FY26</td><td>₹40.76 Cr</td><td>50%</td><td class="r">-₹8 Cr</td><td class="r">-₹19.6 Cr</td><td>₹238 Cr</td><td>₹107 Cr MoD orders. NATO NSN for Q6 and SWITCH. US JV with First Breach Inc. formed.</td></tr>
+    <tr><td>Q3 FY26</td><td>₹31.55 Cr</td><td>24%</td><td class="r">-₹23.9 Cr</td><td class="r">-₹33.9 Cr</td><td>₹440 Cr</td><td>Record order inflows. ₹100 Cr ZOLT+SWITCH V2 pipeline. EW resilience orders (EP6). SWITCH V2 to Army.</td></tr>
+    <tr><td>9M FY26</td><td>₹85.09 Cr</td><td>42%</td><td class="r">-₹47 Cr</td><td class="r">-₹77 Cr</td><td>₹440 Cr</td><td>Order book = 5.2x 9M revenue. Q4 FY26 guidance: 40–45% of open book delivered.</td></tr>
+    <tr><td>FY26E</td><td>~₹180–260 Cr</td><td>~45%</td><td class="a">Near break-even</td><td class="r">-₹50 to -₹20 Cr</td><td>₹400–500 Cr</td><td>Q4 revenue could be ₹95–175 Cr. Management guided profitability in Q4 FY26.</td></tr>
+    <tr><td>FY27E</td><td>~₹400–600 Cr</td><td>~50%</td><td class="g">~₹50–120 Cr</td><td class="g">~₹30–80 Cr</td><td>₹600–800 Cr</td><td>MoD ₹20,000 Cr procurement. EP6 ₹40,000 Cr. PLI 2.0 tailwind. ZOLT tactical + YETI logistics entering revenue.</td></tr>
+    <tr><td>FY28–29E</td><td>~₹700–1,000 Cr</td><td>~52%</td><td class="g">₹120–200 Cr</td><td class="g">₹80–150 Cr</td><td>₹1,000+ Cr</td><td>Attack drones (loitering munitions), export market (US JV), DaaS (Drone-as-a-Service) platform revenue.</td></tr>
+  </table>
+
+  <div class="sindoor-box">
+    <div class="sindoor-h">🇮🇳 Operation Sindoor — The defining moment for ideaForge</div>
+    <div class="sindoor-b">In May 2025, India launched Operation Sindoor — a precision military strike against Pakistan-based terror infrastructure. <strong>ideaForge drones were deployed by the Indian Army during this operation</strong>, proving their effectiveness in live battlefield conditions. This was the most important validation event in the company's 18-year history — no amount of lab testing or demo flights equals actual combat deployment. The outcome: (1) Electronic warfare resilience became a mandatory Army requirement — a specification ideaForge had preemptively built, (2) Emergency Procurement Cycle 6 (EP6) allocation of ₹40,000 Cr was triggered, (3) Field trials for ZOLT platform (long-range endurance) and all EW-resilient platforms commenced, (4) Decentralised command-level drone procurement was authorised. ideaForge went from a company with ₹13.6 Cr order book in March 2025 to ₹440 Cr by December 2025 — this is almost entirely attributable to the post-Sindoor procurement acceleration.</div>
+  </div>
+</div>
+
+<!-- SECTOR KPIs -->
+<div id="sectorKPI" class="panel">
+  <div class="sh">India drone/UAV sector KPIs — where ideaForge stands</div>
+  <div class="warn sky"><strong>The UAV sector has unique metrics</strong> unlike traditional manufacturing: (1) Order book coverage is the key — not current revenue, (2) Gross margin (60%+ = technology premium vs 30% for hardware vendors), (3) Customer flight hours = proof of reliability (850,000+ flights = competitive moat), (4) Certification depth (DGCA + DGQA + NATO NSN = access to all procurement markets), and (5) Product diversity — ISR, mapping, logistics, attack = revenue durability.</div>
+  <div class="kpi-grid">
+    <div class="kpi defense"><div class="kpi-l">India market share</div><div class="kpi-v">~50%</div><div class="kpi-s">Pioneer and dominant leader</div></div>
+    <div class="kpi sky"><div class="kpi-l">Global rank (dual-use)</div><div class="kpi-v">#3 globally</div><div class="kpi-s">Drone Industry Insights 2024</div></div>
+    <div class="kpi green"><div class="kpi-l">Order book (Dec '25)</div><div class="kpi-v">₹440 Cr</div><div class="kpi-s">5.2x 9M revenue — robust visibility</div></div>
+    <div class="kpi green"><div class="kpi-l">Cumulative customer flights</div><div class="kpi-v">850,000+</div><div class="kpi-s">Drone takes off every 3 mins</div></div>
+    <div class="kpi green"><div class="kpi-l">Gross margin (Q1 FY26)</div><div class="kpi-v">61.7%</div><div class="kpi-s">Technology premium — high value-add</div></div>
+    <div class="kpi red"><div class="kpi-l">Working capital days</div><div class="kpi-v" style="color:#A32D2D">403 days</div><div class="kpi-s">Defense payment cycles = long</div></div>
+  </div>
+
+  <div class="sh">India drone market opportunity — the structural tailwind</div>
+  <table>
+    <tr><th>Opportunity</th><th>Scale</th><th>Timeline</th><th>ideaForge benefit</th></tr>
+    <tr><td><strong>EP6 Emergency Procurement (Armed Forces)</strong></td><td class="g">₹40,000 Cr allocation</td><td>FY26–FY27</td><td>Direct — ISR mini-UAVs, ZOLT tactical, SWITCH V2. Orders already flowing.</td></tr>
+    <tr><td><strong>MoD fresh procurement outlay (ISR + loitering + strike)</strong></td><td class="g">~₹20,000 Cr announced</td><td>FY27</td><td>Direct — ISR platforms (ideaForge's core). Emerging — attack/loitering (ZOLT expanding).</td></tr>
+    <tr><td><strong>PLI 2.0 for drone manufacturers</strong></td><td class="a">₹1,500–2,500 Cr incentives (est.)</td><td>FY27 rollout</td><td>Direct manufacturing subsidy + demand stimulus for PLI beneficiaries.</td></tr>
+    <tr><td><strong>RDI Fund (Innovation)</strong></td><td class="g">₹1,00,000 Cr total fund</td><td>FY27+</td><td>R&D funding for next-gen platforms. Reduces private R&D capex burden.</td></tr>
+    <tr><td><strong>NATO market (NSN certified products)</strong></td><td class="g">Global defence market ~$800 Bn+</td><td>FY27–28</td><td>Q6 + SWITCH carry NATO Stock Numbers — can now be procured by all NATO members.</td></tr>
+    <tr><td><strong>US market (First Forge JV)</strong></td><td class="g">US defense drone ~$15 Bn</td><td>FY27–28</td><td>JV with First Breach for US manufacturing — protects against tariff risk, enables US govt contracts.</td></tr>
+    <tr><td><strong>Civil/industrial use cases</strong></td><td class="a">₹5,000–10,000 Cr by 2030</td><td>FY27–30</td><td>Agriculture, infrastructure, disaster response, Swamitwa mapping, DaaS platform.</td></tr>
+  </table>
+</div>
+
+<!-- BUSINESS & PRODUCTS -->
+<div id="business" class="panel">
+  <div class="sh">What ideaForge makes — the full product stack</div>
+  <div class="warn defense"><strong>ideaForge is India's only full-stack UAV company</strong> — it doesn't just make hardware. It also builds the autopilot sub-system, ground control software (BlueFire Touch), live video streaming (BlueFire Live!), and cloud analytics (FlyghtCloud). This vertical integration is what creates the 60%+ gross margins — and makes it very hard to copy.</div>
+
+  <div class="prod-grid">
+    <div class="prod-card">
+      <div class="prod-nm" style="color:#1A237E">🛸 NETRA V5 — ISR Surveillance Drone</div>
+      <div class="prod-tag">Quadcopter · Surveillance, Border Security, Disaster Response</div>
+      <div class="prod-bd">India's most battle-tested surveillance drone. Used by CRPF, BSF, Army, state police. The bread-and-butter revenue product. NETRA drones have been deployed in 26/11 aftermath surveillance and Jammu counter-terror operations. Latest V5 has EW resilience built in.</div>
+    </div>
+    <div class="prod-card">
+      <div class="prod-nm" style="color:#1A237E">✈️ SWITCH V2 — Fixed-Wing VTOL Hybrid (Military)</div>
+      <div class="prod-tag">VTOL Fixed-Wing · Military ISR · Army, Navy, Air Force</div>
+      <div class="prod-bd">India's first VTOL fixed-wing UAV with vertical takeoff and landing + fixed-wing endurance. Only drone certified by both DGCA (civil) and DGQA (military) + NATO NSN. Critical for longer-range ISR missions. SWITCH V2 adds EW resilience — directly addresses post-Sindoor Army requirement.</div>
+    </div>
+    <div class="prod-card">
+      <div class="prod-nm" style="color:#1A237E">⚡ ZOLT — Tactical UAV (New Category)</div>
+      <div class="prod-tag">Long-range, High-endurance · Tactical operations</div>
+      <div class="prod-bd">Unveiled at AeroIndia 2025. Long-range, long-endurance tactical platform. Can carry payloads — being explored for attack/loitering missions. Secured ₹100 Cr+ pipeline in Q3 FY26 from Indian Army (EP6). The newest and most strategically significant product.</div>
+    </div>
+    <div class="prod-card">
+      <div class="prod-nm" style="color:#1A237E">📍 Q6 / Q6 V2 Geo / Q6 V3 — Mapping & Geo-Spatial</div>
+      <div class="prod-tag">Multi-rotor · Precision mapping, Agriculture, Infrastructure</div>
+      <div class="prod-bd">High-precision geo-spatial mapping. Used in Swamitwa scheme (rural land mapping), agricultural surveys, infrastructure inspection. Q6 V2 Geo — upgraded for survey-grade accuracy. Q6 V3 with EW capability. NATO NSN received — enables export to allied nations.</div>
+    </div>
+    <div class="prod-card">
+      <div class="prod-nm" style="color:#006064">🚁 YETI — Logistics Drone (Upcoming)</div>
+      <div class="prod-tag">Concept reveal AeroIndia 2025 · Cargo delivery</div>
+      <div class="prod-bd">Logistics/cargo delivery drone. Partnership with Resonia/Sterlite Group for tower infrastructure installation using YETI. Civil market opportunity in healthcare supply chains, remote delivery. Not yet revenue-generating but opens a new market segment.</div>
+    </div>
+    <div class="prod-card">
+      <div class="prod-nm" style="color:#006064">☁️ FlyghtCloud + DaaS — Software Platform</div>
+      <div class="prod-tag">Cloud analytics · Drone-as-a-Service (new business model)</div>
+      <div class="prod-bd">FlyghtCloud: Integrated UAV data analytics platform. Industry-first DaaS model — subscription revenue model for drone services. Early paid pilots with anchor customers. MoU with C-DAC to integrate into India's emergency response network. If DaaS scales, it's recurring software revenue at 70-80% margins — potentially transformational.</div>
+    </div>
+  </div>
+
+  <div class="sh">Technology moats — why copying ideaForge is harder than it looks</div>
+  <div class="point"><div class="dot dd">1</div><div><strong>Proprietary autopilot + ground control software:</strong> Most Indian drone companies assemble hardware using imported autopilots. ideaForge builds its own autopilot sub-system and ground control software in-house. This gives it full-stack control over performance tuning, EW resilience (critical post-Sindoor), and export compliance.</div></div>
+  <div class="point"><div class="dot dd">2</div><div><strong>850,000+ real-world customer flights:</strong> Each flight generates data on failure modes, environmental performance, and reliability. 18 years of flight data = an insurmountable operational learning advantage over any new entrant. Competitors with 0–10,000 flights simply cannot match this reliability record.</div></div>
+  <div class="point"><div class="dot dd">3</div><div><strong>Triple-certified: DGCA + DGQA + NATO NSN:</strong> DGCA approval = civil aviation legal compliance. DGQA (Directorate General of Quality Assurance) = military procurement eligibility. NATO Stock Number = allied procurement systems eligibility. No other Indian drone company holds all three simultaneously.</div></div>
+  <div class="point"><div class="dot dg">4</div><div><strong>89 granted + pending patents:</strong> Core technology is IP-protected. EW-resilient autopilot, proprietary communication protocols, and flight control algorithms are patent-protected — creating a real IP moat.</div></div>
+</div>
+
+<!-- GUIDANCE -->
+<div id="guidance" class="panel">
+  <div class="sh">Guidance analysis — management has been conservative and broadly honest</div>
+  <div class="warn sky"><strong>ideaForge's guidance is inherently uncertain</strong> because it depends on government procurement timing — which itself depends on budget allocation, bureaucratic approval chains, and geopolitical events. However, management has been transparent about challenges (FY25 election-year slowdown disclosed early) and conservative on timelines. Post-Sindoor, guidance has upgraded meaningfully.</div>
+
+  <div class="sh">Past guidance vs actual — the FY25 trough and FY26 recovery</div>
+  <div class="guid-card miss">
+    <div class="guid-h">✗ FY25 revenue guidance: Management had expected recovery post-FY24 peak → Actual: -58% revenue crash</div>
+    <div class="guid-b">FY24 was a strong year (₹205 Cr revenue, profitable). Management expected FY25 to continue growth. Reality: 2024 was India's general election year. ALL government procurement (including defense) slowed dramatically as ministry officials feared audit risk for committing large expenditures pre-election. The industry-wide pause took ideaForge's revenue from ₹205 Cr to ~₹86 Cr (-58%). This was an external, systemic event — not an ideaForge-specific execution failure. Management disclosed this clearly and promptly.</div>
+    <div class="guid-s">Credibility assessment: This was a sector-wide event, not a management failure. Management handled communication transparently.</div>
+  </div>
+
+  <div class="guid-card beat">
+    <div class="guid-h">✓ Order book recovery FY26: "Seeing green shoots" → Actual: 965% order book jump (₹13.6 Cr → ₹440 Cr)</div>
+    <div class="guid-b">At end of FY25 (March 2025), CEO Ankit Mehta noted the L1 pipeline was building and the new procurement cycle was imminent. By June 2025 (Q1 FY26), the ₹137 Cr EP5 Army order arrived. By December 2025 (Q3 FY26), the order book had grown 32x to ₹440 Cr. The acceleration was faster than most analysts expected. Management's confidence in the recovery was well-founded — the Sindoor catalyst supercharged what was already a recovering cycle.</div>
+    <div class="guid-s">Credibility: 9/10. Management correctly identified the recovery trajectory even before it materialised.</div>
+  </div>
+
+  <div class="guid-card beat">
+    <div class="guid-h">✓ Q4 FY26 guidance: "Deliver 40–45% of open order book; turn profitable in Q4"</div>
+    <div class="guid-b">At Q3 FY26 earnings, CEO Mehta guided: deliver 40–45% of ₹440 Cr open order book in Q4 FY26 = ₹176–198 Cr of deliveries, with improved gross margins (product mix shifting to higher-margin items) and overall profitability. This is ambitious — the company's best quarterly revenue ever was ~₹100 Cr. However, the order book composition (SWITCH V2, ZOLT tactical, Q6 V3) includes high-ASP items. FY26 full-year results to be declared April 30, 2026.</div>
+    <div class="guid-s">Credibility: Q4 guidance will be the key test. Whether management delivers on this promise determines credibility for FY27 guidance. Board meeting April 30, 2026.</div>
+  </div>
+
+  <div class="guid-card">
+    <div class="guid-h">🎯 FY27 macro catalyst: MoD ₹20,000 Cr procurement + EP6 ₹40,000 Cr</div>
+    <div class="guid-b">This is not ideaForge's guidance — it is government policy. Ministry of Defence announced ~₹20,000 Cr fresh procurement outlay for FY27 covering ISR platforms, loitering munitions, and strike drones. Separately, EP6 (6th Emergency Procurement cycle) has ₹40,000 Cr allocated for armed forces post-Operation Sindoor. PLI 2.0 for drones and the ₹1 lakh crore RDI fund are additional tailwinds. ideaForge's CEO stated these create "a strong, multi-year demand pipeline." With 50% domestic market share, ideaForge should capture ₹500–2,000 Cr of the MoD ₹20,000 Cr outlay over FY27.</div>
+    <div class="guid-s">Key watch: ideaForge's FY27 order flow pace. If ₹500 Cr orders are won in FY27, FY27 revenue of ₹400–600 Cr becomes achievable.</div>
+  </div>
+
+  <div class="sh">Guidance scorecard</div>
+  <table>
+    <tr><th>Guidance item</th><th>Credibility</th><th>Base case</th><th>Key risk</th></tr>
+    <tr><td>Q4 FY26 profitability</td><td class="a">6/10 — ambitious vs prior quarters</td><td>Narrow profit or break-even</td><td>Order delivery delays; product mix; certification delays</td></tr>
+    <tr><td>FY26 full year revenue</td><td class="g">8/10 — order book visible</td><td>₹180–230 Cr</td><td>Q4 execution pace; payment collection timing</td></tr>
+    <tr><td>FY27 order inflow (govt ₹20k Cr)</td><td class="g">7/10 — policy confirmed</td><td>₹300–600 Cr orders won by ideaForge</td><td>Procurement timelines; competitive L1 bids</td></tr>
+    <tr><td>US market (First Forge JV)</td><td class="a">5/10 — early stage</td><td>₹50–100 Cr by FY28</td><td>US DoD procurement is notoriously slow and complex</td></tr>
+    <tr><td>DaaS recurring revenue</td><td class="a">4/10 — pilot stage</td><td>₹30–50 Cr by FY28</td><td>Enterprise drone adoption may be slower than projected</td></tr>
+  </table>
+</div>
+
+<!-- RISKS -->
+<div id="risks" class="panel">
+  <div class="sh">Risks — what makes ideaForge a speculative, not quality, investment</div>
+  <div class="warn caution"><strong>ideaForge is the most speculative stock in this entire analytical session.</strong> It's pre-profitability in most periods, government revenue dependent, has lumpy quarterly results, and its valuation at ₹2,357 Cr with ₹182 Cr revenue and ongoing losses requires significant faith in FY27–FY28 delivery. The reasons to own it are compelling — but so are the reasons to be cautious.</div>
+
+  <div class="point"><div class="dot dr">1</div><div><strong>Revenue is 100% government-dependent and violently lumpy.</strong><br>Q1 FY26: ₹12.78 Cr. Q2 FY26: ₹40.76 Cr. Q3 FY26: ₹31.55 Cr. These quarterly variations of ±70% have nothing to do with underlying business health — they purely reflect when large government delivery milestones are reached. This creates an impossible quarterly P&L analysis and makes loss-reporting quarters look far worse than reality. However, it also means management cannot guarantee delivery timing — certifications, quality inspections, and government payment releases all add unpredictability.</div></div>
+
+  <div class="point"><div class="dot dr">2</div><div><strong>Promoter holding at just 33.3% — low alignment and dilution risk.</strong><br>IIT Bombay founders have been diluted significantly through VC funding rounds (Qualcomm Ventures, Samsung Ventures, etc.) pre-IPO. At 33.3%, promoters hold much less than the 50–75% typical for high-conviction founders. Each ESOP grant further dilutes. This is a fundamental governance concern compared to companies like Websol (no promoter pledge, 65% holding), DEE Development (70%+), or Borana Weaves (65%). If ideaForge needs additional capital (another equity raise), further dilution is likely.</div></div>
+
+  <div class="point"><div class="dot dr">3</div><div><strong>Competition intensifying — TATA, L&T, HAL entering drone manufacturing.</strong><br>India's largest defence companies are moving into UAVs: TATA Advanced Systems, L&T Defence, Bharat Electronics, DRDO (government R&D). These companies have: (a) massive balance sheets, (b) existing MoD relationships, (c) ability to subsidise prices to win market share. While ideaForge has a 18-year head start and 50% market share, maintaining dominance when TATA starts competing is genuinely challenging. International peers: DJI (China), AeroVironment, Shield AI (US) — all better-capitalised.</div></div>
+
+  <div class="point"><div class="dot da">4</div><div><strong>Working capital days at 403 — defense payment cycles strain cash flow.</strong><br>Defense contracts typically require ideaForge to manufacture and deliver before payment is received. The delivery-to-payment cycle can be 6–12 months for government contracts. At 403 working capital days, ideaForge has ~₹116 Cr of capital locked up at any given time (relative to ₹105 Cr TTM revenue). If the company scales to ₹500 Cr revenue, working capital requirement could approach ₹500–600 Cr — potentially requiring a capital raise despite being nominally "debt-free."</div></div>
+
+  <div class="point"><div class="dot da">5</div><div><strong>L1 (lowest bidder) procurement model — margin pressure.</strong><br>Indian government typically procures defense equipment on L1 basis (lowest qualified bidder wins). This is especially true for standard ISR drones where multiple qualified suppliers exist. ideaForge's pricing power comes from technology differentiation (SWITCH V2 VTOL, EW resilience) — which commands premium. But commodity-type orders risk margin compression if Garuda Aerospace or Chinese-origin drones undercut. CEO has noted that drone procurement is "more utility-focused than price-focused" — but this may not hold as competition increases.</div></div>
+
+  <div class="point"><div class="dot dg">+</div><div><strong>Genuine reasons why the risk is worth taking:</strong><br>Operation Sindoor validation = most powerful possible technology proof. 50% market share with 850,000+ flights = incumbent moat. ₹440 Cr order book = 5.2x 9M revenue. MoD ₹20,000 Cr procurement = 5x ideaForge's total market cap allocated for drones. Debt-free with IPO cash reserves. NATO certification = global market access. EW resilience = pre-built to the post-Sindoor specification. US JV = tariff protection for US market. CEO has strong technical credibility (IIT Bombay, 18 years in drones). 89 patents. First-mover with regulatory approvals that take years to replicate.</div></div>
+</div>
+
+<!-- SCENARIOS -->
+<div id="scenarios" class="panel">
+  <div class="sh">Three scenarios — from current ~₹545 (₹2,357 Cr mcap)</div>
+  <div class="warn defense"><strong>ideaForge is a deep-tech defense company valued on future potential, not current earnings.</strong> Standard PE analysis is inapplicable (negative earnings). The correct framework is EV/Revenue or EV/forward EBITDA. At ₹2,357 Cr mcap on ₹182 Cr FY26 revenue = 13x P/Sales. For context: AeroVironment (US VTOL manufacturer) trades at 7–10x revenue. Global drone defense companies 8–15x revenue. ideaForge is reasonably valued if FY27 revenue materially increases.</div>
+
+  <div class="scenario" style="border-left:3px solid #3949AB">
+    <div style="font-size:13px;font-weight:500;color:#1A237E;margin-bottom:8px">Bull case — 3–5x in 2–3 years: MoD procurement executes + ZOLT attack + US market opens</div>
+    <div class="sc-grid">
+      <div class="sc-cell"><div class="sc-l">FY27 revenue</div><div class="sc-v">₹500–600 Cr</div></div>
+      <div class="sc-cell"><div class="sc-l">FY27 EBITDA margin</div><div class="sc-v">~20–25%</div></div>
+      <div class="sc-cell"><div class="sc-l">FY27 PAT</div><div class="sc-v">₹70–110 Cr</div></div>
+      <div class="sc-cell"><div class="sc-l">P/S multiple</div><div class="sc-v">12–15x</div></div>
+      <div class="sc-cell"><div class="sc-l">FY27 mcap implied</div><div class="sc-v">₹6,000–9,000 Cr</div></div>
+      <div class="sc-cell"><div class="sc-l">Return from ₹2,357 Cr</div><div class="sc-v">2.5–3.8x</div></div>
+    </div>
+    <div style="font-size:11.5px;color:#333;margin-top:8px"><strong>What must happen:</strong> MoD ₹20,000 Cr drone procurement allocated and ideaForge wins 25–30% share = ₹5,000–6,000 Cr over 3–5 years = ₹1,000–2,000 Cr/year. FY27 revenue ₹500+ Cr at 20%+ EBITDA = ₹100 Cr+ EBITDA. DaaS platform achieves ₹50 Cr annual recurring revenue. US JV secures $50M+ contract. ZOLT enters attack drone segment. At 12–15x P/S on ₹500 Cr revenue = ₹6,000–9,000 Cr. <strong>3x very achievable in 2 years if Q4 FY26 delivers and FY27 orders continue at current pace.</strong></div>
+  </div>
+
+  <div class="scenario" style="border-left:3px solid #0097A7">
+    <div style="font-size:13px;font-weight:500;color:#006064;margin-bottom:8px">Base case — 1.5–2.5x in 2 years: Revenue ₹350–400 Cr, partial profitability</div>
+    <div class="sc-grid">
+      <div class="sc-cell"><div class="sc-l">FY27 revenue</div><div class="sc-v">₹350–400 Cr</div></div>
+      <div class="sc-cell"><div class="sc-l">FY27 EBITDA margin</div><div class="sc-v">~15–18%</div></div>
+      <div class="sc-cell"><div class="sc-l">FY27 PAT</div><div class="sc-v">₹30–55 Cr</div></div>
+      <div class="sc-cell"><div class="sc-l">P/S multiple</div><div class="sc-v">10–12x</div></div>
+      <div class="sc-cell"><div class="sc-l">FY27 mcap implied</div><div class="sc-v">₹3,500–4,800 Cr</div></div>
+      <div class="sc-cell"><div class="sc-l">Return</div><div class="sc-v">1.5–2x</div></div>
+    </div>
+    <div style="font-size:11.5px;color:#333;margin-top:8px">MoD procurement is slow but real. ideaForge wins ₹200–300 Cr of FY27 orders. Revenue hits ₹350–400 Cr on order book execution. EBITDA turns positive at 15–18%. US JV revenue minimal (regulatory). DaaS in pilot stage. <strong>Base case delivers 1.5–2x — still good but below 3x target.</strong></div>
+  </div>
+
+  <div class="scenario" style="border-left:3px solid #A32D2D">
+    <div style="font-size:13px;font-weight:500;color:#A32D2D;margin-bottom:8px">Bear case — -30 to -50%: Procurement delays + competition erodes share</div>
+    <div class="sc-grid">
+      <div class="sc-cell"><div class="sc-l">Trigger</div><div class="sc-v">MoD procurement stalls again</div></div>
+      <div class="sc-cell"><div class="sc-l">Trigger</div><div class="sc-v">Tata/L&T wins major orders</div></div>
+      <div class="sc-cell"><div class="sc-l">Trigger</div><div class="sc-v">Capital raise needed (dilution)</div></div>
+      <div class="sc-cell"><div class="sc-l">FY27 revenue</div><div class="sc-v">₹150–200 Cr (FY25 repeat)</div></div>
+      <div class="sc-cell"><div class="sc-l">PAT</div><div class="sc-v">-₹80 to -₹100 Cr (losses)</div></div>
+      <div class="sc-cell"><div class="sc-l">Mcap implied</div><div class="sc-v">₹1,200–1,500 Cr</div></div>
+    </div>
+    <div style="font-size:11.5px;color:#333;margin-top:8px"><strong>Bear probability: 25–30%.</strong> If procurement delays mirror FY25 (election effect was once, but bureaucratic processes can always stall), revenue stays muted. If TATA wins major contracts using incumbent advantage, ideaForge loses market share. Capital raise needed → stock dilutes and falls. The bear case mirrors FY25 which already happened — so it's not hypothetical.</div>
+  </div>
+
+  <table style="margin-top:10px">
+    <tr><th>Target</th><th>Mcap needed</th><th>Revenue driver</th><th>Timeline</th><th>Probability</th></tr>
+    <tr><td>4x (₹9,428 Cr)</td><td>₹9,428 Cr</td><td>FY27 rev ₹600 Cr + attack drones + US</td><td>FY27–FY28</td><td class="a">20–25%</td></tr>
+    <tr><td>3x (₹7,071 Cr)</td><td>₹7,071 Cr</td><td>FY27 rev ₹500 Cr + 12x P/S re-rating</td><td>FY27</td><td class="a">25–30%</td></tr>
+    <tr><td>2x (₹4,714 Cr)</td><td>₹4,714 Cr</td><td>FY27 rev ₹350–400 Cr, EBITDA positive</td><td>FY27</td><td class="g">40–45%</td></tr>
+    <tr><td>Bear -40% (₹1,414 Cr)</td><td>₹1,414 Cr</td><td>FY25-type procurement stall</td><td>—</td><td class="a">25–30%</td></tr>
+  </table>
+</div>
+
+<!-- SECTOR LANDSCAPE -->
+<div id="sectormap" class="panel">
+  <div class="sh">India defense drone sector landscape — the competitive map</div>
+  <div class="warn sky"><strong>India's drone market is stratifying rapidly.</strong> Three years ago it was only ideaForge and a few unorganised players. Now Garuda Aerospace, Paras Defence, Throttle Aerospace, and corporate giants (TATA, L&T, HAL) are all building capability. Understanding where each player sits — and where the money flows — is critical to assessing ideaForge's sustained leadership.</div>
+  <table>
+    <tr><th>Tier</th><th>Players</th><th>Strengths</th><th>Threat to ideaForge</th></tr>
+    <tr><td><strong>T1 — Full stack defense UAV</strong></td><td>ideaForge (50% share)</td><td>Own autopilot, 18yr track record, military certified, NATO NSN</td><td>N/A — incumbent</td></tr>
+    <tr><td><strong>T2 — Specialty defense/space</strong></td><td>Paras Defence, Newspace Research, Alpha Design</td><td>Specific systems, sub-components</td><td class="a">Medium — niche overlap in some segments</td></tr>
+    <tr><td><strong>T3 — Agriculture/civil drones</strong></td><td>Garuda Aerospace, General Aeronautics, IoTechWorld</td><td>High volume civil drones, agriculture</td><td class="r">Low — different market segment</td></tr>
+    <tr><td><strong>T4 — Corporate entrants</strong></td><td>TATA Advanced Systems, L&T Defence, BEL-subsidiary</td><td>Balance sheet, existing MoD relationships</td><td class="r">High long-term — incumbent advantage</td></tr>
+    <tr><td><strong>T5 — Global competitors</strong></td><td>AeroVironment, Shield AI, Teledyne (US)</td><td>Advanced tech, NATO integration</td><td class="a">Medium — import restrictions protect domestic</td></tr>
+  </table>
+
+  <div class="sector-card">
+    <div class="sc-hdr"><div><div class="sc-nm">Paras Defence & Space Technologies — Most comparable listed peer</div><div class="sc-tg">~₹3,000 Cr mcap · Defense electronics + optics + space · Small revenue but growing</div></div><span class="badge bdefense">Listed — useful comparison</span></div>
+    <div class="sc-bd">Paras Defence is the closest listed peer to ideaForge in the defense technology space. Products: optics, defense electronics, anti-drone systems (counter-UAV — which is the OPPOSITE of ideaForge in a sense), space structures. Revenue ~₹150–200 Cr, loss-making at EBITDA level. JV with Israeli Heven Drones for logistics drones. PE is not meaningful (loss-making). Trades at similar speculative premium to ideaForge. <strong>For comparison: Paras at ₹3,000 Cr mcap on ₹150 Cr revenue vs ideaForge at ₹2,357 Cr mcap on ₹182 Cr revenue — ideaForge is cheaper on P/S and has better technology moat.</strong></div>
+  </div>
+
+  <div class="sector-card">
+    <div class="sc-hdr"><div><div class="sc-nm">Data Patterns (India) — Defense electronics compounder</div><div class="sc-tg">₹7,000+ Cr mcap · ₹600 Cr revenue · AESA radar, defense electronics · Profitable</div></div><span class="badge ba">Quality — better risk/reward for defense sector</span></div>
+    <div class="sc-bd">Data Patterns makes defense electronics: AESA radar systems, military avionics, combat management systems. Revenue growing 30%+ annually. Already profitable. EBITDA 25%+. PAT positive. 100% indigenous. Government policy beneficiary. <strong>Data Patterns offers the same defense indigenisation theme as ideaForge but with actual profitability, better execution track record, and lower risk profile. If choosing between the two for defense exposure, Data Patterns at 15–20x earnings is better quality than ideaForge at negative earnings on a risk-adjusted basis. However, if ideaForge turns profitable in FY27, the upside could be far larger from current levels.</strong></div>
+  </div>
+
+  <div class="sector-card">
+    <div class="sc-hdr"><div><div class="sc-nm">ideaForge Technology — Your stock</div><div class="sc-tg">₹2,357 Cr mcap · ₹182 Cr FY26 revenue · 50% India market share · Loss-making</div></div><span class="badge bsky">High potential — high risk</span></div>
+    <div class="sc-bd">The only listed pure-play drone manufacturer in India. 50% market share. Operation Sindoor validated. NATO-certified. Post-Sindoor ₹440 Cr order book. MoD ₹20,000 Cr tailwind. But loss-making, lumpy revenue, 33% promoter holding, working capital strain. The highest potential stock in India's defense space — if execution delivers. The binary nature of drone adoption makes this a high-conviction-or-avoid decision.</div>
+  </div>
+</div>
+
+<!-- FULL COMPARISON -->
+<div id="compare" class="panel">
+  <div class="sh">ideaForge vs defense sector peers — comprehensive comparison</div>
+  <div style="border:1px solid #ddd;border-radius:10px;overflow:hidden;font-size:11px">
+    <div class="comp-h">
+      <div class="cc-h" style="background:#f5f5f3">Metric</div>
+      <div class="cc-h" style="background:#E8EAF6;color:#1A237E">ideaForge ← Your stock</div>
+      <div class="cc-h" style="background:#E6F1FB;color:#185FA5">Data Patterns</div>
+      <div class="cc-h" style="background:#f5f5f3">Paras Defence</div>
+    </div>
+    <div class="comp-row"><div class="cc cc-label">Market cap</div><div class="cc winner-cell">₹2,357 Cr</div><div class="cc loser-cell">₹7,000+ Cr</div><div class="cc winner-cell">~₹3,000 Cr</div></div>
+    <div class="comp-row"><div class="cc cc-label">Revenue (FY26E)</div><div class="cc mid-cell">~₹182 Cr</div><div class="cc winner-cell">~₹600 Cr (+30%)</div><div class="cc loser-cell">~₹150 Cr</div></div>
+    <div class="comp-row"><div class="cc cc-label">Revenue trend</div><div class="cc mid-cell">FY25 trough → FY26 recovery</div><div class="cc winner-cell">Consistent 25–35% growth</div><div class="cc mid-cell">Lumpy, early stage</div></div>
+    <div class="comp-row"><div class="cc cc-label">EBITDA margin</div><div class="cc loser-cell">Negative (recovering)</div><div class="cc winner-cell">~25%</div><div class="cc loser-cell">Negative</div></div>
+    <div class="comp-row"><div class="cc cc-label">PAT</div><div class="cc loser-cell">Loss ~-₹62 Cr FY26</div><div class="cc winner-cell">Profitable ~₹100 Cr+</div><div class="cc loser-cell">Loss-making</div></div>
+    <div class="comp-row"><div class="cc cc-label">Market leadership</div><div class="cc winner-cell">50% share, 18yr leader, #3 globally</div><div class="cc winner-cell">Leader in defense electronics/AESA</div><div class="cc mid-cell">Niche in optics + anti-drone</div></div>
+    <div class="comp-row"><div class="cc cc-label">Key product moat</div><div class="cc winner-cell">VTOL hybrid SWITCH, proprietary autopilot, NATO NSN</div><div class="cc winner-cell">AESA radar (very few global suppliers)</td><div class="cc mid-cell">Optics, electro-optical systems</div></div>
+    <div class="comp-row"><div class="cc cc-label">Operation Sindoor</div><div class="cc winner-cell">Directly deployed — strongest validator</div><div class="cc mid-cell">Indirect (radar systems)</div><div class="cc mid-cell">Limited</div></div>
+    <div class="comp-row"><div class="cc cc-label">Export market</div><div class="cc winner-cell">NATO NSN + US JV + 40+ countries</div><div class="cc mid-cell">Growing international</div><div class="cc loser-cell">Primarily domestic</div></div>
+    <div class="comp-row"><div class="cc cc-label">Promoter holding</div><div class="cc loser-cell">33.3% (low — diluted by VCs)</div><div class="cc winner-cell">~65%+</div><div class="cc winner-cell">~60%</div></div>
+    <div class="comp-row"><div class="cc cc-label">Debt position</div><div class="cc winner-cell">Debt-free</div><div class="cc winner-cell">Low debt</div><div class="cc winner-cell">Debt-free</div></div>
+    <div class="comp-row"><div class="cc cc-label">Valuation (P/Sales)</div><div class="cc winner-cell">~13x FY26 (cheaper)</div><div class="cc loser-cell">~12x FY26 (comparable)</div><div class="cc loser-cell">~20x FY26 (expensive)</div></div>
+    <div class="comp-row"><div class="cc cc-label">3x probability (3yr)</div><div class="cc winner-cell">25–30% (if MoD executes)</div><div class="cc mid-cell">20–25% (quality, larger mcap)</div><div class="cc loser-cell">15% (revenue smaller)</div></div>
+    <div class="comp-row"><div class="cc cc-label">Risk level</div><div class="cc loser-cell">High (lumpy revenue, losses)</div><div class="cc winner-cell">Low-Medium (profitable, consistent)</div><div class="cc loser-cell">High (early stage, losses)</div></div>
+    <div class="comp-row"><div class="cc cc-label">Best for Garvit's goal</div><div class="cc">Speculative high-conviction buy — maximum upside in defense drone sector</div><div class="cc">Better risk-adjusted defense play — profitable, consistent</div><div class="cc">Higher risk than ideaForge with less clear moat</div></div>
+  </div>
+
+  <div class="warn defense" style="margin-top:12px"><strong>The key comparison insight:</strong> Data Patterns offers the same defense indigenisation theme with actual profitability and a proven 25–35% revenue CAGR. If choosing one defense stock for portfolio diversification, Data Patterns at ₹7,000 Cr mcap is safer but offers 2x max in 3 years. ideaForge at ₹2,357 Cr could deliver 3–4x if FY27 executes — but the risk is meaningfully higher. The right answer for Garvit's aggressive 3x portfolio is: ideaForge as speculative allocation, not Data Patterns. But never ideaForge as a core position replacing quality holds like Websol or Bondada.</div>
+</div>
+
+<!-- VERDICT -->
+<div id="verdict" class="panel">
+  <div class="sh">The definitive verdict for Garvit's 3x goal</div>
+
+  <div class="verdict-card" style="background:#E8EAF6;border:1px solid #7986CB">
+    <div class="vc-h" style="color:#1A237E">ideaForge Technology — Verdict: Speculative high-conviction buy. ₹20,000–40,000. India's best pure-play drone investment with the highest binary risk/reward.</div>
+    <div class="vc-b">This is the most speculative stock we've analysed this session — and also one with the highest potential upside if the thesis works. Here's the honest balance sheet:<br><br><strong>The bull case is compelling:</strong><br>• 50% India market share with 18-year head start — incumbents don't easily lose defense procurement relationships<br>• Operation Sindoor deployed ideaForge drones in live warfare — no better validation exists<br>• ₹440 Cr order book from essentially zero 12 months ago — the most dramatic order book recovery we've seen<br>• MoD ₹20,000 Cr FY27 procurement + EP6 ₹40,000 Cr = largest-ever drone tailwind. ideaForge at 50% share = ₹10,000 Cr potential over 5 years<br>• NATO-certified SWITCH + Q6 = legally accessible to all NATO procurement systems (~40 countries)<br>• US JV (First Forge) — localized US manufacturing = access to $15 Bn US defense drone market<br>• DaaS platform — if 10% of flights convert to subscription, it's ₹100 Cr in recurring revenue<br>• Debt-free with IPO cash reserves — no financial distress risk<br><br><strong>The bear case is also real:</strong><br>• FY25 happened — one bad year wiped 65% from the stock. It can happen again.<br>• 33.3% promoter holding is low — management skin in the game limited<br>• Losses ongoing — negative EBITDA for most of FY26<br>• Government procurement is binary: either it comes (everything works) or it doesn't (nothing works)<br>• Competition from TATA, L&T is just beginning<br><br><strong>Why I recommend a small allocation:</strong> At ₹2,357 Cr market cap with ₹440 Cr order book and ₹20,000 Cr government procurement tailwind, the risk/reward favours entry at this price. But allocate no more than 5% of your total portfolio — ₹20,000–40,000 from your ₹28 lakh portfolio. Treat it as a lottery ticket on India's drone future — one that has a 40–50% chance of 2x and a 25% chance of 3–4x, but also a 25–30% chance of losing 40–50%.</div>
+  </div>
+
+  <div class="sh">Allocation recommendation</div>
+  <table>
+    <tr><th>Stock</th><th>Action</th><th>Amount</th><th>Rationale</th></tr>
+    <tr><td><strong>ideaForge Technology</strong></td><td><span class="badge bdefense">Speculative buy — small position</span></td><td>₹20,000–40,000</td><td>Highest risk/reward in defense drone sector. ₹440 Cr order book, MoD ₹20,000 Cr tailwind, Operation Sindoor validation. 3x probability ~25–30%. Stage entry: ₹15K now, add ₹15–25K after Q4 FY26 results confirm profitability guidance. Exit trigger: if FY27 order inflow is below ₹300 Cr, thesis breaks.</td></tr>
+    <tr><td><strong>Data Patterns</strong></td><td><span class="badge bb">Better risk-adjusted — if defense allocation desired</span></td><td>₹0 (for 3x goal — too large)</td><td>Profitable, consistent, but ₹7,000 Cr mcap makes 3x difficult. Better for wealth preservation phase.</td></tr>
+    <tr><td><strong>Paras Defence</strong></td><td><span class="badge br">Avoid over ideaForge</span></td><td>₹0</td><td>Similar risk profile to ideaForge but with smaller scale, less proven technology, and lower market share. No reason to own Paras over ideaForge.</td></tr>
+  </table>
+
+  <div class="sh">Six metrics to watch — these determine whether the thesis holds</div>
+  <table>
+    <tr><th>#</th><th>Metric</th><th>Current</th><th>Signal</th></tr>
+    <tr><td>1</td><td>Q4 FY26 revenue (board meeting Apr 30)</td><td class="a">Pending — management guided 40-45% of ₹440 Cr order book</td><td>🔥 Most important near-term data point. ₹100+ Cr = buy more. ₹50 Cr = reassess thesis.</td></tr>
+    <tr><td>2</td><td>FY27 order inflow rate</td><td class="g">₹440 Cr achieved in 9M FY26</td><td>🟢 Must sustain ₹100+ Cr/quarter order inflows in FY27. Driven by MoD EP6 release pace.</td></tr>
+    <tr><td>3</td><td>Gross margin recovery</td><td class="a">24–62% (wide variation by quarter)</td><td>🟢 Bullish if gross margin sustains 45%+ as defence orders execute (vs civil/commodity orders).</td></tr>
+    <tr><td>4</td><td>Working capital days</td><td class="r">403 days (alarming)</td><td>🔴 Must decline below 300 as revenue scales. Rising further = cash drain requires equity raise.</td></tr>
+    <tr><td>5</td><td>US market (First Forge JV) revenue</td><td class="a">JV formed, pilots underway</td><td>🟢 First US contract announcement = major re-rating signal. Watch quarterly disclosures.</td></tr>
+    <tr><td>6</td><td>ZOLT/attack drone capability</td><td class="a">Field trials in progress</td><td>🟢 Any official Army order for ZOLT attack variant = exponential revenue uplift opportunity.</td></tr>
+  </table>
+
+  <div class="warn defense" style="margin-top:12px"><strong>One-line verdict:</strong> ideaForge Technology is India's only pure-play listed drone manufacturer — the pioneer with 50% domestic market share, NATO certification, Operation Sindoor battlefield validation, and a ₹440 Cr order book facing a ₹20,000 Cr MoD procurement tailwind. It is pre-profitability, government-revenue-dependent, and carries the binary risk of any defense contractor. At ₹2,357 Cr market cap, the 3x path requires FY27 revenue of ₹400–500 Cr — achievable if MoD procurement executes at the stated scale. Allocate ₹20,000–40,000 as a speculative high-conviction position. Board meeting April 30 for Q4 FY26 results is the first key test — watch it closely before adding more.</div>
+</div>
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/4.4.1/chart.umd.js"></script>
+<script>
+function show(id,btn){
+  document.querySelectorAll('.tab').forEach(t=>t.classList.remove('active'));
+  document.querySelectorAll('.panel').forEach(p=>p.classList.remove('active'));
+  btn.classList.add('active');
+  document.getElementById(id).classList.add('active');
+}
+new Chart(document.getElementById('rc').getContext('2d'),{
+  type:'bar',
+  data:{
+    labels:['FY22','FY23','FY24','FY25','Q1FY26','Q2FY26','Q3FY26','FY26E','FY27E'],
+    datasets:[
+      {label:'Revenue ₹ Cr',data:[50,100,205,86,12.78,40.76,31.55,200,480],backgroundColor:['#3949AB','#3949AB','#3949AB','#A32D2D','#EF9F27','#EF9F27','#EF9F27','#9FA8DA','#9FA8DA'],borderRadius:4,yAxisID:'y'},
+      {label:'Order book ₹ Cr',data:[null,null,150,13.6,144.8,238,440,450,700],type:'line',borderColor:'#EF9F27',backgroundColor:'transparent',pointBackgroundColor:'#EF9F27',tension:0.3,yAxisID:'y2'}
+    ]
+  },
+  options:{responsive:true,maintainAspectRatio:false,plugins:{legend:{display:false}},scales:{y:{ticks:{font:{size:10}}},y2:{position:'right',ticks:{font:{size:10}},grid:{drawOnChartArea:false}},x:{ticks:{font:{size:10}}}}}
+});
+</script>
+</body>
+</html>

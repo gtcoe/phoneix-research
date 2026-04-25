@@ -1,0 +1,439 @@
+<!DOCTYPE html>
+<html><head><meta charset="utf-8">
+<style>
+*{box-sizing:border-box;margin:0;padding:0}
+body{font-family:system-ui,sans-serif;padding:16px;background:#fff;color:#1a1a1a;font-size:14px}
+h1{font-size:20px;font-weight:500;margin-bottom:3px}
+.sub{font-size:12px;color:#666;margin-bottom:14px}
+.sg{display:grid;grid-template-columns:repeat(auto-fill,minmax(110px,1fr));gap:8px;margin-bottom:16px}
+.sc{background:#f5f5f3;border-radius:8px;padding:10px 12px}
+.sl{font-size:10px;color:#666;margin-bottom:2px}
+.sv{font-size:17px;font-weight:500}
+.tab-row{display:flex;gap:5px;flex-wrap:wrap;margin-bottom:14px}
+.tab{font-size:11.5px;padding:5px 13px;border-radius:20px;border:1px solid #ddd;background:#fff;cursor:pointer;white-space:nowrap}
+.tab.active{background:#1a1a1a;color:#fff;border-color:#1a1a1a}
+.panel{display:none}.panel.active{display:block}
+.sh{font-size:10.5px;font-weight:500;color:#666;text-transform:uppercase;letter-spacing:.06em;margin:16px 0 7px;padding-bottom:5px;border-bottom:1px solid #eee}
+table{width:100%;border-collapse:collapse;font-size:12px;margin:8px 0}
+th{font-size:10.5px;font-weight:500;color:#666;padding:5px 7px;text-align:left;border-bottom:1px solid #eee;white-space:nowrap}
+td{padding:8px 7px;border-bottom:1px solid #eee;color:#1a1a1a;vertical-align:top}
+tr:last-child td{border-bottom:none}
+tr:hover td{background:#fafaf9}
+.g{color:#0F6E56;font-weight:500}.r{color:#A32D2D;font-weight:500}.a{color:#854F0B;font-weight:500}.b{color:#185FA5;font-weight:500}
+.badge{display:inline-block;font-size:10px;padding:2px 7px;border-radius:10px;white-space:nowrap}
+.bg{background:#E1F5EE;color:#0F6E56}.bb{background:#E6F1FB;color:#185FA5}.ba{background:#FAEEDA;color:#854F0B}.br{background:#FCEBEB;color:#A32D2D}.bgray{background:#f1f0e8;color:#5F5E5A}.bindigo{background:#E8EAF6;color:#283593}.bteal{background:#E0F4FF;color:#01579B}
+.warn{padding:10px 13px;margin:8px 0;border-left:3px solid;font-size:12px;line-height:1.65}
+.warn.success{background:#E1F5EE;border-color:#1D9E75;color:#04342C}
+.warn.caution{background:#FAEEDA;border-color:#BA7517;color:#412402}
+.warn.danger{background:#FCEBEB;border-color:#A32D2D;color:#712B13}
+.warn.info{background:#E6F1FB;border-color:#185FA5;color:#042C53}
+.warn.indigo{background:#E8EAF6;border-color:#3949AB;color:#1A237E}
+.warn.sky{background:#E0F4FF;border-color:#0288D1;color:#01579B}
+.warn strong{font-weight:500}
+.chart-wrap{position:relative;width:100%;height:240px;margin:8px 0}
+.kpi-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:10px;margin:10px 0}
+.kpi{background:#f5f5f3;border-radius:8px;padding:10px 12px;border-left:3px solid transparent}
+.kpi.green{border-left-color:#1D9E75}.kpi.amber{border-left-color:#EF9F27}.kpi.blue{border-left-color:#378ADD}.kpi.red{border-left-color:#A32D2D}.kpi.indigo{border-left-color:#3949AB}.kpi.sky{border-left-color:#0288D1}
+.kpi-l{font-size:10px;color:#666;margin-bottom:3px}
+.kpi-v{font-size:17px;font-weight:500}
+.kpi-s{font-size:10px;color:#888;margin-top:2px}
+.point{display:flex;gap:9px;align-items:flex-start;padding:9px 0;border-bottom:1px solid #eee;font-size:12px;line-height:1.6;color:#555}
+.point:last-child{border-bottom:none}
+.point strong{color:#1a1a1a;font-weight:500}
+.dot{width:19px;height:19px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:10px;font-weight:500;flex-shrink:0;margin-top:1px}
+.dg{background:#E1F5EE;color:#0F6E56}.dr{background:#FCEBEB;color:#A32D2D}.da{background:#FAEEDA;color:#854F0B}.db{background:#E6F1FB;color:#185FA5}.di{background:#E8EAF6;color:#283593}.ds{background:#E0F4FF;color:#01579B}
+.two-col{display:grid;grid-template-columns:1fr 1fr;gap:12px}
+.pane{border:1px solid #ddd;border-radius:10px;padding:13px}
+.pane-h{font-size:13px;font-weight:500;margin-bottom:9px}
+.scenario{border:1px solid #ddd;border-radius:10px;padding:13px;margin-bottom:9px}
+.sc-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:7px;margin:9px 0}
+.sc-cell{background:#f5f5f3;border-radius:6px;padding:7px 9px}
+.sc-l{font-size:10px;color:#666}
+.sc-v{font-size:12px;font-weight:500;margin-top:2px}
+.comp-h{display:grid;grid-template-columns:160px repeat(3,1fr);background:#f5f5f3;border-radius:8px 8px 0 0;overflow:hidden}
+.comp-row{display:grid;grid-template-columns:160px repeat(3,1fr);border-bottom:1px solid #eee}
+.comp-row:last-child{border-bottom:none}
+.cc{padding:8px 10px;font-size:11px;border-right:1px solid #eee}
+.cc:last-child{border-right:none}
+.cc-h{font-size:10px;font-weight:500;color:#444;padding:8px 10px;border-right:1px solid #ddd}
+.cc-h:last-child{border-right:none}
+.cc-label{color:#666;font-size:11px}
+.winner-cell{background:#E1F5EE}.mid-cell{background:#FAEEDA}.loser-cell{background:#fff5f5}
+.verdict-card{border-radius:10px;padding:13px 15px;margin-bottom:10px}
+.vc-h{font-size:13px;font-weight:500;margin-bottom:6px}
+.vc-b{font-size:12px;line-height:1.65;color:#444}
+.sector-card{border:1px solid #ddd;border-radius:10px;overflow:hidden;margin-bottom:10px}
+.sc-hdr{padding:10px 13px;display:flex;justify-content:space-between;align-items:center;background:#fafaf9}
+.sc-nm{font-size:13px;font-weight:500}
+.sc-tg{font-size:11px;color:#666;margin-top:2px}
+.sc-bd{padding:10px 13px;font-size:12px;line-height:1.65;color:#555;border-top:1px solid #eee}
+.sc-bd strong{color:#1a1a1a}
+.guid-card{border-radius:10px;padding:12px 14px;margin-bottom:8px;border-left:3px solid #3949AB;background:#E8EAF6}
+.guid-h{font-size:11.5px;font-weight:500;margin-bottom:4px;color:#1A237E}
+.guid-b{font-size:11.5px;color:#333;line-height:1.6}
+.guid-s{font-size:10px;color:#888;margin-top:4px}
+.guid-card.beat{background:#E1F5EE;border-left-color:#1D9E75}.guid-card.beat .guid-h{color:#0F6E56}
+.guid-card.miss{background:#FCEBEB;border-left-color:#A32D2D}.guid-card.miss .guid-h{color:#A32D2D}
+.guid-card.watch{background:#FAEEDA;border-left-color:#BA7517}.guid-card.watch .guid-h{color:#854F0B}
+.flag{background:#FCEBEB;border:2px solid #A32D2D;border-radius:10px;padding:13px;margin:10px 0}
+.flag-h{font-size:13px;font-weight:500;color:#A32D2D;margin-bottom:6px}
+.flag-b{font-size:12px;color:#333;line-height:1.65}
+.prod-grid{display:grid;grid-template-columns:1fr 1fr 1fr;gap:8px;margin:10px 0}
+.prod-card{border:1px solid #ddd;border-radius:8px;padding:10px;font-size:12px}
+.prod-nm{font-weight:500;font-size:12px;margin-bottom:3px}
+.prod-tag{font-size:10px;color:#666;margin-bottom:5px}
+.prod-bd{font-size:11px;color:#555;line-height:1.5}
+.moat-score{display:inline-flex;align-items:center;gap:4px;font-size:11px;font-weight:500}
+.ms-track{width:60px;background:#eee;height:7px;border-radius:4px;overflow:hidden}
+.ms-fill{height:100%;border-radius:4px}
+</style>
+</head>
+<body>
+
+<h1>Zaggle Prepaid Ocean Services Ltd — Deep Investment Analysis</h1>
+<div class="sub">NSE: ZAGGLE · B2B2C SaaS + Fintech spend management · Founded 2011 · CEO: Avinash Godkhindi (reappointed 2 yrs May 2026) · Hyderabad, Telangana · 50M+ prepaid cards · 3.7M users · 1,500+ enterprise clients</div>
+
+<div class="sg">
+  <div class="sc"><div class="sl">Market cap</div><div class="sv" style="color:#854F0B">~₹3,500 Cr</div></div>
+  <div class="sc"><div class="sl">9M FY26 revenue</div><div class="sv" style="color:#1D9E75">₹1,290 Cr</div></div>
+  <div class="sc"><div class="sl">9M FY26 PAT</div><div class="sv" style="color:#1D9E75">₹97.5 Cr</div></div>
+  <div class="sc"><div class="sl">Q3 FY26 rev. growth</div><div class="sv" style="color:#1D9E75">+56% YoY</div></div>
+  <div class="sc"><div class="sl">EBITDA margin</div><div class="sv" style="color:#854F0B">~8–10%</div></div>
+  <div class="sc"><div class="sl">FY27 guidance</div><div class="sv" style="color:#185FA5">+40% consol.</div></div>
+  <div class="sc"><div class="sl">Trailing PE</div><div class="sv" style="color:#A32D2D">~37–40x</div></div>
+  <div class="sc"><div class="sl">ROE</div><div class="sv" style="color:#A32D2D">~12.4%</div></div>
+  <div class="sc"><div class="sl">Promoter holding</div><div class="sv" style="color:#A32D2D">44.2%</div></div>
+  <div class="sc"><div class="sl">Net debt</div><div class="sv" style="color:#1D9E75">Debt-free</div></div>
+  <div class="sc"><div class="sl">Cards issued</div><div class="sv" style="color:#185FA5">50M+</div></div>
+  <div class="sc"><div class="sl">⚠ CFO resigned</div><div class="sv" style="color:#A32D2D">Apr 3, 2026</div></div>
+</div>
+
+<div class="tab-row">
+  <button class="tab active" onclick="show('revenue',this)">Revenue history</button>
+  <button class="tab" onclick="show('sectorKPI',this)">Sector KPIs</button>
+  <button class="tab" onclick="show('business',this)">Business model</button>
+  <button class="tab" onclick="show('guidance',this)">Guidance</button>
+  <button class="tab" onclick="show('risks',this)">Risks & red flags</button>
+  <button class="tab" onclick="show('scenarios',this)">3x scenarios</button>
+  <button class="tab" onclick="show('sectormap',this)">Sector landscape</button>
+  <button class="tab" onclick="show('compare',this)">Full comparison</button>
+  <button class="tab" onclick="show('verdict',this)">Verdict</button>
+</div>
+
+<!-- REVENUE -->
+<div id="revenue" class="panel active">
+  <div class="sh">Revenue & profit — hyper-growth engine but margin conversation is the debate</div>
+
+  <div class="warn indigo"><strong>Zaggle has one of the fastest revenue growth rates on NSE.</strong> From ₹310 Cr (FY23) to ₹1,290 Cr (9M FY26 alone), the company has grown 4x in 3 years. The critical debate: EBITDA margins are 8–10% (thin for a "SaaS" company). Bulls say this reflects investment phase — margins will expand as scale compounds. Bears say the cashback/incentive cost structure means this will never be a high-margin business. Understanding this debate is the core of the Zaggle investment thesis.</div>
+
+  <div class="chart-wrap"><canvas id="rc"></canvas></div>
+  <div style="display:flex;gap:14px;font-size:11.5px;color:#666;margin-bottom:10px">
+    <span><span style="display:inline-block;width:10px;height:10px;border-radius:2px;background:#3949AB;margin-right:4px"></span>Revenue ₹ Cr</span>
+    <span><span style="display:inline-block;width:10px;height:10px;border-radius:2px;background:#1D9E75;margin-right:4px"></span>PAT ₹ Cr</span>
+    <span><span style="display:inline-block;width:10px;height:10px;border-radius:2px;background:#9FA8DA;margin-right:4px"></span>Projected</span>
+  </div>
+
+  <table>
+    <tr><th>Period</th><th>Revenue</th><th>Growth</th><th>EBITDA%</th><th>PAT</th><th>PAT%</th><th>Cards/Users</th><th>Key event</th></tr>
+    <tr><td>FY23</td><td>~₹310 Cr</td><td>—</td><td>~7%</td><td>~₹22 Cr</td><td class="a">7%</td><td>~15M cards</td><td>Pre-IPO. Corporate expense cards + flexi benefit SaaS gaining traction. Propel product launched.</td></tr>
+    <tr><td>FY24</td><td>₹776 Cr</td><td class="g">+150%</td><td>~9.1%</td><td>₹44 Cr</td><td class="a">5.7%</td><td>~25M cards</td><td>IPO Sep 2023 at ₹164. Post-IPO acceleration. Zoyer (B2B expense) launches. Banking partnerships widen.</td></tr>
+    <tr><td>FY25</td><td>₹1,303 Cr</td><td class="g">+68%</td><td>~8.7%</td><td>₹87 Cr</td><td class="a">6.7%</td><td>~40M cards</td><td>PAT +98%. Propel, Save, Zoyer all scaling. Enterprise client count crosses 1,000. RoE still low at 12.4%.</td></tr>
+    <tr><td>Q1 FY26</td><td>₹332 Cr</td><td class="g">+27% YoY</td><td>~8%</td><td>₹26.5 Cr</td><td class="a">8%</td><td>~45M cards</td><td>Rivpe Technology acquired (UPI + credit cards). GreenEdge acquisition closed. Rio Money acquired.</td></tr>
+    <tr><td>Q2 FY26</td><td>₹431 Cr</td><td class="g">+42.4% YoY</td><td>~10.1%</td><td>₹33.2 Cr</td><td class="a">7.7%</td><td>~48M cards</td><td>PAT +79.1%. Adjusted EBITDA +48.1%. AU Small Finance Bank partnership. Zaggle GlobalPay launched.</td></tr>
+    <tr><td>Q3 FY26</td><td>₹498 Cr</td><td class="g">+47.9% YoY (standalone)</td><td>~9%</td><td>₹35.97 Cr</td><td class="a">7.2%</td><td>~50M cards</td><td>Consol. net sales ₹525 Cr (+56% YoY). PAT +84.25% YoY. Record quarterly revenue. Chennai Super Kings contract.</td></tr>
+    <tr><td>9M FY26</td><td>₹1,290 Cr (consol.)</td><td class="g">~38% YoY</td><td>~9%</td><td>₹97.5 Cr</td><td class="a">7.6%</td><td>50M+ / 3.7M users</td><td>Already exceeds full-year FY25 revenue. AI strategy launched. 25% tech workforce cut. ZatiX analytics.</td></tr>
+    <tr><td>FY26E (full year)</td><td>~₹1,700–1,800 Cr</td><td class="g">~30–38%</td><td>~9–10%</td><td>~₹130–145 Cr</td><td class="a">~7.7–8%</td><td>55M+ cards</td><td>Q4 consensus ₹680–760 Cr. FY26 full year should comfortably beat FY25. Results May 2026.</td></tr>
+    <tr><td>FY27E</td><td>~₹2,300–2,500 Cr</td><td class="g">+35–47%</td><td>~10–11%</td><td>~₹195–250 Cr</td><td class="a">~8.5–10%</td><td>65M+ cards</td><td>Management guided 25–30% standalone, 40% consolidated growth. Middle East entry planned. ZatiX AI scales.</td></tr>
+    <tr><td>FY28E</td><td>~₹3,000–3,500 Cr</td><td class="g">~30–40%</td><td>~11–13%</td><td>~₹300–430 Cr</td><td class="g">~10–12%</td><td>80M+ cards</td><td>Operating leverage kicks in. GIFT City (Zaggle Payments IFSC) generating international revenue. Fleet management.</td></tr>
+  </table>
+
+  <div class="warn success"><strong>9M FY26 (₹1,290 Cr revenue) has already exceeded all of FY25 (₹1,303 Cr).</strong> The company has essentially replicated its full prior fiscal year in just 9 months. Q4 FY26 (Jan–Mar 2026) is typically the strongest quarter due to year-end enterprise spending and tax-saving products (Zaggle Save surge at March 31 financial year end). FY26 full-year revenue of ₹1,700+ Cr is near-certain.</div>
+</div>
+
+<!-- SECTOR KPIs -->
+<div id="sectorKPI" class="panel">
+  <div class="sh">B2B2C fintech SaaS spend management — the right KPIs to watch</div>
+  <div class="warn sky"><strong>Zaggle is not a pure SaaS company — it is a hybrid SaaS + fintech company.</strong> Standard SaaS metrics (ARR, NRR, CAC) partially apply but the fintech layer (prepaid card interchange, cashback income, float income from prepaid card balances) is equally important. The right KPIs blend both worlds.</div>
+  <div class="kpi-grid">
+    <div class="kpi indigo"><div class="kpi-l">Cards issued (cumulative)</div><div class="kpi-v">50M+</div><div class="kpi-s">Dec 2025 — growing ~25% per year</div></div>
+    <div class="kpi indigo"><div class="kpi-l">Active users (platform)</div><div class="kpi-v">3.7M</div><div class="kpi-s">Dec 2025 — growing with enterprise deals</div></div>
+    <div class="kpi green"><div class="kpi-l">Q3 FY26 revenue growth</div><div class="kpi-v">+56% YoY</div><div class="kpi-s">One of fastest in listed Indian fintech</div></div>
+    <div class="kpi amber"><div class="kpi-l">EBITDA margin</div><div class="kpi-v">~9%</div><div class="kpi-s">Thin — cashback cost is the drag</div></div>
+    <div class="kpi green"><div class="kpi-l">Net debt</div><div class="kpi-v">Zero</div><div class="kpi-s">Strong balance sheet: ₹576 Cr cash</div></div>
+    <div class="kpi red"><div class="kpi-l">Promoter holding</div><div class="kpi-v" style="color:#A32D2D">44.2%</div><div class="kpi-s">Low — post-IPO dilution + ESOP grants</div></div>
+  </div>
+
+  <div class="sh">Why EBITDA margins are thin — and whether they will expand</div>
+  <div class="warn caution"><strong>The margin debate is the single most important analytical question for Zaggle.</strong> EBITDA at 9% looks terrible for a company positioning itself as a SaaS business. The reason: cashback expenses rose 70% YoY in Q2 FY26 to ₹40 Cr, H1 cashback at ₹75 Cr (+63.9% YoY). Cashback is the cost of acquiring/retaining prepaid card users — similar to customer acquisition cost (CAC) in SaaS but booked as an operating expense. As the installed base matures, cashback as % of revenue should decline (existing users don't need as much incentive). Management guided margin expansion toward 10–11% by FY27. If this materialises, PAT margins reach 9–10%, translating to ₹200+ Cr PAT on ₹2,300 Cr revenue.</div>
+
+  <table>
+    <tr><th>Revenue driver</th><th>How it works</th><th>Margin profile</th><th>Scale behaviour</th></tr>
+    <tr><td><strong>Prepaid card interchange</strong></td><td>Every time a Zaggle card is swiped, Zaggle earns 0.5–1.5% interchange fee from the merchant.</td><td class="a">~15–25% margin</td><td class="g">Scales linearly with card spends — very high volume, low friction</td></tr>
+    <tr><td><strong>SaaS platform fees</strong></td><td>Annual/monthly fee for Propel (rewards), Save (flexi benefits), Zoyer (expense management) software licenses.</td><td class="g">~50–70% margin</td><td class="g">Classic SaaS — low marginal cost as users scale. Most valuable segment.</td></tr>
+    <tr><td><strong>Float income</strong></td><td>Cash preloaded on Zaggle cards earns interest before being spent. With ₹576 Cr cash + float on 50M cards.</td><td class="g">Near-100% margin — pure interest income</td><td class="g">Grows with card balance outstanding — interest rate dependent</td></tr>
+    <tr><td><strong>Cashback expense (deduction)</strong></td><td>Zaggle pays cashback/rewards to retain card users. Rising rapidly as competitive intensity grows.</td><td class="r">Direct cost — reduces margins</td><td class="r">Must be managed — should stabilise as base matures</td></tr>
+    <tr><td><strong>Acquisition-related fees</strong></td><td>Revenue from GreenEdge (loyalty), Dice (AI expense), Rivpe (UPI credit cards).</td><td class="a">~20–40% margin</td><td class="g">Increases addressable market; margin TBD post integration</td></tr>
+  </table>
+</div>
+
+<!-- BUSINESS MODEL -->
+<div id="business" class="panel">
+  <div class="sh">Products — the full Zaggle ecosystem</div>
+  <div class="warn indigo"><strong>Zaggle's genius is occupying the intersection of SaaS and fintech.</strong> Most SaaS companies have no financial product. Most fintech companies have no SaaS layer. Zaggle combines both — a software platform (that companies pay for) embedded with financial products (prepaid cards, expense cards). This "SaaS + float" model creates switching costs (deep workflow integration) AND a recurring fintech revenue stream (interchange, float). Global analogue: Brex, Ramp, Expensify in the US — but targeting India's far less penetrated SME/enterprise market.</div>
+
+  <div class="prod-grid">
+    <div class="prod-card">
+      <div class="prod-nm" style="color:#3949AB">🎯 Zaggle Propel</div>
+      <div class="prod-tag">Channel rewards · Incentives · B2B2C</div>
+      <div class="prod-bd">Rewards and recognition platform for enterprises — managing employee rewards, channel partner incentives, and customer loyalty. Clients: HDFC ERGO (3yr), CNH Industrial (3yr), Hindware (3yr). Revenue: SaaS subscription + interchange on reward cards. Highest-value enterprise product.</div>
+    </div>
+    <div class="prod-card">
+      <div class="prod-nm" style="color:#3949AB">💼 Zaggle Save</div>
+      <div class="prod-tag">Employee flexi benefits · Tax optimisation</div>
+      <div class="prod-bd">Digitises employee reimbursements (fuel, meal, telecom, LTA allowances). Huge March 31 seasonality — companies top up before financial year end for tax optimisation. Blue Star (3yr contract). Fanuc India (5yr). This is the "sticky" recurring enterprise product — once embedded in payroll, switching cost is high.</div>
+    </div>
+    <div class="prod-card">
+      <div class="prod-nm" style="color:#3949AB">💳 Zaggle Zoyer</div>
+      <div class="prod-tag">Corporate expense management · B2B</div>
+      <div class="prod-td">All-in-one corporate spend platform — expense reporting, travel management, vendor payments. Rebel Foods (1yr contract). Superking Ventures. Chennai Super Kings. Growing enterprise client book. Direct competitor to Happay, Fyle, Concur India.</div>
+    </div>
+    <div class="prod-card">
+      <div class="prod-nm" style="color:#0288D1">🌍 Zaggle GlobalPay + ZIP</div>
+      <div class="prod-tag">Forex · Cross-border · GIFT City</div>
+      <div class="prod-bd">Zaggle GlobalPay forex card + Zaggle International Payments (ZIP) at GIFT City. WSFX strategic referral partner. Early stage — positions Zaggle for India's growing international payment market. Middle East expansion planned. Option value play.</div>
+    </div>
+    <div class="prod-card">
+      <div class="prod-nm" style="color:#0288D1">🤖 ZatiX + AI Strategy</div>
+      <div class="prod-tag">AI analytics · Spend intelligence · Product velocity</div>
+      <div class="prod-bd">ZatiX: AI-driven enterprise spend analytics and insights. Launched FY26. Company cut tech workforce 25% and accelerated product cycles to 3–6 months using AI-assisted development. Positions Zaggle to compete with global tools like SAP Concur at a fraction of the price.</div>
+    </div>
+    <div class="prod-card">
+      <div class="prod-nm" style="color:#0F6E56">🏆 GreenEdge + Dice (acquisitions)</div>
+      <div class="prod-tag">Loyalty/rewards · AI spend · M&A growth</div>
+      <div class="prod-bd">GreenEdge (55.56% stake): loyalty, rewards, golf travel. Dice: AI enterprise spend management — clients include DTDC, Bajaj Electricals. Combined purchase: ~₹150 Cr. Revenue accretive immediately. Dice adds AI credibility and enterprise clients from Day 1.</div>
+    </div>
+  </div>
+
+  <div class="sh">The B2B2C flywheel — why it creates network effects</div>
+  <div class="point"><div class="dot di">1</div><div><strong>Enterprise signs up (B2B layer):</strong> A company like Blue Star signs a 3-year Zaggle Save contract. Zaggle integrates with their HRMS and payroll. Integration takes 2–4 weeks — after that, switching cost is very high (data history, workflow dependency, employee habits).</div></div>
+  <div class="point"><div class="dot di">2</div><div><strong>Employees receive prepaid cards (B2C layer):</strong> All Blue Star employees now use Zaggle prepaid cards for meal/fuel/telecom reimbursements. Each employee becomes a Zaggle card user — a consumer touchpoint that generates interchange every time they swipe.</div></div>
+  <div class="point"><div class="dot di">3</div><div><strong>Data flywheel:</strong> With 3.7M users and 50M+ cards, Zaggle has unprecedented India-specific corporate spending data. This powers ZatiX analytics — which in turn sells back to enterprises as "spend intelligence." Data → product → sales → more data. A classic platform flywheel.</div></div>
+  <div class="point"><div class="dot dg">+</div><div><strong>Why this beats pure prepaid card companies:</strong> HDFC Bank or Axis Bank could issue prepaid cards. But they can't build a Propel rewards platform, a Save tax benefit workflow, or a Zoyer expense reporting system — these are SaaS products requiring engineering depth, not banking licenses. Zaggle's moat is the SaaS layer that banks can't easily replicate.</div></div>
+</div>
+
+<!-- GUIDANCE -->
+<div id="guidance" class="panel">
+  <div class="sh">Guidance analysis — management has been broadly credible but margins have been the miss</div>
+
+  <div class="guid-card beat">
+    <div class="guid-h">✓ Revenue growth — consistently delivered, often exceeded</div>
+    <div class="guid-b">FY25 revenue grew 68% vs guided ~50%. FY26 on track for 30–35% full-year growth with 9M already exceeding full-year FY25. Q3 FY26 +56% YoY — accelerating. The top-line story has been consistent: enterprise clients are signing, contracts are being renewed, and each acquisition adds incremental revenue. Revenue guidance credibility: 9/10. Management has never missed revenue guidance — they've beaten it.</div>
+    <div class="guid-s">Revenue track record: 9/10. The growth story is real and consistent.</div>
+  </div>
+
+  <div class="guid-card watch">
+    <div class="guid-h">⚠ Margin guidance — the recurring miss that concerns analysts</div>
+    <div class="guid-b">Management has been guiding margin expansion "from next quarter" for multiple quarters. EBITDA margins were expected to reach 10% in H2 FY25 — they didn't. Then guided 10%+ for FY26 H1 — Q3 FY26 PAT margin fell from 8.09% to 7.05% sequentially. The cashback expense growing at 70% YoY is the primary culprit. The company argues this is investment in user base growth (acquiring users through cashback) and will moderate as the base matures. Critics argue the cashback is structurally necessary to keep users on the Zaggle card vs switching to other payment methods. The honest verdict: margin expansion is coming but slower than guided.</div>
+    <div class="guid-s">Margin credibility: 5/10. Consistently guided expansion, consistently delivered less than guided.</div>
+  </div>
+
+  <div class="guid-card beat">
+    <div class="guid-h">✓ FY27 guidance: 25–30% standalone, 40% consolidated growth</div>
+    <div class="guid-b">At a Q4 FY26 analyst interaction, management guided 25–30% standalone growth and 40% consolidated growth in FY27. The 40% consolidated figure is driven by recent acquisitions (GreenEdge, Dice, Rivpe) being fully consolidated for the first time. Standalone 25–30% is organic. If achieved: FY27 standalone revenue ~₹2,100–2,300 Cr, consolidated ~₹2,400–2,500 Cr. Zaggle shares surged 15–16% on this guidance announcement — showing how starved investors are for positive signals on this stock after a -25% 1-year decline.</div>
+    <div class="guid-s">Credibility: 7/10 on revenue, 5/10 on margins. Revenue delivery is consistent; margin promises repeatedly slip.</div>
+  </div>
+
+  <div class="guid-card">
+    <div class="guid-h">🎯 FY28 outlook: Operating leverage materialises, margins reach 11–13%</div>
+    <div class="guid-b">Analyst consensus (JM Financial) projects FY28 EBITDA margin of 11.3%, PAT margin of ~8.7%. This requires: (1) Cashback as % of revenue declining (maturing user base), (2) SaaS subscription revenue growing faster than interchange (higher margin mix), (3) Float income expanding with card balance, (4) AI-driven efficiency reducing support costs. The 30x PE multiple assigned by analysts (on FY27 EPS of ₹15.1) generates a target of ₹453/share — implying 75% upside from current ₹255. However, this is predicated on margin delivery which has repeatedly disappointed.</div>
+    <div class="guid-s">Key: FY27 EBITDA margin is the single most important number to watch. Any movement toward 11% by H2 FY27 = major re-rating.</div>
+  </div>
+
+  <div class="sh">Guidance scorecard</div>
+  <table>
+    <tr><th>Guidance item</th><th>Credibility</th><th>Base case</th><th>Key risk</th></tr>
+    <tr><td>FY27 revenue (standalone) +25–30%</td><td class="g">8/10 — revenue consistently beats</td><td>₹2,100–2,300 Cr</td><td>Macro slowdown in enterprise IT spending</td></tr>
+    <tr><td>FY27 revenue (consolidated) +40%</td><td class="g">7/10 — acquisitions add mechanically</td><td>₹2,400–2,500 Cr</td><td>Integration delays from GreenEdge/Dice/Rivpe</td></tr>
+    <tr><td>EBITDA margin 10–11% FY27</td><td class="r">5/10 — consistently guided, rarely delivered on time</td><td>9.5–10.5%</td><td>Cashback remains elevated; competition forces continued incentives</td></tr>
+    <tr><td>Middle East market entry</td><td class="a">4/10 — early intent</td><td>₹50–100 Cr by FY28</td><td>Regulatory, local partner dependency, competition</td></tr>
+    <tr><td>ZatiX AI revenue contribution</td><td class="a">5/10 — product launched, no revenue guidance</td><td>₹100–150 Cr by FY28</td><td>Enterprise AI adoption pace in India</td></tr>
+  </table>
+</div>
+
+<!-- RISKS -->
+<div id="risks" class="panel">
+  <div class="sh">Risks — beyond the headline growth, these issues need clarity</div>
+
+  <div class="flag">
+    <div class="flag-h">🚨 CFO resigned April 3, 2026 — Interim CFO appointed</div>
+    <div class="flag-b">CFO Venkata Aditya Kumar Grandhi resigned effective April 3, 2026. Rajesh Tummalaganti appointed as Interim CFO from April 4, 2026, until a permanent replacement is found. CFO departures at a high-growth fintech company — especially within a year of IPO and when the company is still building institutional credibility — raise questions. Is the departure amicable (new opportunity) or pressure-related (disagreement on financial reporting, margin trajectory, or acquisition strategy)? The company has not elaborated. For Garvit: this should be tracked carefully. If the Interim CFO makes unusual accounting changes in Q4 FY26, it becomes a red flag. Watch the Q4 FY26 results (May 2026) closely for any restatements or unusual line items.</div>
+  </div>
+
+  <div class="point"><div class="dot dr">1</div><div><strong>Promoter holding at 44.2% — concerningly low for a founder-led fintech.</strong><br>At IPO (Sep 2023), promoters held higher. Post-IPO dilution from ESOPs and secondary sales has brought it to 44.2% — below the 50% threshold many institutional investors require for founder-led conviction. Declining promoter holding signals either (a) wealth diversification by promoters (concerning if consistent), or (b) ESOP dilution (acceptable if talent-related). Zaggle must clarify whether promoter holding will stabilise or continue declining. Any further fall below 40% would be a significant negative signal.</div></div>
+
+  <div class="point"><div class="dot dr">2</div><div><strong>Cashback expense growing faster than revenue — structural or cyclical?</strong><br>H1 FY26 cashback: ₹75 Cr (+63.9% YoY) vs revenue growth of 37.4%. Cashback growing faster than revenue means the "variable customer acquisition cost" is not declining with scale — it's accelerating. This is the bear case in a nutshell: if Zaggle must permanently pay higher cashback to retain card users (because HDFC Pay, PhonePe, Google Pay are all alternatives), margins will never expand to 15%+ that SaaS companies command. The company says cashback moderates as base matures. The evidence so far does not support this — it's getting worse, not better.</div></div>
+
+  <div class="point"><div class="dot dr">3</div><div><strong>Stock has underperformed -25% in 1 year despite 56% revenue growth — market is skeptical.</strong><br>The stock fell from ₹547 (52-week high) to ₹255 (current) — a -53% fall from peak. Despite Q3 FY26 revenue growing 56% YoY and PAT growing 84% YoY, the market is voting with its feet. Institutional investors reduced positions consistently. The market is saying: "We don't believe the margin expansion story." When institutional money leaves a high-growth company for 3 consecutive quarters, it requires serious examination of whether their analysis is superior to the bull narrative.</div></div>
+
+  <div class="point"><div class="dot da">4</div><div><strong>Acquisition spree — integration risk and strategy drift.</strong><br>In 18 months: Rio Money (July 2025), GreenEdge (loyalty), Dice (AI spend), Rivpe (UPI credit cards), almost Effiasoft (reversed). That's 4 acquisitions completed and 1 reversed. For a 422-person company, running 4 integration tracks simultaneously while also launching ZatiX, GIFT City subsidiary, GlobalPay, Middle East expansion, and AI strategy = significant management bandwidth risk. The Effiasoft reversal (announced March 2025, cancelled by December 2025) specifically shows strategy inconsistency — what changed in 9 months? Was the original acquisition decision poorly thought through?</div></div>
+
+  <div class="point"><div class="dot da">5</div><div><strong>B2B competition intensifying — Brex, Ramp-style Indian entrants + banks pivoting.</strong><br>Zaggle competes with: Happay (acquired by CRED), Fyle (well-funded), Razorpay (expense management features), Khatabook (SME finance), and increasingly with banks' own corporate card programs (HDFC Bank, ICICI Bank corporate credit cards with expense portals). The "bank-issued corporate card + bank's own app" is a genuine disintermediation threat. Banks don't need to use Zaggle's platform if they build their own. And they have balance sheet advantages (0% cost of capital vs Zaggle's interchange dependency).</div></div>
+
+  <div class="point"><div class="dot dg">+</div><div><strong>Genuine strengths that validate the bull thesis:</strong><br>50M+ cards issued — India's largest prepaid B2B2C card ecosystem. 3-year enterprise contracts (Hindware, Blue Star, HDFC ERGO, Fanuc) = revenue locked. Debt-free with ₹576 Cr cash — no financial stress. Each acquisition is strategically adjacent and modestly priced (₹22–150 Cr). CEO reappointed for 2 years (continuity). Revenue growth 56% YoY is extraordinary. ZatiX AI could be the margin expansion unlock. GIFT City subsidiary opens international markets. India's formal corporate spending digitalisation is just beginning — the TAM is real.</div></div>
+</div>
+
+<!-- SCENARIOS -->
+<div id="scenarios" class="panel">
+  <div class="sh">Three scenarios — from Garvit's avg cost ~₹225 (350 shares, ₹78,876 invested)</div>
+  <div class="warn sky"><strong>The path to 3x for Zaggle is almost entirely dependent on margin expansion.</strong> Revenue will grow — that's nearly certain at 30–40% CAGR. The question is whether EBITDA margins move from 9% to 13–15% by FY28. If yes, 3x is achievable. If margins stay stuck at 9%, 3x requires the market to pay 45–50x PE on stagnant margins — which is unlikely to be sustained.</div>
+
+  <div class="scenario" style="border-left:3px solid #3949AB">
+    <div style="font-size:13px;font-weight:500;color:#1A237E;margin-bottom:8px">Bull case — 3–4x in 3 years: Margin expansion materialises + revenue 40% CAGR</div>
+    <div class="sc-grid">
+      <div class="sc-cell"><div class="sc-l">FY28 revenue</div><div class="sc-v">₹3,000–3,500 Cr</div></div>
+      <div class="sc-cell"><div class="sc-l">FY28 EBITDA%</div><div class="sc-v">12–14%</div></div>
+      <div class="sc-cell"><div class="sc-l">FY28 PAT</div><div class="sc-v">₹320–450 Cr</div></div>
+      <div class="sc-cell"><div class="sc-l">Forward PE</div><div class="sc-v">25–30x</div></div>
+      <div class="sc-cell"><div class="sc-l">FY28 mcap</div><div class="sc-v">₹8,000–13,500 Cr</div></div>
+      <div class="sc-cell"><div class="sc-l">Return from ₹3,500 Cr</div><div class="sc-v">2.3–3.9x</div></div>
+    </div>
+    <div style="font-size:11.5px;color:#333;margin-top:8px"><strong>What must happen:</strong> Cashback as % of revenue declines from 5.8% to 3.5% as base matures. SaaS revenue grows to 25%+ of total (higher margin mix). ZatiX AI drives monetisation. Middle East adds ₹200 Cr incremental. Float income grows with card base to 80M+. Acquisitions integrate successfully. No CFO/governance issues. At 27x PE on ₹380 Cr PAT = ₹10,260 Cr mcap = 2.9x from current. <strong>3x requires either higher margins or higher PE — both achievable in the right environment.</strong></div>
+  </div>
+
+  <div class="scenario" style="border-left:3px solid #378ADD">
+    <div style="font-size:13px;font-weight:500;color:#185FA5;margin-bottom:8px">Base case — 1.5–2x in 2 years: Revenue 30% CAGR, margins drift to 10–11%</div>
+    <div class="sc-grid">
+      <div class="sc-cell"><div class="sc-l">FY27 revenue</div><div class="sc-v">₹2,300–2,500 Cr</div></div>
+      <div class="sc-cell"><div class="sc-l">FY27 PAT</div><div class="sc-v">₹200–250 Cr</div></div>
+      <div class="sc-cell"><div class="sc-l">Forward PE</div><div class="sc-v">28–32x</div></div>
+      <div class="sc-cell"><div class="sc-l">FY27 mcap</div><div class="sc-v">₹5,600–8,000 Cr</div></div>
+      <div class="sc-cell"><div class="sc-l">Return from ₹3,500 Cr</div><div class="sc-v">1.6–2.3x</div></div>
+      <div class="sc-cell"><div class="sc-l">Timeline</div><div class="sc-v">FY27</div></div>
+    </div>
+    <div style="font-size:11.5px;color:#333;margin-top:8px">Revenue grows 35–40% as guided. Margins drift to 10% (slow expansion). EPS reaches ₹15–18. At 30x = ₹450–540/share = 1.8–2.1x from Garvit's cost of ₹225. <strong>Base case is very good for Garvit — nearly 2x in 2 years — because his average cost is low at ₹225.</strong></div>
+  </div>
+
+  <div class="scenario" style="border-left:3px solid #A32D2D">
+    <div style="font-size:13px;font-weight:500;color:#A32D2D;margin-bottom:8px">Bear case — flat to -25%: Margins stall, CFO issue escalates, competition bites</div>
+    <div class="sc-grid">
+      <div class="sc-cell"><div class="sc-l">Trigger</div><div class="sc-v">Margins stay at 7–8%</div></div>
+      <div class="sc-cell"><div class="sc-l">Trigger</div><div class="sc-v">CFO issue reveals accounting concern</div></div>
+      <div class="sc-cell"><div class="sc-l">Trigger</div><div class="sc-v">Bank disintermediation accelerates</div></div>
+      <div class="sc-cell"><div class="sc-l">FY27 PAT</div><div class="sc-v">₹130–160 Cr (no margin expansion)</div></div>
+      <div class="sc-cell"><div class="sc-l">PE at 22x</div><div class="sc-v">₹2,860–3,520 Cr</div></div>
+      <div class="sc-cell"><div class="sc-l">Stock impact</div><div class="sc-v">-18 to flat from current ₹255</div></div>
+    </div>
+    <div style="font-size:11.5px;color:#333;margin-top:8px"><strong>Bear probability: 20–25%.</strong> Garvit's saving grace: he bought at ₹225 average — well below current ₹255 and far below the 52-week high of ₹547. Even in the bear case, Garvit is unlikely to lose more than 10–15% on his position. The bear case doesn't reach his cost basis of ₹225. This is a key asymmetry in his favour.</div>
+  </div>
+
+  <table style="margin-top:10px">
+    <tr><th>Target from Garvit's cost (₹225)</th><th>Target price</th><th>Mcap needed</th><th>Driver</th><th>Probability</th></tr>
+    <tr><td>3x (₹675)</td><td>₹675/share</td><td>₹9,200 Cr</td><td>FY28 PAT ₹350 Cr at 26x PE</td><td class="a">20–25%</td></tr>
+    <tr><td>2x (₹450)</td><td>₹450/share</td><td>₹6,135 Cr</td><td>FY27 PAT ₹215 Cr at 28x PE</td><td class="g">35–40%</td></tr>
+    <tr><td>1.5x (₹338)</td><td>₹338/share</td><td>₹4,600 Cr</td><td>FY27 PAT ₹180 Cr at 25x PE</td><td class="g">50–55%</td></tr>
+    <tr><td>Bear (₹180 — below cost)</td><td>₹180/share</td><td>₹2,450 Cr</td><td>CFO issue + margin collapse</td><td class="r">10–15%</td></tr>
+  </table>
+  <div class="warn success" style="margin-top:8px"><strong>Garvit-specific asymmetry:</strong> Bought at ₹225 average when stock was at 52-week lows near ₹200. Current ₹255 = already +13.4% gain. Even in the base case, the stock should reach ₹400–500 by FY27. 2x is more likely than not given the entry price. 3x requires margin expansion to kick in. The bear case barely touches Garvit's cost — making this a well-timed entry that deserves to be held.</div>
+</div>
+
+<!-- SECTOR LANDSCAPE -->
+<div id="sectormap" class="panel">
+  <div class="sh">B2B fintech spend management — India and global landscape</div>
+  <div class="warn sky"><strong>India's corporate expense management and employee benefits market is massively underpenetrated.</strong> Analyst estimates: India spends ₹40–50 lakh crore annually on employee salaries and benefits. Of this, formal digital expense management adoption is less than 5%. Zaggle's current ₹1,700 Cr revenue barely scratches the surface. The structural tailwind is real — the question is who wins the lion's share as the market formalises.</div>
+
+  <div class="sector-card">
+    <div class="sc-hdr"><div><div class="sc-nm">Happay (acquired by CRED) — closest direct competitor</div><div class="sc-tg">Unlisted · Corporate expense management + prepaid cards · CRED-backed</div></div><span class="badge ba">Direct competitor — unlisted</span></div>
+    <div class="sc-bd">Happay is Zaggle's most direct competitor in corporate expense management. Acquired by CRED (the credit card bill platform), giving it deep distribution and CRED's engineering resources. Unlisted, so no revenue comparison. <strong>The CRED acquisition of Happay is the clearest competitive threat to Zaggle</strong> — if CRED bundles Happay into its existing 8 Cr active user base, it could undercut Zaggle on corporate client acquisition cost. Zaggle's defence: deeper workflow integration (3-year contracts, tax benefit layer) that a rewards platform like CRED cannot easily replicate.</div>
+  </div>
+
+  <div class="sector-card">
+    <div class="sc-hdr"><div><div class="sc-nm">Pine Labs + Wallet companies — adjacent competition</div><div class="sc-tg">Pine Labs (pre-IPO) · Paytm · PhonePe · enterprise payment ecosystems</div></div><span class="badge ba">Adjacent — partial overlap</span></div>
+    <div class="sc-bd">Pine Labs (merchant payments + enterprise solutions) overlaps with Zoyer (expense management). Paytm has corporate cards. PhonePe has business payment solutions. However, none of these have the SaaS layer (tax-benefit workflows, rewards platform, channel incentives management) that Zaggle offers. The true competitive overlap is limited to the prepaid card interchange segment — where banks and payment platforms compete directly. Zaggle's SaaS software layer is its differentiation that these players don't yet match.</div>
+  </div>
+
+  <div class="sector-card">
+    <div class="sc-hdr"><div><div class="sc-nm">Global comps: Edenred, WEX, BILL — mature analogs</div><div class="sc-tg">Edenred: €6.5B revenue, 45% EBITDA · WEX: Fleet and benefits payments · BILL: SMB spend</div></div><span class="badge bb">Global benchmarks</span></div>
+    <div class="sc-bd">Edenred (France) is the global leader in employee benefits/meal vouchers — direct analog to Zaggle Save. Edenred trades at 20–25x EBITDA with 40–45% margins. WEX (US fleet + corporate payments) at 15–20x EBITDA. BILL (US SMB expense management) at 30x revenue pre-profitability. <strong>The valuation case for Zaggle: if it reaches Edenred-like margins (40-45% EBITDA) as it matures, the stock is dramatically undervalued at current 9% margins. The entire bull thesis is essentially "Zaggle will eventually look like Edenred."</strong></div>
+  </div>
+</div>
+
+<!-- FULL COMPARISON -->
+<div id="compare" class="panel">
+  <div class="sh">Zaggle vs listed Indian fintech/SaaS peers</div>
+  <div style="border:1px solid #ddd;border-radius:10px;overflow:hidden;font-size:11px">
+    <div class="comp-h">
+      <div class="cc-h" style="background:#f5f5f3">Metric</div>
+      <div class="cc-h" style="background:#E8EAF6;color:#1A237E">Zaggle ← Your stock</div>
+      <div class="cc-h" style="background:#E6F1FB;color:#185FA5">Affle India</div>
+      <div class="cc-h" style="background:#f5f5f3">IndiaMART Intermesh</div>
+    </div>
+    <div class="comp-row"><div class="cc cc-label">Market cap</div><div class="cc mid-cell">₹3,500 Cr</div><div class="cc loser-cell">₹18,000+ Cr</div><div class="cc loser-cell">₹12,000+ Cr</div></div>
+    <div class="comp-row"><div class="cc cc-label">Revenue growth (FY26)</div><div class="cc winner-cell">+38–56% YoY (fastest)</div><div class="cc mid-cell">~20–25%</div><div class="cc mid-cell">~20%</div></div>
+    <div class="comp-row"><div class="cc cc-label">EBITDA margin</div><div class="cc loser-cell">~9% (thin)</div><div class="cc winner-cell">~20–25%</div><div class="cc winner-cell">~30%+</div></div>
+    <div class="comp-row"><div class="cc cc-label">PAT margin</div><div class="cc loser-cell">~7.5%</div><div class="cc winner-cell">~15–18%</div><div class="cc winner-cell">~25–30%</div></div>
+    <div class="comp-row"><div class="cc cc-label">ROE</div><div class="cc loser-cell">~12.4% (low)</div><div class="cc winner-cell">~18–22%</div><div class="cc winner-cell">~25%+</div></div>
+    <div class="comp-row"><div class="cc cc-label">Debt position</div><div class="cc winner-cell">Zero debt, ₹576 Cr cash</div><div class="cc winner-cell">Low debt</div><div class="cc winner-cell">Cash rich</div></div>
+    <div class="comp-row"><div class="cc cc-label">Business model</div><div class="cc winner-cell">SaaS + fintech hybrid (unique)</div><div class="cc mid-cell">Adtech SaaS</div><div class="cc mid-cell">B2B marketplace SaaS</div></div>
+    <div class="comp-row"><div class="cc cc-label">Promoter holding</div><div class="cc loser-cell">44.2% (declining)</div><div class="cc winner-cell">~55%+</div><div class="cc winner-cell">~70%+</div></div>
+    <div class="comp-row"><div class="cc cc-label">Trailing PE</div><div class="cc mid-cell">~37–40x</div><div class="cc mid-cell">~50–60x</div><div class="cc mid-cell">~45–55x</div></div>
+    <div class="comp-row"><div class="cc cc-label">Growth rate</div><div class="cc winner-cell">Fastest — 40–56% revenue CAGR</div><div class="cc mid-cell">20–25%</div><div class="cc loser-cell">~15–20%</div></div>
+    <div class="comp-row"><div class="cc cc-label">Margin trajectory</div><div class="cc loser-cell">Stuck at 9%, expansion promised but delayed</div><div class="cc winner-cell">Already expanding</div><div class="cc winner-cell">Stable high margins</div></div>
+    <div class="comp-row"><div class="cc cc-label">3x probability (3yr)</div><div class="cc mid-cell">25–30% (if margins expand)</div><div class="cc loser-cell">10–12% (mcap too large)</div><div class="cc loser-cell">10–12% (low growth rate)</div></div>
+    <div class="comp-row"><div class="cc cc-label">Garvit's entry price</div><div class="cc winner-cell">₹225 avg — near 52-week lows</div><td class="cc">N/A — not held</td><td class="cc">N/A — not held</td></div>
+    <div class="comp-row"><div class="cc cc-label">Best for 3x</div><div class="cc">Yes — if margins expand. Garvit's entry is the key advantage.</div><div class="cc">Better quality but wrong size</div><div class="cc">Wrong size + low growth</div></div>
+  </div>
+  <div class="warn indigo" style="margin-top:12px"><strong>The critical comparison insight:</strong> Zaggle is the fastest-growing fintech in listed India at 40–56% revenue CAGR — but trades at a discount to slower-growing peers (Affle, IndiaMART) because of thin margins. The market is effectively saying: "We'll pay for growth AND margins. Not growth alone." If Zaggle gets margins to 11%+ in FY27, the PE gap vs peers closes and the stock re-rates meaningfully. Garvit's entry at ₹225 (near 52-week lows) provides significant cushion regardless of the margin timing.</div>
+</div>
+
+<!-- VERDICT -->
+<div id="verdict" class="panel">
+  <div class="sh">The definitive verdict for Garvit's portfolio</div>
+
+  <div class="verdict-card" style="background:#E8EAF6;border:1px solid #7986CB">
+    <div class="vc-h" style="color:#1A237E">Zaggle — Verdict: Strong hold at 350 shares (₹78,876 invested, +13.4% gain). One of the best-timed entries in the portfolio. The margin story is the debate — but at Garvit's entry price of ₹225, even the base case delivers 2x.</div>
+    <div class="vc-b">Here's the complete, honest picture on Zaggle:<br><br><strong>What the market is arguing about:</strong><br>Bull: Zaggle is India's Edenred. The 9% EBITDA margins are an investment phase — as the installed base of 50M+ cards matures, cashback requirements decline, SaaS revenue grows as % of total, and operating leverage kicks in. By FY28, EBITDA should hit 13–15%. At that point, on ₹3,000 Cr revenue, PAT is ₹400+ Cr, and at 25x PE = ₹10,000 Cr = 2.9x from current ₹3,500 Cr.<br><br>Bear: The cashback expense is structurally necessary — not cyclical. Indians will always need incentives to use a prepaid corporate card vs their personal credit card. The 9% margin is the ceiling, not the floor. CFO resign. Promoters at 44%. You're paying 37x PE for a thin-margin fintech with governance concerns.<br><br><strong>Why Garvit is in an unusually good position:</strong><br>Garvit's average cost is ₹225/share — bought near the 52-week low of ₹199. At ₹255 today, he's already +13.4%. The asymmetry is excellent: even the bear case (stock flat at ₹180–220) barely touches his cost. The base case (₹420–480 by FY27) is a 1.9–2.1x return on his entry. The bull case (₹600–700 if margins hit 13%) is nearly 3x. This is one of the best-positioned individual holdings in the portfolio — not because the thesis is certain, but because the entry price is low enough to absorb margin disappointment.<br><br><strong>What to do about the CFO resignation:</strong><br>Treat it as a yellow flag, not a red flag yet. CFOs at high-growth startups rotate frequently. Watch Q4 FY26 results (May 2026) closely — if the numbers are clean (no restatements, margin sequentially improves), the CFO departure was likely a personal/compensation issue. If Q4 FY26 has unusual write-offs, restatements, or sudden accounting changes, that's when the CFO departure becomes a serious concern and requires re-evaluation.<br><br><strong>The single most important number to monitor every quarter:</strong><br>Cashback as % of revenue. Currently ~5.8%. If this declines to 4.5% in Q4 FY26 → 4.0% in Q1 FY27 → 3.5% in Q2 FY27, the margin expansion story is real and the stock re-rates. If cashback stays at 5.5%+, margins cannot expand materially and the PE multiple compresses.</div>
+  </div>
+
+  <div class="sh">Allocation recommendation</div>
+  <table>
+    <tr><th>Stock</th><th>Action</th><th>Amount</th><th>Rationale</th></tr>
+    <tr><td><strong>Zaggle (currently held)</strong></td><td><span class="badge bindigo">HOLD 350 shares — ideal entry, full position</span></td><td>Hold ₹89,474 as is</td><td>Entry at ₹225 near 52-week lows is excellent. Already +13.4%. Base case delivers 2x. Margin expansion is the 3x catalyst. Do not add more until Q4 FY26 results confirm: (a) no accounting anomalies from CFO change, (b) cashback as % of revenue declining. Hold full position.</td></tr>
+  </table>
+
+  <div class="sh">Seven triggers to watch — what determines whether Zaggle is a 2x or 3x</div>
+  <table>
+    <tr><th>#</th><th>Trigger</th><th>Status</th><th>Impact</th></tr>
+    <tr><td>1</td><td>Q4 FY26 results (May 2026) — CFO change clean-up?</td><td class="a">Pending — CFO resigned Apr 3</td><td>🔥 Most urgent. If results are clean and margins improve → buy 50 more shares. If restatements → exit.</td></tr>
+    <tr><td>2</td><td>Cashback as % of revenue</td><td class="r">~5.8% — rising (concern)</td><td>🟢 If falls to <4.5% in FY27 → margin expansion confirmed → stock to ₹450+</td></tr>
+    <tr><td>3</td><td>FY27 guidance confirmation (CEO reappointed May 2026)</td><td class="g">Reappointed for 2 years</td><td>🟢 CEO continuity + concrete FY27 margin guidance at analyst day = buy signal</td></tr>
+    <tr><td>4</td><td>Middle East market entry</td><td class="a">Planned — no confirmed deal yet</td><td>🟢 First Middle East enterprise contract = FY28 revenue diversification + higher ASP geography</td></tr>
+    <tr><td>5</td><td>Promoter holding stabilisation</td><td class="r">44.2% and declining</td><td>🔴 Any further fall below 40% = negative signal. Watch quarterly shareholding patterns.</td></tr>
+    <tr><td>6</td><td>ZatiX AI — first revenue disclosure</td><td class="a">Product live, no revenue guidance</td><td>🟢 Any AI product revenue (even ₹20–30 Cr) signals a new high-margin revenue layer forming</td></tr>
+    <tr><td>7</td><td>Acquisition integration quality (GreenEdge + Dice)</td><td class="a">Consolidation ongoing</td><td>🟢 If FY27 Q1 shows acquisitions adding margin (not diluting), the M&A strategy is validated</td></tr>
+  </table>
+
+  <div class="warn indigo" style="margin-top:12px"><strong>One-line verdict:</strong> Zaggle Prepaid Ocean Services is India's fastest-growing B2B2C fintech company at the intersection of SaaS and spend management — building toward an Edenred-like model in one of the world's most underpenetrated corporate expense markets. The EBITDA margin of 9% is the debate: whether this expands to 13–15% as the installed base matures determines whether Zaggle is a 2x or 3x stock. Garvit's entry at ₹225 (near 52-week lows) provides the best possible cushion for this uncertainty. Hold fully. Watch Q4 FY26 results in May 2026 — clean numbers + cashback decline is the green light to add more.</div>
+</div>
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/4.4.1/chart.umd.js"></script>
+<script>
+function show(id,btn){
+  document.querySelectorAll('.tab').forEach(t=>t.classList.remove('active'));
+  document.querySelectorAll('.panel').forEach(p=>p.classList.remove('active'));
+  btn.classList.add('active');
+  document.getElementById(id).classList.add('active');
+}
+new Chart(document.getElementById('rc').getContext('2d'),{
+  type:'bar',
+  data:{
+    labels:['FY23','FY24','FY25','Q1FY26','Q2FY26','Q3FY26','FY26E','FY27E','FY28E'],
+    datasets:[
+      {label:'Revenue ₹ Cr',data:[310,776,1303,332,431,498,1750,2400,3200],backgroundColor:['#3949AB','#3949AB','#3949AB','#1D9E75','#1D9E75','#1D9E75','#9FA8DA','#9FA8DA','#9FA8DA'],borderRadius:4,yAxisID:'y'},
+      {label:'PAT ₹ Cr',data:[22,44,87,26.5,33.2,36,138,225,360],type:'line',borderColor:'#1D9E75',backgroundColor:'transparent',pointBackgroundColor:'#1D9E75',tension:0.3,yAxisID:'y2'}
+    ]
+  },
+  options:{responsive:true,maintainAspectRatio:false,plugins:{legend:{display:false}},scales:{y:{ticks:{font:{size:10}}},y2:{position:'right',ticks:{font:{size:10}},grid:{drawOnChartArea:false}},x:{ticks:{font:{size:10}}}}}
+});
+</script>
+</body>
+</html>

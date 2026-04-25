@@ -1,0 +1,453 @@
+<!DOCTYPE html>
+<html><head><meta charset="utf-8">
+<style>
+*{box-sizing:border-box;margin:0;padding:0}
+body{font-family:system-ui,sans-serif;padding:16px;background:#fff;color:#1a1a1a;font-size:14px}
+h1{font-size:20px;font-weight:500;margin-bottom:3px}
+.sub{font-size:12px;color:#666;margin-bottom:14px}
+.sg{display:grid;grid-template-columns:repeat(auto-fill,minmax(110px,1fr));gap:8px;margin-bottom:16px}
+.sc{background:#f5f5f3;border-radius:8px;padding:10px 12px}
+.sl{font-size:10px;color:#666;margin-bottom:2px}
+.sv{font-size:17px;font-weight:500}
+.tab-row{display:flex;gap:5px;flex-wrap:wrap;margin-bottom:14px}
+.tab{font-size:11.5px;padding:5px 13px;border-radius:20px;border:1px solid #ddd;background:#fff;cursor:pointer;white-space:nowrap}
+.tab.active{background:#1a1a1a;color:#fff;border-color:#1a1a1a}
+.panel{display:none}.panel.active{display:block}
+.sh{font-size:10.5px;font-weight:500;color:#666;text-transform:uppercase;letter-spacing:.06em;margin:16px 0 7px;padding-bottom:5px;border-bottom:1px solid #eee}
+table{width:100%;border-collapse:collapse;font-size:12px;margin:8px 0}
+th{font-size:10.5px;font-weight:500;color:#666;padding:5px 7px;text-align:left;border-bottom:1px solid #eee;white-space:nowrap}
+td{padding:8px 7px;border-bottom:1px solid #eee;color:#1a1a1a;vertical-align:top}
+tr:last-child td{border-bottom:none}
+tr:hover td{background:#fafaf9}
+.g{color:#0F6E56;font-weight:500}.r{color:#A32D2D;font-weight:500}.a{color:#854F0B;font-weight:500}.b{color:#185FA5;font-weight:500}
+.badge{display:inline-block;font-size:10px;padding:2px 7px;border-radius:10px;white-space:nowrap}
+.bg{background:#E1F5EE;color:#0F6E56}.bb{background:#E6F1FB;color:#185FA5}.ba{background:#FAEEDA;color:#854F0B}.br{background:#FCEBEB;color:#A32D2D}.bgray{background:#f1f0e8;color:#5F5E5A}.bpurp{background:#EDE7F6;color:#4527A0}.bteal{background:#E0F2F1;color:#004D40}
+.warn{padding:10px 13px;margin:8px 0;border-left:3px solid;font-size:12px;line-height:1.65}
+.warn.success{background:#E1F5EE;border-color:#1D9E75;color:#04342C}
+.warn.caution{background:#FAEEDA;border-color:#BA7517;color:#412402}
+.warn.danger{background:#FCEBEB;border-color:#A32D2D;color:#712B13}
+.warn.info{background:#E6F1FB;border-color:#185FA5;color:#042C53}
+.warn.teal{background:#E0F2F1;border-color:#0097A7;color:#00363A}
+.warn.purple{background:#EDE7F6;border-color:#5E35B1;color:#1A237E}
+.warn strong{font-weight:500}
+.chart-wrap{position:relative;width:100%;height:240px;margin:8px 0}
+.kpi-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:10px;margin:10px 0}
+.kpi{background:#f5f5f3;border-radius:8px;padding:10px 12px;border-left:3px solid transparent}
+.kpi.green{border-left-color:#1D9E75}.kpi.amber{border-left-color:#EF9F27}.kpi.blue{border-left-color:#378ADD}.kpi.red{border-left-color:#A32D2D}.kpi.teal{border-left-color:#0097A7}.kpi.purple{border-left-color:#5E35B1}
+.kpi-l{font-size:10px;color:#666;margin-bottom:3px}
+.kpi-v{font-size:17px;font-weight:500}
+.kpi-s{font-size:10px;color:#888;margin-top:2px}
+.point{display:flex;gap:9px;align-items:flex-start;padding:9px 0;border-bottom:1px solid #eee;font-size:12px;line-height:1.6;color:#555}
+.point:last-child{border-bottom:none}
+.point strong{color:#1a1a1a;font-weight:500}
+.dot{width:19px;height:19px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:10px;font-weight:500;flex-shrink:0;margin-top:1px}
+.dg{background:#E1F5EE;color:#0F6E56}.dr{background:#FCEBEB;color:#A32D2D}.da{background:#FAEEDA;color:#854F0B}.db{background:#E6F1FB;color:#185FA5}.dt{background:#E0F2F1;color:#004D40}.dp{background:#EDE7F6;color:#4527A0}
+.two-col{display:grid;grid-template-columns:1fr 1fr;gap:12px}
+.pane{border:1px solid #ddd;border-radius:10px;padding:13px}
+.pane-h{font-size:13px;font-weight:500;margin-bottom:9px}
+.scenario{border:1px solid #ddd;border-radius:10px;padding:13px;margin-bottom:9px}
+.sc-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:7px;margin:9px 0}
+.sc-cell{background:#f5f5f3;border-radius:6px;padding:7px 9px}
+.sc-l{font-size:10px;color:#666}
+.sc-v{font-size:12px;font-weight:500;margin-top:2px}
+.comp-h{display:grid;grid-template-columns:160px repeat(3,1fr);background:#f5f5f3;border-radius:8px 8px 0 0;overflow:hidden}
+.comp-row{display:grid;grid-template-columns:160px repeat(3,1fr);border-bottom:1px solid #eee}
+.comp-row:last-child{border-bottom:none}
+.cc{padding:8px 10px;font-size:11px;border-right:1px solid #eee}
+.cc:last-child{border-right:none}
+.cc-h{font-size:10px;font-weight:500;color:#444;padding:8px 10px;border-right:1px solid #ddd}
+.cc-h:last-child{border-right:none}
+.cc-label{color:#666;font-size:11px}
+.winner-cell{background:#E1F5EE}.mid-cell{background:#FAEEDA}.loser-cell{background:#fff5f5}
+.verdict-card{border-radius:10px;padding:13px 15px;margin-bottom:10px}
+.vc-h{font-size:13px;font-weight:500;margin-bottom:6px}
+.vc-b{font-size:12px;line-height:1.65;color:#444}
+.sector-card{border:1px solid #ddd;border-radius:10px;overflow:hidden;margin-bottom:10px}
+.sc-hdr{padding:10px 13px;display:flex;justify-content:space-between;align-items:center;background:#fafaf9}
+.sc-nm{font-size:13px;font-weight:500}
+.sc-tg{font-size:11px;color:#666;margin-top:2px}
+.sc-bd{padding:10px 13px;font-size:12px;line-height:1.65;color:#555;border-top:1px solid #eee}
+.sc-bd strong{color:#1a1a1a}
+.guid-card{border-radius:10px;padding:12px 14px;margin-bottom:8px;border-left:3px solid #1D9E75;background:#f5f5f3}
+.guid-h{font-size:11.5px;font-weight:500;margin-bottom:4px}
+.guid-b{font-size:11.5px;color:#333;line-height:1.6}
+.guid-s{font-size:10px;color:#888;margin-top:4px}
+.guid-card.beat{background:#E1F5EE;border-left-color:#1D9E75}.guid-card.beat .guid-h{color:#0F6E56}
+.guid-card.miss{background:#FCEBEB;border-left-color:#A32D2D}.guid-card.miss .guid-h{color:#A32D2D}
+.guid-card.watch{background:#FAEEDA;border-left-color:#BA7517}.guid-card.watch .guid-h{color:#854F0B}
+.dc-box{background:#E0F2F1;border:2px solid #0097A7;border-radius:10px;padding:13px;margin:10px 0}
+.dc-h{font-size:14px;font-weight:500;color:#004D40;margin-bottom:6px}
+.dc-b{font-size:12px;color:#1a1a1a;line-height:1.65}
+.seg-grid{display:grid;grid-template-columns:1fr 1fr;gap:9px;margin:10px 0}
+.seg-card{border:1px solid #ddd;border-radius:8px;padding:11px 13px}
+.seg-nm{font-weight:500;font-size:12px;margin-bottom:3px}
+.seg-tag{font-size:10px;color:#666;margin-bottom:5px}
+.seg-bd{font-size:11.5px;color:#555;line-height:1.55}
+.seg-val{font-size:11.5px;font-weight:500;margin-top:5px}
+.mw-bar{display:flex;align-items:center;gap:8px;margin:6px 0}
+.mw-label{font-size:11px;color:#555;width:130px;flex-shrink:0}
+.mw-track{flex:1;background:#f5f5f3;border-radius:4px;height:16px;overflow:hidden}
+.mw-fill{height:100%;border-radius:4px;display:flex;align-items:center;padding-left:6px;font-size:9px;font-weight:600;color:#fff}
+.mw-val{font-size:11px;font-weight:500;width:80px;text-align:right}
+.roce-flag{background:#FCEBEB;border:1px solid #A32D2D;border-radius:8px;padding:10px 13px;margin:8px 0;font-size:12px;color:#712B13;line-height:1.6}
+</style>
+</head>
+<body>
+
+<h1>Anant Raj Ltd — Deep Investment Analysis</h1>
+<div class="sub">NSE: ANANTRAJ · BSE: 515055 · Real estate developer + data centre pivot · Founded 1969 · MD: Amit Sarin · Delhi-NCR · 320 acres debt-free land bank · Market cap ~₹12,500–13,000 Cr</div>
+
+<div class="sg">
+  <div class="sc"><div class="sl">Market cap</div><div class="sv" style="color:#854F0B">~₹12,900 Cr</div></div>
+  <div class="sc"><div class="sl">9M FY26 revenue</div><div class="sv" style="color:#1D9E75">₹1,864 Cr</div></div>
+  <div class="sc"><div class="sl">9M FY26 PAT</div><div class="sv" style="color:#1D9E75">₹408 Cr</div></div>
+  <div class="sc"><div class="sl">Revenue growth (9M)</div><div class="sv" style="color:#1D9E75">+22.7% YoY</div></div>
+  <div class="sc"><div class="sl">EBITDA margin</div><div class="sv" style="color:#1D9E75">~26–27%</div></div>
+  <div class="sc"><div class="sl">PAT margin</div><div class="sv" style="color:#1D9E75">~21–22%</div></div>
+  <div class="sc"><div class="sl">Trailing PE</div><div class="sv" style="color:#A32D2D">~24–27x</div></div>
+  <div class="sc"><div class="sl">ROCE</div><div class="sv" style="color:#A32D2D">~6.7% (low)</div></div>
+  <div class="sc"><div class="sl">Promoter holding</div><div class="sv" style="color:#1D9E75">57.41%</div></div>
+  <div class="sc"><div class="sl">DC capacity (live)</div><div class="sv" style="color:#0097A7">28 MW</div></div>
+  <div class="sc"><div class="sl">DC target (FY28)</div><div class="sv" style="color:#0097A7">117 MW</div></div>
+  <div class="sc"><div class="sl">DC target (FY32)</div><div class="sv" style="color:#0097A7">307 MW</div></div>
+</div>
+
+<div class="tab-row">
+  <button class="tab active" onclick="show('revenue',this)">Revenue history</button>
+  <button class="tab" onclick="show('sectorKPI',this)">Sector KPIs</button>
+  <button class="tab" onclick="show('business',this)">Two businesses</button>
+  <button class="tab" onclick="show('datacenter',this)">Data centre deep dive</button>
+  <button class="tab" onclick="show('guidance',this)">Guidance</button>
+  <button class="tab" onclick="show('risks',this)">Risks</button>
+  <button class="tab" onclick="show('scenarios',this)">3x scenarios</button>
+  <button class="tab" onclick="show('compare',this)">Sector peers</button>
+  <button class="tab" onclick="show('verdict',this)">Verdict</button>
+</div>
+
+<!-- REVENUE -->
+<div id="revenue" class="panel active">
+  <div class="sh">Revenue & profit — six years of steady compounding, now accelerating</div>
+
+  <div class="dc-box">
+    <div class="dc-h">🖥️ Why Anant Raj is more than just a real estate company</div>
+    <div class="dc-b">Anant Raj was a simple NCR real estate developer for 50 years. But since 2022, it has been quietly building a data centre business using its unique asset — <strong>320 acres of debt-free land inside Delhi-NCR</strong>, the most sought-after geography for Indian data centres. Land is the primary bottleneck for data centre development in NCR. Anant Raj already owns it. This land moat, combined with the AI/cloud infrastructure boom, is the reason institutional investors have re-rated this stock from a sleepy real estate company to a technology infrastructure play. The 9M FY26 data centre EBITDA contribution of <strong>75% of absolute EBITDA</strong> from just ₹58 Cr of revenue shows how high-margin this segment is — and how transformative it becomes at 117 MW (FY28) or 307 MW (FY32).</div>
+  </div>
+
+  <div class="chart-wrap"><canvas id="rc"></canvas></div>
+  <div style="display:flex;gap:14px;font-size:11.5px;color:#666;margin-bottom:10px">
+    <span><span style="display:inline-block;width:10px;height:10px;border-radius:2px;background:#0097A7;margin-right:4px"></span>Revenue ₹ Cr</span>
+    <span><span style="display:inline-block;width:10px;height:10px;border-radius:2px;background:#1D9E75;margin-right:4px"></span>PAT ₹ Cr</span>
+    <span><span style="display:inline-block;width:10px;height:10px;border-radius:2px;background:#80CBC4;margin-right:4px"></span>Projected</span>
+  </div>
+
+  <table>
+    <tr><th>Period</th><th>Revenue</th><th>Growth</th><th>EBITDA%</th><th>PAT</th><th>PAT%</th><th>Data centre</th><th>Key event</th></tr>
+    <tr><td>FY21</td><td>~₹520 Cr</td><td>—</td><td>~15%</td><td>~₹55 Cr</td><td class="a">10.6%</td><td>None</td><td>Pre-pivot. Pure residential/commercial real estate. NCR market weak post-COVID.</td></tr>
+    <tr><td>FY22</td><td>~₹700 Cr</td><td class="g">+35%</td><td>~16%</td><td>~₹85 Cr</td><td class="a">12.1%</td><td>None</td><td>Recovery begins. NCR residential demand surges. Land bank re-valued.</td></tr>
+    <tr><td>FY23</td><td>~₹1,050 Cr</td><td class="g">+50%</td><td>~18%</td><td>~₹165 Cr</td><td class="g">15.7%</td><td>Planning stage</td><td>Strong NCR residential + commercial. Data centre concept formalised. Manesar land allocated.</td></tr>
+    <tr><td>FY24</td><td>₹1,483 Cr</td><td class="g">+41%</td><td>~21%</td><td>₹266 Cr</td><td class="g">17.9%</td><td>Capex phase</td><td>First data centre capex. Partnership with Orange Business (cloud). Margin expansion begins.</td></tr>
+    <tr><td>FY25</td><td>₹2,060 Cr</td><td class="g">+38.9%</td><td>~23%</td><td>₹426 Cr</td><td class="g">20.7%</td><td>~7 MW live</td><td>Manesar data centre live. PAT +60%. Revenue breakout. QIP ₹1,100 Cr raised Oct 2025.</td></tr>
+    <tr><td>Q1 FY26</td><td>₹592 Cr</td><td class="g">+38.3% YoY</td><td>~26%</td><td>₹126 Cr</td><td class="g">21.3%</td><td>~14 MW</td><td>DC revenue begins scaling. Panchkula DC added (7 MW). Strong residential sales.</td></tr>
+    <tr><td>Q2 FY26</td><td>₹631 Cr</td><td class="g">+23% YoY</td><td>27.76%</td><td>₹138 Cr</td><td class="g">21.9%</td><td>~21 MW</td><td>EBITDA margin at 3.5-yr high. Manesar DC enhanced to 21 MW. QIP announced.</td></tr>
+    <tr><td>Q3 FY26</td><td>₹642 Cr</td><td class="g">+20% YoY</td><td>26.5%</td><td>₹144 Cr</td><td class="g">22.4%</td><td>28 MW</td><td>DC at 28 MW across 3 sites. Credit rating upgraded IVR A (Stable). Andhra Pradesh MoU ₹4,500 Cr.</td></tr>
+    <tr><td>9M FY26</td><td>₹1,865 Cr</td><td class="g">+22.7% YoY</td><td>~27%</td><td>₹408 Cr</td><td class="g">21.9%</td><td>28 MW</td><td>Net cash positive post QIP. DC contributing 75% of absolute EBITDA. Gurugram luxury project approved.</td></tr>
+    <tr><td>FY26E</td><td>~₹2,450–2,600 Cr</td><td class="g">~20–26%</td><td>~26–27%</td><td>~₹540–560 Cr</td><td class="g">~21–22%</td><td>~35–40 MW</td><td>Full year results May 11, 2026. Q4 should be strong (residential deliveries + DC ramp).</td></tr>
+    <tr><td>FY27E</td><td>~₹3,200–3,800 Cr</td><td class="g">~30–50%</td><td>~28–30%</td><td>~₹720–950 Cr</td><td class="g">~22–25%</td><td>63 MW target (Dec '26)</td><td>DC segment goes from ₹58 Cr H1 to potentially ₹250–400 Cr annually. Real estate steady.</td></tr>
+    <tr><td>FY28E</td><td>~₹4,500–6,000 Cr</td><td>—</td><td>~30–35%</td><td>~₹1,200–2,000 Cr</td><td class="g">~26–33%</td><td>117 MW target</td><td>DC at 117 MW = potentially ₹1,500–2,000 Cr annual DC revenue at full utilisation. Real estate steady at ₹2,000+ Cr.</td></tr>
+  </table>
+  <div class="warn teal"><strong>The revenue trajectory shows a genuine quality business compounding:</strong> from ₹520 Cr (FY21) to ₹1,865 Cr (9M FY26 only), with EBITDA margin expanding from 15% to 27%. This is not financial engineering — it reflects actual mix improvement as the high-margin data centre segment grows as a percentage of total revenue. Each MW of data centre capacity at full utilisation generates ₹8–12 Cr/year of pure margin revenue vs the ₹1–3 Cr/year from a similar-priced residential unit sale.</div>
+</div>
+
+<!-- SECTOR KPIs -->
+<div id="sectorKPI" class="panel">
+  <div class="sh">Real estate + data centre sector KPIs — the dual-business lens</div>
+  <div class="warn info"><strong>Anant Raj must be evaluated on two separate sets of KPIs</strong> — real estate (pre-sales, land bank, project pipeline, GDV) and data centres (MW capacity, utilisation rate, revenue per MW, capex per MW). Standard PE analysis on the consolidated P&L misses the data centre re-rating story entirely.</div>
+  <div class="kpi-grid">
+    <div class="kpi teal"><div class="kpi-l">DC capacity (operational)</div><div class="kpi-v">28 MW</div><div class="kpi-s">Manesar 21MW + Panchkula 7MW + Rai</div></div>
+    <div class="kpi teal"><div class="kpi-l">DC capacity (FY28 target)</div><div class="kpi-v">117 MW</div><div class="kpi-s">4.2x current — funded by QIP ₹1,100 Cr</div></div>
+    <div class="kpi green"><div class="kpi-l">EBITDA margin</div><div class="kpi-v">~26–27%</div><div class="kpi-s">Highest in peer NCR developers</div></div>
+    <div class="kpi green"><div class="kpi-l">Land bank (NCR)</div><div class="kpi-v">~320 acres</div><div class="kpi-s">Debt-free — primary DC moat</div></div>
+    <div class="kpi red"><div class="kpi-l">ROCE</div><div class="kpi-v" style="color:#A32D2D">~6.7%</div><div class="kpi-s">Low — large unmonetised land bank</div></div>
+    <div class="kpi amber"><div class="kpi-l">Promoter holding</div><div class="kpi-v">57.41%</div><div class="kpi-s">Stable — Sarin family</div></div>
+  </div>
+
+  <div class="sh">Data centre capacity expansion roadmap</div>
+  <div class="mw-bar"><div class="mw-label">Current (Apr 2026)</div><div class="mw-track"><div class="mw-fill" style="width:9%;background:#0097A7">Live</div></div><div class="mw-val g">28 MW</div></div>
+  <div class="mw-bar"><div class="mw-label">Dec 2026 target</div><div class="mw-track"><div class="mw-fill" style="width:21%;background:#0097A7">Funded</div></div><div class="mw-val g">63 MW</div></div>
+  <div class="mw-bar"><div class="mw-label">FY28 target</div><div class="mw-track"><div class="mw-fill" style="width:38%;background:#4DB6AC">Planned</div></div><div class="mw-val a">117 MW</div></div>
+  <div class="mw-bar"><div class="mw-label">FY32 target</div><div class="mw-track"><div class="mw-fill" style="width:100%;background:#B2DFDB">Long-term</div></div><div class="mw-val b">307 MW</div></div>
+
+  <div class="sh">Why NCR data centre land is a genuine moat</div>
+  <div class="point"><div class="dot dt">+</div><div><strong>Delhi-NCR is India's #1 data centre market for latency-sensitive workloads:</strong> Proximity to the country's largest enterprise cluster, government cloud, and India's highest concentration of hyperscaler clients (AWS, Azure, Google Cloud, Oracle) makes NCR land unique. Any new entrant must either buy expensive land (₹10–50 Cr/acre in Manesar/Gurugram) or go to less preferred locations. Anant Raj already has this land at zero marginal cost — it's been on the balance sheet for decades.</div></div>
+  <div class="point"><div class="dot dt">+</div><div><strong>Data centres command premium pricing over real estate:</strong> An acre of Manesar land used for residential development generates ~₹20–40 Cr/year of revenue (once monetised). The same acre used for a data centre generates ₹50–150 Cr/year in recurring revenue at full utilisation. Every MW converted from "residential land" to "data centre" is a 3–5x revenue multiplier on the same asset — permanently.</div></div>
+  <div class="point"><div class="dot da">!</div><div><strong>The ROCE trap:</strong> ROCE is low (6.7%) because most of the 320 acres is still sitting idle on the balance sheet at historical cost. As data centres go live and the land is monetised, ROCE improves dramatically. The current low ROCE reflects the "before" state — it is not a reflection of the business quality but of the timing of the land-to-DC conversion.</div></div>
+</div>
+
+<!-- BUSINESS MODEL -->
+<div id="business" class="panel">
+  <div class="sh">The two businesses — what each contributes today and in FY28</div>
+
+  <div class="seg-grid">
+    <div class="seg-card">
+      <div class="seg-nm" style="color:#854F0B">🏘️ Real Estate (legacy, ~95% of revenue today)</div>
+      <div class="seg-tag">Residential · Commercial · IT Parks · Hospitality · NCR/Gurugram/Haryana</div>
+      <div class="seg-bd"><strong>What it is:</strong> Traditional property developer. Builds and sells residential apartments, villas, commercial spaces, IT parks, and is developing a hotel (Hotel Bel-La Monde, FY2029). Key projects: Anant Raj Estate (Gurugram, 4 phases), Ashok Estate (1.34M sq ft), Project Navya (50:50 JV with Birla Estates — premium residential), The Estate One (luxury high-rise, 5.09 acres), Aashray 2 (FY2027), Estate Apartments 2 (launched Jan 2026).<br><br><strong>Land bank advantage:</strong> ~320 acres debt-free NCR land = ~₹5,000–8,000 Cr worth of undeveloped land at current market rates. This is the inheritance that funds the data centre pivot without equity dilution — residential cashflows fund data centre capex.<br><br><strong>FY26 contribution:</strong> ~₹2,400 Cr revenue, ~₹400 Cr PAT. Steady, growing 15–20% annually.</div>
+      <div class="seg-val">FY27 target: ₹2,500–3,000 Cr revenue (steady)</div>
+    </div>
+    <div class="seg-card">
+      <div class="seg-nm" style="color:#0097A7">🖥️ Data Centre & Cloud (new, ~5% of revenue — but 75% of EBITDA impact)</div>
+      <div class="seg-tag">Anant Raj Cloud Pvt Ltd (ARCPL) · Colocation · Cloud (PaaS/SaaS) · AI infrastructure</div>
+      <div class="seg-bd"><strong>What it is:</strong> Colocation data centres (Manesar, Panchkula, Rai) + managed cloud services via Orange Business partnership. Revenue: rack/power rental (core) + cloud services. Currently 28 MW operational. Has reached "DC rentals >₹50 Cr" milestone guided for FY26. H1 FY26 DC revenue was ₹58.42 Cr.<br><br><strong>Pricing advantage:</strong> Management states pricing is ~50% lower than market rates — using the land cost advantage to undercut hyperscaler colocation pricing. This is a differentiated strategy: not competing on tier-1 quality, but on cost-competitive bulk colocation for Indian enterprises.<br><br><strong>Orange Business partnership:</strong> PaaS + SaaS layer on top of hardware. Positioning as "sovereign cloud" — data stays in India for compliance-conscious govt/BFSI clients. Clients: e-commerce, enterprises, sovereign cloud users.</div>
+      <div class="seg-val" style="color:#0097A7">FY28 target: ₹1,500–2,000 Cr DC revenue at 117 MW full utilisation</div>
+    </div>
+  </div>
+
+  <div class="sh">How the two businesses fund each other</div>
+  <div class="warn teal"><strong>The genius of Anant Raj's model:</strong> Residential real estate generates consistent cash flows (₹400–500 Cr annual PAT). This cash is being channelled into data centre capex — building MW capacity without needing external debt. When the QIP (₹1,100 Cr) was raised in October 2025, it was specifically to accelerate the data centre buildout from 63 MW to 117 MW. The residential business is effectively the "venture funding engine" for the data centre business — an internal capital recycling loop that external-only DC companies cannot replicate.</div>
+
+  <div class="sh">Revenue mix shift — the re-rating thesis in one table</div>
+  <table>
+    <tr><th>Year</th><th>Real estate revenue</th><th>DC revenue (est.)</th><th>DC % of total</th><th>EBITDA mix shift</th></tr>
+    <tr><td>FY25</td><td>~₹1,990 Cr</td><td>~₹70 Cr</td><td class="r">~3.4%</td><td>DC minimal contributor</td></tr>
+    <tr><td>H1 FY26</td><td>~₹1,165 Cr</td><td>₹58 Cr</td><td class="a">~4.7%</td><td class="a">75% of absolute EBITDA from DC</td></tr>
+    <tr><td>FY26E</td><td>~₹2,300 Cr</td><td>~₹150 Cr</td><td class="a">~6%</td><td>DC becoming visible contributor</td></tr>
+    <tr><td>FY27E (63 MW)</td><td>~₹2,500 Cr</td><td>~₹350–500 Cr</td><td class="g">~15–20%</td><td class="g">DC dominant EBITDA source</td></tr>
+    <tr><td>FY28E (117 MW)</td><td>~₹2,800 Cr</td><td>~₹1,000–1,500 Cr</td><td class="g">~30–35%</td><td class="g">DC at parity with real estate revenue</td></tr>
+    <tr><td>FY29E+ (307 MW)</td><td>~₹3,000 Cr</td><td>~₹3,000–4,000 Cr</td><td class="g">~50%+</td><td class="g">Becomes a data centre company with real estate heritage</td></tr>
+  </table>
+  <div class="warn purple"><strong>The re-rating logic:</strong> Real estate companies in India trade at 20–30x PE. Data centre companies globally trade at 30–80x EBITDA. As DC becomes 30%+ of Anant Raj's revenue, the blended multiple should expand from current 24x to 35–50x on the data centre EBITDA contribution alone. This multiple expansion — not just earnings growth — is the second driver of upside. It only works if DC execution delivers on the 117 MW target by FY28.</div>
+</div>
+
+<!-- DATA CENTRE -->
+<div id="datacenter" class="panel">
+  <div class="sh">Data centre business — granular analysis</div>
+
+  <div class="kpi-grid">
+    <div class="kpi teal"><div class="kpi-l">H1 FY26 DC revenue</div><div class="kpi-v">₹58.42 Cr</div><div class="kpi-s">~₹2.1 Cr/MW/half-year on 28 MW</div></div>
+    <div class="kpi teal"><div class="kpi-l">Capital deployed (DC)</div><div class="kpi-v">₹700 Cr</div><div class="kpi-s">~₹25 Cr per operational MW</div></div>
+    <div class="kpi green"><div class="kpi-l">DC EBITDA contribution</div><div class="kpi-v">75%</div><div class="kpi-s">Of absolute EBITDA (H1 FY26)</div></div>
+    <div class="kpi green"><div class="kpi-l">DC PAT contribution</div><div class="kpi-v">43.23%</div><div class="kpi-s">Of total PAT despite only 4.7% of revenue</div></div>
+    <div class="kpi amber"><div class="kpi-l">Rent-free period</div><div class="kpi-v">Ongoing</div><div class="kpi-s">As periods end, rentals scale sharply</div></div>
+    <div class="kpi teal"><div class="kpi-l">FY28 target capacity</div><div class="kpi-v">117 MW</div><div class="kpi-s">4.2x current — funded by QIP + residentials</div></div>
+  </div>
+
+  <div class="sh">Unit economics of data centre business</div>
+  <div class="warn teal"><strong>Understanding data centre unit economics:</strong> At current 28 MW and ₹58 Cr H1 revenue, annualised is ~₹116 Cr from 28 MW = ~₹4.1 Cr/MW/year. This is below mature DC rates (₹6–10 Cr/MW/year) because: (a) some capacity is in rent-free period post-commissioning, (b) utilisation is building up to 70–80%. Once rent-free periods end and utilisation stabilises at 75%+, the same 28 MW could generate ₹180–280 Cr annually. At 117 MW, this implies ₹700 Cr–1,170 Cr annual revenue — a step-change that re-rates the entire company.</div>
+
+  <table>
+    <tr><th>Metric</th><th>Current (28 MW)</th><th>FY27 (63 MW target)</th><th>FY28 (117 MW target)</th><th>FY32 (307 MW target)</th></tr>
+    <tr><td>IT Load Capacity</td><td>28 MW live</td><td>63 MW (Dec '26 target)</td><td>117 MW</td><td>307 MW</td></div></tr>
+    <tr><td>Annualised DC revenue (est.)</td><td>~₹116 Cr</td><td>~₹350–450 Cr</td><td>~₹700–1,170 Cr</td><td>~₹1,800–3,070 Cr</td></tr>
+    <tr><td>DC EBITDA margin</td><td>Very high (75% of co. EBITDA)</td><td>~55–65%</td><td>~55–65%</td><td>~55–65%</td></tr>
+    <tr><td>Total capex deployed</td><td>₹700 Cr</td><td>~₹1,800 Cr</td><td>~₹3,000 Cr</td><td>~₹15,000 Cr ($2.1B)</td></tr>
+    <tr><td>Capex per MW</td><td class="a">~₹25 Cr/MW (efficient)</td><td>~₹28 Cr/MW</td><td>~₹25–30 Cr/MW</td><td>~₹25–30 Cr/MW</td></tr>
+    <tr><td>Key clients segment</td><td>E-commerce, enterprises, sovereign cloud</td><td>+ hyperscaler indirect</td><td>+ AI/GPU clusters</td><td>+ hyperscaler direct</td></tr>
+  </table>
+
+  <div class="sh">The $2.1 billion plan — is it credible?</div>
+  <div class="point"><div class="dot dt">+</div><div><strong>Land is already owned — no land acquisition risk.</strong> Manesar, Panchkula, Rai, Andhra Pradesh (MoU) — sites identified, land either owned or MoU signed. This removes the #1 bottleneck for all other DC developers. Capital allocation goes purely to building and equipment, not land purchase.</div></div>
+  <div class="point"><div class="dot dt">+</div><div><strong>QIP ₹1,100 Cr already raised (Oct 2025) — DC capex funded for 63 MW phase.</strong> Strong FII and DII participation in the QIP signals institutional conviction. The company prepaid ₹125 Cr of debt and is now net cash positive. This de-risks the near-term expansion (28 → 63 MW).</div></div>
+  <div class="point"><div class="dot da">!</div><div><strong>₹15,000 Cr remaining capex for FY28 → FY32 — how will it be funded?</strong> QIP funded ₹1,100 Cr. Residential cashflows contribute ₹400–500 Cr/year. Data centre revenue (once at 63 MW) adds ₹300–400 Cr/year. Total internal generation ≈ ₹700–900 Cr/year. For 307 MW by FY32, approximately ₹15,000 Cr is needed over 6 years = ₹2,500 Cr/year. Gap = ₹1,500–1,800 Cr/year to be funded via debt, additional QIPs, or infrastructure trust (InvIT). Management has not fully addressed this — it is the biggest execution question for the long-term thesis.</div></div>
+  <div class="point"><div class="dot dg">+</div><div><strong>Management expects DC to be 40% of revenue in 4 years.</strong> MD Amit Sarin: "Data centers are expected to make up more than 40% of Anant Raj's revenues in the next four years from 5% at present." For DC to be 40% of total revenue in FY29, total revenue would need to be ~₹7,000–8,000 Cr with ₹2,800–3,200 Cr from DC — requiring 117 MW at high utilisation and some of the 307 MW plan to be live.</div></div>
+</div>
+
+<!-- GUIDANCE -->
+<div id="guidance" class="panel">
+  <div class="sh">Guidance analysis — management has been conservative and delivered</div>
+  <div class="warn info"><strong>Anant Raj conducts regular earnings calls and investor presentations.</strong> Unlike SME companies (RBM Infracon) or governance-challenged companies (Indo Tech), Anant Raj communicates clearly with investors. The guidance track record shows consistent delivery — and most recently, conservative guidance vs actual performance.</div>
+
+  <div class="guid-card beat">
+    <div class="guid-h">✓ DC revenue FY26 guidance: "Exceed ₹50 Cr in FY26" — Delivered H1 alone</div>
+    <div class="guid-b">Management guided DC rentals to exceed ₹50 Cr in full-year FY26. The company generated ₹58.42 Cr in H1 FY26 alone — already exceeding the full-year target in the first half. This reflects faster ramp-up as rent-free periods concluded on the Manesar facility and Panchkula came live. Full FY26 DC revenue likely ₹130–150 Cr — nearly 3x the initial ₹50 Cr guidance.</div>
+    <div class="guid-s">Credibility: 9/10 — delivered far ahead of guidance pace.</div>
+  </div>
+
+  <div class="guid-card beat">
+    <div class="guid-h">✓ Capacity build: Panchkula 7 MW commissioned on schedule</div>
+    <div class="guid-b">Panchkula data centre (7 MW IT load) was commissioned in Q2 FY26 as guided. Manesar was enhanced from ~14 MW to 21 MW on schedule. All three locations (Manesar, Panchkula, Rai) are operational. The 28 MW achieved in H1 FY26 matched management's phased commissioning roadmap — a clear execution signal that the team can build DC infrastructure on schedule.</div>
+    <div class="guid-s">Credibility: 9/10 — capacity expansions commissioned on guided timelines.</div>
+  </div>
+
+  <div class="guid-card beat">
+    <div class="guid-h">✓ Net cash positive post QIP: ₹125 Cr debt prepaid</div>
+    <div class="guid-b">The QIP prospectus said proceeds would be used for data centre expansion and debt repayment. Management delivered on both — ₹125 Cr of debt was prepaid, making the company net cash positive for the first time. This shows financial discipline: they did not use QIP proceeds for land acquisition or unrelated diversification — 100% went to stated purposes.</div>
+    <div class="guid-s">Credibility: 9/10 — QIP deployment exactly as stated.</div>
+  </div>
+
+  <div class="guid-card watch">
+    <div class="guid-h">⚠ 63 MW by December 2026 — the next key milestone</div>
+    <div class="guid-b">The next guided target: 63 MW operational IT load by December 2026 (Q3 FY27). This requires adding 35 MW in roughly 8 months from current 28 MW. The capex is funded (QIP ₹1,100 Cr). Manesar already has ready infrastructure for expansion. Rai facility is the new addition. Key risk: DC construction in NCR has benefited from land availability but faces infrastructure challenges (power supply, cooling systems). Management reports "demand is not a constraint — only funding has been the bottleneck." With funding addressed, 63 MW by Dec 2026 is credible but not risk-free.</div>
+    <div class="guid-s">Credibility: 7/10. Track record supports it but 35 MW addition is the largest single-phase expansion yet.</div>
+  </div>
+
+  <div class="guid-card">
+    <div class="guid-h">FY28 guidance: 117 MW operational + real estate steady + 40% DC revenue mix</div>
+    <div class="guid-b">117 MW by FY28 is the medium-term target. At ₹4–6 Cr/MW/year revenue (conservative), 117 MW = ₹470–700 Cr DC revenue. At ₹8 Cr/MW (mature rate), 117 MW = ₹936 Cr DC revenue. Combined with ₹2,500–3,000 Cr real estate revenue, total FY28 revenue could reach ₹3,200–4,000 Cr with EBITDA margins of 28–32%. This is the scenario that delivers the 3x thesis for Garvit — but it requires flawless execution over 2 years.</div>
+    <div class="guid-s">Credibility: 6/10. Directionally correct; execution on this scale over 2 years is ambitious.</div>
+  </div>
+
+  <div class="sh">Guidance scorecard</div>
+  <table>
+    <tr><th>Guidance item</th><th>Track record</th><th>Base case</th><th>Key risk</th></tr>
+    <tr><td>DC revenue FY26 ₹50 Cr+</td><td class="g">9/10 — already done ₹58 Cr H1</td><td>₹130–150 Cr full year</td><td>None — already delivered</td></tr>
+    <tr><td>63 MW by Dec 2026</td><td class="g">7/10 — funded, on-track</td><td>60–65 MW</td><td>Power supply delays, equipment lead times</td></tr>
+    <tr><td>117 MW by FY28</td><td class="a">6/10 — capex gap to bridge</td><td>100–117 MW</td><td>Funding for ₹3,000 Cr total capex; execution speed</td></tr>
+    <tr><td>40% DC revenue mix (FY29)</td><td class="a">5/10 — ambitious</td><td>25–30% by FY29</td><td>Hyperscaler competition; utilisation ramp pace</td></tr>
+    <tr><td>Real estate pre-sales growth</td><td class="g">8/10 — NCR demand very strong</td><td>₹2,500–3,000 Cr FY27</td><td>Interest rate cycle; NCR supply glut if luxury oversupplied</td></tr>
+  </table>
+</div>
+
+<!-- RISKS -->
+<div id="risks" class="panel">
+  <div class="sh">Risks — the honest picture for a transitioning company</div>
+
+  <div class="roce-flag"><strong>⚠ ROCE of 6.7% is a structural concern that must be addressed.</strong> ROCE = Return on Capital Employed. At 6.7%, Anant Raj is generating just ₹6.70 for every ₹100 of capital deployed — well below its cost of capital (~10–12%). This happens because 320 acres of expensive NCR land sits "idle" on the balance sheet while generating minimal income. The data centre pivot aims to fix this — converting idle land to high-return DC assets. But until DC is at 100+ MW, ROCE stays below 10%. Investors buying on data centre hopes must accept this fundamental inefficiency during the transition. A PE-financed pure DC company would not carry this drag.</div>
+
+  <div class="point"><div class="dot dr">1</div><div><strong>Capital intensity of 307 MW plan is the biggest risk — ₹15,000 Cr needed.</strong><br>The full $2.1 billion (₹18,000 Cr) plan requires financing well beyond current cash generation. ₹700 Cr deployed so far. ₹1,100 Cr QIP raised. Residential generates ₹400–500 Cr/year. DC at 63 MW generates ₹300–400 Cr/year. Total FY27 generation: ~₹700–900 Cr. Need: ₹2,500 Cr/year for 6 years to fund 307 MW. Gap: ~₹1,600–1,800 Cr/year requires debt (leverage risk) or additional QIPs (dilution risk). Management has not detailed the full funding plan. This is the elephant in the room for the long-term thesis.</div></div>
+
+  <div class="point"><div class="dot dr">2</div><div><strong>Competition from Adani, Hiranandani, NTT, and established DC operators.</strong><br>Anant Raj is a late entrant to data centres versus Hiranandani (NXTRA Data), CtrlS, STT GDC (Singapore, India-focused), NTT, and others. These players have 10–20 years of DC operational experience vs Anant Raj's 2 years. More critically, hyperscalers (AWS, Google, Azure) are building their own data centres in India — potentially reducing colocation demand over time. Anant Raj's "50% lower cost" moat may compress as competition intensifies and economies of scale are achieved by larger operators.</div></div>
+
+  <div class="point"><div class="dot dr">3</div><div><strong>Real estate cycle risk — NCR luxury could overheat.</strong><br>NCR residential (especially Gurugram luxury) has been on fire in FY24–FY26. Anant Raj's luxury projects (The Estate One, Project Navya with Birla) are priced ₹2–5 Cr per unit. If interest rates rise or luxury supply exceeds demand, pre-sales slow and residential cashflows (which fund DC capex) compress. This is the "kill switch" on the data centre funding engine.</div></div>
+
+  <div class="point"><div class="dot da">4</div><div><strong>QIP dilution already happened — ₹1,100 Cr at ₹695 floor (Oct 2025).</strong><br>The QIP was raised when the stock was near its 52-week high (₹744). Current price ~₹498 means QIP investors are sitting on -28% paper loss. This creates overhang — institutional investors who bought at ₹695 may look to exit at any meaningful recovery, creating supply pressure every time the stock approaches ₹650–700. This is a technical headwind for 12–18 months.</div></div>
+
+  <div class="point"><div class="dot da">5</div><div><strong>Utilisation risk — DC revenue depends on lease-up pace.</strong><br>Data centres generate revenue only when capacity is leased. Building 35 MW of new DC infrastructure (28 → 63 MW) is the easy part — finding enterprise and cloud clients to fill it at target rates within 12–18 months of commissioning is harder. Rent-free periods (typically 3–6 months post-commissioning) mean each new facility takes time to generate full revenue. If utilisation stays below 60%, the revenue per MW is lower than management's targets.</div></div>
+
+  <div class="point"><div class="dot dg">+</div><div><strong>Genuine strengths that make this a compelling long-term hold:</strong><br>320 acres debt-free NCR land — most valuable DC moat in India. QIP proved institutional demand at ₹695 — FIIs and DIIs validated the thesis. Credit rating upgraded to IVR A (Stable) — reducing borrowing costs. Residential business generating consistent cash flows to fund DC without dilution. Orange Business partnership = international cloud credibility. Budget 2026 tax holidays for data centres (Feb 2026 announcement benefited Anant Raj directly). Andhra Pradesh MoU ₹4,500 Cr — geographic diversification with government support. MD Amit Sarin is the promoter-operator — fully aligned.</div></div>
+</div>
+
+<!-- SCENARIOS -->
+<div id="scenarios" class="panel">
+  <div class="sh">Three scenarios — from Garvit's avg cost ~₹521 (196 shares, invested ₹1,02,168)</div>
+  <div class="warn teal"><strong>Anant Raj is a re-rating story, not just an earnings growth story.</strong> At 24x PE, it's reasonably valued for a real estate company but cheaply valued if it becomes a data centre company. The path to 3x requires BOTH: (a) earnings growth from DC, and (b) PE expansion from real estate multiple (24x) to blended DC multiple (40–50x on DC EBITDA). One without the other won't get to 3x.</div>
+
+  <div class="scenario" style="border-left:3px solid #0097A7">
+    <div style="font-size:13px;font-weight:500;color:#004D40;margin-bottom:8px">Bull case — 3–4x in 3 years: 117 MW DC by FY28 + full re-rating</div>
+    <div class="sc-grid">
+      <div class="sc-cell"><div class="sc-l">FY28 DC revenue</div><div class="sc-v">₹1,000–1,200 Cr</div></div>
+      <div class="sc-cell"><div class="sc-l">FY28 RE revenue</div><div class="sc-v">₹2,800–3,000 Cr</div></div>
+      <div class="sc-cell"><div class="sc-l">FY28 total revenue</div><div class="sc-v">₹3,800–4,200 Cr</div></div>
+      <div class="sc-cell"><div class="sc-l">FY28 PAT</div><div class="sc-v">₹1,200–1,600 Cr</div></div>
+      <div class="sc-cell"><div class="sc-l">PE (DC re-rated)</div><div class="sc-v">30–40x</div></div>
+      <div class="sc-cell"><div class="sc-l">FY28 mcap</div><div class="sc-v">₹36,000–64,000 Cr</div></div>
+    </div>
+    <div style="font-size:11.5px;color:#333;margin-top:8px"><strong>Return from current ₹12,900 Cr:</strong> 2.8x to 5x. <strong>What must happen:</strong> 117 MW commissioned and 75%+ utilised by FY28. DC revenue at ₹8–10 Cr/MW. Real estate maintains current trajectory. Capital for 117 MW sourced without excessive dilution. PE expands from 24x to 35x as DC becomes 30%+ of revenue. Budget 2026 tax holidays materialise into real demand from foreign cloud clients. Hyperscaler indirect demand through colocation grows.</div>
+  </div>
+
+  <div class="scenario" style="border-left:3px solid #378ADD">
+    <div style="font-size:13px;font-weight:500;color:#185FA5;margin-bottom:8px">Base case — 1.5–2x in 2 years: 63 MW by end-FY27 + steady RE</div>
+    <div class="sc-grid">
+      <div class="sc-cell"><div class="sc-l">FY27 DC revenue</div><div class="sc-v">₹350–500 Cr</div></div>
+      <div class="sc-cell"><div class="sc-l">FY27 total revenue</div><div class="sc-v">₹3,000–3,500 Cr</div></div>
+      <div class="sc-cell"><div class="sc-l">FY27 PAT</div><div class="sc-v">₹750–950 Cr</div></div>
+      <div class="sc-cell"><div class="sc-l">PE (partial DC re-rating)</div><div class="sc-v">26–30x</div></div>
+      <div class="sc-cell"><div class="sc-l">FY27 mcap</div><div class="sc-v">₹19,500–28,500 Cr</div></div>
+      <div class="sc-cell"><div class="sc-l">Return</div><div class="sc-v">1.5–2.2x</div></div>
+    </div>
+    <div style="font-size:11.5px;color:#333;margin-top:8px">63 MW by Dec 2026. Full year FY27 DC revenue at 55% utilisation. PE gently expands. RE steady. <strong>Base case delivers 1.5–2x — meaningful return but below 3x goal.</strong></div>
+  </div>
+
+  <div class="scenario" style="border-left:3px solid #A32D2D">
+    <div style="font-size:13px;font-weight:500;color:#A32D2D;margin-bottom:8px">Bear case — -20 to -30%: DC delays + luxury RE slowdown + QIP overhang</div>
+    <div class="sc-grid">
+      <div class="sc-cell"><div class="sc-l">Trigger</div><div class="sc-v">63 MW slips to mid-FY27</div></div>
+      <div class="sc-cell"><div class="sc-l">Trigger</div><div class="sc-v">NCR luxury demand cools</div></div>
+      <div class="sc-cell"><div class="sc-l">Trigger</div><div class="sc-v">Another QIP needed — dilution</div></div>
+      <div class="sc-cell"><div class="sc-l">FY27 revenue</div><div class="sc-v">₹2,800–3,000 Cr</div></div>
+      <div class="sc-cell"><div class="sc-l">FY27 PAT</div><div class="sc-v">₹550–650 Cr</div></div>
+      <div class="sc-cell"><div class="sc-l">Mcap at 22x PE</div><div class="sc-v">₹12,100–14,300 Cr</div></div>
+    </div>
+    <div style="font-size:11.5px;color:#333;margin-top:8px"><strong>Bear probability: 25–30%.</strong> Stock has already fallen from ₹744 to ₹498 — a -33% correction. QIP overhang (investors at ₹695) creates ceiling at ₹600–650. If DC delays cause 2 consecutive quarters of muted results, sentiment reverses to "real estate company at 24x — too expensive." Downside to ₹380–420 (current PE on lower earnings). Bear case is uncomfortably close to current levels given the stock's already corrected 33% from peak.</div>
+  </div>
+
+  <table style="margin-top:10px">
+    <tr><th>Target from Garvit's cost (₹521)</th><th>Mcap needed</th><th>Driver</th><th>Timeline</th><th>Probability</th></tr>
+    <tr><td>3x (₹1,563/share)</td><td>₹38,700 Cr</td><td>117 MW DC + FY28 PAT ₹1,200+ Cr at 32x PE</td><td>FY28</td><td class="a">20–25%</td></tr>
+    <tr><td>2x (₹1,042/share)</td><td>₹25,800 Cr</td><td>63–80 MW DC + FY27 PAT ₹900 Cr at 28x PE</td><td>FY27–FY28</td><td class="a">30–35%</td></tr>
+    <tr><td>1.5x (₹782/share)</td><td>₹19,400 Cr</td><td>63 MW DC commissioned, steady RE</td><td>FY27</td><td class="g">40–45%</td></tr>
+    <tr><td>Bear (-25%: ₹391)</td><td>₹9,700 Cr</td><td>DC delay + NCR RE cools + QIP overhang</td><td>—</td><td class="a">25–30%</td></tr>
+  </table>
+</div>
+
+<!-- PEERS -->
+<div id="compare" class="panel">
+  <div class="sh">Sector peers — real estate + data centre comps</div>
+  <div class="warn info"><strong>Anant Raj is unique</strong> — no other listed Indian company combines an established real estate franchise with a meaningful owned-land data centre business. The closest comps are pure real estate peers (DLF, Godrej Properties) and pure data centre peers (global: Equinix, Digital Realty).</div>
+  <div style="border:1px solid #ddd;border-radius:10px;overflow:hidden;font-size:11px">
+    <div class="comp-h">
+      <div class="cc-h" style="background:#f5f5f3">Metric</div>
+      <div class="cc-h" style="background:#E0F2F1;color:#004D40">Anant Raj ← Your stock</div>
+      <div class="cc-h" style="background:#E6F1FB;color:#185FA5">DLF Ltd</div>
+      <div class="cc-h" style="background:#f5f5f3">Godrej Properties</div>
+    </div>
+    <div class="comp-row"><div class="cc cc-label">Market cap</div><div class="cc mid-cell">₹12,900 Cr</div><div class="cc loser-cell">₹1,10,000+ Cr</div><div class="cc loser-cell">₹55,000 Cr</div></div>
+    <div class="comp-row"><div class="cc cc-label">Revenue (FY26E)</div><div class="cc mid-cell">~₹2,500 Cr (+22% growth)</div><div class="cc winner-cell">~₹8,000–9,000 Cr</div><div class="cc winner-cell">~₹6,000+ Cr</div></div>
+    <div class="cc cc-label">EBITDA margin</div>
+    <div class="comp-row"><div class="cc cc-label">EBITDA margin</div><div class="cc winner-cell">~26–27% (highest)</div><div class="cc mid-cell">~35%</div><div class="cc mid-cell">~22–25%</div></div>
+    <div class="comp-row"><div class="cc cc-label">Data centre business</div><div class="cc winner-cell">Yes — 28 MW live, 307 MW target</div><div class="cc loser-cell">No (DLF Cyber City — leasing only)</div><div class="cc loser-cell">No</div></div>
+    <div class="comp-row"><div class="cc cc-label">Land bank (NCR)</div><div class="cc mid-cell">~320 acres (debt-free)</div><div class="cc winner-cell">~3,200+ acres (pan-India)</div><div class="cc winner-cell">Pan-India, large</div></div>
+    <div class="comp-row"><div class="cc cc-label">Trailing PE</div><div class="cc winner-cell">~24–27x (cheapest)</div><div class="cc mid-cell">~40–50x</div><div class="cc mid-cell">~50–70x</div></div>
+    <div class="comp-row"><div class="cc cc-label">ROCE</div><div class="cc loser-cell">~6.7% (low)</div><div class="cc winner-cell">~15–18%</div><div class="cc mid-cell">~10–14%</div></div>
+    <div class="comp-row"><div class="cc cc-label">Revenue growth</div><div class="cc winner-cell">+22–38% YoY (fastest)</div><div class="cc mid-cell">~15–20%</div><div class="cc mid-cell">~20–30%</div></div>
+    <div class="comp-row"><div class="cc cc-label">Data centre optionality</div><div class="cc winner-cell">Massive (unique in listed space)</div><div class="cc loser-cell">None direct</div><div class="cc loser-cell">None direct</div></div>
+    <div class="comp-row"><div class="cc cc-label">3x probability (3yr)</div><div class="cc winner-cell">20–25% (DC re-rating needed)</div><div class="cc loser-cell">8–10% (mcap too large)</div><div class="cc loser-cell">10–12%</div></div>
+    <div class="comp-row"><div class="cc cc-label">Best for Garvit's goal</div><div class="cc">Best 3x option in NCR real estate due to DC pivot</div><div class="cc">Quality but too large for 3x</div><div class="cc">Wrong size for 3x</div></div>
+  </div>
+
+  <div class="sector-card" style="margin-top:12px">
+    <div class="sc-hdr"><div><div class="sc-nm">India data centre comparables — why Anant Raj is cheap</div><div class="sc-tg">Equinix (US, ₹3.2L Cr mcap) vs NXT Data (unlisted) vs STT GDC (unlisted)</div></div><span class="badge bpurp">Unlisted comps — directional</span></div>
+    <div class="sc-bd">Global data centre companies trade at 30–60x EBITDA. Equinix (the world's largest DC operator) trades at ~35x EBITDA. At 28 MW, Anant Raj's DC EBITDA is ~₹87 Cr annualised (75% of company EBITDA). At 30x DC EBITDA alone, the DC segment is worth ₹2,600 Cr — meaning you're getting the <strong>real estate business (₹2,500+ Cr revenue, ₹400 Cr PAT, 320 acres NCR land) for free at current ₹12,900 Cr mcap.</strong> At 117 MW, DC EBITDA could reach ₹600–800 Cr. At 30x, that's ₹18,000–24,000 Cr for DC alone — which is the 3x thesis in one sentence.</div>
+  </div>
+</div>
+
+<!-- VERDICT -->
+<div id="verdict" class="panel">
+  <div class="sh">The definitive verdict for Garvit's portfolio</div>
+
+  <div class="verdict-card" style="background:#E0F2F1;border:1px solid #80CBC4">
+    <div class="vc-h" style="color:#004D40">Anant Raj — Verdict: Strong speculative hold with high conviction on the data centre thesis. Garvit's -4.5% loss is temporary and likely reverses as DC execution delivers. Target ₹75,000–85,000 allocation (current ₹97,588 is already overweight vs our speculative category but justified by DC thesis quality).</div>
+    <div class="vc-b">This is one of the more strategically interesting holdings in the portfolio. Here's the complete picture:<br><br><strong>Why you bought it was right:</strong><br>The data centre + real estate combination is genuinely unique in listed Indian equities. No other stock offers 320 acres of debt-free NCR land + an already-operational 28 MW DC business + a 117 MW funded expansion plan + a profitable real estate business generating cash to fund it. The thesis is sound. The entry timing (near ₹521) was slightly unfortunate — the stock peaked at ₹744 just weeks after you bought, then corrected on broader market weakness + QIP overhang.<br><br><strong>The -4.5% loss is a market timing issue, not a thesis issue:</strong><br>Q3 FY26 results (revenue +20%, PAT +30.8%) were strong. 9M FY26 PAT of ₹408 Cr is tracking well. Credit rating upgraded. QIP deployed wisely. DC at 28 MW generating ₹58 Cr H1 revenue already ahead of FY26 guidance. The business is executing. The stock fell because of broader NCR real estate sector sell-off and QIP overhang (investors who bought at ₹695 creating supply pressure). These are temporary.<br><br><strong>The path to recovery and 3x:</strong><br>Trigger 1 (near-term): Full year FY26 results on May 11, 2026. If DC revenue hits ₹120–150 Cr and total PAT exceeds ₹540 Cr, PE re-rates from 24x. Target: ₹600–650/share (+15-25%).<br>Trigger 2 (medium): 63 MW commissioned Dec 2026 → FY27 DC revenue ₹350–500 Cr. Stock should reach ₹750–900/share (1.5x from cost).<br>Trigger 3 (transformative): 117 MW by FY28 at ₹6–8 Cr/MW revenue = ₹700–936 Cr DC revenue. At 30x DC EBITDA: ₹18,000–25,000 Cr DC segment value alone. 3x from ₹12,900 Cr current mcap is achievable by FY28.<br><br><strong>Portfolio-specific recommendation for Garvit:</strong><br>Your ₹97,588 (196 shares) is slightly above our "speculative" category limit — but the data centre thesis justifies this concentration. Hold fully. Do NOT add more at current levels (wait for 63 MW commissioning confirmation in Dec 2026 before considering adding). The FY26 full year results (May 11, 2026) are the first key test — if PAT hits ₹540+ Cr, buy the dip.</div>
+  </div>
+
+  <div class="sh">Allocation recommendation</div>
+  <table>
+    <tr><th>Stock</th><th>Action</th><th>Amount</th><th>Rationale</th></tr>
+    <tr><td><strong>Anant Raj (currently held)</strong></td><td><span class="badge bteal">HOLD 196 shares — full position</span></td><td>Hold ₹97,588 as is</td><td>DC thesis intact. -4.5% loss is temporary (QIP overhang + sector sell-off). FY26 results May 11 are the next catalyst. Do not add until 63 MW confirmed. Do not exit — you'd be selling at the wrong moment of the thesis.</td></tr>
+  </table>
+
+  <div class="sh">Six triggers to watch quarterly</div>
+  <table>
+    <tr><th>#</th><th>Trigger</th><th>Status</th><th>Expected impact</th></tr>
+    <tr><td>1</td><td>FY26 full year results (May 11, 2026)</td><td class="a">Board meeting May 11, 2026</td><td>🔥 If DC revenue FY26 ≥ ₹130 Cr and PAT ≥ ₹540 Cr → buy more. This is the most important near-term event.</td></tr>
+    <tr><td>2</td><td>63 MW commissioning (Dec 2026 target)</td><td class="g">On track — QIP funded, sites ready</td><td>🟢 63 MW commissioned = ₹350–500 Cr annual DC revenue visibility → stock to ₹750–900</td></tr>
+    <tr><td>3</td><td>QIP overhang resolution (investors at ₹695)</td><td class="r">Stock at ₹498 — overhang at ₹650–700</td><td>🔴 Stock may face selling pressure approaching ₹600–650. Watch volumes at that level.</td></tr>
+    <tr><td>4</td><td>NCR luxury real estate pre-sales data</td><td class="g">Strong — luxury segment booming</td><td>🟢 Anant Raj Estate Phase IV, Navya Phase 2 deliveries, Estate One launch = residential cash flow confirmation</td></tr>
+    <tr><td>5</td><td>Andhra Pradesh DC (₹4,500 Cr MoU)</td><td class="a">MoU signed — awaiting groundbreaking</td><td>🟢 Any Andhra Pradesh DC groundbreaking announcement = geographic diversification + government support signal</td></tr>
+    <tr><td>6</td><td>Budget 2026 tax holiday utilisation</td><td class="g">Tax holidays till 2047 for DC clients</td><td>🟢 If foreign cloud firms begin citing Anant Raj as preferred vendor → step-change in DC demand visibility</td></tr>
+  </table>
+
+  <div class="warn teal" style="margin-top:12px"><strong>One-line verdict:</strong> Anant Raj is India's most unique listed stock at the intersection of NCR real estate and data centre infrastructure — using 50 years of land accumulation as a moat for the AI infrastructure buildout. The -4.5% loss in your portfolio is a temporary QIP overhang issue, not a business problem. The DC business is executing ahead of guidance. Hold your 196 shares through the May 2026 results. The 3x thesis requires 117 MW by FY28 — ambitious but credible given the track record. This is a 3-year hold, not a quarterly trade.</div>
+</div>
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/4.4.1/chart.umd.js"></script>
+<script>
+function show(id,btn){
+  document.querySelectorAll('.tab').forEach(t=>t.classList.remove('active'));
+  document.querySelectorAll('.panel').forEach(p=>p.classList.remove('active'));
+  btn.classList.add('active');
+  document.getElementById(id).classList.add('active');
+}
+new Chart(document.getElementById('rc').getContext('2d'),{
+  type:'bar',
+  data:{
+    labels:['FY21','FY22','FY23','FY24','FY25','Q1FY26','Q2FY26','Q3FY26','FY26E','FY27E','FY28E'],
+    datasets:[
+      {label:'Revenue ₹ Cr',data:[520,700,1050,1483,2060,592,631,642,2500,3500,4500],backgroundColor:['#0097A7','#0097A7','#0097A7','#0097A7','#0097A7','#1D9E75','#1D9E75','#1D9E75','#80CBC4','#80CBC4','#80CBC4'],borderRadius:4,yAxisID:'y'},
+      {label:'PAT ₹ Cr',data:[55,85,165,266,426,126,138,144,545,880,1500],type:'line',borderColor:'#1D9E75',backgroundColor:'transparent',pointBackgroundColor:'#1D9E75',tension:0.3,yAxisID:'y2'}
+    ]
+  },
+  options:{responsive:true,maintainAspectRatio:false,plugins:{legend:{display:false}},scales:{y:{ticks:{font:{size:10}}},y2:{position:'right',ticks:{font:{size:10}},grid:{drawOnChartArea:false}},x:{ticks:{font:{size:10}}}}}
+});
+</script>
+</body>
+</html>

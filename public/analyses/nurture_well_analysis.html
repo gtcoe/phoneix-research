@@ -1,0 +1,460 @@
+<!DOCTYPE html>
+<html><head><meta charset="utf-8">
+<style>
+*{box-sizing:border-box;margin:0;padding:0}
+body{font-family:system-ui,sans-serif;padding:16px;background:#fff;color:#1a1a1a;font-size:14px}
+h1{font-size:20px;font-weight:500;margin-bottom:3px}
+.sub{font-size:12px;color:#666;margin-bottom:14px}
+.sg{display:grid;grid-template-columns:repeat(auto-fill,minmax(110px,1fr));gap:8px;margin-bottom:16px}
+.sc{background:#f5f5f3;border-radius:8px;padding:10px 12px}
+.sl{font-size:10px;color:#666;margin-bottom:2px}
+.sv{font-size:17px;font-weight:500}
+.tab-row{display:flex;gap:5px;flex-wrap:wrap;margin-bottom:14px}
+.tab{font-size:11.5px;padding:5px 13px;border-radius:20px;border:1px solid #ddd;background:#fff;cursor:pointer;white-space:nowrap}
+.tab.active{background:#1a1a1a;color:#fff;border-color:#1a1a1a}
+.panel{display:none}.panel.active{display:block}
+.sh{font-size:10.5px;font-weight:500;color:#666;text-transform:uppercase;letter-spacing:.06em;margin:16px 0 7px;padding-bottom:5px;border-bottom:1px solid #eee}
+table{width:100%;border-collapse:collapse;font-size:12px;margin:8px 0}
+th{font-size:10.5px;font-weight:500;color:#666;padding:5px 7px;text-align:left;border-bottom:1px solid #eee;white-space:nowrap}
+td{padding:8px 7px;border-bottom:1px solid #eee;color:#1a1a1a;vertical-align:top}
+tr:last-child td{border-bottom:none}
+tr:hover td{background:#fafaf9}
+.g{color:#0F6E56;font-weight:500}.r{color:#A32D2D;font-weight:500}.a{color:#854F0B;font-weight:500}.b{color:#185FA5;font-weight:500}
+.badge{display:inline-block;font-size:10px;padding:2px 7px;border-radius:10px;white-space:nowrap}
+.bg{background:#E1F5EE;color:#0F6E56}.bb{background:#E6F1FB;color:#185FA5}.ba{background:#FAEEDA;color:#854F0B}.br{background:#FCEBEB;color:#A32D2D}.bgray{background:#f1f0e8;color:#5F5E5A}.bpur{background:#F3E8FF;color:#6B21A8}
+.warn{padding:10px 13px;margin:8px 0;border-left:3px solid;font-size:12px;line-height:1.65}
+.warn.success{background:#E1F5EE;border-color:#1D9E75;color:#04342C}
+.warn.caution{background:#FAEEDA;border-color:#BA7517;color:#412402}
+.warn.danger{background:#FCEBEB;border-color:#A32D2D;color:#712B13}
+.warn.info{background:#E6F1FB;border-color:#185FA5;color:#042C53}
+.warn.purple{background:#F3E8FF;border-color:#7C3AED;color:#3B0764}
+.warn strong{font-weight:500}
+.chart-wrap{position:relative;width:100%;height:240px;margin:8px 0}
+.kpi-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:10px;margin:10px 0}
+.kpi{background:#f5f5f3;border-radius:8px;padding:10px 12px;border-left:3px solid transparent}
+.kpi.green{border-left-color:#1D9E75}.kpi.amber{border-left-color:#EF9F27}.kpi.blue{border-left-color:#378ADD}.kpi.red{border-left-color:#A32D2D}.kpi.purple{border-left-color:#7C3AED}
+.kpi-l{font-size:10px;color:#666;margin-bottom:3px}
+.kpi-v{font-size:17px;font-weight:500}
+.kpi-s{font-size:10px;color:#888;margin-top:2px}
+.point{display:flex;gap:9px;align-items:flex-start;padding:9px 0;border-bottom:1px solid #eee;font-size:12px;line-height:1.6;color:#555}
+.point:last-child{border-bottom:none}
+.point strong{color:#1a1a1a;font-weight:500}
+.dot{width:19px;height:19px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:10px;font-weight:500;flex-shrink:0;margin-top:1px}
+.dg{background:#E1F5EE;color:#0F6E56}.dr{background:#FCEBEB;color:#A32D2D}.da{background:#FAEEDA;color:#854F0B}.db{background:#E6F1FB;color:#185FA5}.dp{background:#F3E8FF;color:#6B21A8}
+.two-col{display:grid;grid-template-columns:1fr 1fr;gap:12px}
+.pane{border:1px solid #ddd;border-radius:10px;padding:13px}
+.pane-h{font-size:13px;font-weight:500;margin-bottom:9px}
+.scenario{border:1px solid #ddd;border-radius:10px;padding:13px;margin-bottom:9px}
+.sc-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:7px;margin:9px 0}
+.sc-cell{background:#f5f5f3;border-radius:6px;padding:7px 9px}
+.sc-l{font-size:10px;color:#666}
+.sc-v{font-size:12px;font-weight:500;margin-top:2px}
+.comp-h{display:grid;grid-template-columns:160px repeat(3,1fr);background:#f5f5f3;border-radius:8px 8px 0 0;overflow:hidden}
+.comp-row{display:grid;grid-template-columns:160px repeat(3,1fr);border-bottom:1px solid #eee}
+.comp-row:last-child{border-bottom:none}
+.cc{padding:8px 10px;font-size:11px;border-right:1px solid #eee}
+.cc:last-child{border-right:none}
+.cc-h{font-size:10px;font-weight:500;color:#444;padding:8px 10px;border-right:1px solid #ddd}
+.cc-h:last-child{border-right:none}
+.cc-label{color:#666;font-size:11px}
+.winner-cell{background:#E1F5EE}.mid-cell{background:#FAEEDA}.loser-cell{background:#fff5f5}
+.verdict-card{border-radius:10px;padding:13px 15px;margin-bottom:10px}
+.vc-h{font-size:13px;font-weight:500;margin-bottom:6px}
+.vc-b{font-size:12px;line-height:1.65;color:#444}
+.sector-card{border:1px solid #ddd;border-radius:10px;overflow:hidden;margin-bottom:10px}
+.sc-hdr{padding:10px 13px;display:flex;justify-content:space-between;align-items:center;background:#fafaf9}
+.sc-nm{font-size:13px;font-weight:500}
+.sc-tg{font-size:11px;color:#666;margin-top:2px}
+.sc-bd{padding:10px 13px;font-size:12px;line-height:1.65;color:#555;border-top:1px solid #eee}
+.sc-bd strong{color:#1a1a1a}
+.guid-card{border-radius:10px;padding:12px 14px;margin-bottom:8px;border-left:3px solid #1D9E75;background:#f5f5f3}
+.guid-h{font-size:11.5px;font-weight:500;margin-bottom:4px}
+.guid-b{font-size:11.5px;color:#333;line-height:1.6}
+.guid-s{font-size:10px;color:#888;margin-top:4px}
+.guid-card.beat{background:#E1F5EE;border-left-color:#1D9E75}.guid-card.beat .guid-h{color:#0F6E56}
+.guid-card.miss{background:#FCEBEB;border-left-color:#A32D2D}.guid-card.miss .guid-h{color:#A32D2D}
+.guid-card.watch{background:#FAEEDA;border-left-color:#BA7517}.guid-card.watch .guid-h{color:#854F0B}
+.flag-box{background:#FCEBEB;border:2px solid #A32D2D;border-radius:10px;padding:13px;margin:10px 0}
+.flag-h{font-size:13px;font-weight:500;color:#A32D2D;margin-bottom:6px}
+.flag-b{font-size:12px;color:#333;line-height:1.65}
+.rev-bar{display:flex;align-items:center;gap:8px;margin:5px 0}
+.rev-label{font-size:11px;color:#555;width:90px;flex-shrink:0}
+.rev-track{flex:1;background:#f5f5f3;border-radius:4px;height:16px;overflow:hidden}
+.rev-fill{height:100%;display:flex;align-items:center;padding-left:7px;font-size:9px;font-weight:500;color:#fff;border-radius:4px}
+</style>
+</head>
+<body>
+
+<h1>Nurture Well Industries Ltd — Deep Investment Analysis</h1>
+<div class="sub">BSE: 531889 · Ticker: NWIL · Food FMCG — biscuits, bakery, processed foods · Formerly Integrated Industries Ltd (name changed Jan 2026) · MD: Saurabh Goyal · Neemrana, Rajasthan + Dubai subsidiary</div>
+
+<div class="sg">
+  <div class="sc"><div class="sl">Market cap</div><div class="sv">~₹832 Cr</div></div>
+  <div class="sc"><div class="sl">TTM revenue</div><div class="sv" style="color:#1D9E75">₹1,067 Cr</div></div>
+  <div class="sc"><div class="sl">TTM PAT</div><div class="sv" style="color:#1D9E75">₹108 Cr</div></div>
+  <div class="sc"><div class="sl">9M FY26 revenue</div><div class="sv" style="color:#1D9E75">₹826 Cr</div></div>
+  <div class="sc"><div class="sl">9M FY26 growth</div><div class="sv" style="color:#1D9E75">+57.3% YoY</div></div>
+  <div class="sc"><div class="sl">9M FY26 EBITDA%</div><div class="sv" style="color:#1D9E75">10.81%</div></div>
+  <div class="sc"><div class="sl">9M FY26 PAT%</div><div class="sv" style="color:#1D9E75">10.37%</div></div>
+  <div class="sc"><div class="sl">Q3 FY26 PAT growth</div><div class="sv" style="color:#1D9E75">+95% YoY</div></div>
+  <div class="sc"><div class="sl">Trailing PE</div><div class="sv" style="color:#854F0B">~178x BSE</div></div>
+  <div class="sc"><div class="sl">Promoter holding</div><div class="sv" style="color:#854F0B">53.8%</div></div>
+  <div class="sc"><div class="sl">⚠ Tax rate</div><div class="sv" style="color:#A32D2D">Flagged low</div></div>
+  <div class="sc"><div class="sl">⚠ CFO change</div><div class="sv" style="color:#A32D2D">Apr 2026</div></div>
+</div>
+
+<div class="tab-row">
+  <button class="tab active" onclick="show('revenue',this)">Revenue history</button>
+  <button class="tab" onclick="show('sectorKPI',this)">Sector KPIs</button>
+  <button class="tab" onclick="show('business',this)">Business model</button>
+  <button class="tab" onclick="show('guidance',this)">Guidance analysis</button>
+  <button class="tab" onclick="show('risks',this)">Risks</button>
+  <button class="tab" onclick="show('scenarios',this)">3x scenarios</button>
+  <button class="tab" onclick="show('sectormap',this)">Sector landscape</button>
+  <button class="tab" onclick="show('compare',this)">Full comparison</button>
+  <button class="tab" onclick="show('verdict',this)">Final verdict</button>
+</div>
+
+<!-- REVENUE HISTORY -->
+<div id="revenue" class="panel active">
+  <div class="sh">Revenue & profit journey — explosive growth from a tiny base</div>
+  <div class="chart-wrap"><canvas id="rc"></canvas></div>
+  <div style="display:flex;gap:14px;font-size:11.5px;color:#666;margin-bottom:10px">
+    <span><span style="display:inline-block;width:10px;height:10px;border-radius:2px;background:#7C3AED;margin-right:4px"></span>Revenue ₹ Cr (left)</span>
+    <span><span style="display:inline-block;width:10px;height:10px;border-radius:2px;background:#1D9E75;margin-right:4px"></span>PAT ₹ Cr (right)</span>
+    <span><span style="display:inline-block;width:10px;height:10px;border-radius:2px;background:#C4B5FD;margin-right:4px"></span>Projected</span>
+  </div>
+
+  <table>
+    <tr><th>Period</th><th>Revenue</th><th>Growth</th><th>EBITDA</th><th>EBITDA%</th><th>PAT</th><th>PAT%</th><th>Key event</th></tr>
+    <tr><td>FY23</td><td>~₹20–30 Cr</td><td>—</td><td>—</td><td>—</td><td>~₹2 Cr</td><td class="a">~7%</td><td>Tiny company. Integrated Industries — agro/trading origin. Minimal operations.</td></tr>
+    <tr><td>FY24 Q1</td><td>₹140.1 Cr</td><td class="g">Explosive start</td><td>—</td><td>—</td><td>—</td><td>—</td><td>Nurture Well Foods subsidiary + Dubai (UAE) subsidiary revenue kicks in. Step change in scale.</td></tr>
+    <tr><td>FY25</td><td>~₹525–550 Cr</td><td class="g">~1,800%+</td><td>~₹46 Cr</td><td class="a">~8.4%</td><td>~₹45 Cr</td><td class="a">~8.2%</td><td>Dubai subsidiary (~₹350 Cr TTM). Biscuit plant at 75% util. 150+ domestic distributors.</td></tr>
+    <tr><td>Q1 FY26</td><td>~₹247 Cr</td><td class="g">+76% YoY</td><td>~₹26 Cr</td><td class="g">10.5%</td><td>~₹33 Cr</td><td class="g">13.4%</td><td>Domestic + overseas both accelerating. New SKUs (donuts, rusk, khari biscuits).</td></tr>
+    <tr><td>Q2 FY26</td><td>~₹289 Cr</td><td class="g">+68% YoY</td><td>~₹30 Cr</td><td class="g">10.4%</td><td>~₹34 Cr</td><td class="g">11.8%</td><td>Margins improving QoQ. Bakery segment (bread, kulcha, puffs) enters FY26.</td></tr>
+    <tr><td>Q3 FY26</td><td>₹289.59 Cr</td><td class="g">+45.8% YoY</td><td>₹33.19 Cr</td><td class="g">11.45%</td><td>₹34.60 Cr</td><td class="g">11.94%</td><td>Record PAT. 9-month revenue ₹826 Cr. Growth decelerating in Q3 vs Q1/Q2.</td></tr>
+    <tr><td>9M FY26</td><td>₹826.48 Cr</td><td class="g">+57.3% YoY</td><td>₹89.38 Cr</td><td class="g">10.81%</td><td>₹92.32 Cr</td><td class="g">10.37%</td><td>EPS ₹3.15 (diluted). EBITDA margin +198 bps YoY. Strong operating leverage.</td></tr>
+    <tr><td>FY26E</td><td>~₹1,100–1,150 Cr</td><td class="g">~+50%</td><td>~₹119–130 Cr</td><td class="g">~11%</td><td>~₹115–125 Cr</td><td class="g">~10.5%</td><td>Management guided "roughly ₹1,150 Cr." Q4 FY26 results pending. Capex via warrants deployed.</td></tr>
+    <tr><td>FY27E</td><td>~₹1,700–2,000 Cr</td><td class="g">~55–75% guided</td><td>~₹190–240 Cr</td><td class="g">~12%</td><td>~₹180–220 Cr</td><td class="g">~11%</td><td>Management guided 70–75% growth. New Neemrana lines + UP plant (if on time). Domestic 50:50 target.</td></tr>
+    <tr><td>FY29 Vision</td><td>₹2,500 Cr</td><td>—</td><td>~₹300 Cr</td><td class="g">~12%</td><td>~₹280+ Cr</td><td class="g">~11%</td><td>UP plant fully operational (5,000 MT capacity). 50% domestic, 50% overseas. ROE 24–25%.</td></tr>
+  </table>
+
+  <div class="warn purple"><strong>The revenue step-change story:</strong> Nurture Well was essentially a dormant/tiny company until FY24 when two things happened simultaneously — the acquisition of the running Neemrana biscuit plant (via Nurture Well Foods Ltd subsidiary) and the launch of the Dubai/UAE subsidiary. Revenue exploded from near-zero to ₹1,067 Cr TTM. This is a genuine business transformation, not organic FMCG compounding. Understanding the structure of this revenue is the most important analytical task.</div>
+
+  <div class="sh">Revenue composition — the 80% overseas concentration concern</div>
+  <div class="rev-bar"><div class="rev-label">Overseas (UAE/Dubai)</div><div class="rev-track"><div class="rev-fill" style="width:80%;background:#7C3AED">~80% (~₹854 Cr TTM)</div></div><div style="font-size:11px;font-weight:500;color:#7C3AED;width:50px">~80%</div></div>
+  <div class="rev-bar"><div class="rev-label">Domestic (India)</div><div class="rev-track"><div class="rev-fill" style="width:20%;background:#1D9E75">~20% (~₹213 Cr TTM)</div></div><div style="font-size:11px;font-weight:500;color:#1D9E75;width:50px">~20%</div></div>
+  <div class="warn caution" style="margin-top:8px"><strong>80% overseas is the most important fact about this company.</strong> India's biscuit/FMCG market is highly competitive but well-understood. The UAE/Middle East revenue via Nurture Well LLC (Dubai) — sold through 2–3 super stockists — is the primary earnings driver but also the primary opacity risk. Contract manufacturing in Dubai. Revenue recognised when dispatched to stockists. The question investors must answer: is this genuine consumer demand in UAE, or intermediary-driven volume?</div>
+</div>
+
+<!-- SECTOR KPIs -->
+<div id="sectorKPI" class="panel">
+  <div class="sh">Food FMCG / biscuit sector KPIs — how Nurture Well scores</div>
+  <div class="warn info"><strong>Five metrics that define a food FMCG company:</strong> (1) Gross margin — reflects raw material pricing power, (2) EBITDA margin — operational efficiency, (3) Distribution reach — brand moat, (4) Revenue per kg — value-add premium, and (5) Export concentration risk — sustainability of overseas revenue.</div>
+  <div class="kpi-grid">
+    <div class="kpi green"><div class="kpi-l">9M FY26 EBITDA margin</div><div class="kpi-v">10.81%</div><div class="kpi-s">Improving — up 198 bps YoY</div></div>
+    <div class="kpi green"><div class="kpi-l">9M FY26 PAT margin</div><div class="kpi-v">10.37%</div><div class="kpi-s">Strong for food FMCG</div></div>
+    <div class="kpi green"><div class="kpi-l">9M FY26 revenue growth</div><div class="kpi-v">+57.3%</div><div class="kpi-s">Well ahead of sector (8–13%)</div></div>
+    <div class="kpi purple"><div class="kpi-l">Domestic capacity (Neemrana)</div><div class="kpi-v">3,400 MT/mo</div><div class="kpi-s">→ Adding 2–3 new lines FY27</div></div>
+    <div class="kpi amber"><div class="kpi-l">Overseas revenue share</div><div class="kpi-v" style="color:#854F0B">~80%</div><div class="kpi-s">50–55% from 2–3 super stockists</div></div>
+    <div class="kpi red"><div class="kpi-l">Tax rate</div><div class="kpi-v" style="color:#A32D2D">Flagged</div><div class="kpi-s">Screener flags "tax rate seems low"</div></div>
+  </div>
+
+  <div class="sh">India biscuit/snack food market — sector tailwinds</div>
+  <div class="point"><div class="dot dg">+</div><div><strong>India packaged food market growing at 10–14% CAGR through 2028.</strong> Rising urbanisation, shifting consumption from loose/unbranded to packaged, and premiumisation are structural tailwinds. Biscuits are India's largest packaged food category (₹40,000+ Cr), with penetration still growing in Tier II/III.</div></div>
+  <div class="point"><div class="dot dg">+</div><div><strong>UAE/GCC Indian diaspora food market:</strong> 3.5 million+ Indians in UAE. High per-capita spend on Indian food products. The GCC ethnic food market is a genuine, large opportunity. Indian biscuit brands like Parle, Britannia, ITC export significant volumes. Nurture Well's UAE positioning serves this demand.</div></div>
+  <div class="point"><div class="dot da">!</div><div><strong>Domestic biscuit market dominated by Parle, Britannia, ITC Foods:</strong> These three control 60–70% of the organised Indian biscuit market. Mrs. Bectors (Cremica), Prataap, Biskfarm are significant regional players. A new entrant with RICHLITE/FUNTREAT/CRAZY CRUNCH brands faces formidable incumbents with decades of brand equity and distribution reach.</div></div>
+
+  <div class="sh">Margin benchmarking — Nurture Well vs peers</div>
+  <table>
+    <tr><th>Company</th><th>Revenue (TTM)</th><th>EBITDA%</th><th>PAT%</th><th>Revenue CAGR 3yr</th><th>Key edge</th></tr>
+    <tr><td><strong>Nurture Well Industries</strong></td><td class="g">₹1,067 Cr</td><td class="g">~10.8%</td><td class="g">~10%</td><td class="g">Explosive (low base)</td><td>Overseas (UAE) + domestic biscuit growth</td></tr>
+    <tr><td>Mrs. Bectors Food</td><td>₹2,004 Cr</td><td class="g">~12–14%</td><td class="a">~7%</td><td class="a">~13%</td><td>QSR supply (McDonald's, Domino's), export 64 countries</td></tr>
+    <tr><td>Prataap Snacks</td><td>~₹1,750 Cr</td><td class="a">~7–8%</td><td class="r">~1–2%</td><td class="a">~8%</td><td>Yellow Diamond brand, mass snacking</td></tr>
+    <tr><td>Britannia Industries</td><td>~₹16,500 Cr</td><td class="g">~17–18%</td><td class="g">~13%</td><td class="a">~8%</td><td>Dominant brand equity, pricing power</td></tr>
+  </table>
+  <div class="warn caution"><strong>Nurture Well's ~10% PAT margin is unusually high for a company of this scale and age.</strong> Mrs. Bectors (a well-established, quality brand) earns 7% PAT margin. Prataap Snacks earns just 1–2%. Screener's flag on the "low tax rate" partially explains this — if Nurture Well is paying minimal tax on its overseas profits (possibly through Dubai's 0% corporate tax), the reported PAT looks higher than the economic profit to Indian shareholders. This needs to be scrutinised before investment.</div>
+</div>
+
+<!-- BUSINESS MODEL -->
+<div id="business" class="panel">
+  <div class="sh">What Nurture Well actually does — two distinct businesses under one roof</div>
+  <div class="warn purple"><strong>Nurture Well is two businesses, not one.</strong> Business A: Domestic biscuit/bakery manufacturer (Nurture Well Foods subsidiary, Neemrana plant, brands RICHLITE/FUNTREAT/CRAZY CRUNCH). Business B: UAE/Middle East food trading via Nurture Well LLC (Dubai subsidiary — contract manufacturing, sold through 2–3 super stockists). Understanding each separately is essential because their risk profiles, margin structures, and sustainability differ significantly.</div>
+
+  <div class="two-col" style="margin:12px 0">
+    <div class="pane">
+      <div class="pane-h" style="color:#1D9E75">Business A — Domestic manufacturing (₹200–250 Cr est.)</div>
+      <div class="point"><div class="dot dg">1</div><div><strong>Nurture Well Foods Ltd (100% WOS):</strong> Biscuit + cookie factory at Neemrana, Rajasthan. Capacity 3,400 MT/month (40,800 MT/yr). Running at ~75% utilisation. Brands: RICHLITE (butter biscuits, cookies), FUNTREAT (cream-filled, flavored), CRAZY CRUNCH (crunchy textures).</div></div>
+      <div class="point"><div class="dot dg">2</div><div><strong>New bakery category:</strong> Donuts (premium + mass), Rusk, Khari biscuits, Kulcha, Bread (white + brown planned), Veg puffs. These are daily consumption, high-repeat products that drive distributor and retailer stickiness. Bakery adds fresh-food dimension with higher velocity.</div></div>
+      <div class="point"><div class="dot dg">3</div><div><strong>Distribution — North India focus:</strong> 150+ distributors, expanding to East and West India. The domestic network is nascent vs Parle/Britannia's 5–10 lakh+ outlets. This is the growth opportunity — domestic is only 20% today, target 50% by FY27–28.</div></div>
+      <div class="point"><div class="dot da">!</div><div><strong>UP plant (5,000 MT capacity):</strong> Originally guided for end-FY26, now pushed to FY28–29. This delay is significant — was a key revenue and domestic growth driver. Slippage here means the domestic mix stays low for longer.</div></div>
+    </div>
+    <div class="pane">
+      <div class="pane-h" style="color:#7C3AED">Business B — UAE/Middle East (₹850+ Cr est., ~80% revenue)</div>
+      <div class="point"><div class="dot dp">1</div><div><strong>Nurture Well LLC (Dubai subsidiary):</strong> Contract manufacturing arrangement in UAE. Product sourced/made in Dubai, sold to Indian diaspora in UAE and Middle East. The Dubai entity allows tax-efficient profit recognition (UAE corporate tax is 9% since Jun 2023, was 0% before).</div></div>
+      <div class="point"><div class="dot dp">2</div><div><strong>2–3 super stockists control 50–55% of overseas revenue:</strong> This extreme concentration means one stockist relationship ending = ₹200–250 Cr revenue disappears instantly. Management says they're diversifying but this remains the single biggest near-term risk.</div></div>
+      <div class="point"><div class="dot dp">3</div><div><strong>Cash collection — 45 days for exports vs 15 days domestic:</strong> UAE revenue takes 45 days to collect. At ₹850+ Cr overseas revenue, working capital locked in export receivables could be ₹100–115 Cr. This is significant for a company with ₹832 Cr mcap.</div></div>
+      <div class="point"><div class="dot da">!</div><div><strong>The opacity problem:</strong> Overseas revenue is harder to verify than domestic. Domestic FMCG can be crosschecked via distributor/retailer network growth. UAE sales through 2–3 parties creates a model where large revenue can be recognised without the independent checks that domestic FMCG provides.</div></div>
+    </div>
+  </div>
+</div>
+
+<!-- GUIDANCE -->
+<div id="guidance" class="panel">
+  <div class="sh">Guidance analysis — what management said, what happened</div>
+  <div class="warn info"><strong>Nurture Well has been progressively revising guidance upward</strong> — a positive signal that management is conservative in initial estimates. However, the UP plant timeline slip is a notable execution miss. Overall guidance credibility: <strong>Medium-High (7/10) on revenue, Medium (6/10) on capacity execution.</strong></div>
+
+  <div class="sh">Past guidance track record</div>
+  <div class="guid-card beat">
+    <div class="guid-h">✓ FY26 revenue: Initially ₹1,000 Cr → upgraded to ~₹1,150 Cr → tracking to ₹1,100–1,150 Cr</div>
+    <div class="guid-b">Initial FY26 guidance was "₹1,000 Cr" (50% growth). Mid-year, management upgraded to "roughly ₹1,150 Cr" as the Dubai and domestic businesses both outperformed. With 9M FY26 already at ₹826 Cr, hitting ₹1,100–1,150 Cr for full year is likely. Revenue guidance credibility: STRONG. Management has consistently delivered or exceeded revenue targets.</div>
+    <div class="guid-s">Credibility: 8/10. Q4 FY25 result (to be announced) will confirm. Full year ₹1,100+ Cr looking achievable.</div>
+  </div>
+
+  <div class="guid-card beat">
+    <div class="guid-h">✓ FY25 revenue: Guided ~₹700 Cr → Delivered ~₹525–550 Cr (somewhat below but exceptional growth)</div>
+    <div class="guid-b">FY25 revenue came in somewhat below the ₹700 Cr internal target but still represented 1,800%+ growth from the FY23 base. The Dubai subsidiary contributed ~₹350 Cr within 9 months. The Neemrana plant hit 75% utilisation. The miss was on the domestic side (distribution slower than expected) but overseas overdelivered.</div>
+    <div class="guid-s">Credibility: 7/10. Near-miss on absolute numbers but genuine business momentum.</div>
+  </div>
+
+  <div class="guid-card watch">
+    <div class="guid-h">⚠ UP plant (5,000 MT): Originally "end of FY26" → slipped to FY28–29</div>
+    <div class="guid-b">This is the most significant execution miss. A new manufacturing facility in Uttar Pradesh with 5,000 MT capacity was initially guided for end-FY26 (March 2026). It has since been rescheduled to FY28–29 — a 2–3 year delay. Management's reason: phased expansion to avoid over-leveraging. Fund-raising via warrants (₹101.5 Cr at ₹28.25) is partly for this. The delay pushes the domestic 50:50 revenue mix target by 2+ years. This is a meaningful guidance miss that affects the earnings growth trajectory.</div>
+    <div class="guid-s">Credibility on execution: 5/10. Manufacturing timelines are frequently delayed — but a 2+ year slip is concerning.</div>
+  </div>
+
+  <div class="guid-card">
+    <div class="guid-h">FY27 revenue: 70–75% growth (₹1,900–2,000 Cr targeted)</div>
+    <div class="guid-b">Management has guided 70–75% growth for FY27. On FY26E base of ~₹1,100–1,150 Cr, this implies FY27 revenue of ₹1,870–2,000 Cr. Drivers: 2–3 new Neemrana production lines (adding capacity), continued UAE/overseas growth, and East/West India domestic expansion. Without the UP plant, this relies heavily on continued overseas growth AND Neemrana expansion. Base case: ₹1,600–1,800 Cr (more conservative 40–55% growth).</div>
+    <div class="guid-s">Credibility: 6/10. Ambitious — requires both overseas sustaining and new Neemrana lines contributing within FY27.</div>
+  </div>
+
+  <div class="guid-card">
+    <div class="guid-h">FY29 vision: ₹2,500 Cr total revenue, ROE 24–25%</div>
+    <div class="guid-b">The FY29 target of ₹2,500 Cr implies 2.3x growth from FY26E's ~₹1,100 Cr over 3 years = ~31% CAGR. More conservative than the annual guidance but still demanding. This vision requires the UP plant to come online by FY27–28, domestic growing to 50% of revenues, and overseas sustaining at ₹1,200+ Cr. Domestic capacity (Neemrana expansion + UP) would need to reach 10,000–12,000 MT/month to support this volume.</div>
+    <div class="guid-s">Credibility: 5–6/10. Achievable if UP plant delivers by FY28 and overseas doesn't disappoint. Revenue vision ≠ earnings guarantee.</div>
+  </div>
+
+  <div class="sh">Guidance scorecard</div>
+  <table>
+    <tr><th>Guidance item</th><th>Credibility</th><th>Base case</th><th>Key risk</th></tr>
+    <tr><td>FY26 revenue ₹1,150 Cr</td><td class="g">8/10 — nearly delivered</td><td>₹1,100–1,130 Cr</td><td>Q4 weakness / year-end adjustments</td></tr>
+    <tr><td>FY27 revenue 70–75% growth</td><td class="a">6/10 — ambitious</td><td>₹1,600–1,800 Cr</td><td>Overseas stockist concentration; Neemrana lines delayed</td></tr>
+    <tr><td>UP plant FY28–29</td><td class="a">6/10 — already slipped once</td><td>FY28 partial, FY29 full</td><td>Capex funding; regulatory; construction timeline</td></tr>
+    <tr><td>Domestic 50:50 by FY27–28</td><td class="r">4/10 — requires UP plant</td><td>~30–35% domestic by FY27</td><td>UP plant delay means domestic stays at 20–25% longer</td></tr>
+    <tr><td>FY29 ₹2,500 Cr revenue</td><td class="a">5/10 — plausible not certain</td><td>₹1,800–2,200 Cr</td><td>Overseas concentration; UP plant; competitive domestic</td></tr>
+  </table>
+</div>
+
+<!-- RISKS -->
+<div id="risks" class="panel">
+  <div class="sh">Risks — the full, honest picture</div>
+  <div class="flag-box">
+    <div class="flag-h">⚠️ Critical: Tax rate flagged "seems low" by Screener — earnings quality question</div>
+    <div class="flag-b">Screener, which auto-analyses financials, has flagged Nurture Well's tax rate as "seems low." For a profitable Indian company paying ~10% PAT margin on ₹826 Cr revenue, the expected tax outflow at 25.17% standard Indian corporate tax rate would be ~₹28–30 Cr per quarter. However, the Dubai subsidiary (UAE, where corporate tax was 0% until June 2023, now 9% for qualifying income) significantly reduces the consolidated effective tax rate. This is not necessarily fraud — but it means: (1) profits are being earned in Dubai, not India, (2) if UAE/GCC changes tax rules or the Dubai entity faces compliance issues, the effective tax rate jumps and PAT falls significantly, (3) the quality of profits is offshore, not domestic FMCG brand building.</div>
+  </div>
+
+  <div class="point"><div class="dot dr">1</div><div><strong>Overseas revenue from 2–3 super stockists is a single-point-of-failure risk.</strong><br>50–55% of ~₹850+ Cr overseas revenue comes from 2–3 super stockists in UAE. If either stockist: (a) faces financial distress, (b) switches to a competitor brand, or (c) renegotiates pricing — Nurture Well loses ₹400–500 Cr revenue in a single year. There is no brand moat protecting this revenue. These are B2B wholesale relationships, not end-consumer loyalty. No amount of Neemrana capacity expansion compensates for losing a UAE super stockist relationship.</div></div>
+
+  <div class="point"><div class="dot dr">2</div><div><strong>CFO changed in April 2026 — mid-expansion governance flag.</strong><br>Anil Kumar resigned as CFO on April 20, 2026. Sheetal Soni appointed on April 21, 2026. A CFO change during a phase of rapid growth, fundraising (₹101.5 Cr warrant issuance), and expansion planning is a material governance event. CFOs leave for many reasons — but in a company with flagged tax rate, overseas concentration, and multiple concurrent strategic initiatives, the departure is worth tracking carefully.</div></div>
+
+  <div class="point"><div class="dot dr">3</div><div><strong>UP plant delayed 2+ years — ₹2,500 Cr vision depends on it.</strong><br>The UP plant (5,000 MT) was meant to add domestic manufacturing scale and shift revenue mix to 50% domestic. It's now pushed to FY28–29. Without it, the company remains an overseas-heavy business with limited domestic brand building capability. The warrants raised ₹101.5 Cr — but the UP plant will cost significantly more. Capital plan needs clarity.</div></div>
+
+  <div class="point"><div class="dot da">4</div><div><strong>Brand recognition is nascent — RICHLITE, FUNTREAT, CRAZY CRUNCH vs Parle-G, Britannia.</strong><br>India's biscuit market is dominated by Parle (Parle-G alone: ₹12,000+ Cr revenue), Britannia, and ITC Foods. These brands have 30–75 years of equity. Nurture Well's brands launched in 2023. The domestic 20% is a real business but will face significant competition for shelf space, distributor attention, and consumer preference. Premium positioning (butter-rich cookies, center-filled) helps differentiate but requires sustained marketing investment.</div></div>
+
+  <div class="point"><div class="dot da">5</div><div><strong>PE confusion — 178x BSE vs 7–8x on TTM earnings — reflects data lag risk.</strong><br>The massive PE discrepancy (178x on one platform vs 7x on another) reflects different earnings data being used. The stock is currently trading at ~₹37–38. At TTM PAT of ₹108 Cr and ~2,310 shares outstanding, EPS ≈ ₹4.7. At ₹38/share → PE ≈ 8x. This is cheap — but only if the ₹108 Cr PAT is real, sustainable, and tax-efficient. If effective tax normalises to 25%, PAT drops to ~₹80 Cr = PE ~11x. Still cheap, but the earnings quality question is the key.</div></div>
+
+  <div class="point"><div class="dot dg">+</div><div><strong>Genuine strengths that partially offset risks:</strong><br>Revenue growth is real and accelerating (+57% for 9M FY26). EBITDA margin has improved 198 bps YoY — operating leverage working. ROE 28%, ROCE 29% — exceptional capital efficiency. No long-term debt (capex funded via equity/warrants). Promoter at 53.8% holding (stable). Warrant issuance at ₹28.25 = at current price of ₹38, promoter paying meaningful premium = aligned interests. Dubai food market for Indian diaspora is a genuine, growing opportunity.</div></div>
+</div>
+
+<!-- SCENARIOS -->
+<div id="scenarios" class="panel">
+  <div class="sh">Three scenarios — from current ~₹38 (₹832 Cr mcap)</div>
+
+  <div class="scenario" style="border-left:3px solid #1D9E75">
+    <div style="font-size:13px;font-weight:500;color:#1D9E75;margin-bottom:8px">Bull case — 3–5x in 3 years: Tax normalises, domestic grows, UP plant delivers</div>
+    <div class="sc-grid">
+      <div class="sc-cell"><div class="sc-l">FY27 revenue</div><div class="sc-v">₹1,900–2,000 Cr</div></div>
+      <div class="sc-cell"><div class="sc-l">FY27 PAT margin</div><div class="sc-v">11–12%</div></div>
+      <div class="sc-cell"><div class="sc-l">FY27 PAT</div><div class="sc-v">₹210–240 Cr</div></div>
+      <div class="sc-cell"><div class="sc-l">PE (FMCG re-rating)</div><div class="sc-v">15–18x</div></div>
+      <div class="sc-cell"><div class="sc-l">FY27 mcap implied</div><div class="sc-v">₹3,150–4,320 Cr</div></div>
+      <div class="sc-cell"><div class="sc-l">Return from ₹832 Cr</div><div class="sc-v">3.8–5.2x</div></div>
+    </div>
+    <div style="font-size:11.5px;color:#333;margin-top:8px"><strong>What must happen:</strong> FY27 revenue 70–75% growth materialises. Neemrana adds 2–3 lines. UAE business sustains at ₹900 Cr+. Domestic grows to 25–30% of revenue. Tax rate stabilises (UAE + India blend). Stock re-rates from 8x to 15–18x PE as institutional investors recognise the FMCG brand-building story. CFO transition goes smoothly. <strong>3x is highly achievable in this scenario even with some execution slippage.</strong></div>
+  </div>
+
+  <div class="scenario" style="border-left:3px solid #7C3AED">
+    <div style="font-size:13px;font-weight:500;color:#7C3AED;margin-bottom:8px">Base case — 2–3x in 3 years: Revenue grows ~40–50%, PE re-rates moderately</div>
+    <div class="sc-grid">
+      <div class="sc-cell"><div class="sc-l">FY27 revenue</div><div class="sc-v">₹1,500–1,700 Cr</div></div>
+      <div class="sc-cell"><div class="sc-l">FY27 PAT margin</div><div class="sc-v">10–11%</div></div>
+      <div class="sc-cell"><div class="sc-l">FY27 PAT</div><div class="sc-v">₹150–187 Cr</div></div>
+      <div class="sc-cell"><div class="sc-l">PE (partial re-rating)</div><div class="sc-v">12–15x</div></div>
+      <div class="sc-cell"><div class="sc-l">FY27 mcap implied</div><div class="sc-v">₹1,800–2,800 Cr</div></div>
+      <div class="sc-cell"><div class="sc-l">Return from ₹832 Cr</div><div class="sc-v">2.2–3.4x</div></div>
+    </div>
+    <div style="font-size:11.5px;color:#333;margin-top:8px">Revenue grows 40–55% (below management's 70–75% guidance). Overseas sustains, domestic grows slowly. Tax rate stays near current. Stock re-rates from 8x to 12–15x as earnings compound. <strong>Base case delivers 2–3x — the 3x target is achievable but requires some PE expansion alongside earnings growth.</strong></div>
+  </div>
+
+  <div class="scenario" style="border-left:3px solid #A32D2D">
+    <div style="font-size:13px;font-weight:500;color:#A32D2D;margin-bottom:8px">Bear case — -30 to -50%: UAE stockist loss + tax normalisation</div>
+    <div class="sc-grid">
+      <div class="sc-cell"><div class="sc-l">Trigger</div><div class="sc-v">Major UAE stockist exits</div></div>
+      <div class="sc-cell"><div class="sc-l">Trigger</div><div class="sc-v">Tax rate jumps to 20–25%</div></div>
+      <div class="sc-cell"><div class="sc-l">Trigger</div><div class="sc-v">CFO issue → accounting concern</div></div>
+      <div class="sc-cell"><div class="sc-l">FY27 revenue</div><div class="sc-v">₹800–1,000 Cr (overseas falls)</div></div>
+      <div class="sc-cell"><div class="sc-l">FY27 PAT</div><div class="sc-v">₹60–80 Cr (margins compress)</div></div>
+      <div class="sc-cell"><div class="sc-l">Mcap implied</div><div class="sc-v">₹450–650 Cr</div></div>
+    </div>
+    <div style="font-size:11.5px;color:#333;margin-top:8px"><strong>Bear probability: 20–25%.</strong> If either the UAE stockist base fractures or the effective tax rate normalises meaningfully, PAT falls sharply. The stock could de-rate to 7–8x on lower earnings. At ₹80 Cr PAT and 7x PE = ₹560 Cr mcap — a -33% drawdown from current levels.</div>
+  </div>
+
+  <table style="margin-top:10px">
+    <tr><th>Target</th><th>Mcap needed</th><th>Driver</th><th>Timeline</th><th>Probability</th></tr>
+    <tr><td>4x (₹3,328 Cr)</td><td>₹3,328 Cr</td><td>FY27 revenue ₹2,000 Cr + PE 15–18x</td><td>FY27</td><td class="a">25–30%</td></tr>
+    <tr><td>3x (₹2,496 Cr)</td><td>₹2,496 Cr</td><td>FY27 revenue ₹1,700 Cr + PAT ₹185 Cr at 14x</td><td>FY27</td><td class="g">35–40%</td></tr>
+    <tr><td>2x (₹1,664 Cr)</td><td>₹1,664 Cr</td><td>FY26 full year + PE re-rate to 12x</td><td>FY26–FY27</td><td class="g">50–55%</td></tr>
+    <tr><td>Bear -30 to -50%</td><td>₹415–580 Cr</td><td>UAE disruption + tax shock</td><td>Any quarter</td><td class="a">20–25%</td></tr>
+  </table>
+  <div class="warn success" style="margin-top:8px"><strong>Key insight:</strong> Unlike Indo Tech (where bear = bull in probability) or Cellecor (where the margin model prevents 3x), Nurture Well's base case already delivers 2–3x and the bull case delivers 4–5x. The risk is binary on the overseas side — but if it holds, this is one of the more compelling risk/reward profiles in the watchlist at ~8x trailing PE with 50%+ revenue growth.</div>
+</div>
+
+<!-- SECTOR LANDSCAPE -->
+<div id="sectormap" class="panel">
+  <div class="sh">India food FMCG biscuit/bakery sector landscape</div>
+  <div class="warn info"><strong>The biscuit/bakery sector stratifies by: scale, brand equity, and export capability.</strong> Nurture Well sits at a unique intersection — it has export scale (UAE) without domestic brand maturity. Understanding where it fits vs peers is critical for a realistic return estimate.</div>
+  <table>
+    <tr><th>Tier</th><th>Players</th><th>Revenue</th><th>Margin</th><th>Moat</th></tr>
+    <tr><td><strong>Tier 1 — Dominant domestic</strong></td><td>Parle Products, Britannia, ITC Foods</td><td>₹5,000–17,000 Cr</td><td class="g">12–18% EBITDA</td><td>Decades of brand equity; nationwide distribution; pricing power</td></tr>
+    <tr><td><strong>Tier 2 — Established regional/export</strong></td><td>Mrs. Bectors (Cremica), Prataap Snacks</td><td>₹1,500–2,000 Cr</td><td class="a">7–14% EBITDA</td><td>QSR supply chain; regional dominance; premium segment</td></tr>
+    <tr><td><strong>Tier 3 — Emerging ← Nurture Well</strong></td><td>Nurture Well, Biskfarm, regional players</td><td>₹500–1,500 Cr</td><td class="a">8–12% EBITDA</td><td>Distribution expansion; export to diaspora; growth speed</td></tr>
+  </table>
+
+  <div class="sector-card">
+    <div class="sc-hdr"><div><div class="sc-nm">Mrs. Bectors Food Specialities — Quality compounder, QSR supplier</div><div class="sc-tg">₹6,540 Cr mcap · Q3 FY26 revenue ₹533 Cr (+8.4% YoY) · PAT ₹38 Cr · Exports to 64 countries</div></div><span class="badge ba">Quality — but slower growth</span></div>
+    <div class="sc-bd">Established biscuit and bakery brand (Cremica + English Oven). Preferred supplier to McDonald's, Domino's, KFC, Subway in India. New Khopoli bakery plant operational. 13% revenue CAGR FY26–28E (broker estimates). EBITDA margin ~12–14%. Institutional investor base. <strong>Mrs. Bectors is the quality benchmark in this sector — but at ₹6,540 Cr mcap, 3x needs ₹19,620 Cr. Far too large for Garvit's 3-year goal. Better as a 1.5–2x quality compounder.</strong></div>
+  </div>
+
+  <div class="sector-card">
+    <div class="sc-hdr"><div><div class="sc-nm">Prataap Snacks (Yellow Diamond) — Volume player under margin pressure</div><div class="sc-tg">~₹1,700 Cr revenue · Q2 FY26 revenue -2% YoY · PAT ₹4.6 Cr · 150+ SKUs</div></div><span class="badge br">Avoid — declining revenue, margin crisis</span></div>
+    <div class="sc-bd">India's largest ethnic snack brand outside Haldirams. Revenue DECLINING in FY26 (-2% Q2). PAT margin just 1–2%. Shift from mass-market namkeen to premium snacks is taking time. No manufacturing edge. Competition from organised (ITC's Bingo!, Lay's) and unorganised players. <strong>Do not consider Prataap as an alternative to Nurture Well — it has far worse revenue momentum and thin margins.</strong></div>
+  </div>
+
+  <div class="sector-card">
+    <div class="sc-hdr"><div><div class="sc-nm">Nurture Well Industries — Your stock</div><div class="sc-tg">₹832 Cr mcap · +57% 9M FY26 · 10.8% EBITDA · ~8x trailing PE</div></div><span class="badge bg">Speculative but compelling risk/reward</span></div>
+    <div class="sc-bd">Exceptional revenue growth. Improving margins. Cheap valuation (8x trailing PE). Overseas + domestic model. But: UAE concentration, CFO change, low tax rate flag, UP plant slip, nascent domestic brands. At 8x PE with 50%+ growth and improving margins, this is the most asymmetric setup in the food FMCG space — provided the overseas revenue is genuine and sustainable.</div>
+  </div>
+</div>
+
+<!-- FULL COMPARISON -->
+<div id="compare" class="panel">
+  <div class="sh">Nurture Well vs sector peers — comprehensive comparison</div>
+  <div style="border:1px solid #ddd;border-radius:10px;overflow:hidden;font-size:11px">
+    <div class="comp-h">
+      <div class="cc-h" style="background:#f5f5f3">Metric</div>
+      <div class="cc-h" style="background:#F3E8FF;color:#6B21A8">Nurture Well ← Your stock</div>
+      <div class="cc-h" style="background:#E6F1FB;color:#185FA5">Mrs. Bectors Food</div>
+      <div class="cc-h" style="background:#f5f5f3">Prataap Snacks</div>
+    </div>
+    <div class="comp-row"><div class="cc cc-label">Market cap</div><div class="cc winner-cell">₹832 Cr (small)</div><div class="cc loser-cell">₹6,540 Cr</div><div class="cc mid-cell">~₹1,200 Cr</div></div>
+    <div class="comp-row"><div class="cc cc-label">TTM revenue</div><div class="cc winner-cell">₹1,067 Cr</div><div class="cc winner-cell">₹2,004 Cr</div><div class="cc mid-cell">~₹1,700 Cr</div></div>
+    <div class="comp-row"><div class="cc cc-label">Revenue growth (latest)</div><div class="cc winner-cell">+57.3% (9M FY26)</div><div class="cc mid-cell">+8.4% (Q3 FY26)</div><div class="cc loser-cell">-2% (Q2 FY26)</div></div>
+    <div class="comp-row"><div class="cc cc-label">EBITDA margin</div><div class="cc winner-cell">10.81% (improving)</div><div class="cc winner-cell">~12–14%</div><div class="cc loser-cell">~7–8%</div></div>
+    <div class="comp-row"><div class="cc cc-label">PAT margin</div><div class="cc winner-cell">10.37% (9M FY26)</div><div class="cc mid-cell">~7%</div><div class="cc loser-cell">~1–2%</div></div>
+    <div class="comp-row"><div class="cc cc-label">Trailing PE</div><div class="cc winner-cell">~8x (cheapest)</div><div class="cc loser-cell">~47x</div><div class="cc mid-cell">~180x (loss quarter basis)</div></div>
+    <div class="comp-row"><div class="cc cc-label">Export capability</div><div class="cc winner-cell">~80% revenue overseas (UAE focus)</div><div class="cc winner-cell">64 countries, institutional</div><div class="cc loser-cell">Minimal export</div></div>
+    <div class="comp-row"><div class="cc cc-label">Manufacturing</div><div class="cc mid-cell">Neemrana 3,400 MT/mo (75% util)</div><div class="cc winner-cell">Multi-plant, modern</div><div class="cc winner-cell">Dedicated plants</div></div>
+    <div class="comp-row"><div class="cc cc-label">Brand equity</div><div class="cc loser-cell">Nascent — RICHLITE, FUNTREAT, CRAZY CRUNCH</div><div class="cc winner-cell">Cremica + English Oven (established)</div><div class="cc mid-cell">Yellow Diamond (strong regional)</div></div>
+    <div class="comp-row"><div class="cc cc-label">Institutional ownership</div><div class="cc loser-cell">FII 0.3%, DII 0.1% — minimal</div><div class="cc winner-cell">Significant institutional base</div><div class="cc mid-cell">Moderate</div></div>
+    <div class="comp-row"><div class="cc cc-label">ROE / ROCE</div><div class="cc winner-cell">ROE 28%, ROCE 29%</div><div class="cc mid-cell">ROE ~15%, ROCE ~17%</div><div class="cc mid-cell">ROE ~8%</div></div>
+    <div class="comp-row"><div class="cc cc-label">Debt position</div><div class="cc winner-cell">Zero long-term debt</div><div class="cc mid-cell">Moderate</div><div class="cc mid-cell">Some</div></div>
+    <div class="comp-row"><div class="cc cc-label">⚠ Key risk</div><div class="cc mid-cell">UAE stockist concentration + low tax rate flag + CFO change</div><div class="cc mid-cell">Slowing domestic growth; premium segment competition</div><div class="cc loser-cell">Revenue declining; margin crisis; no pricing power</div></div>
+    <div class="comp-row"><div class="cc cc-label">3x probability (3yr)</div><div class="cc winner-cell">35–40% (if UAE sustains)</div><div class="cc loser-cell">10–12% (too large mcap)</div><div class="cc loser-cell">5% (revenue declining)</div></div>
+    <div class="comp-row"><div class="cc cc-label">Best for Garvit's goal</div><div class="cc">Speculative high-conviction buy with diligence on overseas business</div><div class="cc">Quality 1.5–2x compounder — wrong size for 3x</div><div class="cc">Avoid — declining revenue, thin margins</div></div>
+  </div>
+
+  <div class="warn purple" style="margin-top:12px"><strong>The striking insight from this comparison:</strong> Nurture Well has better growth (+57% vs +8% vs -2%), better PAT margin (~10% vs 7% vs 1–2%), and better ROE (28% vs 15% vs 8%) than both peers — and trades at 8x PE vs Mrs. Bectors' 47x and Prataap's 180x. Even if you apply a 50% discount to Nurture Well's PE for governance/quality risks, it should trade at 20–25x — implying 2.5–3x upside purely from PE re-rating without any earnings growth. The risk is whether the overseas revenue is real and sustainable.</div>
+</div>
+
+<!-- VERDICT -->
+<div id="verdict" class="panel">
+  <div class="sh">The definitive verdict for Garvit's 3x goal</div>
+
+  <div class="verdict-card" style="background:#F3E8FF;border:1px solid #C084FC">
+    <div class="vc-h" style="color:#6B21A8">Nurture Well Industries — Verdict: Speculative high-conviction buy. ₹30,000–50,000. Highest risk/reward in your entire watchlist.</div>
+    <div class="vc-b">Let me give you the honest, balanced view:<br><br><strong>The bull case is genuinely compelling:</strong> At ~8x trailing PE with 57% revenue growth, 10.4% PAT margins, 28% ROE, zero long-term debt, and ₹2,500 Cr FY29 vision — Nurture Well is the cheapest high-growth company we have analysed this session. No other stock in your watchlist combines this growth rate with this valuation. If the numbers are real, this is a 3–5x in 2–3 years.<br><br><strong>But the risk profile is uniquely complex:</strong> Three red flags demand honest assessment before investing: (1) UAE revenue from 2–3 super stockists — this is B2B wholesaling, not consumer brand building, and it can disappear quickly; (2) "Tax rate seems low" flag — profits may be partially tax-structuring via Dubai rather than genuine FMCG brand margin improvement; (3) CFO change in April 2026 — mid-expansion, mid-fundraise, with unexplained reasons.<br><br><strong>The comparison that matters:</strong> Your existing Vintage Coffee position (CCL Products analogy, 8.5/10 conviction, ₹30–50K) is a cleaner version of this story — proven export FMCG business, transparent books, rising promoter holding. Nurture Well is earlier-stage with more opacity. If you are adding Nurture Well, treat it as a <em>speculative satellite</em> alongside Vintage Coffee, not a substitute.<br><br><strong>What due diligence you must do before buying:</strong> Read the annual report carefully for Dubai subsidiary revenue/profit split. Check effective tax rate by year. Verify the Q4 FY26 results (should show ₹280–300 Cr revenue for the quarter to hit ₹1,100 Cr full year). Confirm CFO transition is routine.</div>
+  </div>
+
+  <div class="verdict-card" style="background:#E1F5EE;border:1px solid #5DCAA5">
+    <div class="vc-h" style="color:#0F6E56">Mrs. Bectors Food — Quality alternative, wrong size for 3x</div>
+    <div class="vc-b">At ₹6,540 Cr mcap, 3x needs ₹19,620 Cr — difficult in 3 years. But as a quality wealth-preservation holding for post-3x phase: established brands (Cremica + English Oven), QSR supply chain moat (McDonald's, Domino's), 13% revenue CAGR, institutional ownership. This is what Nurture Well aspires to be in 5–7 years. Current PE of 47x is expensive; revisit on any 20%+ correction.</div>
+  </div>
+
+  <div class="sh">Allocation recommendation</div>
+  <table>
+    <tr><th>Stock</th><th>Action</th><th>Amount</th><th>Rationale</th></tr>
+    <tr><td><strong>Nurture Well Industries</strong></td><td><span class="badge bpur">Speculative buy — staged entry</span></td><td>₹30,000–50,000</td><td>Cheapest high-growth FMCG stock in your universe at ~8x PE. 3x base probability 35–40%. Stage entry: ₹20K now, ₹15–30K more after Q4 FY26 results confirm ₹1,100 Cr FY26 and CFO transition is clean. Exit if UAE revenue declines >20% in any quarter.</td></tr>
+    <tr><td><strong>Mrs. Bectors Food</strong></td><td><span class="badge bgray">Quality watchlist</span></td><td>₹0 (for 3x goal)</td><td>Too large for 3x. High quality — revisit post-3x achievement for compounding phase.</td></tr>
+    <tr><td><strong>Prataap Snacks</strong></td><td><span class="badge br">Avoid</span></td><td>₹0</td><td>Revenue declining, 1–2% margins, no near-term catalyst. Wrong sector bet.</td></tr>
+  </table>
+
+  <div class="sh">Six metrics to watch every quarter</div>
+  <table>
+    <tr><th>#</th><th>Metric</th><th>Current</th><th>Signal</th></tr>
+    <tr><td>1</td><td>UAE revenue (overseas share)</td><td class="a">~80% from 2–3 stockists</td><td>🟢 Bullish if client base diversifies to 5+ stockists. 🔴 Exit if >20% revenue decline in a quarter.</td></tr>
+    <tr><td>2</td><td>Effective tax rate (P&L)</td><td class="r">Flagged low — check quarterly</td><td>🟢 Stable at current. 🔴 Exit trigger if jumps sharply to >20% — implies Dubai structure changed.</td></tr>
+    <tr><td>3</td><td>EBITDA margin</td><td class="g">10.81% (improving)</td><td>🟢 Must sustain above 10%. 🟡 Watch if falls below 9% — overseas mix shift or raw mat pressure.</td></tr>
+    <tr><td>4</td><td>Domestic revenue % share</td><td class="a">~20%</td><td>🟢 Bullish if reaches 25–30% by FY27 — shows real brand building. 🔴 Stagnation = UAE dependency permanent.</td></tr>
+    <tr><td>5</td><td>UP plant — construction update</td><td class="a">Pushed to FY28–29</td><td>Any concrete update (land acquisition, contractor award) is bullish for FY29 vision confidence.</td></tr>
+    <tr><td>6</td><td>CFO transition</td><td class="a">New CFO as of Apr 21, 2026</td><td>🟢 Clean Q4 FY26 results with new CFO = governance stable. 🔴 Any restatement or qualification = exit.</td></tr>
+  </table>
+
+  <div class="warn purple" style="margin-top:12px"><strong>One-line verdict:</strong> Nurture Well Industries is the most asymmetric bet in your entire food/FMCG universe — 8x trailing PE on a company growing 57% with improving margins and zero long-term debt. The risks (UAE concentration, low tax flag, CFO change) are real and must be tracked, but at this valuation they are already partly priced in. Allocate ₹30,000–50,000 with staged entry, monitor UAE revenue quarterly, and be willing to exit if overseas business deteriorates. This is a speculative high-conviction position — not a quality hold like Vintage Coffee, but potentially more rewarding if the overseas business proves durable.</div>
+</div>
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/4.4.1/chart.umd.js"></script>
+<script>
+function show(id,btn){
+  document.querySelectorAll('.tab').forEach(t=>t.classList.remove('active'));
+  document.querySelectorAll('.panel').forEach(p=>p.classList.remove('active'));
+  btn.classList.add('active');
+  document.getElementById(id).classList.add('active');
+}
+const ctx = document.getElementById('rc').getContext('2d');
+new Chart(ctx,{
+  type:'bar',
+  data:{
+    labels:['FY23','FY24 Q1','FY25','Q1 FY26','Q2 FY26','Q3 FY26','FY26E','FY27E'],
+    datasets:[
+      {
+        label:'Revenue ₹ Cr',
+        data:[25,140,540,247,289,289,1130,1800],
+        backgroundColor:['#7C3AED','#7C3AED','#7C3AED','#1D9E75','#1D9E75','#EF9F27','#C4B5FD','#C4B5FD'],
+        borderRadius:4,yAxisID:'y'
+      },
+      {
+        label:'PAT ₹ Cr',
+        data:[2,null,45,33,34,34.6,120,185],
+        type:'line',
+        borderColor:'#1D9E75',
+        backgroundColor:'transparent',
+        pointBackgroundColor:'#1D9E75',
+        tension:0.3,yAxisID:'y2'
+      }
+    ]
+  },
+  options:{
+    responsive:true,
+    maintainAspectRatio:false,
+    plugins:{legend:{display:false}},
+    scales:{
+      y:{ticks:{font:{size:10}},title:{display:true,text:'Revenue (₹ Cr)',font:{size:9}}},
+      y2:{position:'right',ticks:{font:{size:10}},grid:{drawOnChartArea:false},title:{display:true,text:'PAT (₹ Cr)',font:{size:9}}},
+      x:{ticks:{font:{size:10}}}
+    }
+  }
+});
+</script>
+</body>
+</html>

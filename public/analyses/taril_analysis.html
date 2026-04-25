@@ -1,0 +1,435 @@
+<!DOCTYPE html>
+<html><head><meta charset="utf-8">
+<style>
+*{box-sizing:border-box;margin:0;padding:0}
+body{font-family:system-ui,sans-serif;padding:16px;background:#fff;color:#1a1a1a;font-size:14px}
+h1{font-size:20px;font-weight:500;margin-bottom:3px}
+.sub{font-size:12px;color:#666;margin-bottom:14px}
+.sg{display:grid;grid-template-columns:repeat(auto-fill,minmax(110px,1fr));gap:8px;margin-bottom:16px}
+.sc{background:#f5f5f3;border-radius:8px;padding:10px 12px}
+.sl{font-size:10px;color:#666;margin-bottom:2px}
+.sv{font-size:17px;font-weight:500}
+.tab-row{display:flex;gap:5px;flex-wrap:wrap;margin-bottom:14px}
+.tab{font-size:11.5px;padding:5px 13px;border-radius:20px;border:1px solid #ddd;background:#fff;cursor:pointer;white-space:nowrap}
+.tab.active{background:#1a1a1a;color:#fff;border-color:#1a1a1a}
+.panel{display:none}.panel.active{display:block}
+.sh{font-size:10.5px;font-weight:500;color:#666;text-transform:uppercase;letter-spacing:.06em;margin:16px 0 7px;padding-bottom:5px;border-bottom:1px solid #eee}
+table{width:100%;border-collapse:collapse;font-size:12px;margin:8px 0}
+th{font-size:10.5px;font-weight:500;color:#666;padding:5px 7px;text-align:left;border-bottom:1px solid #eee;white-space:nowrap}
+td{padding:8px 7px;border-bottom:1px solid #eee;color:#1a1a1a;vertical-align:top}
+tr:last-child td{border-bottom:none}
+tr:hover td{background:#fafaf9}
+.g{color:#0F6E56;font-weight:500}.r{color:#A32D2D;font-weight:500}.a{color:#854F0B;font-weight:500}.b{color:#185FA5;font-weight:500}
+.badge{display:inline-block;font-size:10px;padding:2px 7px;border-radius:10px;white-space:nowrap}
+.bg{background:#E1F5EE;color:#0F6E56}.bb{background:#E6F1FB;color:#185FA5}.ba{background:#FAEEDA;color:#854F0B}.br{background:#FCEBEB;color:#A32D2D}.bgray{background:#f1f0e8;color:#5F5E5A}.borange{background:#FFF3E0;color:#E65100}.bvolt{background:#F3E5F5;color:#6A1B9A}
+.warn{padding:10px 13px;margin:8px 0;border-left:3px solid;font-size:12px;line-height:1.65}
+.warn.success{background:#E1F5EE;border-color:#1D9E75;color:#04342C}
+.warn.caution{background:#FAEEDA;border-color:#BA7517;color:#412402}
+.warn.danger{background:#FCEBEB;border-color:#A32D2D;color:#712B13}
+.warn.info{background:#E6F1FB;border-color:#185FA5;color:#042C53}
+.warn.orange{background:#FFF3E0;border-color:#F57C00;color:#3E2723}
+.warn.volt{background:#F3E5F5;border-color:#7B1FA2;color:#1A0035}
+.warn strong{font-weight:500}
+.chart-wrap{position:relative;width:100%;height:240px;margin:8px 0}
+.kpi-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:10px;margin:10px 0}
+.kpi{background:#f5f5f3;border-radius:8px;padding:10px 12px;border-left:3px solid transparent}
+.kpi.green{border-left-color:#1D9E75}.kpi.amber{border-left-color:#EF9F27}.kpi.blue{border-left-color:#378ADD}.kpi.red{border-left-color:#A32D2D}.kpi.orange{border-left-color:#F57C00}.kpi.volt{border-left-color:#7B1FA2}
+.kpi-l{font-size:10px;color:#666;margin-bottom:3px}
+.kpi-v{font-size:17px;font-weight:500}
+.kpi-s{font-size:10px;color:#888;margin-top:2px}
+.point{display:flex;gap:9px;align-items:flex-start;padding:9px 0;border-bottom:1px solid #eee;font-size:12px;line-height:1.6;color:#555}
+.point:last-child{border-bottom:none}
+.point strong{color:#1a1a1a;font-weight:500}
+.dot{width:19px;height:19px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:10px;font-weight:500;flex-shrink:0;margin-top:1px}
+.dg{background:#E1F5EE;color:#0F6E56}.dr{background:#FCEBEB;color:#A32D2D}.da{background:#FAEEDA;color:#854F0B}.db{background:#E6F1FB;color:#185FA5}.do{background:#FFF3E0;color:#E65100}.dv{background:#F3E5F5;color:#6A1B9A}
+.two-col{display:grid;grid-template-columns:1fr 1fr;gap:12px}
+.pane{border:1px solid #ddd;border-radius:10px;padding:13px}
+.pane-h{font-size:13px;font-weight:500;margin-bottom:9px}
+.scenario{border:1px solid #ddd;border-radius:10px;padding:13px;margin-bottom:9px}
+.sc-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:7px;margin:9px 0}
+.sc-cell{background:#f5f5f3;border-radius:6px;padding:7px 9px}
+.sc-l{font-size:10px;color:#666}
+.sc-v{font-size:12px;font-weight:500;margin-top:2px}
+.comp-h{display:grid;grid-template-columns:160px repeat(3,1fr);background:#f5f5f3;border-radius:8px 8px 0 0;overflow:hidden}
+.comp-row{display:grid;grid-template-columns:160px repeat(3,1fr);border-bottom:1px solid #eee}
+.comp-row:last-child{border-bottom:none}
+.cc{padding:8px 10px;font-size:11px;border-right:1px solid #eee}
+.cc:last-child{border-right:none}
+.cc-h{font-size:10px;font-weight:500;color:#444;padding:8px 10px;border-right:1px solid #ddd}
+.cc-h:last-child{border-right:none}
+.cc-label{color:#666;font-size:11px}
+.winner-cell{background:#E1F5EE}.mid-cell{background:#FAEEDA}.loser-cell{background:#fff5f5}
+.verdict-card{border-radius:10px;padding:13px 15px;margin-bottom:10px}
+.vc-h{font-size:13px;font-weight:500;margin-bottom:6px}
+.vc-b{font-size:12px;line-height:1.65;color:#444}
+.sector-card{border:1px solid #ddd;border-radius:10px;overflow:hidden;margin-bottom:10px}
+.sc-hdr{padding:10px 13px;display:flex;justify-content:space-between;align-items:center;background:#fafaf9}
+.sc-nm{font-size:13px;font-weight:500}
+.sc-tg{font-size:11px;color:#666;margin-top:2px}
+.sc-bd{padding:10px 13px;font-size:12px;line-height:1.65;color:#555;border-top:1px solid #eee}
+.sc-bd strong{color:#1a1a1a}
+.guid-card{border-radius:10px;padding:12px 14px;margin-bottom:8px;border-left:3px solid #F57C00;background:#FFF3E0}
+.guid-h{font-size:11.5px;font-weight:500;margin-bottom:4px;color:#E65100}
+.guid-b{font-size:11.5px;color:#333;line-height:1.6}
+.guid-s{font-size:10px;color:#888;margin-top:4px}
+.guid-card.beat{background:#E1F5EE;border-left-color:#1D9E75}.guid-card.beat .guid-h{color:#0F6E56}
+.guid-card.miss{background:#FCEBEB;border-left-color:#A32D2D}.guid-card.miss .guid-h{color:#A32D2D}
+.guid-card.watch{background:#FAEEDA;border-left-color:#BA7517}.guid-card.watch .guid-h{color:#854F0B}
+.hvdc-box{background:#F3E5F5;border:2px solid #7B1FA2;border-radius:10px;padding:13px;margin:10px 0}
+.hvdc-h{font-size:14px;font-weight:500;color:#4A148C;margin-bottom:6px}
+.hvdc-b{font-size:12px;color:#1a1a1a;line-height:1.65}
+.miss-box{background:#FCEBEB;border:2px solid #A32D2D;border-radius:10px;padding:13px;margin:10px 0}
+.miss-h{font-size:13px;font-weight:500;color:#A32D2D;margin-bottom:6px}
+.miss-b{font-size:12px;color:#333;line-height:1.65}
+.cap-bar{display:flex;align-items:center;gap:8px;margin:6px 0}
+.cap-label{font-size:11px;color:#555;width:160px;flex-shrink:0}
+.cap-track{flex:1;background:#f5f5f3;border-radius:4px;height:16px;overflow:hidden}
+.cap-fill{height:100%;border-radius:4px;display:flex;align-items:center;padding-left:7px;font-size:9px;font-weight:600;color:#fff}
+.cap-val{font-size:11px;font-weight:500;width:90px;text-align:right}
+</style>
+</head>
+<body>
+
+<h1>Transformers &amp; Rectifiers (India) Ltd — Deep Investment Analysis</h1>
+<div class="sub">NSE: TARIL · BSE: 532928 · Power, furnace &amp; rectifier transformer manufacturer · Founded 1994 · MD &amp; CEO: Satyen J. Mamtora · Ahmedabad, Gujarat · 3 plants: Changodar, Moraiya, Vithal Udyognagar · FY26 results just published</div>
+
+<div class="sg">
+  <div class="sc"><div class="sl">Market cap</div><div class="sv" style="color:#854F0B">~₹3,500 Cr</div></div>
+  <div class="sc"><div class="sl">FY26 revenue</div><div class="sv" style="color:#1D9E75">₹2,395 Cr</div></div>
+  <div class="sc"><div class="sl">FY26 PAT</div><div class="sv" style="color:#1D9E75">₹225 Cr</div></div>
+  <div class="sc"><div class="sl">FY26 rev. growth</div><div class="sv" style="color:#1D9E75">+23% YoY</div></div>
+  <div class="sc"><div class="sl">FY26 EBITDA%</div><div class="sv" style="color:#854F0B">15.1%</div></div>
+  <div class="sc"><div class="sl">Order book (Mar '26)</div><div class="sv" style="color:#185FA5">₹5,005 Cr</div></div>
+  <div class="sc"><div class="sl">Inquiries pipeline</div><div class="sv" style="color:#185FA5">₹23,000 Cr</div></div>
+  <div class="sc"><div class="sl">Trailing PE</div><div class="sv" style="color:#854F0B">~15–16x</div></div>
+  <div class="sc"><div class="sl">Promoter holding</div><div class="sv" style="color:#1D9E75">~63%</div></div>
+  <div class="sc"><div class="sl">HVDC milestone</div><div class="sv" style="color:#7B1FA2">First Indian!</div></div>
+  <div class="sc"><div class="sl">Capacity target</div><div class="sv" style="color:#185FA5">75,000 MVA</div></div>
+  <div class="sc"><div class="sl">$1B revenue target</div><div class="sv" style="color:#185FA5">3 years</div></div>
+</div>
+
+<div class="tab-row">
+  <button class="tab active" onclick="show('revenue',this)">Revenue history</button>
+  <button class="tab" onclick="show('sectorKPI',this)">Sector KPIs</button>
+  <button class="tab" onclick="show('business',this)">Business model</button>
+  <button class="tab" onclick="show('guidance',this)">Guidance analysis</button>
+  <button class="tab" onclick="show('risks',this)">Risks</button>
+  <button class="tab" onclick="show('scenarios',this)">3x scenarios</button>
+  <button class="tab" onclick="show('sectormap',this)">Sector landscape</button>
+  <button class="tab" onclick="show('compare',this)">Full comparison</button>
+  <button class="tab" onclick="show('verdict',this)">Verdict</button>
+</div>
+
+<!-- REVENUE -->
+<div id="revenue" class="panel active">
+  <div class="sh">Revenue &amp; profit — breakout performance FY25, consolidation FY26, acceleration ahead</div>
+
+  <div class="hvdc-box">
+    <div class="hvdc-h">⚡ HVDC milestone — first Indian private company to win HVDC order from PGCIL</div>
+    <div class="hvdc-b">In December 2025, TARIL received a ₹53.33 Cr order from PGCIL for repair, erection, testing and commissioning of a <strong>397 MVA HVDC Converter Transformer</strong> — making it the first Indian private sector company to win such a contract. This is not just a ₹53 Cr order — it is a qualification milestone. Once TARIL successfully completes this HVDC repair work, PGCIL can formally approve TARIL as a supplier for new HVDC transformers — the highest-value, highest-barrier segment of India's power equipment market. HVDC corridors (for renewable energy transmission) require transformers worth ₹5,000–50,000 Cr over the next decade. TARIL aims to qualify for <strong>indigenous HVDC technology by 2027</strong>. This one order opens the door to a market that previously belonged exclusively to ABB/Siemens/Hitachi Energy and Quality Power.</div>
+  </div>
+
+  <div class="chart-wrap"><canvas id="rc"></canvas></div>
+  <div style="display:flex;gap:14px;font-size:11.5px;color:#666;margin-bottom:10px">
+    <span><span style="display:inline-block;width:10px;height:10px;border-radius:2px;background:#F57C00;margin-right:4px"></span>Revenue ₹ Cr</span>
+    <span><span style="display:inline-block;width:10px;height:10px;border-radius:2px;background:#1D9E75;margin-right:4px"></span>PAT ₹ Cr</span>
+    <span><span style="display:inline-block;width:10px;height:10px;border-radius:2px;background:#FFCC80;margin-right:4px"></span>Projected</span>
+  </div>
+
+  <table>
+    <tr><th>Period</th><th>Revenue</th><th>Growth</th><th>EBITDA%</th><th>PAT</th><th>Production (MVA)</th><th>Key event</th></tr>
+    <tr><td>FY22</td><td>~₹800 Cr</td><td>—</td><td>~11%</td><td>~₹35 Cr</td><td>~10,000</td><td>T&D capex cycle early stage. PGCIL, SEBs ordering. TARIL winning domestic market share.</td></tr>
+    <tr><td>FY23</td><td>~₹1,100 Cr</td><td class="g">+38%</td><td>~12%</td><td>~₹55 Cr</td><td>~13,000</td><td>Strong demand from power utilities. Furnace transformer exports growing. Railways traction added.</td></tr>
+    <tr><td>FY24</td><td>~₹1,270 Cr</td><td class="g">+15%</td><td>~13%</td><td>~₹50 Cr</td><td>16,425</td><td>Highest-ever production at that point (16,425 MVA). New capacity commissioned. Export ramp begins.</td></tr>
+    <tr><td>FY25</td><td>~₹1,946 Cr</td><td class="g">+53%</td><td>~16%</td><td>~₹207 Cr</td><td>29,118</td><td><strong>Breakout year.</strong> PAT +356% YoY. ₹4,504 Cr record order inflows. India T&D supercycle accelerating. 29,118 MVA production (highest-ever at that point). Stock hit ₹650.</td></tr>
+    <tr><td>Q1 FY26</td><td>~₹474 Cr</td><td class="g">+YoY</td><td>~16%</td><td>~₹34 Cr</td><td>~7,500</td><td>New capacity (Changodar 15,000 MVA) in commissioning. Margins solid. Order book ₹5,246 Cr.</td></tr>
+    <tr><td>Q2 FY26</td><td>₹460 Cr</td><td class="r">Flat YoY</td><td>~14%</td><td>₹37.5 Cr</td><td>~7,500</td><td>PAT fell 19% YoY. Margin compression. CEO Mukul Srivastava resignation. Stock crashed to ₹232. Heavy rain + copper supply delays impacted delivery.</td></tr>
+    <tr><td>Q3 FY26</td><td>₹737 Cr</td><td class="g">+31.7% YoY</td><td>17.54%</td><td>₹73.85 Cr</td><td>~10,500</td><td>Strong recovery. Q3 PAT +117% QoQ. EBITDA margin at 17.54%. Changodar new capacity ramping. HVDC landmark order from PGCIL.</td></tr>
+    <tr><td>Q4 FY26</td><td>₹752 Cr</td><td class="g">+16% YoY</td><td>~15.1%</td><td>₹77 Cr</td><td>~7,500</td><td>Full year results just published. Highest-ever annual production 33,000 MVA. Strong execution.</td></tr>
+    <tr><td>FY26 (full year)</td><td>₹2,395 Cr</td><td class="g">+23% YoY</td><td>15.1%</td><td>₹225 Cr</td><td>33,000</td><td>New all-time record production. Order book ₹5,005 Cr. Pipeline ₹23,000 Cr. $1B revenue target in 3 years. ₹600 Cr capex announced. QIP ₹500 Cr raised.</td></tr>
+    <tr><td>FY27E</td><td>~₹3,500–4,000 Cr</td><td class="g">+46–67%</td><td>~16–17%</td><td>~₹340–480 Cr</td><td>~40,000+</td><td>Moraiya 22,000 MVA operational (Q2 FY27). Backward integration partial. Management guides ₹5,000 Cr with 18–19% OPM but base case more conservative.</td></tr>
+    <tr><td>FY28E</td><td>~₹5,000–6,000 Cr</td><td class="g">~40–50%</td><td>~17–18%</td><td>~₹550–800 Cr</td><td>~60,000+</td><td>75,000 MVA fully operational. Full backward integration. HVDC qualification. $1B = ~₹8,300 Cr — achievable FY28–FY29 on current trajectory.</td></tr>
+  </table>
+
+  <div class="warn orange"><strong>The FY26 revenue miss context:</strong> Management originally guided ₹3,500 Cr for FY26 — actual was ₹2,395 Cr (-31% miss). However, the company deliberately held back lower-margin orders, focused on selective high-margin order booking, and experienced genuine supply chain issues (copper custom delays, heavy rains, site readiness). The underlying demand was NOT weak — the ₹23,000 Cr inquiry pipeline confirms this. FY26 was an execution pacing issue, not a demand problem. The 33,000 MVA all-time production record (vs 29,118 in FY25) confirms capability growth continued.</div>
+</div>
+
+<!-- SECTOR KPIs -->
+<div id="sectorKPI" class="panel">
+  <div class="sh">Power transformer sector KPIs — where TARIL stands</div>
+  <div class="warn orange"><strong>Five critical metrics for a power transformer manufacturer:</strong> (1) Order book coverage ratio (>2x revenue = strong visibility), (2) EBITDA margin (>15% = technology/scale premium), (3) Order inflow discipline (selectivity = margin quality), (4) Production MVA as % of capacity (utilisation), and (5) Export share (higher margin, USD-denominated).</div>
+  <div class="kpi-grid">
+    <div class="kpi green"><div class="kpi-l">Order book (Mar '26)</div><div class="kpi-v">₹5,005 Cr</div><div class="kpi-s">2.1x FY26 revenue — ~18-month visibility</div></div>
+    <div class="kpi orange"><div class="kpi-l">EBITDA margin (FY26)</div><div class="kpi-v">15.1%</div><div class="kpi-s">Target 16–17% FY27; 17–18% FY28</div></div>
+    <div class="kpi green"><div class="kpi-l">Inquiry pipeline</div><div class="kpi-v">₹23,000 Cr</div><div class="kpi-s">9.6x FY26 revenue — massive demand</div></div>
+    <div class="kpi volt"><div class="kpi-l">HVDC milestone</div><div class="kpi-v">First Indian!</div><div class="kpi-s">Opens ₹5,000–50,000 Cr HVDC market</div></div>
+    <div class="kpi blue"><div class="kpi-l">Capacity target</div><div class="kpi-v">75,000 MVA</div><div class="kpi-s">From current 40,000 — +87.5%</div></div>
+    <div class="kpi green"><div class="kpi-l">Production FY26</div><div class="kpi-v">33,000 MVA</div><div class="kpi-s">Highest-ever; +13.3% over FY25</div></div>
+  </div>
+
+  <div class="sh">Capacity expansion roadmap</div>
+  <div class="cap-bar"><div class="cap-label">Base capacity (pre-expansion)</div><div class="cap-track"><div class="cap-fill" style="width:53%;background:#F57C00">Live at 40,000 MVA</div></div><div class="cap-val a">40,000 MVA</div></div>
+  <div class="cap-bar"><div class="cap-label">Changodar +15,000 MVA</div><div class="cap-track"><div class="cap-fill" style="width:73%;background:#EF9F27">Live Jun 2025</div></div><div class="cap-val g">55,000 MVA</div></div>
+  <div class="cap-bar"><div class="cap-label">Moraiya +22,000 MVA</div><div class="cap-track"><div class="cap-fill" style="width:100%;background:#1D9E75">Q2 FY27 (delayed)</div></div><div class="cap-val g">75,000 MVA</div></div>
+
+  <div class="sh">India transformer market — why the next 7–10 years are exceptional</div>
+  <table>
+    <tr><th>Driver</th><th>Scale</th><th>TARIL benefit</th></tr>
+    <tr><td><strong>Green Energy Corridor I+II</strong></td><td>₹22,000 Cr+ T&D capex</td><td class="g">Direct — solar substation transformers, HV transmissions</td></tr>
+    <tr><td><strong>PGCIL transmission expansion</strong></td><td>₹3.5 lakh Cr by 2032</td><td class="g">Direct — power transformers for new HV lines</td></tr>
+    <tr><td><strong>HVDC corridors (renewable)</strong></td><td>₹1.5–3 lakh Cr</td><td class="g">New market — HVDC qualification breakthrough</td></tr>
+    <tr><td><strong>Railways electrification + Vande Bharat</strong></td><td>₹80,000 Cr investment</td><td class="g">Traction transformers — specialised, higher margin</td></tr>
+    <tr><td><strong>Industrial capex (EAF steel, aluminium)</strong></td><td>Large — furnace transformers</td><td class="g">Furnace transformers — TARIL is leading Indian maker</td></tr>
+    <tr><td><strong>State T&D upgrades (RDSS scheme)</strong></td><td>₹3 lakh Cr total</td><td class="a">Partial — distribution segment overlap</td></tr>
+  </table>
+  <div class="warn success"><strong>Management's sustainability view is credible:</strong> "We anticipate a sustainable growth for the next 7–10 years" driven by India's 15% CAGR in transformer industry demand. The structural demand is real — India needs to triple its transformer capacity to meet 500 GW renewable target. TARIL, as India's largest private transformer manufacturer, is positioned to capture disproportionate share.</div>
+</div>
+
+<!-- BUSINESS MODEL -->
+<div id="business" class="panel">
+  <div class="sh">What TARIL makes — the product stack from ₹2 Cr to ₹50 Cr per unit</div>
+  <div class="warn orange"><strong>TARIL is India's largest private sector facility for the widest range of transformers.</strong> Unlike most competitors who specialise in 1–2 types, TARIL makes power, furnace, rectifier, traction, solar, and now HVDC transformers. This breadth gives TARIL access to multiple demand cycles simultaneously — when one segment slows, others compensate.</div>
+
+  <div class="two-col" style="margin:10px 0">
+    <div class="pane">
+      <div class="pane-h">Product portfolio — six transformer categories</div>
+      <div class="point"><div class="dot do">1</div><div><strong>Power transformers (up to 500 MVA, 1200 kV):</strong> Core product. Stepup/stepdown transformers for power generation and transmission. PGCIL, NTPC, State Discoms, IPPs are primary customers. Revenue contribution: ~50–55% of total. Highest volume product.</div></div>
+      <div class="point"><div class="dot do">2</div><div><strong>Furnace transformers (EAF/LF):</strong> Electric arc furnace transformers for steel (Tata Steel, JSW, SAIL) and aluminium smelters. TARIL exported one of the largest-ever EAF transformers globally (220/253 MVA). Higher ASP, fewer units — premium segment. Revenue: ~20–25%.</div></div>
+      <div class="point"><div class="dot do">3</div><div><strong>Rectifier transformers:</strong> DC power supply for electrochemical processes — chlorine, aluminium, copper refining. Industrial niche with limited competition. Revenue: ~10%.</div></div>
+      <div class="point"><div class="dot dv">+</div><div><strong>HVDC transformers (NEW — FY26 breakthrough):</strong> ₹53.33 Cr PGCIL HVDC repair order — first Indian private company. HVDC transformers for long-distance DC transmission links. If qualification secured by 2027, opens access to India's entire HVDC renewable corridor buildout. ASP: ₹15–50 Cr per unit vs ₹1–5 Cr for standard power transformers.</div></div>
+      <div class="point"><div class="dot dg">+</div><div><strong>Specialty: Traction, Solar, Green Hydrogen, Mobile substations:</strong> Railway traction transformers for Vande Bharat + electrification. Solar substation transformers. Green hydrogen electrolysers. Mobile/containerised substations for rapid deployment. Together: ~10–15% of revenue, growing fastest.</div></div>
+    </div>
+    <div class="pane">
+      <div class="pane-h">Backward integration — the margin unlock strategy</div>
+      <div class="point"><div class="dot do">→</div><div><strong>Currently importing:</strong> CRGO steel, CTC conductors (transposed copper wire), transformer bushings, pressboard. These 4 components account for ~30% of production cost. India has very few domestic suppliers, making TARIL dependent on imports (exchange rate risk, lead time risk).</div></div>
+      <div class="point"><div class="dot dg">+</div><div><strong>Backward integration target:</strong> By Q1 FY28, TARIL aims to manufacture CTC, bushings, pressboard, CRGO processing and tank fabrication in-house. This eliminates the import margin (supplier markup) and foreign exchange volatility. Estimated margin improvement: <strong>200–300 basis points</strong> = EBITDA margin moving from 15% to 17–18%.</div></div>
+      <div class="point"><div class="dot da">!</div><div><strong>Timeline has slipped:</strong> Originally targeted Q1 FY26. Then Q1 FY27. Now Q1 FY28. Each delay pushes the margin expansion thesis by one year. The Moraiya capacity expansion also slipped 4–5 months to Q2 FY27. Execution delays are a pattern — not a one-time event.</div></div>
+      <div class="point"><div class="dot do">$</div><div><strong>₹600 Cr capex plan over 15 months:</strong> Includes both capacity expansion (Moraiya 22,000 MVA) and backward integration facilities. Funded by QIP ₹500 Cr (FY26) + internal accruals. QIP was raised at market prices — successful placement to institutional investors is a credibility signal.</div></div>
+    </div>
+  </div>
+
+  <div class="sh">Customers and geographies — B2B across utilities, industry, and exports</div>
+  <table>
+    <tr><th>Customer segment</th><th>Key clients</th><th>Revenue %</th><th>Payment quality</th></tr>
+    <tr><td><strong>Power utilities (domestic)</strong></td><td>PGCIL, NTPC, SEBs (State Electricity Boards), SECI</td><td class="g">~50%</td><td>Government-backed — slow but certain</td></tr>
+    <tr><td><strong>Industrial (furnace/rectifier)</strong></td><td>Tata Steel, JSW, SAIL, BALCO, Sterlite</td><td class="a">~25%</td><td>Large corporates — good payment discipline</td></tr>
+    <tr><td><strong>Exports</strong></td><td>Africa, Middle East, CIS, Europe</td><td class="a">~10–15% (growing)</td><td>USD-denominated — higher ASP, FX upside</td></tr>
+    <tr><td><strong>Railways</strong></td><td>Indian Railways, RVNL, IRCON</td><td class="a">~5–8%</td><td>Government — slow but guaranteed</td></tr>
+    <tr><td><strong>Renewable EPC</strong></td><td>Adani Green, ReNew, NTPC Renewables</td><td class="g">Growing</td><td>Large corporates — improving segment</td></tr>
+  </table>
+</div>
+
+<!-- GUIDANCE -->
+<div id="guidance" class="panel">
+  <div class="sh">Guidance analysis — the most important concern: management has missed revenue guidance significantly</div>
+
+  <div class="miss-box">
+    <div class="miss-h">🚨 Major guidance miss: ₹3,500 Cr guided for FY26 → ₹2,395 Cr actual (-31%)</div>
+    <div class="miss-b">At Q4 FY25 results (exit of FY25), management projected FY26 revenue of ~₹3,500 Cr. At Q1 FY26, this was reaffirmed. At Q2 FY26, it was suddenly revised down to ₹2,600 Cr. The actual FY26 was ₹2,395 Cr — missing even the revised guidance by 8%. This is a material credibility issue. The primary reasons given: (1) Selective order booking policy — TARIL deliberately chose not to take lower-margin orders, (2) Supply chain delays — copper custom clearance delays impacted production in Q1–Q2, (3) Site readiness — customer sites not ready for transformer delivery in Q2. Management argues these were conscious choices, not demand weakness. Critically: the ₹23,000 Cr inquiry pipeline confirms demand is not the problem. But investors must discount ALL future TARIL revenue guidance by 20–30% and build scenarios accordingly.</div>
+  </div>
+
+  <div class="guid-card beat">
+    <div class="guid-h">✓ FY26 production milestone — 33,000 MVA highest ever</div>
+    <div class="guid-b">Despite the revenue miss, TARIL achieved its highest-ever annual transformer production at 33,000 MVA (vs 29,118 MVA in FY25 — the previous record). This is important: the company CAN manufacture at increasing scale. The revenue miss was a revenue recognition/delivery timing issue (some finished goods were pending delivery due to heavy rains and site issues) — not a production capability failure. Production capacity is growing as planned.</div>
+    <div class="guid-s">Production credibility: 8/10. Manufacturing capability is genuine and improving.</div>
+  </div>
+
+  <div class="guid-card watch">
+    <div class="guid-h">⚠ FY27 guidance: Management "optimistic about ₹5,000 Cr with 18–19% OPM"</div>
+    <div class="guid-b">Management's FY27 target is ~₹5,000 Cr revenue at 18–19% EBITDA. Given the pattern of FY26 miss, apply a 20–30% discount to this guidance. Base case FY27: ₹3,500–4,000 Cr revenue at 16–17% EBITDA. This still represents 46–67% revenue growth — substantial even at the discounted level. The Moraiya capacity (22,000 MVA) coming online in Q2 FY27 is critical — without it, ₹4,000+ Cr revenue is very difficult.</div>
+    <div class="guid-s">Revenue credibility (discounted): 6/10. Apply 20–30% haircut to management guidance on revenue. Margin guidance (15–17%) is more credible — FY26 delivered 15.1%, on track for 16–17%.</div>
+  </div>
+
+  <div class="guid-card">
+    <div class="guid-h">$1 Billion (~₹8,300 Cr) revenue target — 3 years from FY26</div>
+    <div class="guid-b">Management has consistently outlined the path to $1 Billion revenue (≈₹8,300 Cr) over 3 years from FY26 = by FY29. With 75,000 MVA capacity (when Moraiya completes), full backward integration, HVDC capability, and sustained 15% India transformer market CAGR, ₹8,000+ Cr by FY29 is directionally credible — but requires zero further execution delays and sustained order inflows. The ₹23,000 Cr inquiry pipeline provides demand confidence; execution consistency is the risk. Apply 25–30% probability to the ₹8,300 Cr FY29 target being hit exactly as stated. A more realistic scenario: ₹6,000–7,000 Cr by FY29.</div>
+    <div class="guid-s">Credibility: 5/10 on the specific $1B FY29 target. Directionally sound — actual achievement likely ₹5,500–7,000 Cr by FY29 at current execution pace.</div>
+  </div>
+
+  <div class="sh">Guidance scorecard</div>
+  <table>
+    <tr><th>Guidance item</th><th>Credibility</th><th>Discounted base case</th><th>Key risk</th></tr>
+    <tr><td>FY27 revenue (guided ₹5,000 Cr)</td><td class="a">6/10 — apply 25% discount</td><td>₹3,500–4,000 Cr (discounted)</td><td>Moraiya delay; copper supply; site readiness</td></tr>
+    <tr><td>FY27 EBITDA margin 16–17%</td><td class="g">7/10 — credible trajectory</td><td>15.5–16.5%</td><td>Input cost volatility (CRGO, copper)</td></tr>
+    <tr><td>Backward integration by Q1 FY28</td><td class="a">5/10 — has slipped twice already</td><td>Q2–Q3 FY28</td><td>Plant & machinery delivery delays</td></tr>
+    <tr><td>$1B revenue by FY28–29</td><td class="r">4/10 on exact timing</td><td>₹6,000–7,500 Cr by FY29</td><td>Cumulative execution delays; competition</td></tr>
+    <tr><td>HVDC qualification by 2027</td><td class="a">6/10 — first order is proof of concept</td><td>PGCIL approval H1 FY28</td><td>HVDC repair order technical execution</td></tr>
+  </table>
+</div>
+
+<!-- RISKS -->
+<div id="risks" class="panel">
+  <div class="sh">Risks — the full, honest picture</div>
+
+  <div class="point"><div class="dot dr">1</div><div><strong>Management guidance credibility — 31% revenue miss FY26 is serious.</strong><br>This is the most important risk and it's not about the business — it's about trusting the numbers management provides. When a company guides ₹3,500 Cr and delivers ₹2,395 Cr, every future guidance must be treated with significant skepticism. This doesn't mean the business is bad — it means investors need to build more conservative scenarios and not pay a high multiple on management projections. The selective order booking explanation is partially valid but partially convenient — a 31% miss is very large regardless of justification.</div></div>
+
+  <div class="point"><div class="dot dr">2</div><div><strong>CEO resigned January 2026 — MD Mamtora takes over directly.</strong><br>CEO Mukul Srivastava resigned effective January 7, 2026. MD Satyen Mamtora (second-generation promoter, 30+ years experience) became CEO from January 8. This concentration of power in the promoter-CEO role is both a strength (alignment) and a risk (no external professional management layer). Srivastava's reason for departure was not publicly disclosed — investors should monitor whether this is a one-time event or signals broader management friction.</div></div>
+
+  <div class="point"><div class="dot dr">3</div><div><strong>Capacity expansion delays are becoming a pattern.</strong><br>Original timeline: 15,000 MVA Changodar → Q4 FY24 → Actual: Jun 2025 (5+ quarters delay). 22,000 MVA Moraiya → Q4 FY26 → Now: Q2 FY27 (4–5 month delay). Backward integration → Q1 FY26 → Q1 FY27 → Q1 FY28 (2-year delay). Each delay pushes revenue recognition and the margin expansion thesis. The delays are genuine (plant & machinery delivery issues) but the recurrence is concerning. Every delay means revenue guidance must be further discounted.</div></div>
+
+  <div class="point"><div class="dot da">4</div><div><strong>World Bank debarment — legacy issue requiring resolution.</strong><br>TARIL was debarred from World Bank-funded projects (from a 2020 contract dispute). World Bank gave time till January 2026 for explanation. Management responded, calling it a governance issue on the World Bank's side. Resolution status: unclear. If resolved: removes overhang. If escalated: prevents bidding on World Bank-funded projects (significant for export markets). Need to track the outcome in FY27 disclosures.</div></div>
+
+  <div class="point"><div class="dot da">5</div><div><strong>Input cost volatility — CRGO steel and copper are commodity prices.</strong><br>Transformers are ~60–70% copper and CRGO electrical steel by value. Both are traded global commodities with significant price volatility. In H1 FY26, copper custom delays impacted production. Global copper supply/demand (EV adoption, AI data centres) is creating structural price pressure. While TARIL passes through commodity costs in contracts, fixed-price older contracts and timing mismatches create quarterly margin volatility. The backward integration plan (CRGO processing in-house) addresses this but is 2 years away.</div></div>
+
+  <div class="point"><div class="dot dg">+</div><div><strong>Genuine strengths:</strong><br>India's largest private transformer manufacturer by range and capacity. 30+ years heritage — trusted by PGCIL, NTPC, major industrials. HVDC breakthrough — opens the highest-margin transformer segment. ₹23,000 Cr inquiry pipeline = demand is not the problem. 75,000 MVA capacity when complete. QIP ₹500 Cr raised — institutional validation. 7–10 year sustainable demand confirmed by management (15% India transformer CAGR). Export growing toward 10%+ of revenue (USD revenue hedges INR weakness). PE at 15–16x is cheap relative to sector peers.</div></div>
+</div>
+
+<!-- SCENARIOS -->
+<div id="scenarios" class="panel">
+  <div class="sh">Three scenarios — from Garvit's avg cost ~₹303 (200 shares, ₹60,600 invested)</div>
+  <div class="warn caution"><strong>Given the FY26 guidance miss, apply a 20–30% discount to all management revenue projections when building scenarios.</strong> The base case should use ₹3,500–4,000 Cr for FY27 vs management's ₹5,000 Cr, and ₹5,500–6,500 Cr for FY28 vs the $1B target. At 15–16x PE (current), TARIL is already cheap — the question is whether earnings growth materialises to drive the stock higher.</div>
+
+  <div class="scenario" style="border-left:3px solid #F57C00">
+    <div style="font-size:13px;font-weight:500;color:#E65100;margin-bottom:8px">Bull case — 3–4x in 3 years: Moraiya live, HVDC qualification, backward integration</div>
+    <div class="sc-grid">
+      <div class="sc-cell"><div class="sc-l">FY27 revenue</div><div class="sc-v">₹4,000–4,500 Cr</div></div>
+      <div class="sc-cell"><div class="sc-l">FY27 EBITDA%</div><div class="sc-v">16–17%</div></div>
+      <div class="sc-cell"><div class="sc-l">FY27 PAT</div><div class="sc-v">₹400–520 Cr</div></div>
+      <div class="sc-cell"><div class="sc-l">FY28 revenue</div><div class="sc-v">₹5,500–6,500 Cr</div></div>
+      <div class="sc-cell"><div class="sc-l">FY28 PAT</div><div class="sc-v">₹700–900 Cr</div></div>
+      <div class="sc-cell"><div class="sc-l">PE (re-rating)</div><div class="sc-v">18–22x</div></div>
+    </div>
+    <div style="font-size:11.5px;color:#333;margin-top:8px"><strong>Mcap FY28 at 20x ₹800 Cr PAT = ₹16,000 Cr = 4.6x from current ₹3,500 Cr.</strong> What must happen: Moraiya 22,000 MVA operational by Q3 FY27 (no further delays). HVDC repair order successfully completed → PGCIL HVDC qualification H1 FY28. Backward integration achieves 200 bps margin improvement by Q4 FY27. Order inflows remain ₹4,000–5,000 Cr per year. No new CEO/management disruptions. At 20x PE and ₹800 Cr PAT = ₹16,000 Cr = <strong>4.6x from current ₹3,500 Cr.</strong></div>
+  </div>
+
+  <div class="scenario" style="border-left:3px solid #378ADD">
+    <div style="font-size:13px;font-weight:500;color:#185FA5;margin-bottom:8px">Base case — 1.5–2.5x in 2 years: Steady 35–50% earnings growth, partial capacity</div>
+    <div class="sc-grid">
+      <div class="sc-cell"><div class="sc-l">FY27 revenue</div><div class="sc-v">₹3,200–3,800 Cr</div></div>
+      <div class="sc-cell"><div class="sc-l">FY27 EBITDA%</div><div class="sc-v">~15.5%</div></div>
+      <div class="sc-cell"><div class="sc-l">FY27 PAT</div><div class="sc-v">₹300–380 Cr</div></div>
+      <div class="sc-cell"><div class="sc-l">FY27 PE</div><div class="sc-v">16–18x</div></div>
+      <div class="sc-cell"><div class="sc-l">FY27 mcap</div><div class="sc-v">₹4,800–6,840 Cr</div></div>
+      <div class="sc-cell"><div class="sc-l">Return</div><div class="sc-v">1.4–2.0x</div></div>
+    </div>
+    <div style="font-size:11.5px;color:#333;margin-top:8px">Moraiya delayed to Q3 FY27. FY27 revenue hits ₹3,500 Cr. PAT ₹325 Cr at 16x PE = ₹5,200 Cr mcap = 1.5x. Order book ₹5,500 Cr end FY27. <strong>Base case is 1.5–2x — solid for a stock Garvit bought at ₹303 (well below 52-week high of ₹650).</strong></div>
+  </div>
+
+  <div class="scenario" style="border-left:3px solid #A32D2D">
+    <div style="font-size:13px;font-weight:500;color:#A32D2D;margin-bottom:8px">Bear case — flat to -20%: Another guidance miss + World Bank escalation</div>
+    <div class="sc-grid">
+      <div class="sc-cell"><div class="sc-l">Trigger</div><div class="sc-v">Moraiya slips to Q4 FY27</div></div>
+      <div class="sc-cell"><div class="sc-l">Trigger</div><div class="sc-v">FY27 revenue guidance missed again</div></div>
+      <div class="sc-cell"><div class="sc-l">Trigger</div><div class="sc-v">World Bank issue unresolved</div></div>
+      <div class="sc-cell"><div class="sc-l">FY27 revenue</div><div class="sc-v">₹2,600–3,000 Cr</div></div>
+      <div class="sc-cell"><div class="sc-l">FY27 PAT</div><div class="sc-v">₹200–260 Cr</div></div>
+      <div class="sc-cell"><div class="sc-l">PE at 13x</div><div class="sc-v">₹2,600–3,380 Cr mcap</div></div>
+    </div>
+    <div style="font-size:11.5px;color:#333;margin-top:8px"><strong>Bear probability: 20–25%.</strong> If FY27 is another guidance miss (like FY26 was), sentiment collapses — PE de-rates from 15x to 12–13x. Stock revisits ₹200–230 range (-30 to -40% from Garvit's cost). This is the real risk: TARIL's track record of missing guidance means the market will not give benefit of the doubt for a second consecutive year. Garvit's entry at ₹303 vs 52-week low of ₹232 means he has limited buffer.</div>
+  </div>
+
+  <table style="margin-top:10px">
+    <tr><th>Target from Garvit's cost (₹303)</th><th>Mcap needed</th><th>Driver</th><th>Timeline</th><th>Probability</th></tr>
+    <tr><td>3x (₹909/share)</td><td>₹10,500 Cr</td><td>FY28 PAT ₹600 Cr at 17.5x PE</td><td>FY28</td><td class="a">20–25%</td></tr>
+    <tr><td>2x (₹606/share)</td><td>₹7,000 Cr</td><td>FY27 PAT ₹380 Cr at 18x PE</td><td>FY27</td><td class="a">30–35%</td></tr>
+    <tr><td>1.5x (₹454/share)</td><td>₹5,250 Cr</td><td>FY27 PAT ₹300 Cr at 17x PE</td><td>FY27</td><td class="g">40–45%</td></tr>
+    <tr><td>Bear -25% (₹227/share)</td><td>₹2,625 Cr</td><td>Another guidance miss + de-rating</td><td>—</td><td class="a">20–25%</td></tr>
+  </table>
+</div>
+
+<!-- SECTOR LANDSCAPE -->
+<div id="sectormap" class="panel">
+  <div class="sh">India power transformer sector — the competitive landscape</div>
+  <div class="warn orange"><strong>India's transformer market is a well-structured oligopoly with 5–7 dominant players across different size classes.</strong> The market is growing at 15% CAGR with structural demand from T&D capex, Green Energy Corridor, and Railways. TARIL occupies the premium private-sector tier — competing directly with Voltamp, CG Power, and ABB India for high-voltage orders, while competing with BHEL (PSU) for government utilities.</div>
+
+  <div class="sector-card">
+    <div class="sc-hdr"><div><div class="sc-nm">Voltamp Transformers — High quality, debt-free, lower growth</div><div class="sc-tg">₹4,800 Cr mcap · ₹1,800 Cr revenue · 18–20% EBITDA · Debt-free · Vadodara</div></div><span class="badge ba">Quality comparison</span></div>
+    <div class="sc-bd">Voltamp is debt-free with consistently 18–20% EBITDA margins — better margins than TARIL. However, Voltamp focuses on distribution transformers (lower voltage class) and industrial transformers, not the ultra-high voltage segment where TARIL operates. Revenue growing at 15–18% vs TARIL's 23–53%. At ₹4,800 Cr mcap vs TARIL's ₹3,500 Cr, Voltamp is more expensive. <strong>For quality + safety, Voltamp wins. For growth + re-rating upside, TARIL wins.</strong></div>
+  </div>
+
+  <div class="sector-card">
+    <div class="sc-hdr"><div><div class="sc-nm">Quality Power Electrical — HVDC leader, already analyzed</div><div class="sc-tg">₹9,835 Cr mcap · ₹775 Cr TTM rev · HVDC/FACTS moat · Already done 3x from IPO</div></div><span class="badge ba">Already in our analysis</span></div>
+    <div class="sc-bd">Quality Power is the most comparable HVDC stock. As we analyzed in Session 4, Quality Power is already at ₹9,835 Cr mcap (3x from IPO), making further 3x challenging. TARIL at ₹3,500 Cr mcap is earlier in the HVDC journey (TARIL just won its FIRST HVDC order; Quality Power has years of HVDC history). TARIL's HVDC qualification, if successful, puts it on a similar trajectory to Quality Power 2–3 years ago — potentially making TARIL the better forward bet for HVDC exposure at much lower valuation.</div>
+  </div>
+
+  <div class="sector-card">
+    <div class="sc-hdr"><div><div class="sc-nm">CG Power and Industrial Solutions — Diversified, PE-backed</div><div class="sc-tg">₹55,000+ Cr mcap · Multiple segments · Strong parent (Murugappa)</div></div><span class="badge bgray">Too large for 3x</span></div>
+    <div class="sc-bd">CG Power has transformed under Murugappa management. But at ₹55,000 Cr mcap, 3x requires ₹1.65 lakh Cr — mathematically very difficult. Much larger company, much harder 3x path.</div>
+  </div>
+
+  <div class="sector-card">
+    <div class="sc-hdr"><div><div class="sc-nm">TARIL — Your stock</div><div class="sc-tg">₹3,500 Cr mcap · ₹2,395 Cr FY26 rev · 15.1% EBITDA · HVDC pioneer · 75,000 MVA target</div></div><span class="badge bg">Hold — best power sector 3x play after TRIL</span></div>
+    <div class="sc-bd">TARIL is the best quality-to-price power transformer stock at current valuation. The FY26 guidance miss is the key risk but the fundamental demand cycle (₹23,000 Cr pipeline) is intact. HVDC qualification is the transformative catalyst. At 15–16x PE vs sector average of 25–35x, TARIL is genuinely cheap IF it executes on FY27 targets. The 3x probability of 20–25% makes it a meaningful portfolio holding — especially at Garvit's entry price of ₹303.</div>
+  </div>
+</div>
+
+<!-- FULL COMPARISON -->
+<div id="compare" class="panel">
+  <div class="sh">TARIL vs power equipment sector peers — comprehensive comparison</div>
+  <div style="border:1px solid #ddd;border-radius:10px;overflow:hidden;font-size:11px">
+    <div class="comp-h">
+      <div class="cc-h" style="background:#f5f5f3">Metric</div>
+      <div class="cc-h" style="background:#FFF3E0;color:#E65100">TARIL ← Your stock</div>
+      <div class="cc-h" style="background:#F3E5F5;color:#4A148C">Quality Power</div>
+      <div class="cc-h" style="background:#f5f5f3">Voltamp Transformers</div>
+    </div>
+    <div class="comp-row"><div class="cc cc-label">Market cap</div><div class="cc winner-cell">₹3,500 Cr</div><div class="cc loser-cell">₹9,835 Cr</div><div class="cc mid-cell">₹4,800 Cr</div></div>
+    <div class="comp-row"><div class="cc cc-label">FY26 revenue</div><div class="cc winner-cell">₹2,395 Cr (+23% YoY)</div><div class="cc mid-cell">₹775 Cr (consol.)</div><div class="cc loser-cell">~₹1,800 Cr</div></div>
+    <div class="comp-row"><div class="cc cc-label">Order book</div><div class="cc winner-cell">₹5,005 Cr (2.1x revenue)</div><div class="cc mid-cell">₹895 Cr (1.15x)</div><div class="cc mid-cell">~₹2,000 Cr</div></div>
+    <div class="comp-row"><div class="cc cc-label">Inquiry pipeline</div><div class="cc winner-cell">₹23,000 Cr (massive)</div><div class="cc mid-cell">Not disclosed</div><div class="cc mid-cell">Not disclosed</div></div>
+    <div class="comp-row"><div class="cc cc-label">EBITDA margin</div><div class="cc mid-cell">15.1% (FY26)</div><div class="cc winner-cell">~22% (guided floor)</div><div class="cc winner-cell">~18–20% (better)</div></div>
+    <div class="comp-row"><div class="cc cc-label">Trailing PE</div><div class="cc winner-cell">~15–16x (cheapest)</div><div class="cc loser-cell">~60–93x (expensive)</div><div class="cc mid-cell">~25–30x</div></div>
+    <div class="comp-row"><div class="cc cc-label">HVDC capability</div><div class="cc mid-cell">First HVDC order (pioneering)</div><div class="cc winner-cell">800kV HVDC (established leader)</div><div class="cc loser-cell">Not in HVDC</div></div>
+    <div class="comp-row"><div class="cc cc-label">Capacity (MVA)</div><div class="cc winner-cell">40,000 → 75,000 MVA</div><div class="cc mid-cell">Custom products (no MVA metric)</div><div class="cc mid-cell">~10,000 MVA</div></div>
+    <div class="comp-row"><div class="cc cc-label">Backward integration</div><div class="cc mid-cell">In progress (Q1 FY28)</div><div class="cc winner-cell">Own magnet wire (FY27)</div><div class="cc winner-cell">Already integrated</div></div>
+    <div class="comp-row"><div class="cc cc-label">Guidance credibility</div><div class="cc loser-cell">Poor — 31% FY26 revenue miss</div><div class="cc mid-cell">Good — conservative guidance</div><div class="cc winner-cell">Good — consistent delivery</div></div>
+    <div class="comp-row"><div class="cc cc-label">CEO/leadership</div><div class="cc mid-cell">CEO resigned Jan '26; MD took over</div><div class="cc mid-cell">JMD leads</div><div class="cc winner-cell">Stable management</div></div>
+    <div class="comp-row"><div class="cc cc-label">Export market</div><div class="cc mid-cell">10–15% growing (Africa, ME, CIS)</div><div class="cc winner-cell">100+ countries established</div><div class="cc mid-cell">Limited exports</div></div>
+    <div class="comp-row"><div class="cc cc-label">3x probability (3yr)</div><div class="cc winner-cell">20–25% (cheap PE + earnings growth)</div><div class="cc loser-cell">15–20% (already re-rated)</div><div class="cc mid-cell">15–18% (slower growth)</div></div>
+    <div class="comp-row"><div class="cc cc-label">Best for Garvit's goal</div><div class="cc">Hold — best value transformer play; execution is the risk</div><div class="cc">Better HVDC moat but expensive — wait for correction</div><div class="cc">Quality but slower growth — better for wealth preservation</div></div>
+  </div>
+  <div class="warn orange" style="margin-top:12px"><strong>The key comparison insight:</strong> TARIL trades at 15–16x PE vs Quality Power at 60–93x. For the same India power T&D supercycle thesis, TARIL is 4–6x cheaper on earnings. Quality Power has a much deeper HVDC moat — but it's already priced in. TARIL's HVDC journey is just beginning (first order Dec 2025) — similar to where Quality Power was 3–4 years ago. If TARIL successfully executes the HVDC repair order and gets PGCIL approval for new HVDC orders (H1 FY28), the valuation gap between TARIL and Quality Power should compress significantly. This PE gap is the primary re-rating catalyst — independent of earnings growth.</div>
+</div>
+
+<!-- VERDICT -->
+<div id="verdict" class="panel">
+  <div class="sh">The definitive verdict for Garvit's portfolio</div>
+
+  <div class="verdict-card" style="background:#FFF3E0;border:1px solid #FFCC80">
+    <div class="vc-h" style="color:#E65100">TARIL — Verdict: Strong hold at 200 shares. Consider adding ₹25,000–30,000 on FY27 guidance confirmation. Best value power equipment stock in India after the -50% correction from ₹650 peak.</div>
+    <div class="vc-b">Here is the complete, honest picture for TARIL:<br><br><strong>The bull case is well-grounded in fundamentals:</strong><br>1. ₹5,005 Cr order book = 2.1x FY26 revenue — ~18 months of revenue visibility<br>2. ₹23,000 Cr inquiry pipeline = demand is emphatically NOT the problem<br>3. 33,000 MVA production (all-time record FY26) — manufacturing capability is real and growing<br>4. HVDC milestone: first Indian private company to win PGCIL HVDC order — opens the highest-value transformer segment<br>5. 75,000 MVA capacity (when Moraiya completes) = physical infrastructure for 3x revenue growth<br>6. 15x PE (vs peers at 25–60x) = genuinely cheap after -50% correction from peak<br>7. $1B revenue target in 3 years — even at 60% achievement = ₹5,000 Cr = 2x+ earnings from here<br><br><strong>The bear case has real substance:</strong><br>1. Management guided ₹3,500 Cr for FY26 → delivered ₹2,395 Cr (-31%). This is a serious credibility issue.<br>2. CEO resigned January 2026 — management structure uncertainty<br>3. Capacity expansion has been delayed 3+ times across multiple projects<br>4. World Bank debarment — export market overhang<br>5. Backward integration pushed from Q1 FY26 to Q1 FY28 — 2-year delay<br><br><strong>Garvit's specific situation:</strong><br>Bought at ~₹303 average (200 shares = ₹60,600). Current price ~₹319–332 = +5.4% gain. Entry is reasonable — well below the ₹650 peak but above the ₹232 trough. The FY26 results (just published) confirm the business is intact: ₹2,395 Cr revenue (+23%), ₹5,005 Cr order book, record production. The Q4 FY26 EBITDA margin came in at 15.1% — flat with FY26 target but down from 19.4% last year's Q4. FY27 guidance of 15–17% margins is credible.<br><br><strong>Portfolio-specific recommendation:</strong><br>Hold 200 shares fully. The thesis is intact — demand is strong, HVDC is a transformative catalyst, and the PE at 15x is genuinely cheap. The key is managing the guidance credibility risk: if Q1 FY27 results (August 2026) show revenue of ₹750+ Cr and EBITDA margin of 16%+, the FY27 story is confirmed and you should add ₹25–30K. If Q1 FY27 disappoints again, reassess position size.</div>
+  </div>
+
+  <div class="sh">Allocation recommendation</div>
+  <table>
+    <tr><th>Stock</th><th>Action</th><th>Amount</th><th>Rationale</th></tr>
+    <tr><td><strong>TARIL (currently held)</strong></td><td><span class="badge borange">HOLD 200 shares. Add ₹25–30K on Q1 FY27 confirmation</span></td><td>Hold ₹63,860. Add if Q1 FY27 revenue ₹750+ Cr</td><td>Best value power equipment stock. 15x PE is cheap. FY26 results confirmed business is intact. HVDC catalyst transformative. Add only after Q1 FY27 confirms guidance credibility restored.</td></tr>
+  </table>
+
+  <div class="sh">Seven triggers to watch</div>
+  <table>
+    <tr><th>#</th><th>Trigger</th><th>Status</th><th>Impact</th></tr>
+    <tr><td>1</td><td>Q1 FY27 revenue (July–Aug 2026)</td><td class="a">Moraiya coming online Q2 FY27</td><td>🔥 ₹750+ Cr Q1 = FY27 guidance credibility restored → add ₹25K. ₹500 Cr = another miss → reduce</td></tr>
+    <tr><td>2</td><td>Moraiya 22,000 MVA commissioning</td><td class="a">Q2 FY27 target (was Q4 FY26)</td><td>🟢 Physical capacity coming online = revenue capacity confirmed. Watch for commissioning announcement.</td></tr>
+    <tr><td>3</td><td>HVDC repair order completion + PGCIL approval</td><td class="a">Order won Dec 2025; execution ongoing</td><td>🔥 PGCIL HVDC approval = access to ₹5,000–50,000 Cr HVDC market. Stock could re-rate 30–50% on this alone.</td></tr>
+    <tr><td>4</td><td>World Bank debarment resolution</td><td class="r">Explanation given Jan 2026; outcome unclear</td><td>🟢 Resolution = export market fully accessible. Escalation = export growth capped.</td></tr>
+    <tr><td>5</td><td>FY27 order inflows</td><td class="g">₹23,000 Cr pipeline — demand strong</td><td>🟢 ₹4,000+ Cr order inflows in FY27 = book building → FY28 revenue confidence.</td></tr>
+    <tr><td>6</td><td>EBITDA margin trajectory</td><td class="a">15.1% FY26; target 16–17% FY27</td><td>🟢 Each 100 bps margin improvement = ~₹24 Cr additional PAT = ~₹360 Cr mcap at 15x PE.</td></tr>
+    <tr><td>7</td><td>Backward integration milestones</td><td class="r">Delayed to Q1 FY28 (was Q1 FY26)</td><td>🟢 Any facility commissioned ahead of Q1 FY28 = margin upside surprise. Watch capex deployment updates.</td></tr>
+  </table>
+
+  <div class="warn orange" style="margin-top:12px"><strong>One-line verdict:</strong> TARIL is India's best-valued large-scale power transformer manufacturer — trading at 15x PE (vs Quality Power at 60x+) with a ₹5,005 Cr order book, ₹23,000 Cr inquiry pipeline, highest-ever FY26 production, and a transformative HVDC breakthrough as the first Indian private company to win a PGCIL HVDC order. The FY26 guidance miss (-31%) is a real credibility wound that requires careful monitoring. Hold 200 shares fully. The HVDC qualification path (if delivered by H1 FY28) alone justifies current valuation and then some. Add ₹25–30K after Q1 FY27 results confirm guidance credibility is restored.</div>
+</div>
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/4.4.1/chart.umd.js"></script>
+<script>
+function show(id,btn){
+  document.querySelectorAll('.tab').forEach(t=>t.classList.remove('active'));
+  document.querySelectorAll('.panel').forEach(p=>p.classList.remove('active'));
+  btn.classList.add('active');
+  document.getElementById(id).classList.add('active');
+}
+new Chart(document.getElementById('rc').getContext('2d'),{
+  type:'bar',
+  data:{
+    labels:['FY22','FY23','FY24','FY25','Q1FY26','Q2FY26','Q3FY26','Q4FY26','FY27E','FY28E'],
+    datasets:[
+      {label:'Revenue ₹ Cr',data:[800,1100,1270,1946,474,460,737,752,3750,5500],backgroundColor:['#F57C00','#F57C00','#F57C00','#F57C00','#EF9F27','#EF9F27','#1D9E75','#1D9E75','#FFCC80','#FFCC80'],borderRadius:4,yAxisID:'y'},
+      {label:'PAT ₹ Cr',data:[35,55,50,207,34,37.5,73.85,77,420,680],type:'line',borderColor:'#1D9E75',backgroundColor:'transparent',pointBackgroundColor:'#1D9E75',tension:0.3,yAxisID:'y2'}
+    ]
+  },
+  options:{responsive:true,maintainAspectRatio:false,plugins:{legend:{display:false}},scales:{y:{ticks:{font:{size:10}}},y2:{position:'right',ticks:{font:{size:10}},grid:{drawOnChartArea:false}},x:{ticks:{font:{size:10}}}}}
+});
+</script>
+</body>
+</html>

@@ -1,0 +1,454 @@
+<!DOCTYPE html>
+<html><head><meta charset="utf-8">
+<style>
+*{box-sizing:border-box;margin:0;padding:0}
+body{font-family:system-ui,sans-serif;padding:16px;background:#fff;color:#1a1a1a;font-size:14px}
+h1{font-size:20px;font-weight:500;margin-bottom:3px}
+.sub{font-size:12px;color:#666;margin-bottom:14px}
+.sg{display:grid;grid-template-columns:repeat(auto-fill,minmax(110px,1fr));gap:8px;margin-bottom:16px}
+.sc{background:#f5f5f3;border-radius:8px;padding:10px 12px}
+.sl{font-size:10px;color:#666;margin-bottom:2px}
+.sv{font-size:17px;font-weight:500}
+.tab-row{display:flex;gap:5px;flex-wrap:wrap;margin-bottom:14px}
+.tab{font-size:11.5px;padding:5px 13px;border-radius:20px;border:1px solid #ddd;background:#fff;cursor:pointer;white-space:nowrap}
+.tab.active{background:#1a1a1a;color:#fff;border-color:#1a1a1a}
+.panel{display:none}.panel.active{display:block}
+.sh{font-size:10.5px;font-weight:500;color:#666;text-transform:uppercase;letter-spacing:.06em;margin:16px 0 7px;padding-bottom:5px;border-bottom:1px solid #eee}
+table{width:100%;border-collapse:collapse;font-size:12px;margin:8px 0}
+th{font-size:10.5px;font-weight:500;color:#666;padding:5px 7px;text-align:left;border-bottom:1px solid #eee;white-space:nowrap}
+td{padding:8px 7px;border-bottom:1px solid #eee;color:#1a1a1a;vertical-align:top}
+tr:last-child td{border-bottom:none}
+tr:hover td{background:#fafaf9}
+.g{color:#0F6E56;font-weight:500}.r{color:#A32D2D;font-weight:500}.a{color:#854F0B;font-weight:500}.b{color:#185FA5;font-weight:500}
+.badge{display:inline-block;font-size:10px;padding:2px 7px;border-radius:10px;white-space:nowrap}
+.bg{background:#E1F5EE;color:#0F6E56}.bb{background:#E6F1FB;color:#185FA5}.ba{background:#FAEEDA;color:#854F0B}.br{background:#FCEBEB;color:#A32D2D}.bgray{background:#f1f0e8;color:#5F5E5A}.bpow{background:#FFF3E0;color:#E65100}.bimp{background:#EDE7F6;color:#4527A0}
+.warn{padding:10px 13px;margin:8px 0;border-left:3px solid;font-size:12px;line-height:1.65}
+.warn.success{background:#E1F5EE;border-color:#1D9E75;color:#04342C}
+.warn.caution{background:#FAEEDA;border-color:#BA7517;color:#412402}
+.warn.danger{background:#FCEBEB;border-color:#A32D2D;color:#712B13}
+.warn.info{background:#E6F1FB;border-color:#185FA5;color:#042C53}
+.warn.power{background:#FFF3E0;border-color:#F57C00;color:#3E2723}
+.warn.indigo{background:#EDE7F6;border-color:#5E35B1;color:#1A0A4B}
+.warn strong{font-weight:500}
+.chart-wrap{position:relative;width:100%;height:240px;margin:8px 0}
+.kpi-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:10px;margin:10px 0}
+.kpi{background:#f5f5f3;border-radius:8px;padding:10px 12px;border-left:3px solid transparent}
+.kpi.green{border-left-color:#1D9E75}.kpi.amber{border-left-color:#EF9F27}.kpi.blue{border-left-color:#378ADD}.kpi.red{border-left-color:#A32D2D}.kpi.orange{border-left-color:#F57C00}.kpi.indigo{border-left-color:#5E35B1}
+.kpi-l{font-size:10px;color:#666;margin-bottom:3px}
+.kpi-v{font-size:17px;font-weight:500}
+.kpi-s{font-size:10px;color:#888;margin-top:2px}
+.point{display:flex;gap:9px;align-items:flex-start;padding:9px 0;border-bottom:1px solid #eee;font-size:12px;line-height:1.6;color:#555}
+.point:last-child{border-bottom:none}
+.point strong{color:#1a1a1a;font-weight:500}
+.dot{width:19px;height:19px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:10px;font-weight:500;flex-shrink:0;margin-top:1px}
+.dg{background:#E1F5EE;color:#0F6E56}.dr{background:#FCEBEB;color:#A32D2D}.da{background:#FAEEDA;color:#854F0B}.db{background:#E6F1FB;color:#185FA5}.do{background:#FFF3E0;color:#E65100}.di{background:#EDE7F6;color:#4527A0}
+.two-col{display:grid;grid-template-columns:1fr 1fr;gap:12px}
+.pane{border:1px solid #ddd;border-radius:10px;padding:13px}
+.pane-h{font-size:13px;font-weight:500;margin-bottom:9px}
+.scenario{border:1px solid #ddd;border-radius:10px;padding:13px;margin-bottom:9px}
+.sc-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:7px;margin:9px 0}
+.sc-cell{background:#f5f5f3;border-radius:6px;padding:7px 9px}
+.sc-l{font-size:10px;color:#666}
+.sc-v{font-size:12px;font-weight:500;margin-top:2px}
+.comp-h{display:grid;grid-template-columns:160px repeat(3,1fr);background:#f5f5f3;border-radius:8px 8px 0 0;overflow:hidden}
+.comp-row{display:grid;grid-template-columns:160px repeat(3,1fr);border-bottom:1px solid #eee}
+.comp-row:last-child{border-bottom:none}
+.cc{padding:8px 10px;font-size:11px;border-right:1px solid #eee}
+.cc:last-child{border-right:none}
+.cc-h{font-size:10px;font-weight:500;color:#444;padding:8px 10px;border-right:1px solid #ddd}
+.cc-h:last-child{border-right:none}
+.cc-label{color:#666;font-size:11px}
+.winner-cell{background:#E1F5EE}.mid-cell{background:#FAEEDA}.loser-cell{background:#fff5f5}
+.verdict-card{border-radius:10px;padding:13px 15px;margin-bottom:10px}
+.vc-h{font-size:13px;font-weight:500;margin-bottom:6px}
+.vc-b{font-size:12px;line-height:1.65;color:#444}
+.sector-card{border:1px solid #ddd;border-radius:10px;overflow:hidden;margin-bottom:10px}
+.sc-hdr{padding:10px 13px;display:flex;justify-content:space-between;align-items:center;background:#fafaf9}
+.sc-nm{font-size:13px;font-weight:500}
+.sc-tg{font-size:11px;color:#666;margin-top:2px}
+.sc-bd{padding:10px 13px;font-size:12px;line-height:1.65;color:#555;border-top:1px solid #eee}
+.sc-bd strong{color:#1a1a1a}
+.guid-card{border-radius:10px;padding:12px 14px;margin-bottom:8px;border-left:3px solid #1D9E75;background:#f5f5f3}
+.guid-h{font-size:11.5px;font-weight:500;margin-bottom:4px}
+.guid-b{font-size:11.5px;color:#333;line-height:1.6}
+.guid-s{font-size:10px;color:#888;margin-top:4px}
+.guid-card.beat{background:#E1F5EE;border-left-color:#1D9E75}.guid-card.beat .guid-h{color:#0F6E56}
+.guid-card.miss{background:#FCEBEB;border-left-color:#A32D2D}.guid-card.miss .guid-h{color:#A32D2D}
+.guid-card.watch{background:#FAEEDA;border-left-color:#BA7517}.guid-card.watch .guid-h{color:#854F0B}
+.subs-grid{display:grid;grid-template-columns:1fr 1fr;gap:9px;margin:10px 0}
+.sub-card{border:1px solid #ddd;border-radius:8px;padding:11px 13px;font-size:12px}
+.sub-nm{font-weight:500;font-size:12px;margin-bottom:4px}
+.sub-tag{font-size:10px;color:#666;margin-bottom:5px}
+.sub-bd{font-size:11.5px;color:#555;line-height:1.55}
+.val-alert{background:#FFF3E0;border:2px solid #F57C00;border-radius:10px;padding:13px;margin:10px 0}
+.val-h{font-size:13px;font-weight:500;color:#E65100;margin-bottom:6px}
+.val-b{font-size:12px;color:#333;line-height:1.65}
+</style>
+</head>
+<body>
+
+<h1>Quality Power Electrical Equipments Ltd — Deep Investment Analysis</h1>
+<div class="sub">NSE: QPOWER · BSE: 544367 · HVDC & FACTS power equipment manufacturer · IPO: Feb 2025 at ₹425 · Sangli, Maharashtra + Aluva, Kerala + Turkey (Endoks) · Founded 2001 · JMD: Bharanidharan Pandyan</div>
+
+<div class="sg">
+  <div class="sc"><div class="sl">Market cap</div><div class="sv" style="color:#A32D2D">~₹9,835 Cr</div></div>
+  <div class="sc"><div class="sl">TTM revenue</div><div class="sv" style="color:#1D9E75">₹775 Cr</div></div>
+  <div class="sc"><div class="sl">TTM PAT</div><div class="sv" style="color:#1D9E75">₹165 Cr</div></div>
+  <div class="sc"><div class="sl">Q3 FY26 growth</div><div class="sv" style="color:#1D9E75">+292% YoY</div></div>
+  <div class="sc"><div class="sl">EBITDA margin</div><div class="sv" style="color:#1D9E75">~22%+</div></div>
+  <div class="sc"><div class="sl">Order book</div><div class="sv" style="color:#185FA5">₹895 Cr</div></div>
+  <div class="sc"><div class="sl">Trailing PE</div><div class="sv" style="color:#A32D2D">~60–93x</div></div>
+  <div class="sc"><div class="sl">PB ratio</div><div class="sv" style="color:#A32D2D">~20x</div></div>
+  <div class="sc"><div class="sl">Promoter holding</div><div class="sv" style="color:#1D9E75">73.9%</div></div>
+  <div class="sc"><div class="sl">⚠ Debtor days</div><div class="sv" style="color:#A32D2D">149 days ↑</div></div>
+  <div class="sc"><div class="sl">52-wk range</div><div class="sv" style="color:#854F0B">₹268–₹1,298</div></div>
+  <div class="sc"><div class="sl">IPO listing gain</div><div class="sv" style="color:#1D9E75">+1.2% only</div></div>
+</div>
+
+<div class="tab-row">
+  <button class="tab active" onclick="show('revenue',this)">Revenue history</button>
+  <button class="tab" onclick="show('sectorKPI',this)">Sector KPIs</button>
+  <button class="tab" onclick="show('business',this)">Business model</button>
+  <button class="tab" onclick="show('guidance',this)">Guidance analysis</button>
+  <button class="tab" onclick="show('risks',this)">Risks</button>
+  <button class="tab" onclick="show('scenarios',this)">3x scenarios</button>
+  <button class="tab" onclick="show('sectormap',this)">Sector landscape</button>
+  <button class="tab" onclick="show('compare',this)">Full comparison</button>
+  <button class="tab" onclick="show('verdict',this)">Final verdict</button>
+</div>
+
+<!-- REVENUE -->
+<div id="revenue" class="panel active">
+  <div class="sh">Revenue & profit history — the Mehru acquisition changes everything in FY26</div>
+  <div class="chart-wrap"><canvas id="rc"></canvas></div>
+  <div style="display:flex;gap:14px;font-size:11.5px;color:#666;margin-bottom:10px">
+    <span><span style="display:inline-block;width:10px;height:10px;border-radius:2px;background:#F57C00;margin-right:4px"></span>Revenue ₹ Cr (left)</span>
+    <span><span style="display:inline-block;width:10px;height:10px;border-radius:2px;background:#1D9E75;margin-right:4px"></span>PAT ₹ Cr (right)</span>
+    <span><span style="display:inline-block;width:10px;height:10px;border-radius:2px;background:#FFCC80;margin-right:4px"></span>Projected (consolidated)</span>
+  </div>
+
+  <table>
+    <tr><th>Period</th><th>Revenue</th><th>Growth</th><th>EBITDA%</th><th>PAT</th><th>PAT%</th><th>Basis</th><th>Key event</th></tr>
+    <tr><td>FY22</td><td>~₹90 Cr</td><td>—</td><td>~18%</td><td>~₹10 Cr</td><td class="a">11%</td><td>Standalone</td><td>Two decades of HVDC/FACTS manufacturing. Exporting globally.</td></tr>
+    <tr><td>FY24</td><td>₹133.7 Cr</td><td class="g">~+20%</td><td>~19%</td><td>₹17.5 Cr</td><td class="a">13.1%</td><td>Standalone</td><td>IPO filed. 210 customers globally. Sangli + Cochin facilities.</td></tr>
+    <tr><td>FY25</td><td>₹155.7 Cr</td><td class="g">+16.5%</td><td>~20%</td><td>₹30.3 Cr</td><td class="g">19.5%</td><td>Standalone</td><td>IPO in Feb 2025 (₹859 Cr, 63% OFS). PAT +73%. Mehru consolidation begins.</td></tr>
+    <tr><td>Q1 FY26</td><td>₹81 Cr</td><td class="g">+YoY</td><td>~21%</td><td>~₹24 Cr</td><td class="g">29.6%</td><td>Consolidated</td><td>Mehru (consolidated from Mar '25) adds revenue. Cochin expansion underway.</td></tr>
+    <tr><td>Q2 FY26</td><td>₹257 Cr</td><td class="g">+112% YoY</td><td>~22.5%</td><td>~₹72 Cr</td><td class="g">28%</td><td>Consolidated</td><td>Order book ₹830 Cr. GIS JV with Hyosung (Korea). 800kV HVDC orders.</td></tr>
+    <tr><td>Q3 FY26</td><td>₹284 Cr</td><td class="g">+292% YoY</td><td>~22%</td><td>₹62.9 Cr</td><td class="g">22.1%</td><td>Consolidated</td><td>Cochin expansion complete. Sangli plant advanced to Jun 2026. Sukrut JV acquired.</td></tr>
+    <tr><td>9M FY26</td><td>~₹620+ Cr</td><td class="g">+~200%+ YoY</td><td>~22%</td><td>~₹158 Cr</td><td class="g">~25%</td><td>Consolidated</td><td>Order book ₹895+ Cr. Additional orders ₹200–250 Cr expected. FY26 guidance ₹700–800 Cr.</td></tr>
+    <tr><td>FY26E</td><td>~₹775–850 Cr</td><td class="g">~100–120%</td><td>~22%</td><td>~₹165–185 Cr</td><td class="g">~21–22%</td><td>Consolidated</td><td>Mehru full year. Bhiwadi +45% capacity. FY26 PAT likely ₹165–185 Cr.</td></tr>
+    <tr><td>FY27E</td><td>~₹1,500–2,000 Cr</td><td class="g">~80–140%</td><td>~22–23%</td><td>~₹280–400 Cr</td><td class="g">~19–22%</td><td>Consolidated</td><td>Sangli 9x capacity (Jun 2026). HVDC magnet wire facility (Q3 FY27). Turkey expansion.</td></tr>
+    <tr><td>FY29E</td><td>~₹3,000–4,000 Cr</td><td>—</td><td>~22–24%</td><td>~₹600–900 Cr</td><td class="g">~20–22%</td><td>Consolidated</td><td>Full capacity operational. Backward integration. Multi-country presence. AI/IoT layer.</td></tr>
+  </table>
+
+  <div class="val-alert">
+    <div class="val-h">⚠️ Critical context: The 292% Q3 FY26 growth is largely inorganic — Mehru consolidation effect</div>
+    <div class="val-b">Quality Power's standalone Q3 FY26 revenue grew +61% YoY — impressive but not 292%. The 292% consolidated number is primarily because Mehru Electrical (acquired/consolidated March 2025) was not in the Q3 FY25 base. Before building investment thesis on "292% growth," investors must separate organic growth (standalone: +61% Q3 FY26, +40% 9M FY26) from acquisition-driven growth (consolidated: +292%). Organic growth of 40–60% YoY is excellent — just not as extraordinary as the headline suggests.</div>
+  </div>
+</div>
+
+<!-- SECTOR KPIs -->
+<div id="sectorKPI" class="panel">
+  <div class="sh">Power equipment sector KPIs — what makes Quality Power exceptional</div>
+  <div class="warn power"><strong>The five metrics that define a high-voltage power technology company:</strong> (1) Technology depth — HVDC/FACTS capability (near-impossible to replicate), (2) Order book coverage ratio, (3) EBITDA margin (reflects technology premium vs commodity transformer), (4) Export share (higher margin), and (5) Debtor days (project businesses have extended payment cycles — this needs careful monitoring).</div>
+  <div class="kpi-grid">
+    <div class="kpi indigo"><div class="kpi-l">Technology tier</div><div class="kpi-v">HVDC/FACTS</div><div class="kpi-s">One of ~5 global manufacturers of 800kV HVDC coils</div></div>
+    <div class="kpi green"><div class="kpi-l">FY26E EBITDA margin</div><div class="kpi-v">~22%+</div><div class="kpi-s">Management guides 22% floor; upward bias</div></div>
+    <div class="kpi orange"><div class="kpi-l">Order book (Q3 FY26)</div><div class="kpi-v">₹895 Cr</div><div class="kpi-s">~1.1x TTM revenue — ~1.5 yr visibility</div></div>
+    <div class="kpi green"><div class="kpi-l">Countries served</div><div class="kpi-v">100+</div><div class="kpi-s">Genuine global player since 2001</div></div>
+    <div class="kpi red"><div class="kpi-l">Debtor days</div><div class="kpi-v" style="color:#A32D2D">149 days ↑</div><div class="kpi-s">Up from 113 — major watch item</div></div>
+    <div class="kpi green"><div class="kpi-l">Promoter holding</div><div class="kpi-v">73.9%</div><div class="kpi-s">Stable, high conviction</div></div>
+  </div>
+
+  <div class="sh">Why HVDC/FACTS is the highest-value segment in power equipment</div>
+  <table>
+    <tr><th>Product tier</th><th>Examples</th><th>EBITDA margin</th><th>Barrier to entry</th><th>Key players</th></tr>
+    <tr><td><strong>HVDC coils/reactors (800kV)</strong></td><td>HVDC link reactors, converter transformers</td><td class="g">25–35%</td><td>Extremely high — years of testing, PGCIL qualification, ABB/Siemens JV</td><td>ABB, Siemens, Quality Power (only Indian)</td></tr>
+    <tr><td><strong>FACTS systems (STATCOM, SVC)</strong></td><td>Static var compensators, harmonic filters</td><td class="g">20–28%</td><td>High — control systems, power electronics expertise</td><td>ABB, Hitachi, Siemens, Endoks (Quality Power sub)</td></tr>
+    <tr><td><strong>Instrument transformers/coils</strong></td><td>CTs, PTs, line traps</td><td class="a">15–22%</td><td>Medium — Mehru subsidiary</td><td>TRIL, Quality Power (Mehru), Crompton</td></tr>
+    <tr><td><strong>Standard power transformers</strong></td><td>220kV–765kV distribution</td><td class="a">14–18%</td><td>Moderate — Indo Tech, Voltamp, TRIL</td><td>TRIL, Voltamp, BHEL, Indo Tech</td></tr>
+    <tr><td><strong>Distribution transformers</strong></td><td>11kV–33kV, last-mile</td><td class="r">8–12%</td><td>Low — hundreds of players</td><td>Fragmented; hundreds of SMEs</td></tr>
+  </table>
+  <div class="warn indigo"><strong>Quality Power's strategic genius is occupying the highest-value, lowest-competition layer of the power equipment sector.</strong> An 800kV HVDC reactor requires decades of engineering expertise, PGCIL/ABB qualification, special winding technology (CTC magnet wire), and testing infrastructure costing hundreds of crores. There are fewer than 5 manufacturers globally who can supply this. Quality Power is the only Indian company in this club. This is a genuine moat — not just a temporary advantage.</div>
+</div>
+
+<!-- BUSINESS MODEL -->
+<div id="business" class="panel">
+  <div class="sh">What Quality Power does — the group structure explained</div>
+  <div class="warn power"><strong>Quality Power is now a multi-entity power technology group</strong>, not just a single manufacturer. Understanding each entity separately is essential because they serve different markets, have different margins, and contribute differently to consolidated numbers.</div>
+
+  <div class="subs-grid">
+    <div class="sub-card">
+      <div class="sub-nm" style="color:#E65100">🔴 Quality Power India (Parent, Standalone)</div>
+      <div class="sub-tag">Sangli, Maharashtra + Aluva, Kerala · Founded 2001</div>
+      <div class="sub-bd"><strong>Core products:</strong> HVDC reactors (up to 800kV), FACTS systems (STATCOM, SVC), line traps, harmonic filters, capacitor banks, converters. <strong>Revenue (9M FY26 standalone):</strong> ₹151 Cr (+40% YoY). <strong>EBITDA margin:</strong> ~25–30%. The highest-margin entity — pure technology play with global customer base including ABB, Siemens, GE, PGCIL, and 200+ utilities in 100+ countries. The Sangli plant is undergoing 9x capacity expansion (₹320K sq ft, June 2026).</div>
+    </div>
+    <div class="sub-card">
+      <div class="sub-nm" style="color:#5E35B1">🟣 Mehru Electrical (Material subsidiary, consolidated from Mar 2025)</div>
+      <div class="sub-tag">Bhiwadi, Rajasthan · Acquired/consolidated March 2025</div>
+      <div class="sub-bd"><strong>Products:</strong> Instrument transformers (CTs, PTs), high-voltage coils, transformer components. <strong>Revenue:</strong> ~₹420 Cr (FY26E standalone). <strong>EBITDA margin:</strong> 12% → improving to "high teens" (management guided). The entity behind the Q3 FY26 consolidated 292% growth. Bhiwadi capacity +45% by Q4 FY26. JV with Hyosung (Korea) for GIS instrument transformers — first Indian company to co-develop GIS technology.</div>
+    </div>
+    <div class="sub-card">
+      <div class="sub-nm" style="color:#1565C0">🔵 Endoks (Turkey, 51% stake, since 2011)</div>
+      <div class="sub-tag">Istanbul, Turkey · STATCOM, SVC, BESS</div>
+      <div class="sub-bd"><strong>Products:</strong> STATCOM, SVC systems, advanced power electronics, Battery Energy Storage Systems (BESS). <strong>Key orders:</strong> ₹152 Cr BESS order (Europe, Dec 2027 execution) + option to ₹292 Cr. Gateway to European, Middle East, and African markets. <strong>Strategic value:</strong> European market access for high-margin STATCOM/BESS orders. Evaluating Turkey instrument transformer manufacturing.</div>
+    </div>
+    <div class="sub-card">
+      <div class="sub-nm" style="color:#2E7D32">🟢 Sukrut Electric (50% JV, acquired Q3 FY26) + Nebeskie Labs (26%)</div>
+      <div class="sub-tag">Sukrut: transformer components · Nebeskie: AI/IoT/edge computing</div>
+      <div class="sub-bd"><strong>Sukrut:</strong> Transformer components for global OEMs. Turned operationally positive in first month post-acquisition — strong signal. Access to OEM supply chain opportunities. <strong>Nebeskie:</strong> AI analytics, IoT-enabled asset monitoring, digital twin platforms. Provides Quality Power's products with intelligence layer — smart HVDC/FACTS = higher premium. Also: backward integration in magnet wire (HVDC CTC Magnet Wire Facility — first in India, Q3 FY27).</div>
+    </div>
+  </div>
+
+  <div class="sh">The Sangli plant — the 9x capacity expansion explained</div>
+  <div class="point"><div class="dot do">!</div><div><strong>Currently: ~₹150–200 Cr standalone revenue at near-full utilisation.</strong> The Sangli plant (HVDC coils, reactors) has been running at maximum capacity for years. This is why standalone growth has been ~40–60% despite massive global demand — they simply can't take more orders than the plant can produce.</div></div>
+  <div class="point"><div class="dot dg">+</div><div><strong>Post-expansion (June 2026): 9x capacity = ₹1,500–2,000 Cr potential standalone revenue.</strong> The 320,000 sq ft facility being built at Sangli will house a 2,500 kV AC high-power test lab — one of the largest globally — and a magnet wire manufacturing line. This unlocks the ability to take orders that Quality Power currently has to decline. The capacity expansion is the single most important catalyst for the entire investment thesis.</div></div>
+  <div class="point"><div class="dot di">+</div><div><strong>First HVDC CTC Magnet Wire facility in India (Q3 FY27):</strong> Currently HVDC-grade magnet wire is imported (limited global suppliers, price volatile). Making it in India = lower cost + faster delivery + proprietary supply chain. This is backward integration that will further widen the margin moat vs any competitor attempting to enter the HVDC market.</div></div>
+</div>
+
+<!-- GUIDANCE -->
+<div id="guidance" class="panel">
+  <div class="sh">Guidance analysis — management has been credible but conservative</div>
+  <div class="warn power"><strong>Quality Power management is disciplined in guidance</strong> — they do not over-promise. The FY26 revenue guidance of ₹700–800 Cr was given when analysts were expecting ₹800–1,000 Cr. At the same time, the order book of ₹895 Cr at end-Q3 FY26 suggests the actual outcome may exceed the upper end of the guidance range.</div>
+
+  <div class="sh">Past guidance vs actual</div>
+  <div class="guid-card beat">
+    <div class="guid-h">✓ IPO standalone revenue trajectory — consistently delivered</div>
+    <div class="guid-b">Pre-IPO: FY24 standalone revenue ₹133.7 Cr, guided continuation of ~15–20% organic growth. FY25 delivered ₹155.7 Cr (+16.5%) — on track. 9M FY26 standalone: ₹151 Cr (+40%) — meaningfully ahead of the guidance pace. Standalone PAT FY25 at ₹30.3 Cr (+73%) — far exceeded expectations. Standalone execution quality: excellent. The core business was systematically undervalued pre-IPO.</div>
+    <div class="guid-s">Credibility (standalone organic): 9/10. Delivery has been better than guided.</div>
+  </div>
+  <div class="guid-card beat">
+    <div class="guid-h">✓ FY26 guidance ₹700–800 Cr consolidated — likely to exceed upper bound</div>
+    <div class="guid-b">With 9M FY26 consolidated revenue already at ~₹620–640 Cr, the full year should reach ₹800–850 Cr — at or above the upper guidance of ₹800 Cr. Additionally, order book of ₹895 Cr (1.1x TTM revenue) provides strong Q4 FY26 visibility. Management guided FY26 conservatively to account for potential supply chain constraints and labour ramp. The actual outcome has been better.</div>
+    <div class="guid-s">Credibility: 8/10. Full year tracking to ₹800–850 Cr — at or slightly above guidance.</div>
+  </div>
+  <div class="guid-card watch">
+    <div class="guid-h">⚠ Sangli plant timeline: Advanced from Sep 2026 → Jun 2026 — a positive revision</div>
+    <div class="guid-b">Originally targeted for September 2026, the Sangli 9x capacity expansion has been advanced to June 2026. This is a positive revision — a 3-month pull-forward. The Board also approved ₹25 Cr additional capex for a Global Engineering & Technology Centre at the same premises. However, "9x capacity" language should be treated cautiously — the effective revenue capacity depends on order flow, product mix, and test lab commissioning, not just plant square footage. Monitor Q4 FY26 update for commissioning progress.</div>
+    <div class="guid-s">Credibility: 7/10 on June 2026 target. Construction is progressing but test lab certification can delay actual production ramp.</div>
+  </div>
+  <div class="guid-card">
+    <div class="guid-h">FY27 revenue guidance — implied ₹1,500–2,000 Cr (management has not formally guided)</div>
+    <div class="guid-b">Management has not formally guided FY27 revenue. But: (1) Sangli 9x capacity by Jun 2026 + Mehru (₹420 Cr) + Endoks (growing) + Sukrut = total group capacity of ₹2,000–2,500 Cr, (2) Order pipeline at Q3 FY26: ₹895 Cr backlog + ₹370–440 Cr expected additional orders = ₹1,265–1,335 Cr total visibility. At historical execution rate (60–70% of order book in year), FY27 revenue of ₹1,200–1,600 Cr is achievable. Base case: ₹1,400 Cr. Bull case: ₹1,800 Cr.</div>
+    <div class="guid-s">Credibility: 7/10. Capacity is being built. Whether FY27 executes at ₹1,400 or ₹1,800 Cr depends on Sangli ramp pace and global HVDC order inflow velocity.</div>
+  </div>
+  <div class="guid-card">
+    <div class="guid-h">EBITDA margin floor: 22% guided with upward bias</div>
+    <div class="guid-b">Management expects overall group EBITDA margin of ~22% as a floor. Mehru is expected to reach "high teen" margins from current ~12–16%. Quality Power standalone is already at 25–30%. As Mehru margins improve (higher-value GIS products, scale) and Sangli comes online with higher-margin HVDC orders, the blended group margin should expand toward 24–26% by FY27–28. This is genuinely premium for an industrial manufacturer — ABB India achieves 14%, Siemens India 13%.</div>
+    <div class="guid-s">Credibility: 8/10. Margin guidance has been delivered consistently. The HVDC/FACTS technology premium protects margins.</div>
+  </div>
+
+  <div class="sh">Guidance scorecard summary</div>
+  <table>
+    <tr><th>Guidance item</th><th>Credibility</th><th>Base case</th><th>Key risk</th></tr>
+    <tr><td>FY26 revenue ₹700–800 Cr</td><td class="g">8/10 — at/above upper bound</td><td>₹800–850 Cr</td><td>Q4 execution slip; supply chain</td></tr>
+    <tr><td>EBITDA margin ≥22%</td><td class="g">8/10 — delivered consistently</td><td>22–23%</td><td>Commodity prices; Mehru mix</td></tr>
+    <tr><td>Sangli plant Jun 2026</td><td class="a">7/10 — 3-month advance vs Sep target</td><td>Jun–Sep 2026</td><td>Test lab certification; civil delays</td></tr>
+    <tr><td>FY27 revenue (implied)</td><td class="a">6/10 — not formally guided</td><td>₹1,200–1,500 Cr</td><td>Sangli ramp speed; HVDC order timing</td></tr>
+    <tr><td>Debtor days normalisation</td><td class="r">4/10 — rising, needs improvement</td><td>~130–140 days (project norm)</td><td>If stays at 150+, working capital stressed</td></tr>
+  </table>
+</div>
+
+<!-- RISKS -->
+<div id="risks" class="panel">
+  <div class="sh">Risks — what can go wrong at this valuation and scale</div>
+  <div class="val-alert">
+    <div class="val-h">⚠️ The 3x problem: At ₹9,835 Cr mcap, 3x needs ₹29,505 Cr</div>
+    <div class="val-b">This is the most important fact for Garvit's portfolio. Quality Power is already at ₹9,835 Cr market cap — 10x larger than when listed in Feb 2025 at ~₹850 Cr (post-issue market cap). The stock has already had its 10x re-rating. Now generating 3x from ₹9,835 Cr requires either: (a) PAT growing from ~₹165 Cr to ₹500+ Cr by FY28 while maintaining 25x PE = ₹12,500 Cr mcap = still only 1.3x, OR (b) PAT ₹600–800 Cr by FY28–29 at 30–40x PE = ₹18,000–32,000 Cr = 1.8–3.3x. 3x is possible but requires extraordinary execution over FY27–FY29. This is an accumulated-profit stock, not a discovery opportunity.</div>
+  </div>
+
+  <div class="point"><div class="dot dr">1</div><div><strong>PE of 60–93x on trailing earnings — any hiccup triggers significant de-rating.</strong><br>Quality Power is priced like a tech company, not an industrial manufacturer. ABB India trades at 70x, Siemens India at 50x. Quality Power at 60–93x is in that league. But Quality Power is far smaller (₹9,835 Cr vs ABB India at ₹85,000 Cr) and carries execution risk that established MNCs don't. A missed quarter, capex delay, or order cancellation could send the stock -30 to -40% instantly at this PE level. This is not hypothetical — the stock already corrected from ₹1,082 to ₹630 (-42%) within months of listing before recovering.</div></div>
+
+  <div class="point"><div class="dot dr">2</div><div><strong>Debtor days rising from 113 → 149 — working capital stress building.</strong><br>In project-based engineering businesses, debtor days rising means customers are delaying payments. At ₹775 Cr revenue and 149 debtor days, Quality Power has ~₹316 Cr locked in receivables. If this rises further (which is possible in an export-heavy business with longer payment terms), it creates cash flow stress despite strong PAT. The company needs to maintain this or it will erode the "near-zero net debt" advantage gained from the IPO. Monitor this every quarter — it's the most important leading indicator of financial health.</div></div>
+
+  <div class="point"><div class="dot dr">3</div><div><strong>Sangli 9x expansion is high-stakes execution — any delay hits FY27 revenue.</strong><br>The FY27 bull case depends almost entirely on the Sangli plant commissioning by June 2026 and ramping to meaningful utilisation by Q3–Q4 FY27. A 320,000 sq ft facility with a 2,500 kV test lab is a complex engineering project. The test lab itself requires specialised equipment with 12–18 month lead times. If commissioning slips to Q3 FY27 and test lab qualification takes another 6 months, meaningful HVDC coil production from Sangli doesn't start until FY28. This single delay could defer the "9x capacity" story by 12–18 months.</div></div>
+
+  <div class="point"><div class="dot da">4</div><div><strong>Chinese competition in global HVDC bids — margin pressure.</strong><br>Chinese state-owned enterprises (TBEA, CHINT, etc.) have been aggressively bidding on global HVDC projects at significantly lower prices. In some markets (especially Middle East, Southeast Asia), they can undercut Quality Power by 20–30%. Quality Power's defence: (a) Western utilities prefer non-Chinese suppliers post-2020 geopolitical tensions, (b) FACTS and STATCOM require complex customisation that Chinese mass-production doesn't match well, (c) ABB/Siemens certifications and 100-country track record = trust premium. But this competition limits top-line growth potential in some geographies.</div></div>
+
+  <div class="point"><div class="dot da">5</div><div><strong>Multiple acquisitions simultaneously = management bandwidth risk.</strong><br>In 18 months: Mehru (consolidated), Sukrut (50% JV), Nebeskie (26%), Turkey instrument transformer plant (evaluated). Running four integration tracks simultaneously while also executing a 9x Sangli capex program = significant management bandwidth risk. Any integration failure could be costly both financially and operationally. Mehru's "turned positive in first month" is encouraging — but Sukrut and multiple Turkey-related moves are still early stage.</div></div>
+
+  <div class="point"><div class="dot dg">+</div><div><strong>Real strengths that justify premium valuation:</strong><br>Only Indian manufacturer of 800kV HVDC equipment — this is a genuine, non-replicable moat. 100+ countries, 20+ years track record, Rihand-Dadri HVDC heritage. Strong institutional investor interest (SBI Life, Premji Investment, Elara Capital visited Sangli plant March 2026). Order book ₹895 Cr + expected ₹370 Cr+ more = ₹1,265+ Cr visibility. Net debt near-zero post-IPO. 22% EBITDA margin floor. Promoter at 73.9% — highly aligned. Global mega-trends (AI data centres, HVDC corridors, renewables) create 15–20 year structural demand.</div></div>
+</div>
+
+<!-- SCENARIOS -->
+<div id="scenarios" class="panel">
+  <div class="sh">Three scenarios — from current ~₹1,281 (₹9,835 Cr mcap)</div>
+  <div class="warn caution"><strong>Important calibration:</strong> Quality Power has already done ~3x from its IPO price of ₹425 (listed Feb 2025). At ₹9,835 Cr mcap, the remaining 3x requires extraordinary execution. The valuation has been largely de-risked (partly), but the absolute level is demanding.</div>
+
+  <div class="scenario" style="border-left:3px solid #F57C00">
+    <div style="font-size:13px;font-weight:500;color:#E65100;margin-bottom:8px">Bull case — 2.5–4x in 3 years (FY28): Sangli delivers, FY28 PAT ₹500–700 Cr</div>
+    <div class="sc-grid">
+      <div class="sc-cell"><div class="sc-l">FY27 revenue</div><div class="sc-v">₹1,800–2,000 Cr</div></div>
+      <div class="sc-cell"><div class="sc-l">FY27 PAT</div><div class="sc-v">₹350–400 Cr</div></div>
+      <div class="sc-cell"><div class="sc-l">FY28 revenue</div><div class="sc-v">₹2,800–3,500 Cr</div></div>
+      <div class="sc-cell"><div class="sc-l">FY28 PAT</div><div class="sc-v">₹600–750 Cr</div></div>
+      <div class="sc-cell"><div class="sc-l">PE (FY28, sustained premium)</div><div class="sc-v">30–40x</div></div>
+      <div class="sc-cell"><div class="sc-l">FY28 mcap implied</div><div class="sc-v">₹18,000–30,000 Cr</div></div>
+    </div>
+    <div style="font-size:11.5px;color:#333;margin-top:8px"><strong>What must happen:</strong> Sangli 9x capacity fully ramped by Q3 FY27. Magnet wire facility live. Global HVDC order volumes sustain at current pace. Mehru margins reach 18–20%. Endoks BESS business scales. Debtor days normalise below 130. Sukrut integration successful. No major Chinese competition disruption in Q2/Q3 FY27 order wins. FY28 PAT of ₹600–700 Cr at 30–40x PE = ₹18,000–28,000 Cr = 1.8–2.8x from today. For 3x from today, need either ₹850 Cr PAT at 35x or ₹600 Cr at 50x. Both possible but demanding.</div>
+  </div>
+
+  <div class="scenario" style="border-left:3px solid #378ADD">
+    <div style="font-size:13px;font-weight:500;color:#185FA5;margin-bottom:8px">Base case — 1.5–2x in 3 years: Solid execution, Sangli partial ramp</div>
+    <div class="sc-grid">
+      <div class="sc-cell"><div class="sc-l">FY27 revenue</div><div class="sc-v">₹1,200–1,500 Cr</div></div>
+      <div class="sc-cell"><div class="sc-l">FY27 PAT</div><div class="sc-v">₹230–300 Cr</div></div>
+      <div class="sc-cell"><div class="sc-l">FY28 revenue</div><div class="sc-v">₹1,800–2,200 Cr</div></div>
+      <div class="sc-cell"><div class="sc-l">FY28 PAT</div><div class="sc-v">₹350–450 Cr</div></div>
+      <div class="sc-cell"><div class="sc-l">PE (FY28, moderate)</div><div class="sc-v">30–35x</div></div>
+      <div class="sc-cell"><div class="sc-l">FY28 mcap implied</div><div class="sc-v">₹10,500–15,750 Cr</div></div>
+    </div>
+    <div style="font-size:11.5px;color:#333;margin-top:8px">Sangli ramps slowly (test lab takes 12 months to certify). Mehru grows 20–25% per year. Endoks steady. FY28 PAT ₹400 Cr at 32x PE = ₹12,800 Cr mcap = 1.3x. <strong>Base case delivers only 1.3–1.6x in 3 years — less than Garvit's 3x goal.</strong> The valuation is already pricing in significant optimism.</div>
+  </div>
+
+  <div class="scenario" style="border-left:3px solid #A32D2D">
+    <div style="font-size:13px;font-weight:500;color:#A32D2D;margin-bottom:8px">Bear case — -30 to -50%: Sangli delay + margin pressure + PE de-rating</div>
+    <div class="sc-grid">
+      <div class="sc-cell"><div class="sc-l">Trigger</div><div class="sc-v">Sangli slips to FY28</div></div>
+      <div class="sc-cell"><div class="sc-l">Trigger</div><div class="sc-v">Chinese undercutting wins orders</div></div>
+      <div class="sc-cell"><div class="sc-l">Trigger</div><div class="sc-v">Debtor days reach 180+</div></div>
+      <div class="sc-cell"><div class="sc-l">FY27 revenue</div><div class="sc-v">₹900–1,100 Cr only</div></div>
+      <div class="sc-cell"><div class="sc-l">FY27 PAT</div><div class="sc-v">₹180–220 Cr</div></div>
+      <div class="sc-cell"><div class="sc-l">PE de-rating</div><div class="sc-v">20–25x on miss</div></div>
+    </div>
+    <div style="font-size:11.5px;color:#333;margin-top:8px"><strong>Bear probability: 25–30%.</strong> At 60–93x trailing PE, any miss triggers brutal de-rating. The stock already showed this pattern — post-IPO, it fell from ₹1,082 to ₹630 (-42%) before recovering. If FY27 disappoints (Sangli delayed, working capital stressed, HVDC orders slow), the stock could revisit ₹700–800 levels = -37 to -45% from current ₹1,281.</div>
+  </div>
+
+  <table style="margin-top:10px">
+    <tr><th>Target</th><th>Mcap needed</th><th>Path</th><th>Timeline</th><th>Probability</th></tr>
+    <tr><td>3x (₹29,505 Cr)</td><td>₹29,505 Cr</td><td>FY28 PAT ₹750 Cr at 40x PE</td><td>FY28–FY29</td><td class="r">15–20%</td></tr>
+    <tr><td>2x (₹19,670 Cr)</td><td>₹19,670 Cr</td><td>FY28 PAT ₹500 Cr at 35x PE</td><td>FY28</td><td class="a">25–30%</td></tr>
+    <tr><td>1.5x (₹14,752 Cr)</td><td>₹14,752 Cr</td><td>FY27 PAT ₹350 Cr at 40x PE</td><td>FY27</td><td class="a">35%</td></tr>
+    <tr><td>Bear -30 to -50%</td><td>₹4,917–6,884 Cr</td><td>Sangli delay + PE de-rating</td><td>Any quarter</td><td class="a">25–30%</td></tr>
+  </table>
+</div>
+
+<!-- SECTOR LANDSCAPE -->
+<div id="sectormap" class="panel">
+  <div class="sh">High-voltage power equipment sector landscape — India and global</div>
+  <div class="warn power"><strong>The global HVDC/FACTS market is a concentrated oligopoly.</strong> Globally, fewer than 10 companies manufacture 800kV HVDC-grade equipment. Barrier to entry: (1) Decades of engineering expertise, (2) High-voltage test labs worth ₹200–500 Cr, (3) Regulatory qualification processes (ABB/Siemens certify suppliers — takes 2–4 years), (4) Project execution track record (utilities don't risk HVDC infrastructure on new suppliers). Quality Power is the only Indian company that has cleared all these hurdles.</div>
+
+  <div class="sector-card">
+    <div class="sc-hdr"><div><div class="sc-nm">ABB India / Hitachi Energy — Global HVDC/FACTS market leaders</div><div class="sc-tg">₹80,000–100,000 Cr mcap · India subsidiary of Swiss/Japanese MNCs · PE 60–80x</div></div><span class="badge bimp">Dominant — different scale entirely</span></div>
+    <div class="sc-bd">ABB/Hitachi Energy are the global #1 and #2 in HVDC technology. They build the entire HVDC system (pole design, converters, cable, transformers). Quality Power is a component supplier to these same companies (reactors, coils for ABB/Siemens projects). This means Quality Power both competes AND supplies to these giants. Revenue in India: ₹8,000–15,000 Cr. PE 60–80x. <strong>3x from here is mathematically impossible. But Quality Power's relationship with ABB/Siemens as a qualified Indian supplier is a massive credibility signal.</strong></div>
+  </div>
+
+  <div class="sector-card">
+    <div class="sc-hdr"><div><div class="sc-nm">TRIL (Transformers & Rectifiers India) — Best comparable Indian peer</div><div class="sc-tg">₹7,929 Cr mcap · ₹2,395 Cr FY26 revenue · First HVDC repair order (PGCIL)</div></div><span class="badge ba">Good comparison — HVDC aspirant</span></div>
+    <div class="sc-bd">TRIL just secured India's first HVDC transformer repair order from PGCIL. This is a qualification milestone — similar to what Quality Power achieved years ago. TRIL is at Layer 4 (standard power transformers up to 765kV), Quality Power is at Layer 1 (HVDC coils, FACTS). TRIL at ₹7,929 Cr mcap trades at 35x PE with FY26 revenue ₹2,395 Cr. <strong>Quality Power at ₹9,835 Cr mcap with ₹775 Cr TTM revenue = more expensive than TRIL on P/S basis, but justified by higher margins and HVDC moat.</strong> Not a direct replacement for each other.</div>
+  </div>
+
+  <div class="sector-card">
+    <div class="sc-hdr"><div><div class="sc-nm">Quality Power Electrical Equipments — Your stock</div><div class="sc-tg">₹9,835 Cr mcap · ₹775 Cr TTM revenue · 22% EBITDA · 100+ countries · HVDC leader</div></div><span class="badge ba">Premium valuation — watch Sangli execution</span></div>
+    <div class="sc-bd">One of India's most differentiated power equipment companies. 20+ year HVDC track record. Sangli 9x expansion unlocks ₹2,000+ Cr capacity. Mehru (India) + Endoks (Turkey) + Sukrut + Nebeskie = diversified, integrated group. But ₹9,835 Cr mcap at 60–93x PE already prices in significant success. 3x from here requires FY28–29 PAT of ₹600–750 Cr — which needs Sangli to work flawlessly. The 3x risk/reward is less favourable than Borana Weaves, Websol, or DEE Development from Garvit's portfolio.</div>
+  </div>
+</div>
+
+<!-- FULL COMPARISON -->
+<div id="compare" class="panel">
+  <div class="sh">Quality Power vs sector peers — comprehensive comparison</div>
+  <div style="border:1px solid #ddd;border-radius:10px;overflow:hidden;font-size:11px">
+    <div class="comp-h">
+      <div class="cc-h" style="background:#f5f5f3">Metric</div>
+      <div class="cc-h" style="background:#FFF3E0;color:#E65100">Quality Power ← Your stock</div>
+      <div class="cc-h" style="background:#E6F1FB;color:#185FA5">TRIL (TARIL)</div>
+      <div class="cc-h" style="background:#f5f5f3">ABB India</div>
+    </div>
+    <div class="comp-row"><div class="cc cc-label">Market cap</div><div class="cc mid-cell">₹9,835 Cr</div><div class="cc mid-cell">₹7,929 Cr</div><div class="cc loser-cell">₹85,000+ Cr</div></div>
+    <div class="comp-row"><div class="cc cc-label">TTM revenue</div><div class="cc loser-cell">₹775 Cr</div><div class="cc winner-cell">₹2,395 Cr</div><div class="cc winner-cell">₹12,000+ Cr</div></div>
+    <div class="comp-row"><div class="cc cc-label">Revenue growth (FY26)</div><div class="cc winner-cell">~+100% (Mehru + organic)</div><div class="cc mid-cell">+23%</div><div class="cc loser-cell">~+12–15%</div></div>
+    <div class="comp-row"><div class="cc cc-label">EBITDA margin</div><div class="cc winner-cell">~22% (floor, upward bias)</div><div class="cc mid-cell">~15.1%</div><div class="cc mid-cell">~13–14%</div></div>
+    <div class="comp-row"><div class="cc cc-label">HVDC capability</div><div class="cc winner-cell">800kV HVDC (only Indian co.)</div><div class="cc mid-cell">HVDC repair order (PGCIL, 2026)</div><div class="cc winner-cell">Full HVDC (Swiss tech, MNC)</div></div>
+    <div class="comp-row"><div class="cc cc-label">Order book coverage</div><div class="cc winner-cell">₹895 Cr (~1.15x revenue)</div><div class="cc winner-cell">₹5,005 Cr (~2.1x revenue)</div><div class="cc winner-cell">Very large</div></div>
+    <div class="comp-row"><div class="cc cc-label">Trailing PE</div><div class="cc loser-cell">60–93x</div><div class="cc mid-cell">~35x</div><div class="cc loser-cell">~70–80x</div></div>
+    <div class="comp-row"><div class="cc cc-label">PB ratio</div><div class="cc loser-cell">~20x</div><div class="cc mid-cell">~5x</div><div class="cc loser-cell">~20x+</div></div>
+    <div class="comp-row"><div class="cc cc-label">Geography</div><div class="cc winner-cell">100+ countries (export-led)</div><div class="cc mid-cell">India + 25 countries (growing)</div><div class="cc winner-cell">Global</div></div>
+    <div class="comp-row"><div class="cc cc-label">Debtor days</div><div class="cc loser-cell">149 days (rising ↑)</div><div class="cc mid-cell">Moderate</div><div class="cc mid-cell">Moderate (MNC practices)</div></div>
+    <div class="comp-row"><div class="cc cc-label">Promoter</div><div class="cc winner-cell">73.9% (strong)</div><div class="cc mid-cell">~45%</div><div class="cc loser-cell">MNC subsidiary</div></div>
+    <div class="comp-row"><div class="cc cc-label">Technology R&D</div><div class="cc winner-cell">In-house HVDC/FACTS, AI/IoT (Nebeskie)</div><div class="cc mid-cell">Strong transformer R&D</div><div class="cc winner-cell">Global R&D via parent</div></div>
+    <div class="comp-row"><div class="cc cc-label">3x probability (3yr)</div><div class="cc loser-cell">15–20% (already re-rated)</div><div class="cc mid-cell">20–25%</div><div class="cc loser-cell">5–8% (mcap too large)</div></div>
+    <div class="comp-row"><div class="cc cc-label">Best for Garvit's goal</div><div class="cc">Long-term compounder — valuation demanding for 3x now</div><div class="cc">Better 3x risk/reward in power equipment sector at lower PE</div><div class="cc">Avoid for 3x — wrong size entirely</div></div>
+  </div>
+
+  <div class="warn power" style="margin-top:12px"><strong>Critical comparison insight:</strong> TRIL has a better 3x risk/reward than Quality Power at current prices — TRIL has a ₹5,005 Cr order book (5.6x more than Quality Power), trading at 35x PE vs Quality Power's 60–93x, with similar HVDC ambitions and full domestic market access. TRIL's recent HVDC breakthrough with PGCIL positions it on the same growth trajectory Quality Power was on 3 years ago. If you want power equipment sector exposure for 3x, TRIL at ₹7,929 Cr mcap is more attractive than Quality Power at ₹9,835 Cr — with a larger order book, lower PE, and no valuation-driven downside risk. That said, Quality Power's technology moat (800kV HVDC) remains unique in India.</div>
+</div>
+
+<!-- VERDICT -->
+<div id="verdict" class="panel">
+  <div class="sh">The definitive verdict for Garvit's 3x goal</div>
+
+  <div class="verdict-card" style="background:#FFF3E0;border:1px solid #FFB74D">
+    <div class="vc-h" style="color:#E65100">Quality Power — Verdict: Outstanding company, wrong entry point for 3x. Watch and wait, or maximum ₹15,000–25,000 as speculative long-term hold.</div>
+    <div class="vc-b">There is no question about the quality of this business — Quality Power is one of India's most strategically important industrial companies. The HVDC moat is genuine and non-replicable. The global demand for grid modernisation, renewable energy integration, and HVDC corridors is a 20-year structural theme. Management is disciplined, execution track record is good, and the Sangli expansion is transformational.<br><br><strong>But the 3x problem is mathematical, not qualitative.</strong> The stock has already done ~3x from the IPO issue price of ₹425 (now ₹1,281). At ₹9,835 Cr market cap, a further 3x requires PAT of ₹600–750 Cr at 40x PE — which is a FY29 target at best. That's 3+ years from today with everything going right.<br><br><strong>Compare to your better options:</strong><br>• DEE Development: ₹2,827 Cr mcap, 13–19x forward PE, 3x probability 35% — better value in power infrastructure<br>• Borana Weaves: ₹1,013 Cr mcap, 17x PE, 30–35% 3x probability — highest margin quality at right size<br>• Websol Energy: ₹3,200 Cr mcap, 16x PE, 35% 3x probability — solar manufacturing leader<br><br>All three are 3–10x cheaper than Quality Power on market cap and offer better 3x risk/reward. Quality Power should be on your watchlist for after the current portfolio delivers 3x — it's an ideal wealth-preservation compounder for a 5–10 year horizon once you're no longer chasing aggressive returns.</div>
+  </div>
+
+  <div class="verdict-card" style="background:#E6F1FB;border:1px solid #85B7EB">
+    <div class="vc-h" style="color:#185FA5">TRIL (Transformers & Rectifiers India) — Better power equipment play for 3x right now</div>
+    <div class="vc-b">TRIL at ₹7,929 Cr mcap, ₹2,395 Cr FY26 revenue, ₹5,005 Cr order book, 35x PE, and India's first-ever HVDC repair qualification is the better 3x power equipment play at current prices. It has 5x more order book than Quality Power, 3x more revenue, lower PE, and a real HVDC growth catalyst. If Power sector exposure is desired, TRIL at ₹25,000–35,000 is a better allocation than Quality Power at the same amount.</div>
+  </div>
+
+  <div class="sh">Allocation recommendation</div>
+  <table>
+    <tr><th>Stock</th><th>Action</th><th>Amount</th><th>Rationale</th></tr>
+    <tr><td><strong>Quality Power Electrical</strong></td><td><span class="badge ba">Watch & wait / max ₹15–25K long-term</span></td><td>₹0–25,000</td><td>Outstanding company, wrong entry for 3x goal. Already re-rated 3x from IPO. 3x from here requires FY28–29 PAT of ₹600–750 Cr — possible but requires 3+ years. Better to wait for a significant correction (₹700–800 level on Sangli delay) before meaningful entry. If investing today, treat as 5-year hold, not 3-year 3x play.</td></tr>
+    <tr><td><strong>TRIL (TARIL)</strong></td><td><span class="badge bb">Better power sector alternative</span></td><td>₹25,000–35,000</td><td>Same power equipment sector tailwinds, 5x larger order book, 35x PE (vs Quality Power 60x+), HVDC breakthrough catalyst. Better risk/reward for 3x in 3 years than Quality Power at current prices.</td></tr>
+    <tr><td><strong>ABB India</strong></td><td><span class="badge bgray">Quality watchlist — avoid for 3x</span></td><td>₹0</td><td>₹85,000+ Cr mcap — 3x needs ₹2.55 lakh Cr. Wrong size entirely.</td></tr>
+  </table>
+
+  <div class="sh">Five metrics to watch quarterly — for when Quality Power becomes a buy again</div>
+  <table>
+    <tr><th>#</th><th>Metric</th><th>Current</th><th>Buy trigger</th></tr>
+    <tr><td>1</td><td>Sangli plant commissioning</td><td class="a">Jun 2026 target</td><td>Wait for actual commissioning + test lab operational confirmation before adding significant position</td></tr>
+    <tr><td>2</td><td>Debtor days</td><td class="r">149 days (rising)</td><td>Must fall below 120 days — indicates revenue quality improving, not just growth</td></tr>
+    <tr><td>3</td><td>Order book growth rate</td><td class="g">₹895 Cr + expected ₹370+ Cr</td><td>Watch quarterly — if book exceeds ₹1,500 Cr by end-FY26, FY27 revenue of ₹1,500+ Cr confirmed</td></tr>
+    <tr><td>4</td><td>Stock price correction to ₹700–850</td><td class="a">Currently ₹1,281 (extended)</td><td>Any correction to ₹700–850 (say, on Sangli delay news) = add significantly. At ₹750, forward PE drops to 25–30x = reasonable for this quality</td></tr>
+    <tr><td>5</td><td>Standalone PAT margin</td><td class="g">~25–30%</td><td>Must sustain above 20% as Sangli scales — confirms HVDC moat is holding despite volume increase</td></tr>
+  </table>
+
+  <div class="warn power" style="margin-top:12px"><strong>One-line verdict:</strong> Quality Power Electrical is India's most unique power technology company — the only Indian manufacturer of 800kV HVDC equipment serving 100+ countries. The Sangli 9x expansion, Mehru integration, and Endoks BESS opportunity create a genuinely exciting FY27–FY29 story. But at ₹9,835 Cr market cap and 60–93x trailing PE, the stock has already priced in this excellence. For Garvit's 3x-in-3-years goal, TRIL is a better power sector alternative at lower valuation. Quality Power belongs in the watchlist — a significant correction to ₹700–850 or actual Sangli commissioning confirmation would be the right entry triggers.</div>
+</div>
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/4.4.1/chart.umd.js"></script>
+<script>
+function show(id,btn){
+  document.querySelectorAll('.tab').forEach(t=>t.classList.remove('active'));
+  document.querySelectorAll('.panel').forEach(p=>p.classList.remove('active'));
+  btn.classList.add('active');
+  document.getElementById(id).classList.add('active');
+}
+new Chart(document.getElementById('rc').getContext('2d'),{
+  type:'bar',
+  data:{
+    labels:['FY22','FY24','FY25','Q1FY26','Q2FY26','Q3FY26','FY26E','FY27E','FY28E'],
+    datasets:[
+      {
+        label:'Revenue ₹ Cr',
+        data:[90,134,156,81,257,284,825,1500,2500],
+        backgroundColor:['#F57C00','#F57C00','#F57C00','#1D9E75','#1D9E75','#EF9F27','#FFCC80','#FFCC80','#FFCC80'],
+        borderRadius:4,yAxisID:'y'
+      },
+      {
+        label:'PAT ₹ Cr',
+        data:[10,17.5,30.3,24,72,62.9,175,340,550],
+        type:'line',
+        borderColor:'#1D9E75',
+        backgroundColor:'transparent',
+        pointBackgroundColor:'#1D9E75',
+        tension:0.3,yAxisID:'y2'
+      }
+    ]
+  },
+  options:{
+    responsive:true,
+    maintainAspectRatio:false,
+    plugins:{legend:{display:false}},
+    scales:{
+      y:{ticks:{font:{size:10}}},
+      y2:{position:'right',ticks:{font:{size:10}},grid:{drawOnChartArea:false}},
+      x:{ticks:{font:{size:10}}}
+    }
+  }
+});
+</script>
+</body>
+</html>
