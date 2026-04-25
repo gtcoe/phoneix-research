@@ -7,7 +7,7 @@ import type { PhoenixData } from "@/lib/data";
 type Asset = PhoenixData["assets"][number];
 
 // ─── ReviewCard ────────────────────────────────────────────────────────────────
-function ReviewCard({ asset }: { asset: Asset }) {
+function ReviewCard({ asset, isReviewed, onToggle }: { asset: Asset; isReviewed: boolean; onToggle: () => void }) {
   const [step, setStep] = useState(0);
   const [data, setData] = useState({
     thesisHolding: "",
@@ -30,28 +30,47 @@ function ReviewCard({ asset }: { asset: Asset }) {
       {/* Header */}
       <div
         style={{
-          padding: "14px 16px",
+          padding: "12px 16px",
           borderBottom: "1px solid var(--border)",
           display: "flex",
           justifyContent: "space-between",
           alignItems: "center",
+          gap: 8,
         }}
       >
-        <div style={{ display: "flex", alignItems: "center", gap: 8 }}>
-          <span
+        {/* Left: ticker + name + badge + conviction */}
+        <div style={{ display: "flex", alignItems: "center", gap: 8, minWidth: 0 }}>
+          <div style={{ minWidth: 0 }}>
+            <div style={{ fontSize: 14, fontWeight: 700, color: "var(--accent)", fontFamily: "var(--font-mono)", whiteSpace: "nowrap" }}>
+              {asset.ticker ?? asset.category}
+            </div>
+            <div style={{ fontSize: 11, color: "var(--muted)", whiteSpace: "nowrap", overflow: "hidden", textOverflow: "ellipsis", maxWidth: 140 }}>
+              {asset.name.slice(0, 22)}
+            </div>
+          </div>
+          {asset.rec && <Badge rec={asset.rec} size="xs" />}
+          {asset.conviction != null && <ConvictionDot score={asset.conviction} />}
+        </div>
+        {/* Right: gain + mark done */}
+        <div style={{ display: "flex", alignItems: "center", gap: 10, flexShrink: 0 }}>
+          <Gain value={asset.gain} pct={asset.gainPct} />
+          <button
+            onClick={onToggle}
             style={{
-              fontSize: 14,
-              fontWeight: 700,
-              color: "var(--accent)",
-              fontFamily: "var(--font-mono)",
+              padding: "3px 10px",
+              fontSize: 11,
+              fontWeight: 600,
+              background: isReviewed ? "var(--gain)" : "var(--surface)",
+              border: `1px solid ${isReviewed ? "var(--gain)" : "var(--border)"}`,
+              borderRadius: 99,
+              cursor: "pointer",
+              color: isReviewed ? "#fff" : "var(--muted)",
+              whiteSpace: "nowrap",
             }}
           >
-            {asset.ticker}
-          </span>
-          <Badge rec={asset.rec} size="xs" />
-          <ConvictionDot score={asset.conviction} />
+            {isReviewed ? "✓ Done" : "Mark Done"}
+          </button>
         </div>
-        <Gain value={asset.gain} pct={asset.gainPct} />
       </div>
 
       {/* Step progress */}
@@ -554,28 +573,12 @@ export default function QuarterlyReview({ data }: { data: PhoenixData }) {
         }}
       >
         {data.assets.map((a) => (
-          <div key={a.id} style={{ position: "relative" }}>
-            <ReviewCard asset={a} />
-            <button
-              onClick={() => toggleReviewed(a.id)}
-              style={{
-                position: "absolute",
-                top: 12,
-                right: 12,
-                padding: "3px 10px",
-                fontSize: 11,
-                fontWeight: 600,
-                background: reviewed.has(a.id)
-                  ? "var(--gain)"
-                  : "var(--surface)",
-                border: `1px solid ${reviewed.has(a.id) ? "var(--gain)" : "var(--border)"}`,
-                borderRadius: 99,
-                cursor: "pointer",
-                color: reviewed.has(a.id) ? "#fff" : "var(--muted)",
-              }}
-            >
-              {reviewed.has(a.id) ? "✓ Done" : "Mark Done"}
-            </button>
+          <div key={a.id}>
+            <ReviewCard
+              asset={a}
+              isReviewed={reviewed.has(a.id)}
+              onToggle={() => toggleReviewed(a.id)}
+            />
           </div>
         ))}
       </div>
