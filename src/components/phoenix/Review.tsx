@@ -7,7 +7,15 @@ import type { PhoenixData } from "@/lib/data";
 type Asset = PhoenixData["assets"][number];
 
 // ─── ReviewCard ────────────────────────────────────────────────────────────────
-function ReviewCard({ asset, isReviewed, onToggle }: { asset: Asset; isReviewed: boolean; onToggle: () => void }) {
+function ReviewCard({
+  asset,
+  isReviewed,
+  onToggle,
+}: {
+  asset: Asset;
+  isReviewed: boolean;
+  onToggle: () => void;
+}) {
   const [step, setStep] = useState(0);
   const [data, setData] = useState({
     thesisHolding: "",
@@ -39,20 +47,48 @@ function ReviewCard({ asset, isReviewed, onToggle }: { asset: Asset; isReviewed:
         }}
       >
         {/* Left: ticker + name + badge + conviction */}
-        <div style={{ display: "flex", alignItems: "center", gap: 8, minWidth: 0 }}>
+        <div
+          style={{ display: "flex", alignItems: "center", gap: 8, minWidth: 0 }}
+        >
           <div style={{ minWidth: 0 }}>
-            <div style={{ fontSize: 14, fontWeight: 700, color: "var(--accent)", fontFamily: "var(--font-mono)", whiteSpace: "nowrap" }}>
+            <div
+              style={{
+                fontSize: 14,
+                fontWeight: 700,
+                color: "var(--accent)",
+                fontFamily: "var(--font-mono)",
+                whiteSpace: "nowrap",
+              }}
+            >
               {asset.ticker ?? asset.category}
             </div>
-            <div style={{ fontSize: 11, color: "var(--muted)", whiteSpace: "nowrap", overflow: "hidden", textOverflow: "ellipsis", maxWidth: 140 }}>
+            <div
+              style={{
+                fontSize: 11,
+                color: "var(--muted)",
+                whiteSpace: "nowrap",
+                overflow: "hidden",
+                textOverflow: "ellipsis",
+                maxWidth: 140,
+              }}
+            >
               {asset.name.slice(0, 22)}
             </div>
           </div>
           {asset.rec && <Badge rec={asset.rec} size="xs" />}
-          {asset.conviction != null && <ConvictionDot score={asset.conviction} />}
+          {asset.conviction != null && (
+            <ConvictionDot score={asset.conviction} />
+          )}
         </div>
         {/* Right: gain + mark done */}
-        <div style={{ display: "flex", alignItems: "center", gap: 10, flexShrink: 0 }}>
+        <div
+          style={{
+            display: "flex",
+            alignItems: "center",
+            gap: 10,
+            flexShrink: 0,
+          }}
+        >
           <Gain value={asset.gain} pct={asset.gainPct} />
           <button
             onClick={onToggle}

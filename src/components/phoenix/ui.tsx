@@ -106,11 +106,16 @@ export function Gain({
         fontFamily: mono ? "var(--font-mono)" : "inherit",
       }}
     >
-      <span style={{ color, fontWeight: 700, fontSize: "0.95em", lineHeight: 1.2 }}>
-        {isPos ? "+" : ""}{fmt(value)}
+      <span
+        style={{ color, fontWeight: 700, fontSize: "0.95em", lineHeight: 1.2 }}
+      >
+        {isPos ? "+" : ""}
+        {fmt(value)}
       </span>
       {pct !== undefined && (
-        <span style={{ color, opacity: 0.75, fontSize: "0.78em", lineHeight: 1.2 }}>
+        <span
+          style={{ color, opacity: 0.75, fontSize: "0.78em", lineHeight: 1.2 }}
+        >
           {fmtPct(pct)}
         </span>
       )}
