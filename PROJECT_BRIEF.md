@@ -1,8 +1,12 @@
 # Phoenix Research — Project Brief
 
-**Version:** 2.1 | **Date:** April 2026 | **Author:** Garvit Tyagi | **Status:** Design-complete, backend not yet built
+**Version:** 2.2 | **Date:** April 2026 | **Author:** Garvit Tyagi | **Status:** Design-complete, backend not yet built
+
+> **v2.2 amendments:** Fixed LTCG exemption to be portfolio-wide (not per-holding) with proportional distribution for display (§10); replaced What-If extra-investment simulator with exit-scenario simulator matching actual frontend implementation (§4, §16); added `users` table schema with `role` column (§6); added batch price endpoint `GET /api/v1/prices?tickers=...` (§16); added parallel XIRR computation requirement with per-asset timeout (§8, §15); added Empty State Contract section for new users / no-data cases (§21); added Copilot working note for ongoing spec feedback; added Transaction Entry UX note (§4 Portfolio, §16).
 
 > **v2.1 amendments (mentor review):** Added explicit server-ownership / localStorage boundary rule (§3); clarified Holding-Level Alpha backend spec with per-asset benchmark window, exclusions, non-summation note (§4 Compare Tab 3); enriched `journal_entries` schema with `entry_type`, `occurred_at`, `related_asset_id`, `related_cashflow_id`, `tags` (§6); added `last_alert_triggered_at` to `watchlist_items`, changed `report_slug` to `report_id` FK (§6); replaced count-based diversification score with HHI concentration score in Health Score formula (§9); added explicit scope disclaimers to Tax P&L model (§10); added concrete edge-case rules for dividends, partial exits, US-stock FX basis, synthetic cashflows, XIRR non-convergence (§7); corrected dashboard scalability description from "no live joins" to cache-assembled (§18).
+
+> **Copilot working note:** This document is the canonical architecture spec. When building the backend, if any spec appears incorrect, incomplete, or could be improved (performance, security, or correctness), push back with a specific recommendation rather than silently implementing the suboptimal version. Accuracy always takes priority over convenience.
 
 > **v2.0 changes from v1.0:** Data truth model corrected (cashflows are authoritative for equity, not the asset row); 9 screens (Journal added); Analysis expanded to 8 tabs; Tools expanded to 6 tabs; Watchlist gains since-added tracking; Health Score ring on Dashboard; Conviction Alerts panel on Dashboard; 24 DB tables (was 19); new sections: Position Accounting Model, Metric Definitions, Health Score Formula, Tax P&L Model, Goal Planning, Auth Hardening, Alert Semantics, Job Design, Caching Strategy, Decisions Log.
 
@@ -128,6 +132,22 @@ Sidebar nav order: Dashboard · Portfolio · Analysis · Compare · Reports · W
 | Row Expand              | Sector, Entry Date, Qty/Units, Exchange, Conviction (x/10), Allocation bar %             | `assets + instruments`       |
 | Inline Notes            | Free-text notes per holding — editable inline, saved to backend                          | `assets.notes`               |
 | Totals Row              | Aggregated sum at bottom                                                                 | Computed                     |
+
+**Transaction Entry (+ Log Transaction):**
+
+Portfolio is managed transaction-by-transaction — every buy, sell, or dividend is a cashflow event; holdings are derived from these cashflows.
+
+- A **"+ Log Transaction"** button appears in TWO places:
+  1. **Portfolio tab** — top-right of the holdings table (primary location)
+  2. **Journal tab** — top-right of the journal timeline (secondary; adds to the feed naturally)
+- Both buttons open the same modal drawer
+- Modal fields: Instrument search (by ticker / company name → hits `GET /api/v1/instruments/search?q=`), Transaction Type (BUY / SELL / DIVIDEND), Date, Qty, Price per unit, Notes
+- For a new instrument (not already in portfolio): creates a new `assets` row + first `cashflows` row
+- For an existing holding: appends a new `cashflows` row to the existing asset
+- On submit: invalidates `portfolio:user:{id}` and `xirr:asset:{assetId}` Redis keys immediately
+- The transaction appears in both the Portfolio holdings table (updated holding) and the Journal tab timeline (cashflows feed)
+
+> **Design rationale:** There is no separate "Add Holding" flow. Holdings emerge from transactions. This keeps the data model clean (cashflows are authoritative) and forces the user to always capture the "when" and "at what price".
 
 ---
 
@@ -303,14 +323,16 @@ For every equity holding with an entry price:
 - Original thesis note shown below
 - Target price override stored in `target_overrides` table (per-user, does not modify report default)
 
-**Tool 2 — What-If Simulator**
+**Tool 2 — What-If Simulator (Exit Scenario)**
 
-"If I had invested Rs X more in stock Y at its entry price, what would my XIRR be today?"
+"If I exit this holding at price X on date Y, what would my XIRR be?"
 
-- Select holding from pills; extra amount slider: Rs 10K to Rs 10L
-- XIRR engine reruns with extra cashflow inserted at entry date
-- Shows: Current Scenario (before) vs What-If Scenario (after) side-by-side
-- Impact summary: Extra value created (Rs), XIRR delta (%), explanatory narrative sentence
+- Select holding from dropdown (equity assets only — NSE/US Stocks; NPS, FD, Cash excluded)
+- Inputs: Exit Price (Rs per share), Exit Date
+- XIRR engine reruns with a synthetic SELL cashflow at the given price and date inserted into the cashflow stream — computation is fully in-memory, no DB write
+- Shows: Original XIRR (hold to today) vs Simulated XIRR (exit at given price/date) side-by-side
+- Impact summary: Simulated gain (Rs), Simulated XIRR (%), Gain % from entry, Holding days to exit date
+- Edge: If exit date is before entry date, show validation error. If exit price = 0, show validation error.
 
 **Tool 3 — CSV Import**
 
@@ -332,9 +354,9 @@ Estimates tax liability on unrealised gains if positions were liquidated today.
 
 | Section              | Detail                                                                                                                     |
 | -------------------- | -------------------------------------------------------------------------------------------------------------------------- |
-| Tax rules            | LTCG (equity held >1yr): 10% above Rs 1L exemption. STCG (equity held <1yr): flat 15%. FD interest: 30% slab. NPS: exempt. |
-| Summary cards        | Total Gains (pre-tax), Estimated Tax, Post-Tax Gains, Effective Tax Rate                                                   |
-| LTCG vs STCG summary | LTCG total, breakdown: exempt Rs 1L + taxable amount + tax at 10%. STCG total + tax at 15%.                                |
+| Tax rules            | LTCG (equity held >1yr): 10% on combined gains above Rs 1L portfolio-wide exemption (not per-holding). STCG (equity held <1yr): flat 15%. FD interest: 30% slab. NPS: exempt. See §10 for full computation. |
+| Summary cards        | Total Gains (pre-tax), Estimated Tax, Post-Tax Gains, Effective Tax Rate                                                                                                                                     |
+| LTCG vs STCG summary | LTCG combined gain, Rs 1L exemption (once), taxable LTCG, tax at 10%. STCG total + tax at 15%.                                                                                                               |
 | Per-holding table    | Asset, Holding Period, Tax Type badge (LTCG/STCG/Income/Exempt), Gain (Rs), Tax Rate, Tax Amount, Post-Tax Gain            |
 | Tax Harvesting tip   | Identifies holdings with unrealised losses that could offset STCG before year-end. Calculates approximate tax saving.      |
 | Source               | Holding period computed from first BUY cashflow date. All computations are client-side / read-only — no write to DB.       |
@@ -435,6 +457,21 @@ When conviction delta is set to Up or Down, it updates `assets.conviction` AND w
 | `corporate_actions`   | shared                | _Phase 2+ stub_ — split/dividend adjustments; adj_close handles splits in Phase 1 |
 
 ### Key Table Schemas
+
+**users** (core identity):
+
+```sql
+id UUID PRIMARY KEY
+email VARCHAR(255) NOT NULL UNIQUE
+email_verified BOOLEAN DEFAULT FALSE
+preferred_theme VARCHAR(10) DEFAULT 'dark'   -- 'dark','light'
+currency_display VARCHAR(5) DEFAULT 'INR'
+role VARCHAR(20) NOT NULL DEFAULT 'USER'      -- 'USER' or 'ADMIN'; managed manually in DB
+created_at TIMESTAMPTZ NOT NULL DEFAULT NOW()
+updated_at TIMESTAMPTZ
+```
+
+> **Role management:** There is no admin UI or self-serve promotion. The `role` column is set directly in the database by the system operator. Spring Security checks `role = 'ADMIN'` on `@PreAuthorize("hasRole('ADMIN')")` for report create/update endpoints only. Do not build a role management API.
 
 **assets** (note: no qty, entry_price, invested_amount, current_value for equity):
 
@@ -656,6 +693,8 @@ The "final value" cashflow is: +current_value on TODAY's date.
 - Negative gain: XIRR is negative; display correctly (do not show 0)
 - Single cashflow: XIRR undefined; show CAGR instead
 
+**Parallel computation:** When `PortfolioService` loads all holdings, per-asset XIRR computations are executed in parallel via `CompletableFuture.allOf()`. Each asset's computation is independent. Accuracy is the priority — the full Newton-Raphson runs for every asset, no shortcuts. A per-asset timeout of 5 seconds is enforced: if Newton-Raphson does not converge within 5s, that asset falls back to CAGR with `xirr_approx: true` returned in the response. One asset's timeout does NOT block other assets' results. For 40+ asset portfolios, the wall-clock time is the time of the slowest single asset, not the sum of all assets.
+
 ### CAGR (Compound Annual Growth Rate)
 
 ```
@@ -749,16 +788,22 @@ The health score is **informational, not prescriptive** — it is a starting poi
 All computations are **client-side / read-only** (no DB writes for tax calculations).
 
 ```
-LTCG_EXEMPTION = Rs 1,00,000 (per financial year, applied portfolio-wide)
+LTCG_EXEMPTION = Rs 1,00,000 per financial year.
+IMPORTANT: The exemption applies to the COMBINED total LTCG gain across all holdings —
+not Rs 1L per holding. Two LTCG holdings with Rs 60K gain each = Rs 1.2L combined →
+Rs 20K taxable after the single Rs 1L exemption.
 
-For each asset:
+──────────────────────────────────────────────────────
+Step 1 — Classify each asset:
+
   holding_days  = computed from cashflows
   is_ltcg       = holding_days > 365
 
   IF category in ('NSE Stocks', 'US Stocks'):
     IF is_ltcg:
-      tax_type   = 'LTCG'
-      tax_amount = MAX(0, gain - LTCG_EXEMPTION) * 0.10
+      tax_type     = 'LTCG'
+      raw_ltcg_gain = MAX(0, gain)   -- raw gain stored; exemption applied portfolio-wide in Step 2
+      tax_amount   = computed in Step 2 (not per-holding)
     ELSE:
       tax_type   = 'STCG'
       tax_amount = MAX(0, gain) * 0.15
@@ -771,10 +816,25 @@ For each asset:
     tax_type   = 'Exempt'
     tax_amount = 0
 
+──────────────────────────────────────────────────────
+Step 2 — Portfolio-wide LTCG exemption:
+
+  total_ltcg_raw  = SUM(raw_ltcg_gain for all LTCG holdings)
+  taxable_ltcg    = MAX(0, total_ltcg_raw - LTCG_EXEMPTION)
+  total_ltcg_tax  = taxable_ltcg * 0.10
+
+  -- Proportional distribution for per-holding display:
+  FOR each ltcg_holding i:
+    IF total_ltcg_raw > 0:
+      tax_amount_i = (raw_ltcg_gain_i / total_ltcg_raw) * total_ltcg_tax
+    ELSE:
+      tax_amount_i = 0
+
   post_tax_gain = gain - tax_amount
 
+──────────────────────────────────────────────────────
 Portfolio totals:
-  totalTax         = SUM(tax_amount)
+  totalTax         = total_ltcg_tax + SUM(tax_amount for STCG/FD holdings)
   postTaxGains     = totalGains - totalTax
   effectiveTaxRate = totalTax / totalGains * 100
 ```
@@ -935,7 +995,7 @@ phoenix-backend/
     service/                     -- ALL business logic
       AuthService                registration, login, token management
       PortfolioService           P&L, allocation %, day change
-      XIRRService                Newton-Raphson
+      XIRRService                Newton-Raphson; per-asset computations run in parallel via CompletableFuture.allOf() — accuracy priority, never approximated unless non-convergent
       PositionService            WAC, qty, holding_days, is_ltcg per asset
       PriceService               fetch, retry, fallback, cache
       AnalyticsService           correlation matrix, drawdown computation
@@ -986,7 +1046,7 @@ GET    /api/v1/dashboard               all dashboard data (healthScore + convict
 
 -- Portfolio --
 GET    /api/v1/portfolio               all holdings with computed P&L + XIRR
-POST   /api/v1/portfolio/assets        add holding + first cashflow
+POST   /api/v1/portfolio/assets        add holding + first cashflow (called by "Log Transaction" modal for NEW instrument)
 PUT    /api/v1/portfolio/assets/:id    update notes, conviction, target, rec
 DELETE /api/v1/portfolio/assets/:id    soft-delete (mark exited)
 GET    /api/v1/portfolio/assets/:id/cashflows
@@ -1038,7 +1098,7 @@ DELETE /api/v1/goals/:id
 -- Tools --
 GET    /api/v1/tools/targets           target price configs + overrides
 PUT    /api/v1/tools/targets/:assetId
-POST   /api/v1/tools/whatif            simulate extra investment -> new XIRR
+POST   /api/v1/tools/whatif            exit scenario simulation (exitPrice + exitDate + assetId) -> {originalXIRR, simulatedXIRR, simulatedGain, gainPct, holdingDaysToExit}
 POST   /api/v1/tools/import            parse + persist broker CSV
 GET    /api/v1/tools/import/:id        import session status
 GET    /api/v1/tools/tax               tax P&L breakdown (read-only)
@@ -1056,6 +1116,7 @@ DELETE /api/v1/riskflags/:id
 -- Instruments --
 GET    /api/v1/instruments/search?q=
 GET    /api/v1/prices/:ticker
+GET    /api/v1/prices?tickers=X,Y,Z     batch price fetch (comma-separated) -> {ticker: {price, changePct, isStale}}
 POST   /api/v1/prices/refresh          [admin]
 ```
 
@@ -1129,6 +1190,32 @@ POST   /api/v1/prices/refresh          [admin]
 | 8     | Tax computation from cashflow metadata, composite scoring formulas, Newton-Raphson edge cases (non-convergence, extreme XIRR)                                                   |
 | 9     | Multi-step form persistence, conviction history audit trail pattern, optimistic locking for concurrent review updates                                                           |
 | 10    | Token bucket rate limiting (Bucket4j), structured logging with correlation IDs, OpenAPI 3.0 annotation, global exception taxonomy mapping to HTTP status codes                  |
+
+---
+
+## 21. Empty State Contract
+
+Every API endpoint that returns a list or chart data MUST return an empty array `[]` — never `null` — when there is no data. The frontend always checks `array.length === 0` and renders a placeholder; it never tries to map over null.
+
+### New User / No Portfolio Data
+
+When a user has just registered and added their first holding but `portfolio_snapshots` is still empty (PortfolioSnapshotJob hasn't run yet), the following rules apply:
+
+| Endpoint | No-data response | Frontend behaviour |
+|---|---|---|
+| `GET /api/v1/dashboard` history chart | `history: []` | "Portfolio history builds over time — check back after market close today." |
+| `GET /api/v1/analysis/performance` | `history: [], monthlyReturns: []` | Same placeholder message |
+| `GET /api/v1/compare` | `portfolio: [], nifty50: [], midcap150: [], fd: []` | "Portfolio history is not yet available for comparison." |
+| `GET /api/v1/analysis/correlation` | `matrix: [], labels: []` | "At least 2 equity holdings with 60+ days of history required for correlation." |
+| `GET /api/v1/analysis/drawdown` | `drawdowns: []` | "No drawdown data yet." |
+
+### Stale Prices
+
+If `current_prices.is_stale = true` for a ticker, the API response includes `"isStale": true` and a `"staleReason"` field. The frontend renders a `⚠` badge next to the price. **Never hide stale prices — always show the last known value with the staleness indicator.**
+
+### XIRR Not Yet Computable
+
+If a holding has only one cashflow (first BUY just logged), XIRR is undefined. Return `"xirr": null, "xirr_approx": false` in the API response. Frontend shows `—` (em dash), not `0%`.
 
 ---
 

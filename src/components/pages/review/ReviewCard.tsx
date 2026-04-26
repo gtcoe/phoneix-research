@@ -1,20 +1,20 @@
 // @ts-nocheck
 "use client";
 import { useState } from "react";
-import { fmt, fmtPct, Badge, ConvictionDot, Gain, Icon } from "./ui";
+import { fmt, fmtPct } from "@/lib/formatters";
+import { Badge, ConvictionDot, Gain, Icon } from "@/components/ui";
 import type { PhoenixData } from "@/lib/data";
 
 type Asset = PhoenixData["assets"][number];
 
-// ─── ReviewCard ────────────────────────────────────────────────────────────────
-function ReviewCard({
+export function ReviewCard({
   asset,
   isReviewed,
-  onToggle,
+  onComplete,
 }: {
   asset: Asset;
   isReviewed: boolean;
-  onToggle: () => void;
+  onComplete: () => void;
 }) {
   const [step, setStep] = useState(0);
   const [data, setData] = useState({
@@ -91,7 +91,7 @@ function ReviewCard({
         >
           <Gain value={asset.gain} pct={asset.gainPct} />
           <button
-            onClick={onToggle}
+            onClick={onComplete}
             style={{
               padding: "3px 10px",
               fontSize: 11,
@@ -407,7 +407,13 @@ function ReviewCard({
             Back
           </button>
           <button
-            onClick={() => setStep((s) => Math.min(STEPS.length - 1, s + 1))}
+            onClick={() => {
+              if (step === STEPS.length - 1) {
+                onComplete();
+              } else {
+                setStep((s) => Math.min(STEPS.length - 1, s + 1));
+              }
+            }}
             style={{
               padding: "6px 14px",
               background:
@@ -423,200 +429,6 @@ function ReviewCard({
             {step === STEPS.length - 1 ? "Complete Review" : "Next"}
           </button>
         </div>
-      </div>
-    </div>
-  );
-}
-
-// ─── QuarterlyReview ──────────────────────────────────────────────────────────
-export default function QuarterlyReview({ data }: { data: PhoenixData }) {
-  const [quarter, setQuarter] = useState("Q1 2025");
-  const [reviewed, setReviewed] = useState<Set<string>>(new Set());
-  const quarters = ["Q4 2024", "Q1 2025", "Q2 2025"];
-
-  const toggleReviewed = (id: string) => {
-    setReviewed((prev) => {
-      const next = new Set(prev);
-      if (next.has(id)) next.delete(id);
-      else next.add(id);
-      return next;
-    });
-  };
-
-  const progress =
-    data.assets.length > 0
-      ? Math.round((reviewed.size / data.assets.length) * 100)
-      : 0;
-
-  return (
-    <div style={{ padding: 24 }}>
-      {/* Header */}
-      <div
-        style={{
-          display: "flex",
-          justifyContent: "space-between",
-          alignItems: "center",
-          marginBottom: 20,
-        }}
-      >
-        <div>
-          <h2
-            style={{
-              fontSize: 20,
-              fontWeight: 700,
-              color: "var(--text)",
-              margin: 0,
-            }}
-          >
-            Quarterly Review
-          </h2>
-          <p style={{ fontSize: 13, color: "var(--muted)", margin: "4px 0 0" }}>
-            Review each position and update your thesis
-          </p>
-        </div>
-        <div style={{ display: "flex", gap: 8 }}>
-          {quarters.map((q) => (
-            <button
-              key={q}
-              onClick={() => setQuarter(q)}
-              style={{
-                padding: "6px 14px",
-                borderRadius: 8,
-                border: "1px solid var(--border)",
-                background: quarter === q ? "var(--accent)" : "var(--surface)",
-                color: quarter === q ? "#fff" : "var(--muted)",
-                cursor: "pointer",
-                fontSize: 12,
-                fontWeight: 500,
-              }}
-            >
-              {q}
-            </button>
-          ))}
-        </div>
-      </div>
-
-      {/* Progress */}
-      <div
-        style={{
-          background: "var(--card)",
-          border: "1px solid var(--border)",
-          borderRadius: 12,
-          padding: "16px 20px",
-          marginBottom: 20,
-        }}
-      >
-        <div
-          style={{
-            display: "flex",
-            justifyContent: "space-between",
-            alignItems: "center",
-            marginBottom: 10,
-          }}
-        >
-          <div style={{ fontSize: 13, fontWeight: 600, color: "var(--text)" }}>
-            {quarter} Progress
-          </div>
-          <div
-            style={{
-              fontSize: 13,
-              fontFamily: "var(--font-mono)",
-              color: "var(--accent)",
-            }}
-          >
-            {reviewed.size} / {data.assets.length} reviewed
-          </div>
-        </div>
-        <div
-          style={{
-            height: 8,
-            background: "var(--border)",
-            borderRadius: 99,
-            overflow: "hidden",
-          }}
-        >
-          <div
-            style={{
-              width: `${progress}%`,
-              height: "100%",
-              background: "var(--accent)",
-              borderRadius: 99,
-              transition: "width .4s ease",
-            }}
-          />
-        </div>
-        <div
-          style={{ display: "flex", gap: 20, marginTop: 12, flexWrap: "wrap" }}
-        >
-          {[
-            { label: "Total Positions", value: data.assets.length },
-            { label: "Reviewed", value: reviewed.size },
-            { label: "Remaining", value: data.assets.length - reviewed.size },
-            { label: "Net Worth", value: fmt(data.netWorth) },
-          ].map((m) => (
-            <div key={m.label}>
-              <div
-                style={{ fontSize: 10, color: "var(--muted)", marginBottom: 2 }}
-              >
-                {m.label}
-              </div>
-              <div
-                style={{
-                  fontSize: 15,
-                  fontWeight: 700,
-                  color: "var(--text)",
-                  fontFamily: "var(--font-mono)",
-                }}
-              >
-                {m.value}
-              </div>
-            </div>
-          ))}
-        </div>
-        {/* Action summary */}
-        <div style={{ marginTop: 14, display: "flex", gap: 8 }}>
-          {[
-            { label: "Buy", icon: "↑", color: "var(--gain)" },
-            { label: "Hold", icon: "→", color: "var(--warn)" },
-            { label: "Trim", icon: "↓", color: "var(--accent)" },
-            { label: "Exit", icon: "✕", color: "var(--loss)" },
-          ].map((a) => (
-            <div
-              key={a.label}
-              style={{
-                padding: "6px 14px",
-                background: "var(--surface)",
-                border: "1px solid var(--border)",
-                borderRadius: 8,
-                fontSize: 12,
-              }}
-            >
-              <span style={{ color: a.color, fontWeight: 700, marginRight: 4 }}>
-                {a.icon}
-              </span>
-              <span style={{ color: "var(--muted)" }}>{a.label}</span>
-            </div>
-          ))}
-        </div>
-      </div>
-
-      {/* Review cards */}
-      <div
-        style={{
-          display: "grid",
-          gridTemplateColumns: "repeat(auto-fill, minmax(360px, 1fr))",
-          gap: 16,
-        }}
-      >
-        {data.assets.map((a) => (
-          <div key={a.id}>
-            <ReviewCard
-              asset={a}
-              isReviewed={reviewed.has(a.id)}
-              onToggle={() => toggleReviewed(a.id)}
-            />
-          </div>
-        ))}
       </div>
     </div>
   );

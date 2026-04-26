@@ -1,17 +1,10 @@
-// @ts-nocheck
 "use client";
 import { useState } from "react";
-import {
-  fmt,
-  fmtPct,
-  Badge,
-  ConvictionDot,
-  Gain,
-  AreaChart,
-  TabBar,
-  Icon,
-} from "./ui";
+import { fmt, fmtPct } from "@/lib/formatters";
+import { Badge, Gain, AreaChart, TabBar } from "@/components/ui";
+import { pd } from "@/lib/date";
 import type { PhoenixData } from "@/lib/data";
+import { RebalanceTab } from "./RebalanceTab";
 
 type Asset = PhoenixData["assets"][number];
 
@@ -26,144 +19,6 @@ const TABS = [
   { id: "holding", label: "Holding Period" },
 ];
 
-// ─── Rebalance tab (extracted to avoid hook-in-IIFE problem) ──────────────────
-function RebalanceTab({ data }: { data: PhoenixData }) {
-  const [targets, setTargets] = useState<Record<string, number>>(() => {
-    const t: Record<string, number> = {};
-    data.assets.forEach((a) => {
-      t[a.id] = parseFloat(((a.current / data.netWorth) * 100).toFixed(1));
-    });
-    return t;
-  });
-
-  const totalTarget = Object.values(targets).reduce((s, v) => s + v, 0);
-  const isBalanced = Math.abs(totalTarget - 100) < 0.1;
-
-  return (
-    <div>
-      <div
-        style={{
-          display: "flex",
-          justifyContent: "space-between",
-          alignItems: "center",
-          marginBottom: 16,
-        }}
-      >
-        <div style={{ fontSize: 13, color: "var(--muted)" }}>
-          Set target allocations. Total must equal 100%.
-        </div>
-        <div
-          style={{
-            fontFamily: "var(--font-mono)",
-            fontSize: 14,
-            fontWeight: 700,
-            color: isBalanced ? "var(--gain)" : "var(--loss)",
-          }}
-        >
-          Total: {totalTarget.toFixed(1)}%
-        </div>
-      </div>
-      <div style={{ display: "flex", flexDirection: "column", gap: 8 }}>
-        {data.assets.map((a) => {
-          const curPct = (a.current / data.netWorth) * 100;
-          const targetPct = targets[a.id] || 0;
-          const diff = targetPct - curPct;
-          const diffAmt = (diff / 100) * data.netWorth;
-          return (
-            <div
-              key={a.id}
-              style={{
-                display: "grid",
-                gridTemplateColumns: "1fr 80px 80px 90px 100px",
-                alignItems: "center",
-                gap: 12,
-                padding: "10px 14px",
-                background: "var(--surface)",
-                borderRadius: 8,
-              }}
-            >
-              <div>
-                <span
-                  style={{
-                    fontWeight: 600,
-                    color: "var(--text)",
-                    fontFamily: "var(--font-mono)",
-                    marginRight: 8,
-                  }}
-                >
-                  {a.ticker}
-                </span>
-                <span style={{ fontSize: 11, color: "var(--muted)" }}>
-                  {a.category}
-                </span>
-              </div>
-              <div
-                style={{
-                  textAlign: "right",
-                  fontSize: 12,
-                  color: "var(--muted)",
-                  fontFamily: "var(--font-mono)",
-                }}
-              >
-                {curPct.toFixed(1)}% now
-              </div>
-              <div style={{ display: "flex", alignItems: "center", gap: 4 }}>
-                <input
-                  type="number"
-                  min="0"
-                  max="100"
-                  step="0.1"
-                  value={targetPct}
-                  onChange={(e) =>
-                    setTargets((prev) => ({
-                      ...prev,
-                      [a.id]: parseFloat(e.target.value) || 0,
-                    }))
-                  }
-                  style={{
-                    width: "100%",
-                    padding: "4px 8px",
-                    background: "var(--bg)",
-                    border: "1px solid var(--border)",
-                    borderRadius: 5,
-                    color: "var(--text)",
-                    fontFamily: "var(--font-mono)",
-                    fontSize: 12,
-                  }}
-                />
-                <span style={{ fontSize: 11, color: "var(--muted)" }}>%</span>
-              </div>
-              <div
-                style={{
-                  textAlign: "right",
-                  fontFamily: "var(--font-mono)",
-                  fontSize: 12,
-                  color: diff >= 0 ? "var(--gain)" : "var(--loss)",
-                }}
-              >
-                {diff >= 0 ? "+" : ""}
-                {diff.toFixed(1)}%
-              </div>
-              <div
-                style={{
-                  textAlign: "right",
-                  fontFamily: "var(--font-mono)",
-                  fontSize: 12,
-                  color: diffAmt >= 0 ? "var(--gain)" : "var(--loss)",
-                }}
-              >
-                {diffAmt >= 0 ? "Buy " : "Sell "}
-                {fmt(Math.abs(diffAmt))}
-              </div>
-            </div>
-          );
-        })}
-      </div>
-    </div>
-  );
-}
-
-// ─── Main Analysis component ──────────────────────────────────────────────────
 export default function Analysis({ data }: { data: PhoenixData }) {
   const [tab, setTab] = useState("performance");
 
@@ -300,6 +155,13 @@ export default function Analysis({ data }: { data: PhoenixData }) {
               Individual Stock Returns
             </div>
             <div style={{ display: "flex", flexDirection: "column", gap: 6 }}>
+              {/* Column headers */}
+              <div style={{ display: "flex", alignItems: "center", gap: 12, marginBottom: 4 }}>
+                <div style={{ width: 100 }} />
+                <div style={{ flex: 1 }} />
+                <div style={{ width: 60, textAlign: "right", fontSize: 10, color: "var(--muted)", letterSpacing: ".04em" }}>GAIN</div>
+                <div style={{ width: 52, textAlign: "right", fontSize: 10, color: "var(--muted)", letterSpacing: ".04em" }}>XIRR</div>
+              </div>
               {[...data.assets]
                 .sort((a, b) => b.gainPct - a.gainPct)
                 .map((a) => {
@@ -314,15 +176,18 @@ export default function Analysis({ data }: { data: PhoenixData }) {
                     >
                       <div
                         style={{
-                          width: 70,
+                          width: 100,
                           fontSize: 12,
                           fontWeight: 600,
                           color: "var(--text)",
                           fontFamily: "var(--font-mono)",
                           textAlign: "right",
+                          overflow: "hidden",
+                          textOverflow: "ellipsis",
+                          whiteSpace: "nowrap",
                         }}
                       >
-                        {a.ticker}
+                        {a.ticker ?? a.category}
                       </div>
                       <div
                         style={{
@@ -392,6 +257,7 @@ export default function Analysis({ data }: { data: PhoenixData }) {
                           textAlign: "right",
                           fontSize: 11,
                           fontFamily: "var(--font-mono)",
+                          whiteSpace: "nowrap",
                           color:
                             (a.xirr ?? 0) >= 15
                               ? "var(--gain)"
@@ -400,7 +266,7 @@ export default function Analysis({ data }: { data: PhoenixData }) {
                                 : "var(--loss)",
                         }}
                       >
-                        {a.xirr != null ? `${a.xirr.toFixed(1)}% p` : "—"}
+                        {a.xirr != null ? `${a.xirr.toFixed(1)}%` : "—"}
                       </div>
                     </div>
                   );
@@ -456,18 +322,17 @@ export default function Analysis({ data }: { data: PhoenixData }) {
                       {weight.toFixed(1)}% of portfolio
                     </span>
                   </div>
-                  <div style={{ textAlign: "right" }}>
-                    <div
-                      style={{
-                        fontSize: 15,
-                        fontWeight: 700,
-                        color: "var(--text)",
-                        fontFamily: "var(--font-mono)",
-                      }}
-                    >
-                      {fmt(info.current)}
+                  <div style={{ display: "flex", gap: 24, alignItems: "flex-start" }}>
+                    <div style={{ textAlign: "right" }}>
+                      <div style={{ fontSize: 10, color: "var(--muted)", letterSpacing: ".04em", marginBottom: 2 }}>CURRENT VALUE</div>
+                      <div style={{ fontSize: 15, fontWeight: 700, color: "var(--text)", fontFamily: "var(--font-mono)" }}>
+                        {fmt(info.current)}
+                      </div>
                     </div>
-                    <Gain value={gain} pct={gainPct} />
+                    <div style={{ textAlign: "right" }}>
+                      <div style={{ fontSize: 10, color: "var(--muted)", letterSpacing: ".04em", marginBottom: 2 }}>GAIN</div>
+                      <Gain value={gain} pct={gainPct} />
+                    </div>
                   </div>
                 </div>
                 <div style={{ display: "flex", gap: 8, flexWrap: "wrap" }}>
@@ -662,51 +527,36 @@ export default function Analysis({ data }: { data: PhoenixData }) {
               </div>
             ))}
             <div style={{ marginTop: 20 }}>
-              <div
-                style={{
-                  fontSize: 12,
-                  color: "var(--muted)",
-                  marginBottom: 10,
-                }}
-              >
-                Per-stock tax breakdown
+              <div style={{ fontSize: 12, color: "var(--muted)", marginBottom: 10 }}>Per-stock tax breakdown</div>
+              {/* Column headers */}
+              <div style={{ display: "grid", gridTemplateColumns: "100px 80px 80px 1fr", padding: "4px 0", marginBottom: 4, borderBottom: "1px solid var(--border)" }}>
+                <span style={{ fontSize: 10, color: "var(--muted)", letterSpacing: ".04em" }}>STOCK</span>
+                <span style={{ fontSize: 10, color: "var(--muted)", letterSpacing: ".04em" }}>TAX TYPE</span>
+                <span style={{ fontSize: 10, color: "var(--muted)", letterSpacing: ".04em", textAlign: "right" }}>TAX</span>
+                <span style={{ fontSize: 10, color: "var(--muted)", letterSpacing: ".04em", textAlign: "right" }}>POST-TAX GAIN</span>
               </div>
               {data.assets.map((a) => (
                 <div
                   key={a.id}
                   style={{
-                    display: "flex",
-                    justifyContent: "space-between",
-                    padding: "6px 0",
+                    display: "grid",
+                    gridTemplateColumns: "100px 80px 80px 1fr",
+                    padding: "7px 0",
                     borderBottom: "1px solid var(--border)",
                     fontSize: 12,
+                    alignItems: "center",
                   }}
                 >
-                  <span
-                    style={{
-                      fontFamily: "var(--font-mono)",
-                      color: "var(--text)",
-                    }}
-                  >
-                    {a.ticker}
+                  <span style={{ fontFamily: "var(--font-mono)", color: "var(--text)", fontWeight: 600, whiteSpace: "nowrap", overflow: "hidden", textOverflow: "ellipsis" }}>
+                    {a.ticker ?? a.category}
                   </span>
-                  <span style={{ color: "var(--muted)" }}>
-                    {a.isLTCG ? "LTCG 10%" : "STCG 15%"}
+                  <span style={{ color: "var(--muted)", whiteSpace: "nowrap" }}>
+                    {a.taxRate != null ? (a.isLTCG ? "LTCG 10%" : "STCG 15%") : "—"}
                   </span>
-                  <span
-                    style={{
-                      color: "var(--loss)",
-                      fontFamily: "var(--font-mono)",
-                    }}
-                  >
-                    -{fmt(a.taxAmt)}
+                  <span style={{ color: "var(--loss)", fontFamily: "var(--font-mono)", textAlign: "right", whiteSpace: "nowrap" }}>
+                    {a.taxAmt != null && a.taxAmt > 0 ? `-${fmt(a.taxAmt)}` : "—"}
                   </span>
-                  <span
-                    style={{
-                      color: "var(--gain)",
-                      fontFamily: "var(--font-mono)",
-                    }}
-                  >
+                  <span style={{ color: a.postTaxGain >= 0 ? "var(--gain)" : "var(--loss)", fontFamily: "var(--font-mono)", textAlign: "right", whiteSpace: "nowrap" }}>
                     {fmt(a.postTaxGain)}
                   </span>
                 </div>
@@ -886,14 +736,6 @@ export default function Analysis({ data }: { data: PhoenixData }) {
                     key={h}
                     style={{
                       padding: "8px 10px",
-                      textAlign: "right",
-                      fontSize: 11,
-                      color: "var(--muted)",
-                      fontWeight: 500,
-                      ":first-child": { textAlign: "left" } as any,
-                    }}
-                    style={{
-                      padding: "8px 10px",
                       textAlign: h === "Stock" ? "left" : "right",
                       fontSize: 11,
                       color: "var(--muted)",
@@ -1064,8 +906,8 @@ export default function Analysis({ data }: { data: PhoenixData }) {
             {[...data.assets]
               .sort(
                 (a, b) =>
-                  (a.entryDate ? new Date(a.entryDate).getTime() : 0) -
-                  (b.entryDate ? new Date(b.entryDate).getTime() : 0),
+                  (a.entryDate ? (pd(a.entryDate)?.getTime() ?? 0) : 0) -
+                  (b.entryDate ? (pd(b.entryDate)?.getTime() ?? 0) : 0),
               )
               .map((a) => (
                 <div

@@ -1,9 +1,9 @@
 "use client";
 import { useState } from "react";
-import { fmt, Badge, Icon } from "./ui";
+import { fmt, fmtPct } from "@/lib/formatters";
+import { Icon } from "@/components/ui";
+import LogTransactionModal from "@/components/common/modals/LogTransactionModal";
 import type { PhoenixData } from "@/lib/data";
-
-type JournalEntry = PhoenixData["transactions"][number];
 
 const TYPE_COLORS: Record<string, string> = {
   buy: "var(--gain)",
@@ -19,15 +19,7 @@ export default function Journal({ data }: { data: PhoenixData }) {
   const [filterCategory, setFilterCategory] = useState("all");
   const [search, setSearch] = useState("");
   const [expanded, setExpanded] = useState<string | null>(null);
-  const [showAdd, setShowAdd] = useState(false);
-  const [newEntry, setNewEntry] = useState({
-    type: "note",
-    asset: "",
-    ticker: "",
-    amount: 0,
-    notes: "",
-    category: "Equity",
-  });
+  const [showLogTx, setShowLogTx] = useState(false);
 
   const allTypes = [
     "all",
@@ -54,7 +46,7 @@ export default function Journal({ data }: { data: PhoenixData }) {
   data.transactions
     .filter((t) => t.type === "buy" || t.type === "add")
     .forEach((t) => {
-      const d = new Date(t.date);
+      const d = t.dateObj;
       const key = `${d.getFullYear()}-${String(d.getMonth() + 1).padStart(2, "0")}`;
       monthlyMap[key] = (monthlyMap[key] || 0) + t.amount;
     });
@@ -206,7 +198,7 @@ export default function Journal({ data }: { data: PhoenixData }) {
           {filtered.length} entries
         </span>
         <button
-          onClick={() => setShowAdd((v) => !v)}
+          onClick={() => setShowLogTx(true)}
           style={{
             marginLeft: "auto",
             display: "flex",
@@ -223,182 +215,15 @@ export default function Journal({ data }: { data: PhoenixData }) {
           }}
         >
           <Icon name="plus" size={14} color="#fff" />
-          Add Entry
+          Log Transaction
         </button>
       </div>
 
-      {/* Add entry form */}
-      {showAdd && (
-        <div
-          style={{
-            background: "var(--card)",
-            border: "1px solid var(--border)",
-            borderRadius: 12,
-            padding: "16px 20px",
-            marginBottom: 16,
-          }}
-        >
-          <div
-            style={{
-              fontSize: 13,
-              fontWeight: 600,
-              color: "var(--text)",
-              marginBottom: 14,
-            }}
-          >
-            New Journal Entry
-          </div>
-          <div
-            style={{
-              display: "grid",
-              gridTemplateColumns: "1fr 1fr 1fr",
-              gap: 12,
-              marginBottom: 12,
-            }}
-          >
-            {[
-              {
-                label: "Type",
-                key: "type",
-                options: ["note", "buy", "sell", "add", "thesis", "milestone"],
-              },
-              {
-                label: "Category",
-                key: "category",
-                options: ["Equity", "Mid Cap", "Small Cap", "Large Cap"],
-              },
-            ].map((f) => (
-              <div key={f.key}>
-                <label
-                  style={{
-                    fontSize: 11,
-                    color: "var(--muted)",
-                    display: "block",
-                    marginBottom: 4,
-                  }}
-                >
-                  {f.label}
-                </label>
-                <select
-                  value={(newEntry as any)[f.key]}
-                  onChange={(e) =>
-                    setNewEntry((prev) => ({
-                      ...prev,
-                      [f.key]: e.target.value,
-                    }))
-                  }
-                  style={{
-                    width: "100%",
-                    padding: "7px 10px",
-                    background: "var(--bg)",
-                    border: "1px solid var(--border)",
-                    borderRadius: 6,
-                    color: "var(--text)",
-                    fontSize: 12,
-                  }}
-                >
-                  {f.options.map((o) => (
-                    <option key={o} value={o}>
-                      {o}
-                    </option>
-                  ))}
-                </select>
-              </div>
-            ))}
-            <div>
-              <label
-                style={{
-                  fontSize: 11,
-                  color: "var(--muted)",
-                  display: "block",
-                  marginBottom: 4,
-                }}
-              >
-                Ticker
-              </label>
-              <input
-                value={newEntry.ticker}
-                onChange={(e) =>
-                  setNewEntry((prev) => ({ ...prev, ticker: e.target.value }))
-                }
-                placeholder="e.g. INFY"
-                style={{
-                  width: "100%",
-                  padding: "7px 10px",
-                  background: "var(--bg)",
-                  border: "1px solid var(--border)",
-                  borderRadius: 6,
-                  color: "var(--text)",
-                  fontSize: 12,
-                  boxSizing: "border-box",
-                }}
-              />
-            </div>
-          </div>
-          <div style={{ marginBottom: 12 }}>
-            <label
-              style={{
-                fontSize: 11,
-                color: "var(--muted)",
-                display: "block",
-                marginBottom: 4,
-              }}
-            >
-              Notes / Reasoning
-            </label>
-            <textarea
-              value={newEntry.notes}
-              onChange={(e) =>
-                setNewEntry((prev) => ({ ...prev, notes: e.target.value }))
-              }
-              rows={3}
-              placeholder="Why are you making this trade or note?"
-              style={{
-                width: "100%",
-                padding: "8px 10px",
-                background: "var(--bg)",
-                border: "1px solid var(--border)",
-                borderRadius: 6,
-                color: "var(--text)",
-                fontSize: 12,
-                fontFamily: "inherit",
-                resize: "vertical",
-                boxSizing: "border-box",
-              }}
-            />
-          </div>
-          <div style={{ display: "flex", gap: 8 }}>
-            <button
-              onClick={() => setShowAdd(false)}
-              style={{
-                padding: "7px 20px",
-                background: "var(--accent)",
-                border: "none",
-                borderRadius: 6,
-                color: "#fff",
-                cursor: "pointer",
-                fontSize: 13,
-                fontWeight: 600,
-              }}
-            >
-              Save
-            </button>
-            <button
-              onClick={() => setShowAdd(false)}
-              style={{
-                padding: "7px 16px",
-                background: "var(--surface2)",
-                border: "1px solid var(--border)",
-                borderRadius: 6,
-                color: "var(--muted)",
-                cursor: "pointer",
-                fontSize: 13,
-              }}
-            >
-              Cancel
-            </button>
-          </div>
-        </div>
+      {showLogTx && (
+        <LogTransactionModal
+          assets={data.assets}
+          onClose={() => setShowLogTx(false)}
+        />
       )}
 
       {/* Timeline */}

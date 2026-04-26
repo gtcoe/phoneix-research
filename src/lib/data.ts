@@ -1,70 +1,10 @@
 // Phoenix Research — Data Layer (ported from src/designs/data.js)
 // All dates are hardcoded relative to TODAY = April 22, 2026
 
-export function calcXIRR(
-  cashflows: Array<{ amount: number; date: Date }>,
-  guess = 0.1,
-): number | null {
-  if (!cashflows || cashflows.length < 2) return null;
-  const MAX_ITER = 200,
-    TOL = 1e-7,
-    MS_YR = 365.25 * 24 * 3600 * 1000;
-  const t0 = cashflows[0].date.getTime();
-  function npv(r: number) {
-    let s = 0;
-    for (let i = 0; i < cashflows.length; i++) {
-      const t = (cashflows[i].date.getTime() - t0) / MS_YR;
-      s += cashflows[i].amount / Math.pow(1 + r, t);
-    }
-    return s;
-  }
-  function dnpv(r: number) {
-    let s = 0;
-    for (let i = 0; i < cashflows.length; i++) {
-      const t = (cashflows[i].date.getTime() - t0) / MS_YR;
-      if (t === 0) continue;
-      s += (-t * cashflows[i].amount) / Math.pow(1 + r, t + 1);
-    }
-    return s;
-  }
-  let rate = guess;
-  for (let i = 0; i < MAX_ITER; i++) {
-    const fv = npv(rate),
-      dfv = dnpv(rate);
-    if (Math.abs(dfv) < 1e-14) break;
-    const nx = rate - fv / dfv;
-    if (isNaN(nx) || !isFinite(nx)) break;
-    if (Math.abs(nx - rate) < TOL) return Math.round(nx * 10000) / 100;
-    rate = nx;
-    if (rate < -0.999) rate = -0.5;
-  }
-  return Math.round(rate * 10000) / 100;
-}
-
-const MO: Record<string, number> = {
-  Jan: 0,
-  Feb: 1,
-  Mar: 2,
-  Apr: 3,
-  May: 4,
-  Jun: 5,
-  Jul: 6,
-  Aug: 7,
-  Sep: 8,
-  Oct: 9,
-  Nov: 10,
-  Dec: 11,
-};
-export function pd(s: string | null): Date | null {
-  if (!s) return null;
-  const p = s.split(" ");
-  return new Date(parseInt(p[1], 10), MO[p[0]], 15);
-}
-function pdFull(s: string): Date {
-  const p = s.split(" ");
-  return new Date(parseInt(p[2], 10), MO[p[0]], parseInt(p[1], 10));
-}
-const TODAY = new Date(2026, 3, 22);
+export { calcXIRR } from "./xirr";
+export { pd } from "./date";
+import { calcXIRR } from "./xirr";
+import { pd, pdFull, MO, TODAY } from "./date";
 
 // ─── Raw Assets ───────────────────────────────────────────────────────────────
 const rawAssets = [
@@ -315,7 +255,7 @@ const rawAssets = [
   },
 ];
 
-const assets = rawAssets.map((a) => {
+const rawComputed = rawAssets.map((a) => {
   let xirr: number | null = null;
   if (a.cashflows && a.cashflows.length > 0) {
     const cfs = a.cashflows.map((cf) => ({
@@ -342,7 +282,7 @@ const assets = rawAssets.map((a) => {
   if (a.category === "NSE Stocks" || a.category === "US Stocks") {
     if (isLTCG) {
       taxRate = 0.1;
-      taxAmt = Math.max(0, gain - 100000) * taxRate;
+      taxAmt = Math.max(0, gain) * taxRate; // raw gain at 10%; portfolio-wide exemption applied below
     } else {
       taxRate = 0.15;
       taxAmt = Math.max(0, gain) * taxRate;
@@ -381,6 +321,19 @@ const assets = rawAssets.map((a) => {
     taxAmt,
     postTaxGain: gain - (taxAmt ?? 0),
   };
+});
+
+// Apply portfolio-wide LTCG exemption (Rs 1L applies once to combined LTCG gains, not per-holding)
+const totalLtcgRaw = rawComputed
+  .filter((a) => a.isLTCG === true)
+  .reduce((s, a) => s + Math.max(0, a.gain), 0);
+const totalLtcgTax = Math.max(0, totalLtcgRaw - 100000) * 0.1;
+const assets = rawComputed.map((a) => {
+  if (a.isLTCG === true && (a.category === "NSE Stocks" || a.category === "US Stocks") && totalLtcgRaw > 0) {
+    const correctedTaxAmt = (Math.max(0, a.gain) / totalLtcgRaw) * totalLtcgTax;
+    return { ...a, taxAmt: correctedTaxAmt, postTaxGain: a.gain - correctedTaxAmt };
+  }
+  return a;
 });
 
 // Portfolio XIRR
@@ -971,7 +924,9 @@ const convictionAlerts = [
 ];
 
 // ─── Watchlist ────────────────────────────────────────────────────────────────
-const watchlist = [
+// Shape mirrors GET /api/v1/watchlist response: status is "watching" | "interested" | "passed"
+// sinceAddedPct is computed server-side from (currentPrice - priceAtAdd) / priceAtAdd * 100
+const rawWatchlist = [
   {
     id: "w1",
     ticker: "RBZJEWEL",
@@ -984,11 +939,11 @@ const watchlist = [
     alertPrice: 195,
     currentPrice: 181,
     priceAtAdd: 168,
-    addedDate: "Jan 10 2026",
+    addedDate: "2026-01-10",
     thesis:
       "Best-in-class 12% EBITDA margins. Antique gold moat. Watch B2B→B2C transition quarterly.",
-    status: "watching",
-    file: "analyses/rbz_analysis.html",
+    status: "watching" as const,
+    reportFile: "analyses/rbz_analysis.html",
   },
   {
     id: "w2",
@@ -1002,11 +957,11 @@ const watchlist = [
     alertPrice: 85,
     currentPrice: 74,
     priceAtAdd: 61,
-    addedDate: "Feb 03 2026",
+    addedDate: "2026-02-03",
     thesis:
       "133% revenue growth FY25. Asset-light lease model. Watch occupancy quarterly.",
-    status: "watching",
-    file: "analyses/gchotels_analysis.html",
+    status: "watching" as const,
+    reportFile: "analyses/gchotels_analysis.html",
   },
   {
     id: "w3",
@@ -1020,11 +975,11 @@ const watchlist = [
     alertPrice: 145,
     currentPrice: 128,
     priceAtAdd: 142,
-    addedDate: "Mar 15 2026",
+    addedDate: "2026-03-15",
     thesis:
       "50% revenue CAGR. India EPR mandate tailwind. Needs consistent execution.",
-    status: "interested",
-    file: "analyses/namoewaste_analysis.html",
+    status: "interested" as const,
+    reportFile: "analyses/namoewaste_analysis.html",
   },
   {
     id: "w4",
@@ -1038,11 +993,11 @@ const watchlist = [
     alertPrice: 620,
     currentPrice: 584,
     priceAtAdd: 598,
-    addedDate: "Feb 20 2026",
+    addedDate: "2026-02-20",
     thesis:
       "7 consecutive PAT improvement quarters. Watch promoter pledge reduction — key trigger.",
-    status: "watching",
-    file: "analyses/indo_tech_transformers_analysis.html",
+    status: "watching" as const,
+    reportFile: "analyses/indo_tech_transformers_analysis.html",
   },
   {
     id: "w5",
@@ -1056,11 +1011,11 @@ const watchlist = [
     alertPrice: 38,
     currentPrice: 34,
     priceAtAdd: 36,
-    addedDate: "Mar 01 2026",
+    addedDate: "2026-03-01",
     thesis:
       "₹1,026 Cr revenue. 3% PAT margins stagnant — need margin expansion proof.",
-    status: "passed",
-    file: "analyses/cellecor_analysis.html",
+    status: "passed" as const,
+    reportFile: "analyses/cellecor_analysis.html",
   },
   {
     id: "w6",
@@ -1074,10 +1029,10 @@ const watchlist = [
     alertPrice: 280,
     currentPrice: 261,
     priceAtAdd: 241,
-    addedDate: "Jan 25 2026",
+    addedDate: "2026-01-25",
     thesis: "Room AC ODM play. Subros partnership. Yet to research fully.",
-    status: "interested",
-    file: null,
+    status: "interested" as const,
+    reportFile: null,
   },
   {
     id: "w7",
@@ -1091,13 +1046,23 @@ const watchlist = [
     alertPrice: 1450,
     currentPrice: 1382,
     priceAtAdd: 1290,
-    addedDate: "Dec 12 2025",
+    addedDate: "2025-12-12",
     thesis:
       "MF registrar duopoly with Kfin. Regulatory moat. SIP growth tailwind.",
-    status: "interested",
-    file: null,
+    status: "interested" as const,
+    reportFile: null,
   },
 ];
+
+const watchlist = rawWatchlist.map((w) => ({
+  ...w,
+  // computed server-side in prod; derived here to match API shape
+  sinceAddedPct:
+    w.priceAtAdd > 0
+      ? Math.round(((w.currentPrice - w.priceAtAdd) / w.priceAtAdd) * 1000) /
+        10
+      : 0,
+}));
 
 // ─── Reports ─────────────────────────────────────────────────────────────────
 const reports = [
@@ -1313,6 +1278,67 @@ const reports = [
   },
 ];
 
+// ─── Quarterly Reviews ────────────────────────────────────────────────────────
+// Shape mirrors GET /api/v1/reviews?quarter=Q1+FY26
+// result: "beat" | "inline" | "miss" | "pending"
+// convictionDelta: "up" | "same" | "down"
+// action: "hold" | "add" | "trim" | "exit" | "watch"
+export type QuarterlyReviewEntry = {
+  assetId: number;
+  quarter: string;
+  thesisIntact: boolean;
+  result: "beat" | "inline" | "miss" | "pending";
+  convictionDelta: "up" | "same" | "down";
+  action: "hold" | "add" | "trim" | "exit" | "watch";
+  notes: string;
+  completedAt: string;
+};
+
+const quarterlyReviews: QuarterlyReviewEntry[] = [
+  // Q3 FY26 (Jan-Mar 2026)
+  {
+    assetId: 3, // SKYGOLD
+    quarter: "Q3 FY26",
+    thesisIntact: true,
+    result: "beat",
+    convictionDelta: "same",
+    action: "hold",
+    notes: "Revenue +28% YoY. Wedding season demand held. B2B franchise expansion on track.",
+    completedAt: "2026-01-18",
+  },
+  {
+    assetId: 7, // WEBELSOLAR
+    quarter: "Q3 FY26",
+    thesisIntact: false,
+    result: "miss",
+    convictionDelta: "down",
+    action: "watch",
+    notes: "Order book growth slower than expected. Promoter has not reduced pledge yet.",
+    completedAt: "2026-01-20",
+  },
+  {
+    assetId: 5, // EFCIL
+    quarter: "Q3 FY26",
+    thesisIntact: true,
+    result: "inline",
+    convictionDelta: "same",
+    action: "hold",
+    notes: "Occupancy at 82% — good. Revenue inline with guidance. Hold.",
+    completedAt: "2026-01-22",
+  },
+  // Q4 FY26 (Apr 2026) — current quarter, only one completed
+  {
+    assetId: 4, // DEEDEV
+    quarter: "Q4 FY26",
+    thesisIntact: true,
+    result: "beat",
+    convictionDelta: "up",
+    action: "add",
+    notes: "Piping order wins in Q4 strong. Nuclear tailwind visible now. Added on dip.",
+    completedAt: "2026-04-10",
+  },
+];
+
 // ─── Portfolio Health Score ───────────────────────────────────────────────────
 const equityAssets = assets.filter((a) => a.rec);
 const avgConviction =
@@ -1356,6 +1382,7 @@ export const phoenixData = {
   watchlist,
   transactions,
   goals,
+  quarterlyReviews,
   convictionAlerts,
   healthScore,
   healthComponents: {

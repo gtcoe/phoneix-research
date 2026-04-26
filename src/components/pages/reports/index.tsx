@@ -1,12 +1,18 @@
 "use client";
 import { useState } from "react";
-import { Badge, ConvictionDot, Icon } from "./ui";
+import { Badge, ConvictionDot, Icon } from "@/components/ui";
 import type { PhoenixData } from "@/lib/data";
 
 export default function Reports({ data }: { data: PhoenixData }) {
   const [selectedSlug, setSelectedSlug] = useState<string | null>(
     data.reports[0]?.slug || null,
   );
+  const [iframeError, setIframeError] = useState(false);
+
+  const handleSlugChange = (slug: string) => {
+    setSelectedSlug(slug);
+    setIframeError(false);
+  };
 
   const selected = data.reports.find((r) => r.slug === selectedSlug);
 
@@ -42,7 +48,7 @@ export default function Reports({ data }: { data: PhoenixData }) {
         {data.reports.map((r) => (
           <button
             key={r.slug}
-            onClick={() => setSelectedSlug(r.slug)}
+            onClick={() => handleSlugChange(r.slug)}
             style={{
               width: "100%",
               padding: "12px 16px",
@@ -169,9 +175,29 @@ export default function Reports({ data }: { data: PhoenixData }) {
             </div>
             <iframe
               src={`/analyses/${selected.file?.replace(/^analyses\//, "")}`}
-              style={{ flex: 1, border: "none", background: "#fff" }}
+              style={{ flex: 1, border: "none", background: "var(--bg)", display: iframeError ? "none" : "block" }}
               title={`${selected.ticker} Analysis`}
+              onError={() => setIframeError(true)}
             />
+            {iframeError && (
+              <div
+                style={{
+                  flex: 1,
+                  display: "flex",
+                  flexDirection: "column",
+                  alignItems: "center",
+                  justifyContent: "center",
+                  color: "var(--muted)",
+                  gap: 12,
+                }}
+              >
+                <Icon name="alert" size={32} color="var(--border)" />
+                <div style={{ fontSize: 14 }}>Report not found</div>
+                <div style={{ fontSize: 12, color: "var(--muted)" }}>
+                  {selected.file || "No file linked"}
+                </div>
+              </div>
+            )}
           </>
         ) : (
           <div

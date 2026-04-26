@@ -1,7 +1,5 @@
 "use client";
 import {
-  fmt,
-  fmtPct,
   Badge,
   ConvictionDot,
   Gain,
@@ -10,7 +8,8 @@ import {
   HBarChart,
   StatCard,
   Icon,
-} from "./ui";
+} from "@/components/ui";
+import { fmt, fmtPct } from "@/lib/formatters";
 import type { PhoenixData } from "@/lib/data";
 
 // ─── HealthScoreRing ───────────────────────────────────────────────────────────
@@ -599,7 +598,7 @@ export default function Dashboard({ data }: { data: PhoenixData }) {
           {data.reports.slice(0, 4).map((r) => (
             <a
               key={r.slug}
-              href={`/analyses/${r.file?.replace(/^analyses\//, "")}`}
+              href={r.file ? `/analyses/${r.file.replace(/^analyses\//, "")}` : "#"}
               target="_blank"
               rel="noreferrer"
               style={{

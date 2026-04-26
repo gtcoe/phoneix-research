@@ -4,15 +4,15 @@ import { THEMES, DEFAULT_THEME } from "@/lib/theme";
 import { phoenixData } from "@/lib/data";
 import { Sidebar } from "./Sidebar";
 import TopBar from "./TopBar";
-import Dashboard from "./Dashboard";
-import Portfolio from "./Portfolio";
-import Analysis from "./Analysis";
-import Compare from "./Compare";
-import Reports from "./Reports";
-import Watchlist from "./Watchlist";
-import Journal from "./Journal";
-import Tools from "./Tools";
-import QuarterlyReview from "./Review";
+import Dashboard from "@/components/pages/dashboard";
+import Portfolio from "@/components/pages/portfolio";
+import Analysis from "@/components/pages/analysis";
+import Compare from "@/components/pages/compare";
+import Reports from "@/components/pages/reports";
+import Watchlist from "@/components/pages/watchlist";
+import Journal from "@/components/pages/journal";
+import Tools from "@/components/pages/tools";
+import QuarterlyReview from "@/components/pages/review";
 
 type Page =
   | "dashboard"
@@ -53,7 +53,7 @@ export default function PhoenixApp() {
   // Apply theme CSS variables
   useEffect(() => {
     const root = document.documentElement;
-    const theme = (THEMES as any)[themeName] || THEMES[DEFAULT_THEME];
+    const theme = THEMES[themeName as keyof typeof THEMES] || THEMES[DEFAULT_THEME];
     Object.entries(theme).forEach(([k, v]) =>
       root.style.setProperty(k, v as string),
     );
@@ -123,6 +123,7 @@ export default function PhoenixApp() {
           page={page}
           themeName={themeName}
           onThemeChange={setThemeName}
+          onNav={navTo}
           themes={themeNames}
         />
         <main style={{ flex: 1, overflowY: "auto" }}>{renderPage()}</main>

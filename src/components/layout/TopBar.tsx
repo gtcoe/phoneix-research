@@ -1,6 +1,6 @@
 "use client";
 import { useState, useRef } from "react";
-import { Icon } from "./ui";
+import { Icon } from "@/components/ui";
 import type { PhoenixData } from "@/lib/data";
 
 // ─── TopBar ───────────────────────────────────────────────────────────────────
@@ -9,17 +9,20 @@ export default function TopBar({
   page,
   themeName,
   onThemeChange,
+  onNav,
   themes,
 }: {
   data: PhoenixData;
   page: string;
   themeName: string;
   onThemeChange: (name: string) => void;
+  onNav: (page: string) => void;
   themes: string[];
 }) {
   const [showNotifs, setShowNotifs] = useState(false);
   const [showTheme, setShowTheme] = useState(false);
   const [searchVal, setSearchVal] = useState("");
+  const [showSearch, setShowSearch] = useState(false);
   const notifRef = useRef<HTMLDivElement>(null);
 
   const unread = data.convictionAlerts.filter((a) => !a.read).length;
@@ -35,6 +38,38 @@ export default function TopBar({
     tools: "Tools",
     review: "Quarterly Review",
   };
+
+  // Build searchable items: holdings + watchlist
+  const q = searchVal.trim().toLowerCase();
+  const searchResults =
+    q.length < 1
+      ? []
+      : [
+          ...data.assets
+            .filter(
+              (a) =>
+                a.ticker?.toLowerCase().includes(q) ||
+                a.name.toLowerCase().includes(q),
+            )
+            .slice(0, 4)
+            .map((a) => ({ label: a.ticker ?? a.name, sub: a.name, dest: "portfolio" as const, tag: "Portfolio" })),
+          ...data.watchlist
+            .filter(
+              (w) =>
+                w.ticker.toLowerCase().includes(q) ||
+                w.name.toLowerCase().includes(q),
+            )
+            .slice(0, 3)
+            .map((w) => ({ label: w.ticker, sub: w.name, dest: "watchlist" as const, tag: "Watchlist" })),
+          ...data.reports
+            .filter(
+              (r) =>
+                r.ticker.toLowerCase().includes(q) ||
+                r.name.toLowerCase().includes(q),
+            )
+            .slice(0, 3)
+            .map((r) => ({ label: r.ticker, sub: r.name, dest: "reports" as const, tag: "Reports" })),
+        ];
 
   return (
     <header
@@ -78,7 +113,12 @@ export default function TopBar({
         </span>
         <input
           value={searchVal}
-          onChange={(e) => setSearchVal(e.target.value)}
+          onChange={(e) => {
+            setSearchVal(e.target.value);
+            setShowSearch(true);
+          }}
+          onFocus={() => setShowSearch(true)}
+          onBlur={() => setTimeout(() => setShowSearch(false), 150)}
           placeholder="Search ticker, name…"
           style={{
             width: "100%",
@@ -92,6 +132,81 @@ export default function TopBar({
             fontFamily: "inherit",
           }}
         />
+        {showSearch && searchResults.length > 0 && (
+          <div
+            style={{
+              position: "absolute",
+              top: "calc(100% + 6px)",
+              left: 0,
+              right: 0,
+              background: "var(--surface)",
+              border: "1px solid var(--border)",
+              borderRadius: 10,
+              boxShadow: "0 8px 24px rgba(0,0,0,0.3)",
+              zIndex: 9999,
+              overflow: "hidden",
+            }}
+          >
+            {searchResults.map((r, i) => (
+              <button
+                key={i}
+                onMouseDown={() => {
+                  onNav(r.dest);
+                  setSearchVal("");
+                  setShowSearch(false);
+                }}
+                style={{
+                  width: "100%",
+                  padding: "9px 14px",
+                  display: "flex",
+                  alignItems: "center",
+                  gap: 10,
+                  background: "transparent",
+                  border: "none",
+                  cursor: "pointer",
+                  textAlign: "left",
+                  borderBottom: "1px solid var(--border)",
+                }}
+              >
+                <span
+                  style={{
+                    fontFamily: "var(--font-mono)",
+                    fontWeight: 700,
+                    color: "var(--accent)",
+                    fontSize: 13,
+                    minWidth: 72,
+                  }}
+                >
+                  {r.label}
+                </span>
+                <span
+                  style={{
+                    fontSize: 11,
+                    color: "var(--muted)",
+                    flex: 1,
+                    overflow: "hidden",
+                    textOverflow: "ellipsis",
+                    whiteSpace: "nowrap",
+                  }}
+                >
+                  {r.sub}
+                </span>
+                <span
+                  style={{
+                    fontSize: 10,
+                    color: "var(--muted)",
+                    padding: "1px 6px",
+                    border: "1px solid var(--border)",
+                    borderRadius: 4,
+                    whiteSpace: "nowrap",
+                  }}
+                >
+                  {r.tag}
+                </span>
+              </button>
+            ))}
+          </div>
+        )}
       </div>
 
       <div style={{ flex: 1 }} />
@@ -213,13 +328,14 @@ export default function TopBar({
             >
               Alerts ({unread} unread)
             </div>
-            {data.convictionAlerts.map((a) => (
+            {data.convictionAlerts
+              .filter((a) => !a.read)
+              .map((a) => (
               <div
                 key={a.id}
                 style={{
                   padding: "10px 16px",
                   borderBottom: "1px solid var(--border)",
-                  opacity: a.read ? 0.6 : 1,
                 }}
               >
                 <div
@@ -273,7 +389,7 @@ export default function TopBar({
                 </div>
               </div>
             ))}
-            {data.convictionAlerts.length === 0 && (
+            {unread === 0 && (
               <div
                 style={{
                   padding: 20,
@@ -282,7 +398,7 @@ export default function TopBar({
                   color: "var(--muted)",
                 }}
               >
-                No alerts
+                All caught up — no unread alerts
               </div>
             )}
           </div>

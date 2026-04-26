@@ -1,7 +1,8 @@
-// @ts-nocheck
 "use client";
 import React, { useState } from "react";
-import { fmt, fmtPct, Badge, ConvictionDot, Gain, Sparkline, Icon } from "./ui";
+import { fmt, fmtPct } from "@/lib/formatters";
+import { Badge, ConvictionDot, Gain, Sparkline, Icon } from "@/components/ui";
+import LogTransactionModal from "@/components/common/modals/LogTransactionModal";
 import type { PhoenixData } from "@/lib/data";
 
 type Asset = PhoenixData["assets"][number];
@@ -15,11 +16,20 @@ type SortKey =
 
 const CATEGORIES = ["All", "NSE Stocks", "US Stocks", "NPS", "FD", "Cash"];
 
+function SortIcon({ sortKey, k, sortAsc }: { sortKey: SortKey; k: SortKey; sortAsc: boolean }) {
+  return sortKey === k ? (
+    <Icon name={sortAsc ? "arrowUp" : "arrowDown"} size={12} color="var(--accent)" />
+  ) : (
+    <Icon name="arrowDown" size={12} color="var(--border)" />
+  );
+}
+
 export default function Portfolio({ data }: { data: PhoenixData }) {
   const [sortKey, setSortKey] = useState<SortKey>("current");
   const [sortAsc, setSortAsc] = useState(false);
   const [category, setCategory] = useState("All");
-  const [expandedId, setExpandedId] = useState<string | null>(null);
+  const [expandedId, setExpandedId] = useState<number | null>(null);
+  const [showLogTx, setShowLogTx] = useState(false);
 
   const handleSort = (key: SortKey) => {
     if (sortKey === key) setSortAsc((a) => !a);
@@ -51,17 +61,6 @@ export default function Portfolio({ data }: { data: PhoenixData }) {
     acc[a.category].current += a.current;
     return acc;
   }, {});
-
-  const SortIcon = ({ k }: { k: SortKey }) =>
-    sortKey === k ? (
-      <Icon
-        name={sortAsc ? "arrowUp" : "arrowDown"}
-        size={12}
-        color="var(--accent)"
-      />
-    ) : (
-      <Icon name="arrowDown" size={12} color="var(--border)" />
-    );
 
   const thStyle = (k: SortKey): React.CSSProperties => ({
     padding: "8px 10px",
@@ -173,7 +172,33 @@ export default function Portfolio({ data }: { data: PhoenixData }) {
         >
           {sorted.length} holdings
         </span>
+        <button
+          onClick={() => setShowLogTx(true)}
+          style={{
+            display: "flex",
+            alignItems: "center",
+            gap: 6,
+            padding: "7px 14px",
+            background: "var(--accent)",
+            border: "none",
+            borderRadius: 8,
+            cursor: "pointer",
+            color: "#fff",
+            fontSize: 12,
+            fontWeight: 600,
+          }}
+        >
+          <Icon name="plus" size={14} color="#fff" />
+          Log Transaction
+        </button>
       </div>
+
+      {showLogTx && (
+        <LogTransactionModal
+          assets={data.assets}
+          onClose={() => setShowLogTx(false)}
+        />
+      )}
 
       {/* Table */}
       <div
@@ -198,7 +223,7 @@ export default function Portfolio({ data }: { data: PhoenixData }) {
                 onClick={() => handleSort("name")}
               >
                 <span style={{ display: "flex", alignItems: "center", gap: 4 }}>
-                  Company <SortIcon k="name" />
+                  Company <SortIcon sortKey={sortKey} sortAsc={sortAsc} k="name" />
                 </span>
               </th>
               <th
@@ -213,7 +238,7 @@ export default function Portfolio({ data }: { data: PhoenixData }) {
                     gap: 4,
                   }}
                 >
-                  Value <SortIcon k="current" />
+                  Value <SortIcon sortKey={sortKey} sortAsc={sortAsc} k="current" />
                 </span>
               </th>
               <th
@@ -228,7 +253,7 @@ export default function Portfolio({ data }: { data: PhoenixData }) {
                     gap: 4,
                   }}
                 >
-                  Gain <SortIcon k="gainPct" />
+                  Gain <SortIcon sortKey={sortKey} sortAsc={sortAsc} k="gainPct" />
                 </span>
               </th>
               <th
@@ -243,7 +268,7 @@ export default function Portfolio({ data }: { data: PhoenixData }) {
                     gap: 4,
                   }}
                 >
-                  XIRR <SortIcon k="xirr" />
+                  XIRR <SortIcon sortKey={sortKey} sortAsc={sortAsc} k="xirr" />
                 </span>
               </th>
               <th
@@ -268,7 +293,7 @@ export default function Portfolio({ data }: { data: PhoenixData }) {
                     gap: 4,
                   }}
                 >
-                  Conv <SortIcon k="conviction" />
+                  Conv <SortIcon sortKey={sortKey} sortAsc={sortAsc} k="conviction" />
                 </span>
               </th>
               <th
@@ -283,7 +308,7 @@ export default function Portfolio({ data }: { data: PhoenixData }) {
                     gap: 4,
                   }}
                 >
-                  Holding <SortIcon k="holdingDays" />
+                  Holding <SortIcon sortKey={sortKey} sortAsc={sortAsc} k="holdingDays" />
                 </span>
               </th>
               <th

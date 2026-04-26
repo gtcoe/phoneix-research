@@ -1,6 +1,6 @@
 "use client";
 import { useState } from "react";
-import { Icon } from "./ui";
+import { Icon } from "@/components/ui";
 
 // ─── PhoenixLogo ──────────────────────────────────────────────────────────────
 export function PhoenixLogo({ small = false }: { small?: boolean }) {
@@ -171,35 +171,6 @@ export function Sidebar({
           );
         })}
       </nav>
-
-      {/* Settings at bottom */}
-      <div
-        style={{
-          borderTop: "1px solid var(--border)",
-          padding: collapsed ? "10px 0" : "10px 8px",
-        }}
-      >
-        <button
-          onClick={() => onNav("settings")}
-          style={{
-            width: "100%",
-            padding: collapsed ? "10px 0" : "10px 8px",
-            display: "flex",
-            alignItems: "center",
-            gap: 10,
-            background: "transparent",
-            border: "none",
-            cursor: "pointer",
-            color: "var(--muted)",
-            fontSize: 13,
-            borderRadius: 6,
-            justifyContent: collapsed ? "center" : "flex-start",
-          }}
-        >
-          <Icon name="settings" size={16} />
-          {!collapsed && <span>Settings</span>}
-        </button>
-      </div>
     </aside>
   );
 }
