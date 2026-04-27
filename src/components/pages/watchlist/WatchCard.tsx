@@ -1,4 +1,3 @@
-// @ts-nocheck
 "use client";
 import { useState } from "react";
 import { fmt, fmtPct } from "@/lib/formatters";
@@ -27,7 +26,7 @@ export function WatchCard({
   onThesisSave,
 }: {
   item: WatchItem;
-  onStatusChange: (id: string, status: string) => void;
+  onStatusChange: (id: string, status: WatchStatus) => void;
   onRemove: (id: string) => void;
   onThesisSave: (id: string, thesis: string) => void;
 }) {
@@ -215,7 +214,7 @@ export function WatchCard({
       >
         <select
           value={item.status}
-          onChange={(e) => onStatusChange(item.id, e.target.value)}
+          onChange={(e) => onStatusChange(item.id, e.target.value as WatchStatus)}
           style={{
             padding: "4px 8px",
             background: "var(--bg)",

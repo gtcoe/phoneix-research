@@ -1,4 +1,5 @@
 "use client";
+import { THRESHOLDS } from "@/constants/thresholds";
 import { useState } from "react";
 import { fmt, fmtPct } from "@/lib/formatters";
 import { Badge, Gain, AreaChart, TabBar } from "@/components/ui";

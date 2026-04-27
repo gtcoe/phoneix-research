@@ -1,6 +1,8 @@
 "use client";
 import { useState, useRef } from "react";
 import { Icon } from "@/components/ui";
+import { PAGE_NAMES } from "@/constants/nav";
+import { THRESHOLDS } from "@/constants/thresholds";
 import type { PhoenixData } from "@/lib/data";
 
 // ─── TopBar ───────────────────────────────────────────────────────────────────
@@ -27,17 +29,6 @@ export default function TopBar({
 
   const unread = data.convictionAlerts.filter((a) => !a.read).length;
   const isDark = themeName !== "Pro Light";
-  const pageName: Record<string, string> = {
-    dashboard: "Dashboard",
-    portfolio: "Portfolio",
-    analysis: "Analysis",
-    compare: "Compare",
-    watchlist: "Watchlist",
-    reports: "Reports",
-    journal: "Journal",
-    tools: "Tools",
-    review: "Quarterly Review",
-  };
 
   // Build searchable items: holdings + watchlist
   const q = searchVal.trim().toLowerCase();
@@ -51,7 +42,7 @@ export default function TopBar({
                 a.ticker?.toLowerCase().includes(q) ||
                 a.name.toLowerCase().includes(q),
             )
-            .slice(0, 4)
+            .slice(0, THRESHOLDS.SEARCH.PORTFOLIO_RESULTS)
             .map((a) => ({ label: a.ticker ?? a.name, sub: a.name, dest: "portfolio" as const, tag: "Portfolio" })),
           ...data.watchlist
             .filter(
@@ -59,7 +50,7 @@ export default function TopBar({
                 w.ticker.toLowerCase().includes(q) ||
                 w.name.toLowerCase().includes(q),
             )
-            .slice(0, 3)
+            .slice(0, THRESHOLDS.SEARCH.WATCHLIST_RESULTS)
             .map((w) => ({ label: w.ticker, sub: w.name, dest: "watchlist" as const, tag: "Watchlist" })),
           ...data.reports
             .filter(
@@ -67,7 +58,7 @@ export default function TopBar({
                 r.ticker.toLowerCase().includes(q) ||
                 r.name.toLowerCase().includes(q),
             )
-            .slice(0, 3)
+            .slice(0, THRESHOLDS.SEARCH.REPORTS_RESULTS)
             .map((r) => ({ label: r.ticker, sub: r.name, dest: "reports" as const, tag: "Reports" })),
         ];
 
@@ -93,7 +84,7 @@ export default function TopBar({
           marginRight: 8,
         }}
       >
-        {pageName[page] || page}
+        {PAGE_NAMES[page as keyof typeof PAGE_NAMES] || page}
       </span>
 
       {/* Search */}

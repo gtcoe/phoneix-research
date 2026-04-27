@@ -1,4 +1,3 @@
-// @ts-nocheck
 "use client";
 import { useState } from "react";
 import { fmt } from "@/lib/formatters";
@@ -209,12 +208,13 @@ export function TargetPriceCalc({ data }: { data: PhoenixData }) {
             >
               DCF / P/E Estimate ({yr}yr horizon)
             </div>
-            {[
-              {
-                label: "Future EPS",
-                value:
-                  futureEPS !== undefined ? `₹${futureEPS.toFixed(2)}` : "—",
-              },
+            {(
+              [
+                {
+                  label: "Future EPS",
+                  value:
+                    futureEPS !== undefined ? `₹${futureEPS.toFixed(2)}` : "—",
+                },
               {
                 label: "Target Price",
                 value:
@@ -234,7 +234,8 @@ export function TargetPriceCalc({ data }: { data: PhoenixData }) {
                       : "var(--loss)"
                     : "var(--text)",
               },
-            ].map((r) => (
+            ] as Array<{ label: string; value: string; color?: string }>
+            ).map((r) => (
               <div
                 key={r.label}
                 style={{
@@ -251,7 +252,7 @@ export function TargetPriceCalc({ data }: { data: PhoenixData }) {
                   style={{
                     fontSize: 14,
                     fontWeight: 700,
-                    color: (r as any).color || "var(--text)",
+                    color: r.color || "var(--text)",
                     fontFamily: "var(--font-mono)",
                   }}
                 >

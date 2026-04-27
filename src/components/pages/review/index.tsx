@@ -1,8 +1,8 @@
-// @ts-nocheck
 "use client";
 import { useState } from "react";
 import { fmt } from "@/lib/formatters";
 import { Icon } from "@/components/ui";
+import { useToast } from "@/hooks/useToast";
 import type { PhoenixData } from "@/lib/data";
 import { ReviewCard } from "./ReviewCard";
 
@@ -10,7 +10,7 @@ export default function QuarterlyReview({ data }: { data: PhoenixData }) {
   // Derive available quarters from mock data (backend returns a list via GET /api/v1/reviews/quarters)
   const QUARTERS = ["Q3 FY26", "Q4 FY26"];
   const [quarter, setQuarter] = useState("Q4 FY26");
-  const [toast, setToast] = useState<string | null>(null);
+  const { show: showToast } = useToast();
 
   // Per-quarter reviewed set — pre-populate from data.quarterlyReviews (backend seed)
   const [reviewedByQuarter, setReviewedByQuarter] = useState<
@@ -34,16 +34,11 @@ export default function QuarterlyReview({ data }: { data: PhoenixData }) {
         qSet.delete(id);
       } else {
         qSet.add(id);
-        showToast("Review saved ✓");
+        showToast("Review saved ✓", "success");
       }
       next.set(quarter, qSet);
       return next;
     });
-  };
-
-  const showToast = (msg: string) => {
-    setToast(msg);
-    setTimeout(() => setToast(null), 2500);
   };
 
   const equityAssets = data.assets.filter((a) => a.rec);
@@ -54,27 +49,6 @@ export default function QuarterlyReview({ data }: { data: PhoenixData }) {
 
   return (
     <div style={{ padding: 24, position: "relative" }}>
-      {/* Toast */}
-      {toast && (
-        <div
-          style={{
-            position: "fixed",
-            bottom: 28,
-            right: 28,
-            background: "var(--gain)",
-            color: "#fff",
-            padding: "10px 20px",
-            borderRadius: 10,
-            fontWeight: 600,
-            fontSize: 13,
-            zIndex: 9999,
-            boxShadow: "0 4px 16px rgba(0,0,0,0.3)",
-          }}
-        >
-          {toast}
-        </div>
-      )}
-
       {/* Header */}
       <div
         style={{

@@ -1,4 +1,3 @@
-// @ts-nocheck
 "use client";
 import { useState } from "react";
 import { fmt } from "@/lib/formatters";
@@ -152,7 +151,7 @@ export function GoalPlanning({ data }: { data: PhoenixData }) {
                 </label>
                 <input
                   type={f.type}
-                  value={(newGoal as any)[f.key]}
+                  value={(newGoal as Record<string, string>)[f.key]}
                   onChange={(e) =>
                     setNewGoal((prev) => ({ ...prev, [f.key]: e.target.value }))
                   }

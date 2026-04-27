@@ -10,6 +10,7 @@ export function AreaChart({
   labelKey = "date",
   valueKey = "value",
 }: {
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
   data: Array<Record<string, any>>;
   width?: number;
   height?: number;

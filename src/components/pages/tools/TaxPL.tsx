@@ -1,4 +1,3 @@
-// @ts-nocheck
 "use client";
 import { fmt } from "@/lib/formatters";
 import type { PhoenixData } from "@/lib/data";

@@ -1,4 +1,3 @@
-// @ts-nocheck
 "use client";
 import { useState } from "react";
 import { Icon } from "@/components/ui";
@@ -23,7 +22,7 @@ export default function Watchlist({ data }: { data: PhoenixData }) {
     (i) => statusFilter === "all" || i.status === statusFilter,
   );
 
-  const updateStatus = (id: string, status: string) => {
+  const updateStatus = (id: string, status: WatchStatus) => {
     setItems((prev) => prev.map((i) => (i.id === id ? { ...i, status } : i)));
   };
 
@@ -64,7 +63,7 @@ export default function Watchlist({ data }: { data: PhoenixData }) {
               transition: "all .15s",
             }}
           >
-            {s === "all" ? "All" : STATUS_LABELS[s]}
+            {s === "all" ? "All" : STATUS_LABELS[s as WatchStatus]}
           </button>
         ))}
         <span

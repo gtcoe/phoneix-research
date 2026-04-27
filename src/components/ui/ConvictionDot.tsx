@@ -1,9 +1,14 @@
 "use client";
+import { THRESHOLDS } from "@/constants/thresholds";
 
 export function ConvictionDot({ score }: { score: number | null }) {
   if (!score) return null;
   const color =
-    score >= 8 ? "var(--gain)" : score >= 6 ? "var(--warn)" : "var(--muted)";
+    score >= THRESHOLDS.HIGH_CONVICTION
+      ? "var(--gain)"
+      : score >= THRESHOLDS.MEDIUM_CONVICTION
+        ? "var(--warn)"
+        : "var(--muted)";
   return (
     <span
       style={{

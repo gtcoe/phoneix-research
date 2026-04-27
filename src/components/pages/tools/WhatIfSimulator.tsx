@@ -1,5 +1,5 @@
-// @ts-nocheck
 "use client";
+import { THRESHOLDS } from "@/constants/thresholds";
 import { useState } from "react";
 import { fmt, fmtPct } from "@/lib/formatters";
 import { calcXIRR, pd } from "@/lib/data";
@@ -218,9 +218,10 @@ export function WhatIfSimulator({ data }: { data: PhoenixData }) {
               padding: "18px 20px",
             }}
           >
-            {[
+            {(
+              [
               { label: "Exit Price", value: fmt(ep) },
-              { label: "Exit Value", value: fmt(ep * selected.qty) },
+              { label: "Exit Value", value: fmt(ep * (selected.qty ?? 0)) },
               {
                 label: "Gain/Loss",
                 value: simGain !== null ? fmt(simGain) : "—",
@@ -244,9 +245,10 @@ export function WhatIfSimulator({ data }: { data: PhoenixData }) {
                 value:
                   selected.xirr != null ? `${selected.xirr.toFixed(1)}%` : "—",
                 color:
-                  (selected.xirr ?? 0) >= 15 ? "var(--gain)" : "var(--warn)",
+                  (selected.xirr ?? 0) >= THRESHOLDS.GOOD_XIRR ? "var(--gain)" : "var(--warn)",
               },
-            ].map((r) => (
+            ] as Array<{ label: string; value: string; color?: string }>
+            ).map((r) => (
               <div
                 key={r.label}
                 style={{
@@ -263,7 +265,7 @@ export function WhatIfSimulator({ data }: { data: PhoenixData }) {
                   style={{
                     fontSize: 15,
                     fontWeight: 700,
-                    color: (r as any).color || "var(--text)",
+                    color: r.color || "var(--text)",
                     fontFamily: "var(--font-mono)",
                   }}
                 >

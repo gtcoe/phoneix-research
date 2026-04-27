@@ -1,5 +1,5 @@
-// @ts-nocheck
 "use client";
+import { THRESHOLDS } from "@/constants/thresholds";
 import { useState } from "react";
 import { fmt, fmtPct } from "@/lib/formatters";
 import { Badge, ConvictionDot, Gain, Icon } from "@/components/ui";
@@ -244,7 +244,8 @@ export function ReviewCard({
                 marginBottom: 10,
               }}
             >
-              {[
+              {(
+                [
                 { label: "Entry Price", value: fmt(asset.entryPrice) },
                 { label: "Current Price", value: fmt(asset.currentPrice) },
                 {
@@ -256,9 +257,10 @@ export function ReviewCard({
                   label: "XIRR",
                   value: asset.xirr != null ? `${asset.xirr.toFixed(1)}%` : "—",
                   color:
-                    (asset.xirr ?? 0) >= 15 ? "var(--gain)" : "var(--warn)",
+                    (asset.xirr ?? 0) >= THRESHOLDS.GOOD_XIRR ? "var(--gain)" : "var(--warn)",
                 },
-              ].map((m) => (
+              ] as Array<{ label: string; value: string; color?: string }>
+              ).map((m) => (
                 <div
                   key={m.label}
                   style={{
@@ -274,7 +276,7 @@ export function ReviewCard({
                     style={{
                       fontSize: 14,
                       fontWeight: 700,
-                      color: (m as any).color || "var(--text)",
+                      color: m.color || "var(--text)",
                       fontFamily: "var(--font-mono)",
                       marginTop: 2,
                     }}

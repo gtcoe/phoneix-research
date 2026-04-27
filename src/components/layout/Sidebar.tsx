@@ -1,6 +1,7 @@
 "use client";
 import { useState } from "react";
 import { Icon } from "@/components/ui";
+import { NAV_ITEMS } from "@/constants/nav";
 
 // ─── PhoenixLogo ──────────────────────────────────────────────────────────────
 export function PhoenixLogo({ small = false }: { small?: boolean }) {
@@ -42,19 +43,6 @@ export function PhoenixLogo({ small = false }: { small?: boolean }) {
     </div>
   );
 }
-
-// ─── Nav items config ─────────────────────────────────────────────────────────
-const NAV_ITEMS = [
-  { id: "dashboard", label: "Dashboard", icon: "dashboard" },
-  { id: "portfolio", label: "Portfolio", icon: "portfolio" },
-  { id: "analysis", label: "Analysis", icon: "analysis" },
-  { id: "compare", label: "Compare", icon: "trend" },
-  { id: "watchlist", label: "Watchlist", icon: "watchlist" },
-  { id: "reports", label: "Reports", icon: "reports" },
-  { id: "journal", label: "Journal", icon: "note" },
-  { id: "tools", label: "Tools", icon: "tools" },
-  { id: "review", label: "Review", icon: "review" },
-];
 
 // ─── Sidebar ──────────────────────────────────────────────────────────────────
 export function Sidebar({

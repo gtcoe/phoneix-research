@@ -1,7 +1,13 @@
 "use client";
-import { useState, useEffect } from "react";
-import { THEMES, DEFAULT_THEME } from "@/lib/theme";
-import { phoenixData } from "@/lib/data";
+import { useTheme } from "@/hooks/useTheme";
+import { useNav } from "@/hooks/useNav";
+import { useLocalStorage } from "@/hooks/useLocalStorage";
+import { ToastProvider } from "@/hooks/useToast";
+import { STORAGE_KEYS } from "@/constants/storage";
+import { PAGE_NAMES } from "@/constants/nav";
+import { getPhoenixData } from "@/services/dataService";
+import { ErrorBoundary } from "@/components/common/components/ErrorBoundary";
+import { ToastContainer } from "@/components/common/components/ToastContainer";
 import { Sidebar } from "./Sidebar";
 import TopBar from "./TopBar";
 import Dashboard from "@/components/pages/dashboard";
@@ -14,120 +20,72 @@ import Journal from "@/components/pages/journal";
 import Tools from "@/components/pages/tools";
 import QuarterlyReview from "@/components/pages/review";
 
-type Page =
-  | "dashboard"
-  | "portfolio"
-  | "analysis"
-  | "compare"
-  | "watchlist"
-  | "reports"
-  | "journal"
-  | "tools"
-  | "review";
-
 export default function PhoenixApp() {
-  const [page, setPage] = useState<Page>(() => {
-    if (typeof window === "undefined") return "dashboard";
-    return (localStorage.getItem("px-page") as Page) || "dashboard";
-  });
-  const [themeName, setThemeName] = useState<string>(() => {
-    if (typeof window === "undefined") return DEFAULT_THEME;
-    return localStorage.getItem("px-theme") || DEFAULT_THEME;
-  });
-  const [collapsed, setCollapsed] = useState<boolean>(() => {
-    if (typeof window === "undefined") return false;
-    return localStorage.getItem("px-collapsed") === "true";
-  });
+  const { themeName, setThemeName, themeNames } = useTheme();
+  const { page, navTo } = useNav();
+  const [collapsed, setCollapsed] = useLocalStorage<boolean>(
+    STORAGE_KEYS.SIDEBAR_COLLAPSED,
+    false,
+  );
 
-  // Persist state
-  useEffect(() => {
-    localStorage.setItem("px-page", page);
-  }, [page]);
-  useEffect(() => {
-    localStorage.setItem("px-theme", themeName);
-  }, [themeName]);
-  useEffect(() => {
-    localStorage.setItem("px-collapsed", String(collapsed));
-  }, [collapsed]);
-
-  // Apply theme CSS variables
-  useEffect(() => {
-    const root = document.documentElement;
-    const theme = THEMES[themeName as keyof typeof THEMES] || THEMES[DEFAULT_THEME];
-    Object.entries(theme).forEach(([k, v]) =>
-      root.style.setProperty(k, v as string),
-    );
-    root.style.setProperty(
-      "color-scheme",
-      themeName !== "Pro Light" ? "dark" : "light",
-    );
-  }, [themeName]);
-
-  const data = phoenixData;
-  const themeNames = Object.keys(THEMES);
-
-  const navTo = (p: string) => setPage(p as Page);
+  const data = getPhoenixData();
 
   const renderPage = () => {
+    // key=page resets the ErrorBoundary when the user navigates to a new tab
+    const key = page;
     switch (page) {
-      case "dashboard":
-        return <Dashboard data={data} />;
-      case "portfolio":
-        return <Portfolio data={data} />;
-      case "analysis":
-        return <Analysis data={data} />;
-      case "compare":
-        return <Compare data={data} />;
-      case "watchlist":
-        return <Watchlist data={data} />;
-      case "reports":
-        return <Reports data={data} />;
-      case "journal":
-        return <Journal data={data} />;
-      case "tools":
-        return <Tools data={data} />;
-      case "review":
-        return <QuarterlyReview data={data} />;
-      default:
-        return <Dashboard data={data} />;
+      case "dashboard":  return <ErrorBoundary key={key} pageName={PAGE_NAMES[page]}><Dashboard data={data} /></ErrorBoundary>;
+      case "portfolio":  return <ErrorBoundary key={key} pageName={PAGE_NAMES[page]}><Portfolio data={data} /></ErrorBoundary>;
+      case "analysis":   return <ErrorBoundary key={key} pageName={PAGE_NAMES[page]}><Analysis data={data} /></ErrorBoundary>;
+      case "compare":    return <ErrorBoundary key={key} pageName={PAGE_NAMES[page]}><Compare data={data} /></ErrorBoundary>;
+      case "watchlist":  return <ErrorBoundary key={key} pageName={PAGE_NAMES[page]}><Watchlist data={data} /></ErrorBoundary>;
+      case "reports":    return <ErrorBoundary key={key} pageName={PAGE_NAMES[page]}><Reports data={data} /></ErrorBoundary>;
+      case "journal":    return <ErrorBoundary key={key} pageName={PAGE_NAMES[page]}><Journal data={data} /></ErrorBoundary>;
+      case "tools":      return <ErrorBoundary key={key} pageName={PAGE_NAMES[page]}><Tools data={data} /></ErrorBoundary>;
+      case "review":     return <ErrorBoundary key={key} pageName={PAGE_NAMES[page]}><QuarterlyReview data={data} /></ErrorBoundary>;
+      default:           return <ErrorBoundary key={key} pageName="Dashboard"><Dashboard data={data} /></ErrorBoundary>;
     }
   };
 
   return (
-    <div
-      style={{
-        display: "flex",
-        height: "100vh",
-        overflow: "hidden",
-        background: "var(--bg)",
-        color: "var(--text)",
-        fontFamily: "var(--font-sans)",
-      }}
-    >
-      <Sidebar
-        page={page}
-        onNav={navTo}
-        collapsed={collapsed}
-        onToggle={() => setCollapsed((c) => !c)}
-      />
+    <ToastProvider>
       <div
         style={{
-          flex: 1,
           display: "flex",
-          flexDirection: "column",
+          height: "100vh",
           overflow: "hidden",
+          background: "var(--bg)",
+          color: "var(--text)",
+          fontFamily: "var(--font-sans)",
         }}
       >
-        <TopBar
-          data={data}
+        <Sidebar
           page={page}
-          themeName={themeName}
-          onThemeChange={setThemeName}
           onNav={navTo}
-          themes={themeNames}
+          collapsed={collapsed}
+          onToggle={() => setCollapsed((c) => !c)}
         />
-        <main style={{ flex: 1, overflowY: "auto" }}>{renderPage()}</main>
+        <div
+          style={{
+            flex: 1,
+            display: "flex",
+            flexDirection: "column",
+            overflow: "hidden",
+          }}
+        >
+          <TopBar
+            data={data}
+            page={page}
+            themeName={themeName}
+            onThemeChange={setThemeName}
+            onNav={navTo}
+            themes={themeNames}
+          />
+          <main style={{ flex: 1, overflowY: "auto" }}>{renderPage()}</main>
+        </div>
+        <ToastContainer />
       </div>
-    </div>
+    </ToastProvider>
   );
 }
+

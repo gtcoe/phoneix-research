@@ -1,4 +1,3 @@
-// @ts-nocheck
 "use client";
 import { useState } from "react";
 import { fmt, fmtPct } from "@/lib/formatters";
