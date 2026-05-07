@@ -7,30 +7,13 @@ interface Props {
 
 export default function RecentReports({ reports }: Props) {
   return (
-    <div
-      style={{
-        background: "var(--card)",
-        border: "1px solid var(--border)",
-        borderRadius: 12,
-        padding: "16px 20px",
-      }}
-    >
-      <div
-        style={{
-          fontSize: 13,
-          fontWeight: 600,
-          color: "var(--text)",
-          marginBottom: 14,
-        }}
-      >
+    <div className="bg-[var(--card)] border border-[var(--border)] rounded-xl py-4 px-5">
+      <div className="text-sm font-semibold text-[var(--text)] mb-3.5">
         Recent Reports
       </div>
       <div
-        style={{
-          display: "grid",
-          gridTemplateColumns: "repeat(auto-fill, minmax(220px, 1fr))",
-          gap: 10,
-        }}
+        className="grid gap-[10px]"
+        style={{ gridTemplateColumns: "repeat(auto-fill, minmax(220px, 1fr))" }}
       >
         {reports.slice(0, 4).map((r) => (
           <a
@@ -38,43 +21,18 @@ export default function RecentReports({ reports }: Props) {
             href={r.file ? `/analyses/${r.file.replace(/^analyses\//, "")}` : "#"}
             target="_blank"
             rel="noreferrer"
-            style={{
-              background: "var(--surface)",
-              border: "1px solid var(--border)",
-              borderRadius: 8,
-              padding: "12px 14px",
-              textDecoration: "none",
-              display: "block",
-              transition: "border-color .15s",
-            }}
+            className="bg-[var(--surface)] border border-[var(--border)] rounded-lg py-3 px-[14px] no-underline block transition-[border-color] duration-150"
           >
-            <div
-              style={{
-                display: "flex",
-                justifyContent: "space-between",
-                marginBottom: 4,
-              }}
-            >
-              <span
-                style={{
-                  fontSize: 12,
-                  fontWeight: 700,
-                  color: "var(--accent)",
-                  fontFamily: "var(--font-mono)",
-                }}
-              >
+            <div className="flex justify-between mb-1">
+              <span className="text-xs font-bold text-[var(--accent)] font-[var(--font-mono)]">
                 {r.ticker}
               </span>
               <Badge rec={r.rec} size="xs" />
             </div>
-            <div
-              style={{ fontSize: 12, color: "var(--text)", fontWeight: 500 }}
-            >
+            <div className="text-xs text-[var(--text)] font-medium">
               {r.name}
             </div>
-            <div
-              style={{ fontSize: 11, color: "var(--muted)", marginTop: 4 }}
-            >
+            <div className="text-[11px] text-[var(--muted)] mt-1">
               {r.date}
             </div>
           </a>

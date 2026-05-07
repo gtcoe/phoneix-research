@@ -1,0 +1,439 @@
+<!DOCTYPE html>
+<html><head><meta charset="utf-8">
+<style>
+*{box-sizing:border-box;margin:0;padding:0}
+body{font-family:system-ui,sans-serif;padding:16px;background:#fff;color:#1a1a1a;font-size:14px}
+h1{font-size:20px;font-weight:500;margin-bottom:3px}
+.sub{font-size:12px;color:#666;margin-bottom:14px}
+.sg{display:grid;grid-template-columns:repeat(auto-fill,minmax(110px,1fr));gap:8px;margin-bottom:16px}
+.sc{background:#f5f5f3;border-radius:8px;padding:10px 12px}
+.sl{font-size:10px;color:#666;margin-bottom:2px}
+.sv{font-size:17px;font-weight:500}
+.tab-row{display:flex;gap:5px;flex-wrap:wrap;margin-bottom:14px}
+.tab{font-size:11.5px;padding:5px 13px;border-radius:20px;border:1px solid #ddd;background:#fff;cursor:pointer;white-space:nowrap}
+.tab.active{background:#1a1a1a;color:#fff;border-color:#1a1a1a}
+.panel{display:none}.panel.active{display:block}
+.sh{font-size:10.5px;font-weight:500;color:#666;text-transform:uppercase;letter-spacing:.06em;margin:16px 0 7px;padding-bottom:5px;border-bottom:1px solid #eee}
+table{width:100%;border-collapse:collapse;font-size:12px;margin:8px 0}
+th{font-size:10.5px;font-weight:500;color:#666;padding:5px 7px;text-align:left;border-bottom:1px solid #eee;white-space:nowrap}
+td{padding:8px 7px;border-bottom:1px solid #eee;color:#1a1a1a;vertical-align:top}
+tr:last-child td{border-bottom:none}
+tr:hover td{background:#fafaf9}
+.g{color:#0F6E56;font-weight:500}.r{color:#A32D2D;font-weight:500}.a{color:#854F0B;font-weight:500}.b{color:#185FA5;font-weight:500}
+.badge{display:inline-block;font-size:10px;padding:2px 7px;border-radius:10px;white-space:nowrap}
+.bg{background:#E1F5EE;color:#0F6E56}.bb{background:#E6F1FB;color:#185FA5}.ba{background:#FAEEDA;color:#854F0B}.br{background:#FCEBEB;color:#A32D2D}.bgray{background:#f1f0e8;color:#5F5E5A}.bsun{background:#FFF8E1;color:#7B5E00}.bteal{background:#E0F2F1;color:#004D40}
+.warn{padding:10px 13px;margin:8px 0;border-left:3px solid;font-size:12px;line-height:1.65}
+.warn.success{background:#E1F5EE;border-color:#1D9E75;color:#04342C}
+.warn.caution{background:#FAEEDA;border-color:#BA7517;color:#412402}
+.warn.danger{background:#FCEBEB;border-color:#A32D2D;color:#712B13}
+.warn.info{background:#E6F1FB;border-color:#185FA5;color:#042C53}
+.warn.sun{background:#FFF8E1;border-color:#F9A825;color:#3E2300}
+.warn.teal{background:#E0F2F1;border-color:#0097A7;color:#00363A}
+.warn strong{font-weight:500}
+.chart-wrap{position:relative;width:100%;height:240px;margin:8px 0}
+.kpi-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:10px;margin:10px 0}
+.kpi{background:#f5f5f3;border-radius:8px;padding:10px 12px;border-left:3px solid transparent}
+.kpi.green{border-left-color:#1D9E75}.kpi.amber{border-left-color:#EF9F27}.kpi.blue{border-left-color:#378ADD}.kpi.red{border-left-color:#A32D2D}.kpi.sun{border-left-color:#F9A825}.kpi.teal{border-left-color:#0097A7}
+.kpi-l{font-size:10px;color:#666;margin-bottom:3px}
+.kpi-v{font-size:17px;font-weight:500}
+.kpi-s{font-size:10px;color:#888;margin-top:2px}
+.point{display:flex;gap:9px;align-items:flex-start;padding:9px 0;border-bottom:1px solid #eee;font-size:12px;line-height:1.6;color:#555}
+.point:last-child{border-bottom:none}
+.point strong{color:#1a1a1a;font-weight:500}
+.dot{width:19px;height:19px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:10px;font-weight:500;flex-shrink:0;margin-top:1px}
+.dg{background:#E1F5EE;color:#0F6E56}.dr{background:#FCEBEB;color:#A32D2D}.da{background:#FAEEDA;color:#854F0B}.db{background:#E6F1FB;color:#185FA5}.ds{background:#FFF8E1;color:#7B5E00}.dt{background:#E0F2F1;color:#004D40}
+.two-col{display:grid;grid-template-columns:1fr 1fr;gap:12px}
+.pane{border:1px solid #ddd;border-radius:10px;padding:13px}
+.pane-h{font-size:13px;font-weight:500;margin-bottom:9px}
+.scenario{border:1px solid #ddd;border-radius:10px;padding:13px;margin-bottom:9px}
+.sc-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:7px;margin:9px 0}
+.sc-cell{background:#f5f5f3;border-radius:6px;padding:7px 9px}
+.sc-l{font-size:10px;color:#666}
+.sc-v{font-size:12px;font-weight:500;margin-top:2px}
+.comp-h{display:grid;grid-template-columns:160px repeat(3,1fr);background:#f5f5f3;border-radius:8px 8px 0 0;overflow:hidden}
+.comp-row{display:grid;grid-template-columns:160px repeat(3,1fr);border-bottom:1px solid #eee}
+.comp-row:last-child{border-bottom:none}
+.cc{padding:8px 10px;font-size:11px;border-right:1px solid #eee}
+.cc:last-child{border-right:none}
+.cc-h{font-size:10px;font-weight:500;color:#444;padding:8px 10px;border-right:1px solid #ddd}
+.cc-h:last-child{border-right:none}
+.cc-label{color:#666;font-size:11px}
+.winner-cell{background:#E1F5EE}.mid-cell{background:#FAEEDA}.loser-cell{background:#fff5f5}
+.verdict-card{border-radius:10px;padding:13px 15px;margin-bottom:10px}
+.vc-h{font-size:13px;font-weight:500;margin-bottom:6px}
+.vc-b{font-size:12px;line-height:1.65;color:#444}
+.sector-card{border:1px solid #ddd;border-radius:10px;overflow:hidden;margin-bottom:10px}
+.sc-hdr{padding:10px 13px;display:flex;justify-content:space-between;align-items:center;background:#fafaf9}
+.sc-nm{font-size:13px;font-weight:500}
+.sc-tg{font-size:11px;color:#666;margin-top:2px}
+.sc-bd{padding:10px 13px;font-size:12px;line-height:1.65;color:#555;border-top:1px solid #eee}
+.sc-bd strong{color:#1a1a1a}
+.guid-card{border-radius:10px;padding:12px 14px;margin-bottom:8px;border-left:3px solid #F9A825;background:#FFF8E1}
+.guid-h{font-size:11.5px;font-weight:500;margin-bottom:4px;color:#7B5E00}
+.guid-b{font-size:11.5px;color:#333;line-height:1.6}
+.guid-s{font-size:10px;color:#888;margin-top:4px}
+.guid-card.beat{background:#E1F5EE;border-left-color:#1D9E75}.guid-card.beat .guid-h{color:#0F6E56}
+.guid-card.miss{background:#FCEBEB;border-left-color:#A32D2D}.guid-card.miss .guid-h{color:#A32D2D}
+.guid-card.watch{background:#FAEEDA;border-left-color:#BA7517}.guid-card.watch .guid-h{color:#854F0B}
+.portfolio-box{background:#FAEEDA;border:2px solid #BA7517;border-radius:10px;padding:13px;margin:10px 0}
+.pb-h{font-size:14px;font-weight:500;color:#7B5E00;margin-bottom:6px}
+.pb-b{font-size:12px;color:#333;line-height:1.65}
+.debtor-alert{background:#FCEBEB;border:2px solid #A32D2D;border-radius:10px;padding:13px;margin:10px 0}
+.da-h{font-size:13px;font-weight:500;color:#A32D2D;margin-bottom:6px}
+.da-b{font-size:12px;color:#333;line-height:1.65}
+.seg-grid{display:grid;grid-template-columns:1fr 1fr;gap:9px;margin:10px 0}
+.seg-card{border:1px solid #ddd;border-radius:8px;padding:11px 13px}
+.seg-nm{font-weight:500;font-size:12px;margin-bottom:3px}
+.seg-tag{font-size:10px;color:#666;margin-bottom:5px}
+.seg-bd{font-size:11.5px;color:#555;line-height:1.55}
+.seg-val{font-size:11.5px;font-weight:500;margin-top:5px}
+.growth-bar{display:flex;align-items:center;gap:8px;margin:6px 0}
+.gb-label{font-size:11px;color:#555;width:120px;flex-shrink:0}
+.gb-track{flex:1;background:#f5f5f3;border-radius:4px;height:16px;overflow:hidden}
+.gb-fill{height:100%;border-radius:4px;display:flex;align-items:center;padding-left:6px;font-size:9px;font-weight:600;color:#fff}
+.gb-val{font-size:11px;font-weight:500;width:80px;text-align:right}
+</style>
+</head>
+<body>
+
+<h1>Oriana Power Ltd — Deep Investment Analysis</h1>
+<div class="sub">NSE: ORIANA · Solar EPC + BESS + Green Hydrogen + CBG · Founded 2013 · CMD: Pankaj Kalra · Gurugram, Haryana · FY25: ₹987 Cr revenue (+158% YoY) · TTM: ₹1,409 Cr · Market cap ~₹4,232 Cr</div>
+
+<div class="sg">
+  <div class="sc"><div class="sl">Market cap</div><div class="sv" style="color:#854F0B">~₹4,232 Cr</div></div>
+  <div class="sc"><div class="sl">TTM revenue</div><div class="sv" style="color:#1D9E75">₹1,409 Cr</div></div>
+  <div class="sc"><div class="sl">TTM PAT</div><div class="sv" style="color:#1D9E75">₹232 Cr</div></div>
+  <div class="sc"><div class="sl">FY25 rev. growth</div><div class="sv" style="color:#1D9E75">+158% YoY</div></div>
+  <div class="sc"><div class="sl">PAT margin (TTM)</div><div class="sv" style="color:#1D9E75">~16.5%</div></div>
+  <div class="sc"><div class="sl">FY26 guidance</div><div class="sv" style="color:#185FA5">₹2,000–2,500 Cr</div></div>
+  <div class="sc"><div class="sl">BESS order (FY25)</div><div class="sv" style="color:#0097A7">403 MWh</div></div>
+  <div class="sc"><div class="sl">Trailing PE</div><div class="sv" style="color:#854F0B">~18–22x</div></div>
+  <div class="sc"><div class="sl">Promoter holding</div><div class="sv" style="color:#1D9E75">58.0%</div></div>
+  <div class="sc"><div class="sl">⚠ Debtor days</div><div class="sv" style="color:#A32D2D">146 days ↑</div></div>
+  <div class="sc"><div class="sl">52-wk range</div><div class="sv" style="color:#A32D2D">₹1,269–₹3,064</div></div>
+  <div class="sc"><div class="sl">Garvit's gain</div><div class="sv" style="color:#1D9E75">+22.9%</div></div>
+</div>
+
+<div class="tab-row">
+  <button class="tab active" onclick="show('portfolio',this)">Portfolio context</button>
+  <button class="tab" onclick="show('revenue',this)">Revenue history</button>
+  <button class="tab" onclick="show('sectorKPI',this)">Sector KPIs</button>
+  <button class="tab" onclick="show('business',this)">Business model</button>
+  <button class="tab" onclick="show('guidance',this)">Guidance</button>
+  <button class="tab" onclick="show('risks',this)">Risks</button>
+  <button class="tab" onclick="show('scenarios',this)">3x scenarios</button>
+  <button class="tab" onclick="show('compare',this)">Sector peers</button>
+  <button class="tab" onclick="show('verdict',this)">Verdict</button>
+</div>
+
+<!-- PORTFOLIO CONTEXT -->
+<div id="portfolio" class="panel active">
+  <div class="sh">Start here — the specific Garvit portfolio context for Oriana Power</div>
+
+  <div class="portfolio-box">
+    <div class="pb-h">⚠️ Portfolio position status: 75 shares | Invested ₹1,24,050 | Current ₹1,52,407 | +₹28,357 (+22.9%)</div>
+    <div class="pb-b">This is Garvit's second-largest Indian holding at ₹1,52,407 — just behind Bondada Engineering (₹1,47,200). However, our earlier portfolio analysis flagged a critical misalignment: we recommended Oriana Power as a <strong>"satellite position max ₹20,000"</strong> with rising debtor days as the key concern. The actual position is ₹1,52,407 — <strong>7.6x the recommended allocation</strong>. The +22.9% gain Garvit has earned is real and should be respected. But the question now is: given what we know about the business and the original concern, should you lock in this profit and rightsize to ₹20–25K, or does the updated analysis change the view?<br><br>This tab provides the honest, data-driven answer to that question specifically.</div>
+  </div>
+
+  <div class="sh">The fundamental question: Was the satellite ₹20K recommendation correct?</div>
+
+  <div class="warn caution"><strong>The debtor days concern we flagged has actually worsened.</strong> At the time of our original analysis, we noted "debtor days 146 rising" as a warning. Screener now shows debtor days have increased from 107 (FY24) to 146 days (TTM). Working capital days went from 32.8 to 81.5 — a 148% deterioration. In a solar EPC business with aggressive revenue growth, rising debtor days typically mean: (a) government/utility clients are slow-paying, (b) the company is booking revenue before cash is collected, or (c) project disputes are emerging. None of these is benign for a ₹4,232 Cr mcap company with 22.9% paper gains sitting in a portfolio.</div>
+
+  <div class="warn success"><strong>But the business has also become more interesting since we first analyzed it.</strong> Oriana Power is not just a solar EPC company anymore. It has secured 403 MWh of BESS orders (targets 1 GWh FY26, 3.5 GWh FY30), signed a ₹3,135 Cr green ammonia GAPA with SECI (April 2026), secured a ₹1,180 Cr floating solar EPC order (234 MW at DVC Maithon), and is entering data centre power supply. The business has become more complex, more ambitious, and potentially much more valuable — but also carries higher execution risk.</div>
+
+  <div class="sh">Position sizing vs conviction matrix</div>
+  <table>
+    <tr><th>Factor</th><th>Original view (portfolio review)</th><th>Updated view (this analysis)</th><th>Change?</th></tr>
+    <tr><td>Business quality</td><td>Good — fast growing solar EPC</td><td class="g">Better — BESS + green ammonia + floating solar = multi-vertical pivot</td><td class="g">Upgraded</td></tr>
+    <tr><td>Debtor days risk</td><td>Concerning (107 → 146 days)</td><td class="r">Worse (confirmed 146, WC days 81.5 vs 32.8)</td><td class="r">Deteriorated</td></tr>
+    <tr><td>Recommended allocation</td><td>Satellite max ₹20K</td><td class="a">Raise to ₹35–50K if BESS thesis confirmed</td><td class="a">Conditional upgrade</td></tr>
+    <tr><td>Garvit's actual holding</td><td>₹1,52,407 (7.6x recommendation)</td><td class="a">Still 3–4x too large for the risk profile</td><td class="r">Still overweight</td></tr>
+    <tr><td>Action</td><td>Trim to ₹20–25K (sell ~55 shares)</td><td class="a">Trim to ₹40–50K (sell ~45–50 shares) — updated for BESS upside</td><td class="a">Modified recommendation</td></tr>
+  </table>
+  <div class="warn sun"><strong>Updated recommendation for Garvit:</strong> Our original "trim to ₹20K" view was too conservative given the BESS + green ammonia evolution. The business deserves ₹40–50K allocation (not ₹20K and not ₹1,52,407). Sell ~45–50 shares to bring position to ₹50,000–60,000. Lock in most of the +22.9% gain. Keep a meaningful stake to benefit from the BESS/hydrogen optionality. This is the right risk/reward balance given the debtor days concern alongside the genuine multi-vertical upside.</div>
+</div>
+
+<!-- REVENUE -->
+<div id="revenue" class="panel">
+  <div class="sh">Revenue &amp; profit history — one of India's fastest-growing listed solar companies</div>
+
+  <div class="chart-wrap"><canvas id="rc"></canvas></div>
+  <div style="display:flex;gap:14px;font-size:11.5px;color:#666;margin-bottom:10px">
+    <span><span style="display:inline-block;width:10px;height:10px;border-radius:2px;background:#F9A825;margin-right:4px"></span>Revenue ₹ Cr</span>
+    <span><span style="display:inline-block;width:10px;height:10px;border-radius:2px;background:#1D9E75;margin-right:4px"></span>PAT ₹ Cr</span>
+    <span><span style="display:inline-block;width:10px;height:10px;border-radius:2px;background:#FFE082;margin-right:4px"></span>Projected</span>
+  </div>
+
+  <div class="sh">FY23→FY25 revenue CAGR: ~400%+ — among fastest in India renewables</div>
+  <div class="growth-bar"><div class="gb-label">FY23 Revenue</div><div class="gb-track"><div class="gb-fill" style="width:7%;background:#F9A825">₹134 Cr</div></div><div class="gb-val">₹134 Cr</div></div>
+  <div class="growth-bar"><div class="gb-label">FY24 Revenue</div><div class="gb-track"><div class="gb-fill" style="width:25%;background:#F9A825">₹383 Cr (+186%)</div></div><div class="gb-val">₹383 Cr</div></div>
+  <div class="growth-bar"><div class="gb-label">FY25 Revenue</div><div class="gb-track"><div class="gb-fill" style="width:57%;background:#EF9F27">₹987 Cr (+158%)</div></div><div class="gb-val">₹987 Cr</div></div>
+  <div class="growth-bar"><div class="gb-label">TTM Revenue</div><div class="gb-track"><div class="gb-fill" style="width:82%;background:#1D9E75">₹1,409 Cr</div></div><div class="gb-val g">₹1,409 Cr</div></div>
+  <div class="growth-bar"><div class="gb-label">FY26E (guided)</div><div class="gb-track"><div class="gb-fill" style="width:100%;background:#FFE082;color:#7B5E00">₹2,000–2,500 Cr</div></div><div class="gb-val a">₹2,000–2,500 Cr</div></div>
+
+  <table style="margin-top:12px">
+    <tr><th>Period</th><th>Revenue</th><th>Growth</th><th>PAT</th><th>PAT%</th><th>BESS/Other</th><th>Key event</th></tr>
+    <tr><td>FY22</td><td>~₹60 Cr</td><td>—</td><td>~₹3 Cr</td><td class="r">5%</td><td>None</td><td>Early stage solar EPC. C&I clients (commercial &amp; industrial). Small rooftop + ground-mounted.</td></tr>
+    <tr><td>FY23</td><td>~₹134 Cr</td><td class="g">+123%</td><td>~₹10 Cr</td><td class="a">7.5%</td><td>None</td><td>Growth acceleration. Utility-scale projects added. Open access solar (off-site) model launched.</td></tr>
+    <tr><td>FY24</td><td>₹382.87 Cr</td><td class="g">+186%</td><td>₹54.35 Cr</td><td class="g">14.2%</td><td>None</td><td>PAT +415%. Breakout year. First large utility-scale projects executed. BOOT model traction.</td></tr>
+    <tr><td>FY25</td><td>₹987.17 Cr</td><td class="g">+158%</td><td>₹158.54 Cr</td><td class="g">16.1%</td><td>403 MWh BESS orders</td><td>Revenue crosses ₹1,000 Cr. PAT +192%. BESS vertical launched — 403 MWh secured. SECI grid BESS (100 MWh Rajasthan). Floating solar (234 MW DVC). Agro-PV (25 MWp Delhi).</td></tr>
+    <tr><td>TTM (FY26 so far)</td><td>₹1,409 Cr</td><td class="g">+43% annualised</td><td>₹232 Cr</td><td class="g">16.5%</td><td>BESS executing</td><td>Multiple new order wins. Guyana international solar. H1 FY26 concall confirmed guidance on track.</td></tr>
+    <tr><td>FY26E (guided)</td><td>₹2,000–2,500 Cr</td><td class="g">+103–153%</td><td>~₹280–350 Cr</td><td class="g">~14–16%</td><td>~10% BESS</td><td>Revenue mix: ~90% Solar, ~10% BESS. FY26 guidance re-confirmed H1 FY26. Green ammonia GAPA signed April 2026 (₹3,135 Cr over contract life).</td></tr>
+    <tr><td>FY27E</td><td>~₹3,500–4,500 Cr</td><td class="g">~75–125%</td><td>~₹500–700 Cr</td><td class="g">~14–16%</td><td>~40% BESS</td><td>BESS mix rises to 40% of revenue. BESS margin potentially higher than solar EPC. Hydrogen/ammonia contributing first revenues. 2x FY26 guidance re-confirmed.</td></tr>
+    <tr><td>FY28–30E</td><td>~₹6,000–10,000 Cr</td><td>—</td><td>~₹900–1,600 Cr</td><td class="g">~15–16%</td><td>BESS 3.5 GWh target</td><td>Full multi-vertical: Solar + BESS (3.5 GWh by FY30) + Green hydrogen (10,000 MTPA) + Data centre power + International. PAT by FY27 = FY25 revenue (₹987 Cr) per management — ambitious but directionally sound.</td></tr>
+  </table>
+
+  <div class="warn sun"><strong>Revenue trajectory context:</strong> Oriana Power's growth rate (158% FY25, guided ~100%+ FY26) is genuinely exceptional and places it among India's fastest-growing listed energy companies. However, this pace of growth carries execution risk — each year's revenue depends on project completion timing. FY24 and FY25 both saw management deliver close to guided revenue (161% guided FY25, 158% actual = near-perfect). If this continues in FY26 (guided ₹2,000–2,500 Cr), the business is executing flawlessly.</div>
+</div>
+
+<!-- SECTOR KPIs -->
+<div id="sectorKPI" class="panel">
+  <div class="sh">Renewable energy EPC + BESS sector KPIs — the right lens for Oriana</div>
+  <div class="warn sun"><strong>Oriana is not simply a solar EPC company anymore — it's a multi-vertical energy transition platform.</strong> The correct sector KPIs blend solar EPC metrics (MW installed, revenue per MW, margin) with BESS metrics (MWh secured, revenue per MWh) and Green Hydrogen metrics (MTPA capacity, GAPA offtake agreements). Standard single-sector analysis misses the BESS and hydrogen optionality that is increasingly driving the stock's valuation.</div>
+  <div class="kpi-grid">
+    <div class="kpi sun"><div class="kpi-l">FY25 solar delivered</div><div class="kpi-v">~550 MWp</div><div class="kpi-s">Target 1 GW delivered by FY26</div></div>
+    <div class="kpi teal"><div class="kpi-l">BESS orders secured (FY25)</div><div class="kpi-v">403 MWh</div><div class="kpi-s">Target 1 GWh FY26, 3.5 GWh FY30</div></div>
+    <div class="kpi green"><div class="kpi-l">PAT margin (FY25)</div><div class="kpi-v">~16%</div><div class="kpi-s">Premium for solar EPC — peers at 8–12%</div></div>
+    <div class="kpi red"><div class="kpi-l">Debtor days</div><div class="kpi-v" style="color:#A32D2D">146 days ↑</div><div class="kpi-s">Was 107 — rising fast. Must monitor.</div></div>
+    <div class="kpi green"><div class="kpi-l">MoU pipeline</div><div class="kpi-v">₹15,500 Cr+</div><div class="kpi-s">State MoUs: Rajasthan, MP, Assam, UP</div></div>
+    <div class="kpi teal"><div class="kpi-l">Green ammonia GAPA</div><div class="kpi-v">₹3,135 Cr</div><div class="kpi-s">60,000 tpa with SECI — April 2026</div></div>
+  </div>
+
+  <div class="sh">India renewable + BESS market — Oriana's multi-decade tailwind</div>
+  <table>
+    <tr><th>Opportunity</th><th>Scale</th><th>Timeline</th><th>Oriana's positioning</th></tr>
+    <tr><td><strong>India 500 GW renewable target</strong></td><td>₹30–40 lakh Cr capex</td><td>By 2030</td><td>Core — solar EPC is the bread-and-butter</td></tr>
+    <tr><td><strong>BESS storage (grid stability)</strong></td><td>50 GWh by 2030 (govt target)</td><td>FY26–30</td><td>First-mover — 403 MWh secured, BOO model for recurring revenue</td></tr>
+    <tr><td><strong>Green hydrogen / ammonia (SIGHT scheme)</strong></td><td>₹19,744 Cr incentives</td><td>FY26–30</td><td>10,000 MTPA capacity allocated; SECI GAPA ₹3,135 Cr signed</td></tr>
+    <tr><td><strong>Floating solar (lakes, reservoirs)</strong></td><td>30 GW potential (MNRE)</td><td>FY27–30</td><td>234 MW DVC Maithon already won — first major floating solar win</td></tr>
+    <tr><td><strong>Agro-photovoltaics</strong></td><td>Niche but growing</td><td>FY26+</td><td>India's largest agro-PV (25 MWp, Delhi) — early mover advantage</td></tr>
+    <tr><td><strong>Data centre power supply</strong></td><td>India DC boom</td><td>FY26+</td><td>Confirmed entry — leverages solar + BESS for DC captive power solutions</td></tr>
+  </table>
+</div>
+
+<!-- BUSINESS MODEL -->
+<div id="business" class="panel">
+  <div class="sh">The four business verticals — what Oriana is becoming</div>
+  <div class="seg-grid">
+    <div class="seg-card">
+      <div class="seg-nm" style="color:#F9A825">☀️ Solar EPC (core, ~90% of FY26 revenue)</div>
+      <div class="seg-tag">C&I + Utility + Institutional · EPC + RESCO/BOOT · Domestic + Export</div>
+      <div class="seg-bd"><strong>What it is:</strong> Engineering, Procurement &amp; Construction of solar projects from rooftop to 234 MW floating solar. Revenue models: One-time EPC (capex model) and recurring RESCO/BOOT (power sale model). Key projects: Dalmia Cement (90 MW Tamil Nadu), JK Cement (50 MW Rajasthan), BPCL (71 MW), Maharashtra SEB (100 MW). Floating solar: ₹1,180 Cr contract for 234 MW at DVC Maithon — Oriana's largest ever single order. International: Guyana Airport ($2.48M, 3 MW). Canada MoU. Africa projects.<br><br><strong>Why the 16% PAT margin (vs 8–10% peers):</strong> Proprietary project development pipeline (Oriana originates projects, not just takes L1 bids), early-mover innovation (agro-PV, floating), BOO model creates recurring income, and strong execution track record reduces contingency costs.</div>
+      <div class="seg-val">FY26E contribution: ~₹1,800–2,250 Cr</div>
+    </div>
+    <div class="seg-card">
+      <div class="seg-nm" style="color:#0097A7">🔋 BESS — Battery Energy Storage Systems (new, transformative)</div>
+      <div class="seg-tag">Grid-scale BESS · BOO model · Karnataka + Rajasthan operational</div>
+      <div class="seg-bd"><strong>What it is:</strong> Building and operating grid-scale battery storage (50 MW/100 MWh per project) for state utilities. Revenue from power (energy arbitrage, ancillary services). BOO model: Oriana builds, owns, and operates for 12–25 years — generating annuity-style recurring revenue. Clients: RVUNL (Rajasthan), TGGENCO (Telangana), KPTCL (Karnataka), TNGC. 50 MW/100 MWh Heerapura, Rajasthan already live. Karnataka executing.<br><br><strong>Why BESS changes the valuation thesis:</strong> BESS at BOO model generates 25-year recurring revenue — not one-time EPC income. A 3.5 GWh portfolio by FY30 at ₹3–5 Cr/MWh annual EBITDA = ₹10,500–17,500 Cr recurring EBITDA by FY30. This is an infrastructure asset, not an EPC business. Markets value infrastructure assets at 15–30x EBITDA vs 12–15x for EPC companies. This is the primary long-term re-rating catalyst.</div>
+      <div class="seg-val" style="color:#0097A7">FY26E: ~₹200 Cr | FY27E: ~₹1,400–1,800 Cr | FY30: ₹3.5 GWh BOO</div>
+    </div>
+    <div class="seg-card">
+      <div class="seg-nm" style="color:#2E7D32">🌿 Green Hydrogen &amp; Ammonia (nascent, 2026+ optionality)</div>
+      <div class="seg-tag">SIGHT scheme · Green ammonia · e-methanol · SECI GAPA</div>
+      <div class="seg-bd"><strong>What it is:</strong> India's SIGHT (Strategic Interventions for Green Hydrogen Transition) scheme allocates green hydrogen production capacity. Oriana has 10,000 MTPA capacity. The April 2026 breakthrough: Signed a 10-year Green Ammonia GAPA (Green Ammonia Purchase Agreement) with SECI for 60,000 tpa at ₹52.25/kg — total contract value ₹3,135 Cr. Also initiated e-methanol offtake. Land in Madhya Pradesh for gigafactory.<br><br><strong>Why this matters:</strong> ₹3,135 Cr SECI green ammonia contract alone is 74% of Oriana's TTM revenue. If executed, it generates ~₹313 Cr/year for 10 years — pure annuity. This transforms Oriana from an EPC company to an energy product manufacturer. However, this is still nascent — the gigafactory needs to be built (FY27–28 timeline), hydrogen technology is not yet at commercial scale in India.</div>
+      <div class="seg-val" style="color:#2E7D32">FY26–27: Pre-revenue. FY28+: ₹300–500 Cr/year if GAPA executes</div>
+    </div>
+    <div class="seg-card">
+      <div class="seg-nm" style="color:#5C6BC0">⛽ CBG (Compressed Bio-Gas) + Carbon Credits</div>
+      <div class="seg-tag">Waste-to-energy · Carbon credit monetisation</div>
+      <div class="seg-bd"><strong>What it is:</strong> Compressed Bio-Gas from organic waste — under India's SATAT scheme. Carbon credit generation from JK Cement project (96,645 tCO2e/year). Early stage — not yet material to revenue.<br><br>Carbon credits from 50 MW+ solar projects are a genuine supplementary revenue stream. At ₹1,000–1,500/tonne, a 50 MW solar project generating 80,000+ tonnes CO2e/year adds ₹8–12 Cr/year — 5–8% uplift to project economics. CBG is smaller but consistent with Oriana's energy transition positioning.</div>
+      <div class="seg-val">Pre-revenue/early stage for FY26</div>
+    </div>
+  </div>
+
+  <div class="sh">Why Oriana has earned higher margins than pure-play solar EPC peers</div>
+  <div class="point"><div class="dot ds">+</div><div><strong>Oriana originates projects, not just bids on L1 tenders:</strong> Most solar EPC companies wait for SECI/NTPC/DISCOMS to issue tenders, then bid L1. Oriana proactively develops projects, secures land, gets grid connectivity, and brings a "ready-to-execute" project to clients — capturing the developer's margin (3–5% additional) on top of the EPC margin. This is why PAT margins are 16% vs 8–10% for pure EPC bidders.</div></div>
+  <div class="point"><div class="dot dt">+</div><div><strong>RESCO/BOOT recurring revenue layer:</strong> Unlike pure EPC where revenue = one-time project cost, Oriana's BOOT model creates a recurring power sale income stream. These projects generate ₹0.5–1 Cr/MW/year over 15–25 years. As the BOOT portfolio grows, there is a stable recurring revenue base that cushions volatile EPC project timing. As of FY25, this contributes ~10–15% of revenue — growing.</div></div>
+</div>
+
+<!-- GUIDANCE -->
+<div id="guidance" class="panel">
+  <div class="sh">Guidance analysis — management has an exceptional track record</div>
+  <div class="warn success"><strong>Oriana Power has one of the best guidance delivery track records in renewable energy.</strong> FY25 revenue guidance was 161% growth — actual delivered was 158%. FY24 guidance was similarly close to actual. This sets them apart from most high-growth companies that chronically miss. The credibility factor makes FY26 guidance (₹2,000–2,500 Cr) more reliable than typical small-cap projections.</div>
+
+  <div class="guid-card beat">
+    <div class="guid-h">✓ FY25: Guided 161% growth → Delivered 158% — near-perfect</div>
+    <div class="guid-b">At the start of FY25, management guided ~161% revenue growth (from ₹382 Cr to ~₹985 Cr). Actual FY25 revenue came in at ₹987 Cr — a 158% growth, missing by just 3 percentage points. PAT guidance was also close (guided ~₹150 Cr, delivered ₹158 Cr). For a company growing 100%+ YoY in a project-based business, this accuracy is extraordinary — it shows the order book is real, the projects are executing, and management does not over-promise.</div>
+    <div class="guid-s">Credibility: 9.5/10. As close to perfect as any company we've analyzed this session.</div>
+  </div>
+
+  <div class="guid-card beat">
+    <div class="guid-h">✓ FY26 H1 concall: ₹2,000–2,500 Cr guidance re-confirmed as on track</div>
+    <div class="guid-b">In the H1 FY26 earnings call, management explicitly re-confirmed the ₹2,000–2,500 Cr guidance for the full year and stated it was "on track." TTM revenue (through end of FY26 cycle) shows ₹1,409 Cr already achieved — which puts ₹2,000+ Cr FY26 full year firmly in reach. The mix: ~90% solar, ~10% BESS for FY26. The fact that management re-confirmed (not revised down) after 6 months of execution is a strong positive signal.</div>
+    <div class="guid-s">Credibility: 8.5/10. Mid-year re-confirmation + TTM trajectory support the target.</div>
+  </div>
+
+  <div class="guid-card watch">
+    <div class="guid-h">⚠ FY27 guidance: 2x over FY26 → ~₹4,000–5,000 Cr revenue, 40% BESS mix</div>
+    <div class="guid-b">Management has guided "2x FY26 over FY25 and another 2x in FY27 over FY26." FY26 midpoint ~₹2,250 Cr implies FY27 target ~₹4,500 Cr. Mix: 60% solar (~₹2,700 Cr) + 40% BESS (~₹1,800 Cr). The FY27 BESS revenue assumes 403 MWh secured in FY25 + additional FY26 orders are executing and generating revenue. This is the most ambitious guidance component — BESS is still a relatively new segment where execution timescales can slip. PAT target: management stated "PAT by FY27 will equal FY24 revenue (₹383 Cr)" which implies ~₹383 Cr PAT in FY27. That implies ~8.5% PAT margin on ₹4,500 Cr — slightly lower than current 16% (mix effect as BESS margins are initially lower during construction phase).</div>
+    <div class="guid-s">Credibility: 7/10 on revenue, 6/10 on BESS execution timing. BESS is new — execution may slip 1–2 quarters.</div>
+  </div>
+
+  <div class="guid-card">
+    <div class="guid-h">April 2026 milestone: ₹3,135 Cr green ammonia GAPA with SECI</div>
+    <div class="guid-b">Oriana signed a 10-year Green Ammonia Purchase Agreement (GAPA) with SECI on April 1, 2026. Terms: 60,000 tonnes per year at ₹52.25/kg = ₹3,135 Cr total contract (₹313 Cr/year for 10 years). This is NOT FY27 revenue — the gigafactory needs to be built first (FY27–28). But it is a contractual commitment from SECI (AAA-rated government counterparty) that locks in future revenue. If the gigafactory executes, this becomes a ₹300+ Cr annual annuity stream from FY28–29 — which at 15% PAT margin = ₹45 Cr/year from just this contract. This is transformative option value.</div>
+    <div class="guid-s">Revenue timing: FY28+ · Credibility: 7/10 — SECI contract is real, execution risk in gigafactory build</div>
+  </div>
+
+  <div class="sh">Guidance scorecard</div>
+  <table>
+    <tr><th>Item</th><th>Credibility</th><th>Base case</th><th>Key risk</th></tr>
+    <tr><td>FY26 revenue ₹2,000–2,500 Cr</td><td class="g">9/10 — re-confirmed H1 FY26</td><td>₹2,100–2,300 Cr</td><td>Q4 project delivery timing; BESS commissioning delays</td></tr>
+    <tr><td>FY26 PAT margin ~14–16%</td><td class="g">8/10 — consistent track record</td><td>~14–15%</td><td>Debtor days rising → cash flow vs accounting PAT gap</td></tr>
+    <tr><td>FY27 revenue ~₹4,000–5,000 Cr</td><td class="a">7/10 — BESS mix is key assumption</td><td>₹3,500–4,200 Cr</td><td>BESS revenue timing; 40% mix assumption is aggressive</td></tr>
+    <tr><td>BESS 1 GWh by FY26</td><td class="a">6/10 — securing orders vs executing BOO</td><td>600–800 MWh orders secured</td><td>BESS technology, supply chain, grid connectivity delays</td></tr>
+    <tr><td>Green ammonia (GAPA) execution</td><td class="a">5/10 — gigafactory needs to be built</td><td>First production FY28–29</td><td>Gigafactory capex, technology partnership, offtake certainty</td></tr>
+  </table>
+</div>
+
+<!-- RISKS -->
+<div id="risks" class="panel">
+  <div class="sh">Risks — the full honest picture on a fast-growing multi-vertical company</div>
+
+  <div class="debtor-alert">
+    <div class="da-h">🚨 The Debtor Days Problem — 107 → 146 days: This is the core risk</div>
+    <div class="da-b">Debtor days rising from 107 to 146 days (+36%) means Oriana is completing solar projects and booking revenue, but customers are paying later and later. In solar EPC, this typically means: (a) government utility clients with bureaucratic payment processes (RVUNL, DISCOMS), (b) disputed project milestones, or (c) aggressive revenue recognition. For a company growing revenue from ₹987 Cr to ₹2,250 Cr, if debtor days stay at 146, accounts receivable would reach ₹900+ Cr — nearly equal to one full year's PAT over the next 3 years. If even 15–20% of these receivables are disputed/uncollectable, it wipes out a full year of profit. Working capital days went from 32.8 to 81.5 — another major warning. This single metric is the primary reason we are NOT recommending a full conviction position in Oriana despite the spectacular growth.</div>
+  </div>
+
+  <div class="point"><div class="dot dr">1</div><div><strong>SME board listing — limited institutional oversight and liquidity constraints.</strong><br>Oriana Power is still listed on the NSE SME platform (Emerge board), not the main board. This means: lower disclosure requirements than main board, limited institutional research coverage, and liquidity risks for larger positions. At ₹4,232 Cr market cap, Oriana is well above the typical SME size — main board migration should be imminent, but until it happens, governance and transparency are less rigorously enforced than main board peers like Websol, DEE Development, or Borana Weaves. Garvit's 75-share position at ₹1.52L is large relative to typical SME daily volumes.</div></div>
+
+  <div class="point"><div class="dot dr">2</div><div><strong>BESS execution is new and untested at scale — 3.5 GWh by FY30 is ambitious.</strong><br>Oriana entered BESS in FY25. The BOO model for BESS requires: sourcing battery cells (mostly imported from China/Korea), managing grid connectivity (separate clearance from EPC), and delivering 12–25 year operating track record that utilities require. The 403 MWh secured in FY25 is impressive, but execution is the proof. BOO BESS means Oriana carries balance sheet risk (owns the asset, collects revenue) — not just EPC risk. If BESS projects face technology or grid issues, they sit on Oriana's books as non-performing assets.</div></div>
+
+  <div class="point"><div class="dot da">3</div><div><strong>Green hydrogen / ammonia — gigafactory risk is very real.</strong><br>Green hydrogen is still a commercially pre-viable technology at most scales. The SECI GAPA (₹52.25/kg for green ammonia) is at the top end of current electrolyser cost-effectiveness. If electrolyser costs don't decline as projected, the gigafactory becomes economically unviable at ₹52.25/kg. The MoU for gigafactory land in Madhya Pradesh is a very early step — this project is 3–5 years from commercial production. Until then, it's option value, not revenue.</div></div>
+
+  <div class="point"><div class="dot da">4</div><div><strong>Client concentration in BESS — government utilities slow payment.</strong><br>BESS BOO clients (RVUNL, TGGENCO, KPTCL) are state-owned utilities — the same category of client responsible for rising debtor days in solar EPC. If BESS BOO revenue follows the same slow-payment pattern as EPC, the working capital situation worsens further. The BOO model (build, own, operate) means Oriana takes on execution risk AND offtake risk simultaneously.</div></div>
+
+  <div class="point"><div class="dot dg">+</div><div><strong>Genuine strengths that make Oriana a compelling long-term hold:</strong><br>Near-perfect revenue guidance delivery (2 consecutive years). 16%+ PAT margin — best in class for solar EPC. Multiple verticals providing optionality. BESS BOO creates annuity revenue base. First GAPA for green ammonia with AAA SECI counterparty. ₹1,180 Cr floating solar EPC — landmark project. International expansion (Guyana, Canada). Promoter 58% (strong alignment). ₹15,500 Cr+ MoU pipeline (Rajasthan, MP, Assam). India's renewable build-out is a 10–15 year structural theme.</div></div>
+</div>
+
+<!-- SCENARIOS -->
+<div id="scenarios" class="panel">
+  <div class="sh">Three scenarios — from Garvit's avg cost ₹1,654 (75 shares, ₹1,24,050 invested)</div>
+  <div class="warn caution"><strong>The key observation on 3x probability:</strong> At ₹4,232 Cr market cap, Oriana needs to reach ₹12,696 Cr for 3x. With FY27E PAT of ₹400–500 Cr, a 25–30x PE gives ₹10,000–15,000 Cr mcap. 3x is achievable but requires consistent execution AND PE expansion from current ~18x. The debtor days risk is the biggest impediment to institutional PE expansion.</div>
+
+  <div class="scenario" style="border-left:3px solid #F9A825">
+    <div style="font-size:13px;font-weight:500;color:#7B5E00;margin-bottom:8px">Bull case — 3–4x in 3 years: BESS BOO + FY26 guidance delivered + green ammonia</div>
+    <div class="sc-grid">
+      <div class="sc-cell"><div class="sc-l">FY27 revenue</div><div class="sc-v">₹4,000–4,500 Cr</div></div>
+      <div class="sc-cell"><div class="sc-l">FY27 PAT</div><div class="sc-v">₹400–550 Cr</div></div>
+      <div class="sc-cell"><div class="sc-l">BESS portfolio</div><div class="sc-v">1.5 GWh BOO live</div></div>
+      <div class="sc-cell"><div class="sc-l">PE (re-rating to infra)</div><div class="sc-v">25–30x</div></div>
+      <div class="sc-cell"><div class="sc-l">FY27 mcap</div><div class="sc-v">₹10,000–16,500 Cr</div></div>
+      <div class="sc-cell"><div class="sc-l">Return from ₹4,232 Cr</div><div class="sc-v">2.4–3.9x</div></div>
+    </div>
+    <div style="font-size:11.5px;color:#333;margin-top:8px"><strong>What must happen:</strong> FY26 delivers ₹2,100+ Cr. BESS BOO projects (Karnataka + Rajasthan) operational and generating annuity revenue. FY27 BESS mix reaches 35%+. Debtor days normalise below 120 as larger projects complete. PE re-rates from EPC multiple (15–18x) to infra multiple (25–30x) on BOO asset base. Green ammonia gigafactory breaks ground. At 28x PE on ₹500 Cr FY27 PAT = ₹14,000 Cr = 3.3x from current ₹4,232 Cr.</div>
+  </div>
+
+  <div class="scenario" style="border-left:3px solid #378ADD">
+    <div style="font-size:13px;font-weight:500;color:#185FA5;margin-bottom:8px">Base case — 1.5–2.5x in 2 years: FY26 on track, BESS starts contributing, solar momentum</div>
+    <div class="sc-grid">
+      <div class="sc-cell"><div class="sc-l">FY26 revenue</div><div class="sc-v">₹2,100–2,300 Cr</div></div>
+      <div class="sc-cell"><div class="sc-l">FY26 PAT</div><div class="sc-v">₹295–345 Cr</div></div>
+      <div class="sc-cell"><div class="sc-l">FY27 revenue</div><div class="sc-v">₹3,200–3,800 Cr</div></div>
+      <div class="sc-cell"><div class="sc-l">FY27 PAT</div><div class="sc-v">₹320–400 Cr</div></div>
+      <div class="sc-cell"><div class="sc-l">PE (moderate)</div><div class="sc-v">20–25x</div></div>
+      <div class="sc-cell"><div class="sc-l">FY27 mcap</div><div class="sc-v">₹6,400–10,000 Cr</div></div>
+    </div>
+    <div style="font-size:11.5px;color:#333;margin-top:8px">FY26 guidance met. BESS executes partially (FY27 contribution 25–30% not 40%). Solar continues momentum. Debtor days stabilise. Base case mcap ₹6,400–10,000 Cr = 1.5–2.4x from current ₹4,232 Cr. <strong>Base case is meaningful return at the right position size.</strong></div>
+  </div>
+
+  <div class="scenario" style="border-left:3px solid #A32D2D">
+    <div style="font-size:13px;font-weight:500;color:#A32D2D;margin-bottom:8px">Bear case — -30 to -50%: Debtor days spike → receivables write-off + BESS delays</div>
+    <div class="sc-grid">
+      <div class="sc-cell"><div class="sc-l">Trigger</div><div class="sc-v">Debtor days hit 180+</div></div>
+      <div class="sc-cell"><div class="sc-l">Trigger</div><div class="sc-v">10–15% receivables disputed</div></div>
+      <div class="sc-cell"><div class="sc-l">Trigger</div><div class="sc-v">BESS BOO revenue slips to FY28</div></div>
+      <div class="sc-cell"><div class="sc-l">FY26 PAT (restated)</div><div class="sc-v">₹150–180 Cr (write-off impact)</div></div>
+      <div class="sc-cell"><div class="sc-l">PE de-rating</div><div class="sc-v">12–14x on lower PAT</div></div>
+      <div class="sc-cell"><div class="sc-l">Bear mcap</div><div class="sc-v">₹1,800–2,520 Cr</div></div>
+    </div>
+    <div style="font-size:11.5px;color:#333;margin-top:8px"><strong>Bear probability: 20–25%.</strong> Garvit's cost is ₹1,654. Bear case mcap of ₹1,800–2,520 Cr implies stock ₹890–1,242/share = -47 to -25% from cost. This is the real downside and why 75 shares at ₹1.52L is too much exposure — a receivables event could be very painful.</div>
+  </div>
+
+  <table style="margin-top:10px">
+    <tr><th>Target from Garvit's cost (₹1,654)</th><th>Stock price</th><th>Driver</th><th>Timeline</th><th>Probability</th></tr>
+    <tr><td>3x (₹4,962)</td><td>₹4,962/share</td><td>FY27 PAT ₹500 Cr at 28x PE</td><td>FY27</td><td class="a">20–25%</td></tr>
+    <tr><td>2x (₹3,308)</td><td>₹3,308/share</td><td>FY27 PAT ₹380 Cr at 22x PE</td><td>FY27</td><td class="a">30–35%</td></tr>
+    <tr><td>1.5x (₹2,481)</td><td>₹2,481/share</td><td>FY26 PAT ₹300 Cr at 20x PE</td><td>FY26</td><td class="g">40%</td></tr>
+    <tr><td>Bear (-35%: ₹1,075)</td><td>₹1,075/share</td><td>Receivables write-off + BESS delay</td><td>—</td><td class="a">20–25%</td></tr>
+  </table>
+</div>
+
+<!-- PEERS -->
+<div id="compare" class="panel">
+  <div class="sh">Solar EPC + renewable energy sector peers — who is Oriana competing with and who does better?</div>
+  <div style="border:1px solid #ddd;border-radius:10px;overflow:hidden;font-size:11px">
+    <div class="comp-h">
+      <div class="cc-h" style="background:#f5f5f3">Metric</div>
+      <div class="cc-h" style="background:#FFF8E1;color:#7B5E00">Oriana Power ← Your stock</div>
+      <div class="cc-h" style="background:#E6F1FB;color:#185FA5">Websol Energy (our 9.0/10 pick)</div>
+      <div class="cc-h" style="background:#f5f5f3">KPI Green Energy</div>
+    </div>
+    <div class="comp-row"><div class="cc cc-label">Market cap</div><div class="cc mid-cell">₹4,232 Cr</div><div class="cc winner-cell">~₹3,200 Cr</div><div class="cc mid-cell">~₹4,000 Cr</div></div>
+    <div class="comp-row"><div class="cc cc-label">Business model</div><div class="cc winner-cell">EPC + BESS BOO + Hydrogen (multi-vertical)</div><div class="cc mid-cell">Solar cell manufacturer (only)</div><div class="cc mid-cell">Solar IPP + EPC</div></div>
+    <div class="comp-row"><div class="cc cc-label">Revenue growth (FY25)</div><div class="cc winner-cell">+158% YoY</div><div class="cc winner-cell">+40%+ (manufacturing)</div><div class="cc mid-cell">~20–30%</div></div>
+    <div class="comp-row"><div class="cc cc-label">PAT margin</div><div class="cc winner-cell">~16% (exceptional for EPC)</div><div class="cc winner-cell">~35–44% (solar cell manufacturing)</div><div class="cc mid-cell">~12–15%</div></div>
+    <div class="comp-row"><div class="cc cc-label">Debtor days</div><div class="cc loser-cell">146 days ↑ (rising, concern)</div><div class="cc winner-cell">Very low — manufacturing, upfront payment</div><div class="cc mid-cell">Moderate</div></div>
+    <div class="comp-row"><div class="cc cc-label">Revenue quality</div><div class="cc mid-cell">Project-based (lumpy), growing BOOT annuity</div><div class="cc winner-cell">Manufacturing — consistent</div><div class="cc mid-cell">IPP recurring + EPC lumpy</div></div>
+    <div class="comp-row"><div class="cc cc-label">BESS exposure</div><div class="cc winner-cell">Yes — 403 MWh secured, 3.5 GWh FY30 target</div><div class="cc loser-cell">None (manufacturing focus)</div><div class="cc mid-cell">Limited</div></div>
+    <div class="comp-row"><div class="cc cc-label">Hydrogen / ammonia</div><div class="cc winner-cell">Yes — SECI GAPA ₹3,135 Cr signed</div><div class="cc loser-cell">None</div><div class="cc loser-cell">None</div></div>
+    <div class="comp-row"><div class="cc cc-label">Listing platform</div><div class="cc loser-cell">SME (Emerge) — lower disclosure</div><div class="cc winner-cell">Main board — institutional coverage</div><div class="cc winner-cell">Main board</div></div>
+    <div class="comp-row"><div class="cc cc-label">3x probability</div><div class="cc mid-cell">25–30% (execution + BESS re-rating)</div><div class="cc winner-cell">35–40% (ALMM moat + manufacturing)</div><div class="cc mid-cell">20–25%</div></div>
+    <div class="comp-row"><div class="cc cc-label">Best for Garvit's goal</div><div class="cc">Upside potential compelling — but overweight at ₹1.52L; trim to ₹50K</div><div class="cc">Best solar pick — manufacturing moat, no debtor day risk</div><div class="cc">Fair but no unique moat vs Websol/Oriana</div></div>
+  </div>
+
+  <div class="warn sun" style="margin-top:12px"><strong>The critical Oriana vs Websol comparison for Garvit:</strong> Garvit holds both Oriana (₹1,52,407) and Websol (₹64,416). Websol is our higher-conviction pick (9.0/10) with better margin quality (44% EBITDA vs Oriana's ~16% as an EPC contractor), manufacturing moat (ALMM List), and zero debtor day concern. Yet Garvit has 2.4x more capital in Oriana. If choosing between these two for his solar allocation, Websol deserves a higher proportion. The right portfolio structure: Websol ₹80–100K (core), Oriana ₹40–60K (satellite for BESS/hydrogen optionality).</div>
+</div>
+
+<!-- VERDICT -->
+<div id="verdict" class="panel">
+  <div class="sh">The definitive verdict for Garvit's portfolio</div>
+
+  <div class="verdict-card" style="background:#FFF8E1;border:1px solid #F9A825">
+    <div class="vc-h" style="color:#7B5E00">Oriana Power — Verdict: Trim 45–50 shares to bring position to ₹50,000–60,000. Lock in most of the +22.9% gain. Keep a meaningful BESS/hydrogen optionality stake. The business is more interesting than when we first analyzed it — but the position is still too large relative to the risk profile.</div>
+    <div class="vc-b">Here's the complete, updated analysis for Garvit:<br><br><strong>What has improved since our original "satellite ₹20K" recommendation:</strong><br>• BESS vertical is real and executing — 403 MWh secured in FY25, BOO projects live in Karnataka + Rajasthan<br>• ₹3,135 Cr green ammonia GAPA with SECI (April 2026) — contractual revenue commitment<br>• ₹1,180 Cr floating solar EPC (234 MW DVC Maithon) — largest ever single order<br>• Revenue guidance delivery: FY25 guided 161%, delivered 158% — near-perfect<br>• FY26 guidance ₹2,000–2,500 Cr re-confirmed H1 FY26 — on track<br>• Multi-vertical optionality (BESS + Hydrogen + Data centre + CBG + International) makes this more valuable than a one-dimensional solar EPC company<br><br><strong>What has NOT improved — the concerns that remain:</strong><br>• Debtor days: 107 → 146 (confirmed and worsening). Working capital days: 32.8 → 81.5 — a 148% deterioration in 1 year. This is the primary risk that limits conviction.<br>• SME listing — lower governance standards than main board; needs to migrate soon<br>• BESS BOO requires large balance sheet (owns assets for 25 years) — needs careful monitoring of debt levels<br>• Green hydrogen gigafactory is 3–5 years from revenue — option value today, not earnings today<br>• At ₹4,232 Cr mcap, the business needs to execute flawlessly to justify the valuation<br><br><strong>The updated allocation logic:</strong><br>The original "satellite ₹20K" undervalued the BESS and hydrogen evolution. The right allocation for this improved thesis is ₹40–60K — enough to capture meaningful upside from BESS re-rating and FY27 growth, but small enough that a debtor-days-driven correction doesn't significantly damage the overall portfolio. Selling 45–50 shares (from 75 to 25–30) achieves this — Garvit keeps ~₹50,000–60,000 exposure, locks in ₹90,000+ of profit on the sold shares, and continues to benefit from the BESS/hydrogen story.<br><br><strong>What to watch for the remaining shares:</strong><br>• Debtor days in FY26 full year results — must not exceed 160 days<br>• BESS BOO actual power generation data (not just order wins)<br>• Main board migration announcement<br>• Green ammonia gigafactory capex plan and funding details<br>• FY26 full year results (should confirm ₹2,100+ Cr revenue)</div>
+  </div>
+
+  <div class="sh">Allocation recommendation — updated</div>
+  <table>
+    <tr><th>Action</th><th>Shares</th><th>Amount</th><th>Rationale</th></tr>
+    <tr><td><span class="badge ba">SELL 45–50 shares at market</span></td><td>From 75 → 25–30 shares</td><td>Recover ~₹90,000–₹1,00,000</td><td>Lock in +22.9% gain on sold shares (~₹24,000–26,000 profit). Reduces exposure to debtor days risk while keeping optionality. Redeploy ₹90K → EFC I (₹40K) + RPSG Ventures (₹35K) + buffer.</td></tr>
+    <tr><td><span class="badge bg">HOLD 25–30 shares</span></td><td>Residual ₹50,000–60,000</td><td>Satellite position</td><td>Keeps meaningful BESS + green ammonia optionality. If FY26 results confirm debtor days stabilising and revenue ₹2,100+ Cr, consider adding back to ₹80K. If debtor days exceed 160, exit remaining.</td></tr>
+  </table>
+
+  <div class="sh">Six triggers to watch post-trim</div>
+  <table>
+    <tr><th>#</th><th>Trigger</th><th>Status</th><th>Impact on remaining position</th></tr>
+    <tr><td>1</td><td>FY26 full year results (May 2026) — debtor days</td><td class="r">146 → ??? (most important)</td><td>🔴 Above 160: exit remaining shares. 🟢 Below 130: re-add to ₹80K</td></tr>
+    <tr><td>2</td><td>FY26 full year revenue vs ₹2,000–2,500 Cr guidance</td><td class="g">H1 re-confirmed on track</td><td>🟢 ₹2,100+ Cr confirmed = BESS thesis credible. Add back ₹20K.</td></tr>
+    <tr><td>3</td><td>BESS BOO power generation data (Karnataka + Rajasthan)</td><td class="a">Projects executing</td><td>🟢 First BOO revenue confirmed = re-rating from EPC to infra multiple</td></tr>
+    <tr><td>4</td><td>Main board migration announcement</td><td class="a">No announcement yet</td><td>🟢 Main board = institutional coverage, better governance, PE re-rating</td></tr>
+    <tr><td>5</td><td>Green ammonia gigafactory capex (MP land)</td><td class="a">Land acquired, timeline TBD</td><td>🟢 Groundbreaking + credible FY28 timeline = hydrogen optionality valued</td></tr>
+    <tr><td>6</td><td>DVC Maithon floating solar (₹1,180 Cr) execution progress</td><td class="g">Order won — execution started</td><td>🟢 Timely execution = largest order on track, confirms scale-up capability</td></tr>
+  </table>
+
+  <div class="warn sun" style="margin-top:12px"><strong>One-line verdict:</strong> Oriana Power is India's most diversified renewable energy EPC + BOO platform — combining solar, BESS, green hydrogen, and floating solar with an exceptional revenue guidance track record (FY25: guided 161%, delivered 158%). The BESS BOO and SECI green ammonia GAPA (₹3,135 Cr) make this more valuable than when we first analyzed it. But debtor days rising from 107 to 146 (working capital 32.8 to 81.5 days) and SME listing status are genuine concerns that limit conviction to ₹50–60K, not ₹1.52L. For Garvit: sell 45–50 shares to lock in the +22.9% gain on most of the position, keep 25–30 shares as a meaningful satellite, and redeploy the freed ₹90–100K into EFC I and RPSG Ventures — two positions currently severely underweight vs conviction levels.</div>
+</div>
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/4.4.1/chart.umd.js"></script>
+<script>
+function show(id,btn){
+  document.querySelectorAll('.tab').forEach(t=>t.classList.remove('active'));
+  document.querySelectorAll('.panel').forEach(p=>p.classList.remove('active'));
+  btn.classList.add('active');
+  document.getElementById(id).classList.add('active');
+}
+new Chart(document.getElementById('rc').getContext('2d'),{
+  type:'bar',
+  data:{
+    labels:['FY22','FY23','FY24','FY25','TTM','FY26E','FY27E','FY28E'],
+    datasets:[
+      {label:'Revenue ₹ Cr',data:[60,134,383,987,1409,2200,4000,6500],backgroundColor:['#F9A825','#F9A825','#F9A825','#F9A825','#1D9E75','#FFE082','#FFE082','#FFE082'],borderRadius:4,yAxisID:'y'},
+      {label:'PAT ₹ Cr',data:[3,10,54,158,232,320,450,850],type:'line',borderColor:'#1D9E75',backgroundColor:'transparent',pointBackgroundColor:'#1D9E75',tension:0.3,yAxisID:'y2'}
+    ]
+  },
+  options:{responsive:true,maintainAspectRatio:false,plugins:{legend:{display:false}},scales:{y:{ticks:{font:{size:10}}},y2:{position:'right',ticks:{font:{size:10}},grid:{drawOnChartArea:false}},x:{ticks:{font:{size:10}}}}}
+});
+</script>
+</body>
+</html>

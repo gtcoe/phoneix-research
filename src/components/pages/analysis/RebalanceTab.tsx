@@ -1,7 +1,7 @@
 "use client";
 import { useState } from "react";
 import { fmt } from "@/lib/formatters";
-import type { PhoenixData } from "@/lib/data";
+import type { PhoenixData } from "@/types";
 
 export function RebalanceTab({ data }: { data: PhoenixData }) {
   const [targets, setTargets] = useState<Record<string, number>>(() => {

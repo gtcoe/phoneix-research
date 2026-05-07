@@ -10,21 +10,12 @@ export function EmptyState({
   sub?: string;
 }) {
   return (
-    <div
-      style={{
-        display: "flex",
-        flexDirection: "column",
-        alignItems: "center",
-        padding: "60px 20px",
-        color: "var(--muted)",
-        gap: 8,
-      }}
-    >
-      <span style={{ fontSize: 32 }}>{icon}</span>
-      <span style={{ fontSize: 15, fontWeight: 600, color: "var(--text)" }}>
+    <div className="flex flex-col items-center py-[60px] px-5 text-[var(--muted)] gap-2">
+      <span className="text-[32px]">{icon}</span>
+      <span className="text-base font-semibold text-[var(--text)]">
         {title}
       </span>
-      {sub && <span style={{ fontSize: 13 }}>{sub}</span>}
+      {sub && <span className="text-sm">{sub}</span>}
     </div>
   );
 }

@@ -1,6 +1,6 @@
 "use client";
 import { useState, useRef } from "react";
-import type { PhoenixData } from "@/lib/data";
+import type { PhoenixData } from "@/types";
 
 export function GrowthChart({ data }: { data: PhoenixData }) {
   const [hovered, setHovered] = useState<number | null>(null);
@@ -76,7 +76,7 @@ export function GrowthChart({ data }: { data: PhoenixData }) {
         ref={svgRef}
         width="100%"
         viewBox={`0 0 ${W} ${H}`}
-        style={{ display: "block", overflow: "visible" }}
+        className="block overflow-visible"
         onMouseMove={(e) => {
           if (!svgRef.current) return;
           const rect = svgRef.current.getBoundingClientRect();
@@ -220,24 +220,17 @@ export function GrowthChart({ data }: { data: PhoenixData }) {
         )}
       </svg>
       {/* Legend */}
-      <div
-        style={{ display: "flex", gap: 18, flexWrap: "wrap", marginTop: 12 }}
-      >
+      <div className="flex gap-[18px] flex-wrap mt-3">
         {benchSeries.map((s) => (
           <div
             key={s.label}
-            style={{ display: "flex", alignItems: "center", gap: 6 }}
+            className="flex items-center gap-1.5"
           >
             <span
-              style={{
-                width: 20,
-                height: 3,
-                borderRadius: 99,
-                background: s.color,
-                display: "inline-block",
-              }}
+              className="w-5 h-[3px] rounded-full inline-block"
+              style={{ background: s.color }}
             />
-            <span style={{ fontSize: 12, color: "var(--muted)" }}>
+            <span className="text-xs text-[var(--muted)]">
               {s.label}
             </span>
           </div>

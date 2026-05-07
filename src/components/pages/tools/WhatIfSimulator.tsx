@@ -3,7 +3,7 @@ import { THRESHOLDS } from "@/constants/thresholds";
 import { useState } from "react";
 import { fmt, fmtPct } from "@/lib/formatters";
 import { calcXIRR, pd } from "@/lib/data";
-import type { PhoenixData } from "@/lib/data";
+import type { PhoenixData } from "@/types";
 
 export function WhatIfSimulator({ data }: { data: PhoenixData }) {
   const [selectedId, setSelectedId] = useState(
@@ -47,42 +47,20 @@ export function WhatIfSimulator({ data }: { data: PhoenixData }) {
   }
 
   return (
-    <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: 20 }}>
+    <div className="grid grid-cols-2 gap-5">
       <div>
-        <div
-          style={{
-            fontSize: 13,
-            fontWeight: 600,
-            color: "var(--text)",
-            marginBottom: 16,
-          }}
-        >
+        <div className="text-sm font-semibold text-[var(--text)] mb-4">
           Scenario Inputs
         </div>
-        <div style={{ display: "flex", flexDirection: "column", gap: 12 }}>
+        <div className="flex flex-col gap-3">
           <div>
-            <label
-              style={{
-                fontSize: 11,
-                color: "var(--muted)",
-                display: "block",
-                marginBottom: 4,
-              }}
-            >
+            <label className="text-[11px] text-[var(--muted)] block mb-1">
               Select Stock
             </label>
             <select
               value={selectedId}
               onChange={(e) => setSelectedId(e.target.value)}
-              style={{
-                width: "100%",
-                padding: "8px 10px",
-                background: "var(--bg)",
-                border: "1px solid var(--border)",
-                borderRadius: 6,
-                color: "var(--text)",
-                fontSize: 13,
-              }}
+              className="w-full py-2 px-[10px] bg-[var(--bg)] border border-[var(--border)] rounded-md text-[var(--text)] text-sm"
             >
               {data.assets
                 .filter((a) => a.qty != null && a.entryDate != null)
@@ -94,14 +72,7 @@ export function WhatIfSimulator({ data }: { data: PhoenixData }) {
             </select>
           </div>
           <div>
-            <label
-              style={{
-                fontSize: 11,
-                color: "var(--muted)",
-                display: "block",
-                marginBottom: 4,
-              }}
-            >
+            <label className="text-[11px] text-[var(--muted)] block mb-1">
               Exit Price (₹)
             </label>
             <input
@@ -109,69 +80,27 @@ export function WhatIfSimulator({ data }: { data: PhoenixData }) {
               value={exitPrice}
               onChange={(e) => setExitPrice(e.target.value)}
               placeholder={selected?.currentPrice?.toFixed(2)}
-              style={{
-                width: "100%",
-                padding: "8px 10px",
-                background: "var(--bg)",
-                border: "1px solid var(--border)",
-                borderRadius: 6,
-                color: "var(--text)",
-                fontSize: 13,
-                fontFamily: "var(--font-mono)",
-                boxSizing: "border-box",
-              }}
+              className="w-full py-2 px-[10px] bg-[var(--bg)] border border-[var(--border)] rounded-md text-[var(--text)] text-sm font-[var(--font-mono)] box-border"
             />
           </div>
           <div>
-            <label
-              style={{
-                fontSize: 11,
-                color: "var(--muted)",
-                display: "block",
-                marginBottom: 4,
-              }}
-            >
+            <label className="text-[11px] text-[var(--muted)] block mb-1">
               Exit Date
             </label>
             <input
               type="date"
               value={exitDate}
               onChange={(e) => setExitDate(e.target.value)}
-              style={{
-                width: "100%",
-                padding: "8px 10px",
-                background: "var(--bg)",
-                border: "1px solid var(--border)",
-                borderRadius: 6,
-                color: "var(--text)",
-                fontSize: 13,
-                boxSizing: "border-box",
-              }}
+              className="w-full py-2 px-[10px] bg-[var(--bg)] border border-[var(--border)] rounded-md text-[var(--text)] text-sm box-border"
             />
           </div>
         </div>
         {selected && (
-          <div
-            style={{
-              marginTop: 16,
-              padding: "12px 14px",
-              background: "var(--surface)",
-              border: "1px solid var(--border)",
-              borderRadius: 8,
-            }}
-          >
-            <div
-              style={{ fontSize: 11, color: "var(--muted)", marginBottom: 8 }}
-            >
+          <div className="mt-4 py-3 px-3.5 bg-[var(--surface)] border border-[var(--border)] rounded-lg">
+            <div className="text-[11px] text-[var(--muted)] mb-2">
               Current Position
             </div>
-            <div
-              style={{
-                display: "grid",
-                gridTemplateColumns: "1fr 1fr",
-                gap: 8,
-              }}
-            >
+            <div className="grid grid-cols-2 gap-2">
               {[
                 { label: "Invested", value: fmt(selected.invested) },
                 { label: "Current", value: fmt(selected.current) },
@@ -179,17 +108,10 @@ export function WhatIfSimulator({ data }: { data: PhoenixData }) {
                 { label: "Entry", value: fmt(selected.entryPrice) },
               ].map((m) => (
                 <div key={m.label}>
-                  <div style={{ fontSize: 10, color: "var(--muted)" }}>
+                  <div className="text-[10px] text-[var(--muted)]">
                     {m.label}
                   </div>
-                  <div
-                    style={{
-                      fontSize: 13,
-                      fontWeight: 600,
-                      color: "var(--text)",
-                      fontFamily: "var(--font-mono)",
-                    }}
-                  >
+                  <div className="text-sm font-semibold text-[var(--text)] font-[var(--font-mono)]">
                     {m.value}
                   </div>
                 </div>
@@ -199,25 +121,11 @@ export function WhatIfSimulator({ data }: { data: PhoenixData }) {
         )}
       </div>
       <div>
-        <div
-          style={{
-            fontSize: 13,
-            fontWeight: 600,
-            color: "var(--text)",
-            marginBottom: 16,
-          }}
-        >
+        <div className="text-sm font-semibold text-[var(--text)] mb-4">
           Simulation Results
         </div>
         {selected && simXIRR !== null ? (
-          <div
-            style={{
-              background: "var(--card)",
-              border: "1px solid var(--border)",
-              borderRadius: 10,
-              padding: "18px 20px",
-            }}
-          >
+          <div className="bg-[var(--card)] border border-[var(--border)] rounded-[10px] py-[18px] px-5">
             {(
               [
               { label: "Exit Price", value: fmt(ep) },
@@ -251,23 +159,14 @@ export function WhatIfSimulator({ data }: { data: PhoenixData }) {
             ).map((r) => (
               <div
                 key={r.label}
-                style={{
-                  display: "flex",
-                  justifyContent: "space-between",
-                  padding: "9px 0",
-                  borderBottom: "1px solid var(--border)",
-                }}
+                className="flex justify-between py-[9px] border-b border-[var(--border)]"
               >
-                <span style={{ fontSize: 13, color: "var(--muted)" }}>
+                <span className="text-sm text-[var(--muted)]">
                   {r.label}
                 </span>
                 <span
-                  style={{
-                    fontSize: 15,
-                    fontWeight: 700,
-                    color: r.color || "var(--text)",
-                    fontFamily: "var(--font-mono)",
-                  }}
+                  className="text-base font-bold font-[var(--font-mono)]"
+                  style={{ color: r.color || "var(--text)" }}
                 >
                   {r.value}
                 </span>
@@ -275,14 +174,7 @@ export function WhatIfSimulator({ data }: { data: PhoenixData }) {
             ))}
           </div>
         ) : (
-          <div
-            style={{
-              padding: 30,
-              textAlign: "center",
-              color: "var(--muted)",
-              fontSize: 13,
-            }}
-          >
+          <div className="p-[30px] text-center text-[var(--muted)] text-sm">
             Select a stock and set an exit scenario
           </div>
         )}

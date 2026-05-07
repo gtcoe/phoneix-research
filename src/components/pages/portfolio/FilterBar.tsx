@@ -17,59 +17,24 @@ export default function FilterBar({
   onAddClick,
 }: Props) {
   return (
-    <div
-      style={{
-        display: "flex",
-        gap: 8,
-        marginBottom: 16,
-        flexWrap: "wrap",
-        alignItems: "center",
-      }}
-    >
+    <div className="flex gap-2 mb-4 flex-wrap items-center">
       {CATEGORIES.map((c) => (
         <button
+          type="button"
           key={c}
           onClick={() => onCategoryChange(c)}
-          style={{
-            padding: "5px 14px",
-            borderRadius: 99,
-            fontSize: 12,
-            fontWeight: 500,
-            cursor: "pointer",
-            background: category === c ? "var(--accent)" : "var(--surface)",
-            border: "1px solid var(--border)",
-            color: category === c ? "#fff" : "var(--muted)",
-            transition: "all .15s",
-          }}
+          className={`py-[5px] px-3.5 rounded-full text-xs font-medium cursor-pointer border border-[var(--border)] transition-all duration-150 ${category === c ? "bg-[var(--accent)] text-white" : "bg-[var(--surface)] text-[var(--muted)]"}`}
         >
           {c}
         </button>
       ))}
-      <span
-        style={{
-          marginLeft: "auto",
-          fontSize: 12,
-          color: "var(--muted)",
-          fontFamily: "var(--font-mono)",
-        }}
-      >
+      <span className="ml-auto text-xs text-[var(--muted)] font-[var(--font-mono)]">
         {holdingsCount} holdings
       </span>
       <button
+        type="button"
         onClick={onAddClick}
-        style={{
-          display: "flex",
-          alignItems: "center",
-          gap: 6,
-          padding: "7px 14px",
-          background: "var(--accent)",
-          border: "none",
-          borderRadius: 8,
-          cursor: "pointer",
-          color: "#fff",
-          fontSize: 12,
-          fontWeight: 600,
-        }}
+        className="flex items-center gap-1.5 py-[7px] px-3.5 bg-[var(--accent)] border-0 rounded-lg cursor-pointer text-white text-xs font-semibold"
       >
         <Icon name="plus" size={14} color="#fff" />
         Log Transaction

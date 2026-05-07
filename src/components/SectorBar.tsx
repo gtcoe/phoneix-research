@@ -26,6 +26,7 @@ export default function SectorBar({
     <div className="flex flex-wrap items-center gap-2 mb-8">
       <span className="text-xs text-gray-400 shrink-0 mr-1">Sectors:</span>
       <button
+          type="button"
         onClick={() => onSelect(null)}
         className={`rounded-full px-3 py-1 text-xs font-medium transition-colors cursor-pointer ${
           activeSector === null
@@ -38,6 +39,7 @@ export default function SectorBar({
       {sectors.map(([label, count]) => (
         <button
           key={label}
+            type="button"
           onClick={() => onSelect(activeSector === label ? null : label)}
           className={`rounded-full px-3 py-1 text-xs font-medium transition-colors cursor-pointer ${
             activeSector === label

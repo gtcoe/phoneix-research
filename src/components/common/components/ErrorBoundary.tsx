@@ -46,49 +46,20 @@ export class ErrorBoundary extends React.Component<Props, State> {
     if (!this.state.hasError) return this.props.children;
 
     return (
-      <div
-        style={{
-          display: "flex",
-          flexDirection: "column",
-          alignItems: "center",
-          justifyContent: "center",
-          height: "100%",
-          padding: 40,
-          gap: 16,
-        }}
-      >
-        <div style={{ fontSize: 36 }}>⚠️</div>
-        <div
-          style={{ fontSize: 16, fontWeight: 700, color: "var(--text)" }}
-        >
+      <div className="flex flex-col items-center justify-center h-full p-10 gap-4">
+        <div className="text-4xl">⚠️</div>
+        <div className="text-base font-bold text-[var(--text)]">
           {this.props.pageName
             ? `${this.props.pageName} failed to render`
             : "Something went wrong"}
         </div>
-        <div
-          style={{
-            fontSize: 12,
-            color: "var(--muted)",
-            fontFamily: "var(--font-mono)",
-            maxWidth: 480,
-            textAlign: "center",
-          }}
-        >
+        <div className="text-xs text-[var(--muted)] font-[var(--font-mono)] max-w-[480px] text-center">
           {this.state.message}
         </div>
         <button
+          type="button"
           onClick={this.reset}
-          style={{
-            marginTop: 8,
-            padding: "8px 20px",
-            background: "var(--accent)",
-            color: "#fff",
-            border: "none",
-            borderRadius: 8,
-            cursor: "pointer",
-            fontSize: 13,
-            fontWeight: 600,
-          }}
+          className="mt-2 py-2 px-5 bg-[var(--accent)] text-white border-0 rounded-lg cursor-pointer text-sm font-semibold"
         >
           Retry
         </button>

@@ -1,4 +1,5 @@
 "use client";
+import { useMemo } from "react";
 import { useTheme } from "@/hooks/useTheme";
 import { useNav } from "@/hooks/useNav";
 import { useLocalStorage } from "@/hooks/useLocalStorage";
@@ -28,7 +29,9 @@ export default function PhoenixApp() {
     false,
   );
 
-  const data = getPhoenixData();
+  // useMemo ensures getPhoenixData() only runs once (mock) or when deps change (backend).
+  // Without this, every sidebar toggle / theme change / toast would re-invoke it.
+  const data = useMemo(() => getPhoenixData(), []);
 
   const renderPage = () => {
     // key=page resets the ErrorBoundary when the user navigates to a new tab
@@ -49,30 +52,14 @@ export default function PhoenixApp() {
 
   return (
     <ToastProvider>
-      <div
-        style={{
-          display: "flex",
-          height: "100vh",
-          overflow: "hidden",
-          background: "var(--bg)",
-          color: "var(--text)",
-          fontFamily: "var(--font-sans)",
-        }}
-      >
+      <div className="flex h-screen overflow-hidden bg-[var(--bg)] text-[var(--text)] font-[var(--font-sans)]">
         <Sidebar
           page={page}
           onNav={navTo}
           collapsed={collapsed}
           onToggle={() => setCollapsed((c) => !c)}
         />
-        <div
-          style={{
-            flex: 1,
-            display: "flex",
-            flexDirection: "column",
-            overflow: "hidden",
-          }}
-        >
+        <div className="flex-1 flex flex-col overflow-hidden">
           <TopBar
             data={data}
             page={page}
@@ -81,7 +68,7 @@ export default function PhoenixApp() {
             onNav={navTo}
             themes={themeNames}
           />
-          <main style={{ flex: 1, overflowY: "auto" }}>{renderPage()}</main>
+          <main className="flex-1 overflow-y-auto">{renderPage()}</main>
         </div>
         <ToastContainer />
       </div>

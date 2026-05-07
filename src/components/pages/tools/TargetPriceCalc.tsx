@@ -1,7 +1,7 @@
 "use client";
 import { useState } from "react";
 import { fmt } from "@/lib/formatters";
-import type { PhoenixData } from "@/lib/data";
+import type { PhoenixData } from "@/types";
 
 export function TargetPriceCalc({ data }: { data: PhoenixData }) {
   const [ticker, setTicker] = useState("");
@@ -30,19 +30,12 @@ export function TargetPriceCalc({ data }: { data: PhoenixData }) {
     : null;
 
   return (
-    <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: 20 }}>
+    <div className="grid grid-cols-2 gap-5">
       <div>
-        <div
-          style={{
-            fontSize: 13,
-            fontWeight: 600,
-            color: "var(--text)",
-            marginBottom: 16,
-          }}
-        >
+        <div className="text-sm font-semibold text-[var(--text)] mb-4">
           Inputs
         </div>
-        <div style={{ display: "flex", flexDirection: "column", gap: 12 }}>
+        <div className="flex flex-col gap-3">
           {[
             {
               label: "Ticker",
@@ -87,14 +80,7 @@ export function TargetPriceCalc({ data }: { data: PhoenixData }) {
             },
           ].map((f) => (
             <div key={f.label}>
-              <label
-                style={{
-                  fontSize: 11,
-                  color: "var(--muted)",
-                  display: "block",
-                  marginBottom: 4,
-                }}
-              >
+              <label className="text-[11px] text-[var(--muted)] block mb-1">
                 {f.label}
               </label>
               <input
@@ -102,89 +88,36 @@ export function TargetPriceCalc({ data }: { data: PhoenixData }) {
                 value={f.value}
                 onChange={(e) => f.onChange(e.target.value)}
                 placeholder={f.placeholder}
-                style={{
-                  width: "100%",
-                  padding: "8px 10px",
-                  background: "var(--bg)",
-                  border: "1px solid var(--border)",
-                  borderRadius: 6,
-                  color: "var(--text)",
-                  fontSize: 13,
-                  fontFamily: "var(--font-mono)",
-                  boxSizing: "border-box",
-                }}
+                className="w-full py-2 px-[10px] bg-[var(--bg)] border border-[var(--border)] rounded-md text-[var(--text)] text-sm font-[var(--font-mono)] box-border"
               />
             </div>
           ))}
         </div>
       </div>
       <div>
-        <div
-          style={{
-            fontSize: 13,
-            fontWeight: 600,
-            color: "var(--text)",
-            marginBottom: 16,
-          }}
-        >
+        <div className="text-sm font-semibold text-[var(--text)] mb-4">
           Results
         </div>
         {selected && (
-          <div
-            style={{
-              background: "var(--surface)",
-              border: "1px solid var(--border)",
-              borderRadius: 8,
-              padding: "12px 14px",
-              marginBottom: 14,
-            }}
-          >
-            <div
-              style={{
-                fontSize: 12,
-                fontWeight: 600,
-                color: "var(--accent)",
-                marginBottom: 6,
-              }}
-            >
+          <div className="bg-[var(--surface)] border border-[var(--border)] rounded-lg py-3 px-3.5 mb-3.5">
+            <div className="text-xs font-semibold text-[var(--accent)] mb-1.5">
               {selected.ticker} — Saved Target
             </div>
-            <div
-              style={{
-                display: "grid",
-                gridTemplateColumns: "1fr 1fr",
-                gap: 8,
-              }}
-            >
+            <div className="grid grid-cols-2 gap-2">
               <div>
-                <div style={{ fontSize: 10, color: "var(--muted)" }}>
+                <div className="text-[10px] text-[var(--muted)]">
                   Target Price
                 </div>
-                <div
-                  style={{
-                    fontSize: 16,
-                    fontWeight: 700,
-                    color: "var(--text)",
-                    fontFamily: "var(--font-mono)",
-                  }}
-                >
+                <div className="text-base font-bold text-[var(--text)] font-[var(--font-mono)]">
                   {selected.targetPrice ? fmt(selected.targetPrice) : "—"}
                 </div>
               </div>
               <div>
-                <div style={{ fontSize: 10, color: "var(--muted)" }}>
+                <div className="text-[10px] text-[var(--muted)]">
                   Upside
                 </div>
                 <div
-                  style={{
-                    fontSize: 16,
-                    fontWeight: 700,
-                    color:
-                      currentTarget && currentTarget.upside >= 0
-                        ? "var(--gain)"
-                        : "var(--loss)",
-                    fontFamily: "var(--font-mono)",
-                  }}
+                  className={`text-base font-bold font-[var(--font-mono)] ${currentTarget && currentTarget.upside >= 0 ? "text-[var(--gain)]" : "text-[var(--loss)]"}`}
                 >
                   {currentTarget
                     ? `${currentTarget.upside >= 0 ? "+" : ""}${currentTarget.upside.toFixed(1)}%`
@@ -195,17 +128,8 @@ export function TargetPriceCalc({ data }: { data: PhoenixData }) {
           </div>
         )}
         {intrinsicTarget !== undefined && (
-          <div
-            style={{
-              background: "var(--card)",
-              border: "1px solid var(--border)",
-              borderRadius: 10,
-              padding: "16px 18px",
-            }}
-          >
-            <div
-              style={{ fontSize: 12, color: "var(--muted)", marginBottom: 12 }}
-            >
+          <div className="bg-[var(--card)] border border-[var(--border)] rounded-[10px] py-4 px-[18px]">
+            <div className="text-xs text-[var(--muted)] mb-3">
               DCF / P/E Estimate ({yr}yr horizon)
             </div>
             {(
@@ -238,23 +162,14 @@ export function TargetPriceCalc({ data }: { data: PhoenixData }) {
             ).map((r) => (
               <div
                 key={r.label}
-                style={{
-                  display: "flex",
-                  justifyContent: "space-between",
-                  padding: "8px 0",
-                  borderBottom: "1px solid var(--border)",
-                }}
+                className="flex justify-between py-2 border-b border-[var(--border)]"
               >
-                <span style={{ fontSize: 13, color: "var(--muted)" }}>
+                <span className="text-sm text-[var(--muted)]">
                   {r.label}
                 </span>
                 <span
-                  style={{
-                    fontSize: 14,
-                    fontWeight: 700,
-                    color: r.color || "var(--text)",
-                    fontFamily: "var(--font-mono)",
-                  }}
+                  className="text-sm font-bold font-[var(--font-mono)]"
+                  style={{ color: r.color || "var(--text)" }}
                 >
                   {r.value}
                 </span>
@@ -263,14 +178,7 @@ export function TargetPriceCalc({ data }: { data: PhoenixData }) {
           </div>
         )}
         {!intrinsicTarget && (
-          <div
-            style={{
-              padding: 30,
-              textAlign: "center",
-              color: "var(--muted)",
-              fontSize: 13,
-            }}
-          >
+          <div className="p-[30px] text-center text-[var(--muted)] text-sm">
             Enter EPS, growth rate and P/E to calculate target
           </div>
         )}

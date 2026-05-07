@@ -3,7 +3,7 @@ import { useState, useRef } from "react";
 import { Icon } from "@/components/ui";
 import { PAGE_NAMES } from "@/constants/nav";
 import { THRESHOLDS } from "@/constants/thresholds";
-import type { PhoenixData } from "@/lib/data";
+import type { PhoenixData } from "@/types";
 
 // ─── TopBar ───────────────────────────────────────────────────────────────────
 export default function TopBar({
@@ -63,43 +63,15 @@ export default function TopBar({
         ];
 
   return (
-    <header
-      style={{
-        height: 56,
-        background: "var(--surface)",
-        borderBottom: "1px solid var(--border)",
-        display: "flex",
-        alignItems: "center",
-        padding: "0 20px",
-        gap: 16,
-        flexShrink: 0,
-      }}
-    >
+    <header className="h-14 bg-[var(--surface)] border-b border-[var(--border)] flex items-center px-5 gap-4 shrink-0">
       {/* Page title */}
-      <span
-        style={{
-          fontWeight: 600,
-          fontSize: 15,
-          color: "var(--text)",
-          marginRight: 8,
-        }}
-      >
+      <span className="font-semibold text-base text-[var(--text)] mr-2">
         {PAGE_NAMES[page as keyof typeof PAGE_NAMES] || page}
       </span>
 
       {/* Search */}
-      <div style={{ flex: 1, maxWidth: 340, position: "relative" }}>
-        <span
-          style={{
-            position: "absolute",
-            left: 10,
-            top: "50%",
-            transform: "translateY(-50%)",
-            color: "var(--muted)",
-            display: "flex",
-            pointerEvents: "none",
-          }}
-        >
+      <div className="flex-1 max-w-[340px] relative">
+        <span className="absolute left-2.5 top-1/2 -translate-y-1/2 text-[var(--muted)] flex pointer-events-none">
           <Icon name="search" size={15} />
         </span>
         <input
@@ -111,87 +83,28 @@ export default function TopBar({
           onFocus={() => setShowSearch(true)}
           onBlur={() => setTimeout(() => setShowSearch(false), 150)}
           placeholder="Search ticker, name…"
-          style={{
-            width: "100%",
-            padding: "7px 12px 7px 34px",
-            background: "var(--bg)",
-            border: "1px solid var(--border)",
-            borderRadius: 8,
-            fontSize: 13,
-            color: "var(--text)",
-            outline: "none",
-            fontFamily: "inherit",
-          }}
+          className="w-full py-[7px] pr-3 pl-[34px] bg-[var(--bg)] border border-[var(--border)] rounded-lg text-sm text-[var(--text)] outline-none font-[inherit]"
         />
         {showSearch && searchResults.length > 0 && (
-          <div
-            style={{
-              position: "absolute",
-              top: "calc(100% + 6px)",
-              left: 0,
-              right: 0,
-              background: "var(--surface)",
-              border: "1px solid var(--border)",
-              borderRadius: 10,
-              boxShadow: "0 8px 24px rgba(0,0,0,0.3)",
-              zIndex: 9999,
-              overflow: "hidden",
-            }}
-          >
+          <div className="absolute top-[calc(100%+6px)] left-0 right-0 bg-[var(--surface)] border border-[var(--border)] rounded-[10px] shadow-[0_8px_24px_rgba(0,0,0,0.3)] z-[9999] overflow-hidden">
             {searchResults.map((r, i) => (
               <button
+                type="button"
                 key={i}
                 onMouseDown={() => {
                   onNav(r.dest);
                   setSearchVal("");
                   setShowSearch(false);
                 }}
-                style={{
-                  width: "100%",
-                  padding: "9px 14px",
-                  display: "flex",
-                  alignItems: "center",
-                  gap: 10,
-                  background: "transparent",
-                  border: "none",
-                  cursor: "pointer",
-                  textAlign: "left",
-                  borderBottom: "1px solid var(--border)",
-                }}
+                className="w-full py-[9px] px-[14px] flex items-center gap-[10px] bg-transparent border-0 cursor-pointer text-left border-b border-[var(--border)]"
               >
-                <span
-                  style={{
-                    fontFamily: "var(--font-mono)",
-                    fontWeight: 700,
-                    color: "var(--accent)",
-                    fontSize: 13,
-                    minWidth: 72,
-                  }}
-                >
+                <span className="font-[var(--font-mono)] font-bold text-[var(--accent)] text-sm min-w-[72px]">
                   {r.label}
                 </span>
-                <span
-                  style={{
-                    fontSize: 11,
-                    color: "var(--muted)",
-                    flex: 1,
-                    overflow: "hidden",
-                    textOverflow: "ellipsis",
-                    whiteSpace: "nowrap",
-                  }}
-                >
+                <span className="text-[11px] text-[var(--muted)] flex-1 overflow-hidden text-ellipsis whitespace-nowrap">
                   {r.sub}
                 </span>
-                <span
-                  style={{
-                    fontSize: 10,
-                    color: "var(--muted)",
-                    padding: "1px 6px",
-                    border: "1px solid var(--border)",
-                    borderRadius: 4,
-                    whiteSpace: "nowrap",
-                  }}
-                >
+                <span className="text-[10px] text-[var(--muted)] px-[6px] py-px border border-[var(--border)] rounded whitespace-nowrap">
                   {r.tag}
                 </span>
               </button>
@@ -200,61 +113,33 @@ export default function TopBar({
         )}
       </div>
 
-      <div style={{ flex: 1 }} />
+      <div className="flex-1" />
 
       {/* Theme toggle */}
-      <div style={{ position: "relative" }}>
+      <div className="relative">
         <button
+          type="button"
           onClick={() => setShowTheme((v) => !v)}
-          style={{
-            background: "var(--bg)",
-            border: "1px solid var(--border)",
-            borderRadius: 8,
-            padding: "6px 10px",
-            cursor: "pointer",
-            color: "var(--text)",
-            display: "flex",
-            alignItems: "center",
-            gap: 6,
-            fontSize: 12,
-          }}
+          className="bg-[var(--bg)] border border-[var(--border)] rounded-lg py-1.5 px-2.5 cursor-pointer text-[var(--text)] flex items-center gap-1.5 text-xs"
         >
           <Icon name={isDark ? "moon" : "sun"} size={15} />
-          <span style={{ fontFamily: "var(--font-mono)" }}>{themeName}</span>
+          <span className="font-[var(--font-mono)]">{themeName}</span>
         </button>
         {showTheme && (
-          <div
-            style={{
-              position: "absolute",
-              top: 38,
-              right: 0,
-              background: "var(--surface)",
-              border: "1px solid var(--border)",
-              borderRadius: 8,
-              minWidth: 160,
-              zIndex: 999,
-              boxShadow: "0 8px 24px rgba(0,0,0,0.3)",
-            }}
-          >
+          <div className="absolute top-[38px] right-0 bg-[var(--surface)] border border-[var(--border)] rounded-lg min-w-[160px] z-[999] shadow-[0_8px_24px_rgba(0,0,0,0.3)]">
             {themes.map((t) => (
               <button
+                type="button"
                 key={t}
                 onClick={() => {
                   onThemeChange(t);
                   setShowTheme(false);
                 }}
-                style={{
-                  width: "100%",
-                  padding: "10px 14px",
-                  textAlign: "left",
-                  background:
-                    t === themeName ? "var(--accent-dim)" : "transparent",
-                  border: "none",
-                  cursor: "pointer",
-                  color: t === themeName ? "var(--accent)" : "var(--text)",
-                  fontSize: 13,
-                  borderRadius: 4,
-                }}
+                className={`w-full py-[10px] px-[14px] text-left border-0 cursor-pointer text-sm rounded ${
+                  t === themeName
+                    ? "bg-[var(--accent-dim)] text-[var(--accent)]"
+                    : "bg-transparent text-[var(--text)]"
+                }`}
               >
                 {t}
               </button>
@@ -264,131 +149,55 @@ export default function TopBar({
       </div>
 
       {/* Notifications */}
-      <div style={{ position: "relative" }} ref={notifRef}>
+      <div className="relative" ref={notifRef}>
         <button
+          type="button"
           onClick={() => setShowNotifs((v) => !v)}
-          style={{
-            background: "none",
-            border: "none",
-            cursor: "pointer",
-            color: "var(--muted)",
-            padding: 6,
-            display: "flex",
-            position: "relative",
-            borderRadius: 8,
-          }}
+          className="bg-transparent border-0 cursor-pointer text-[var(--muted)] p-1.5 flex relative rounded-lg"
         >
           <Icon name="bell" size={18} />
           {unread > 0 && (
-            <span
-              style={{
-                position: "absolute",
-                top: 2,
-                right: 2,
-                width: 8,
-                height: 8,
-                borderRadius: "50%",
-                background: "var(--loss)",
-                border: "1.5px solid var(--surface)",
-              }}
-            />
+            <span className="absolute top-[2px] right-[2px] w-2 h-2 rounded-full bg-[var(--loss)] border-[1.5px] border-[var(--surface)]" />
           )}
         </button>
         {showNotifs && (
-          <div
-            style={{
-              position: "absolute",
-              top: 38,
-              right: 0,
-              width: 320,
-              background: "var(--surface)",
-              border: "1px solid var(--border)",
-              borderRadius: 10,
-              zIndex: 999,
-              boxShadow: "0 8px 24px rgba(0,0,0,0.3)",
-            }}
-          >
-            <div
-              style={{
-                padding: "12px 16px",
-                borderBottom: "1px solid var(--border)",
-                fontWeight: 600,
-                fontSize: 13,
-                color: "var(--text)",
-              }}
-            >
+          <div className="absolute top-[38px] right-0 w-80 bg-[var(--surface)] border border-[var(--border)] rounded-[10px] z-[999] shadow-[0_8px_24px_rgba(0,0,0,0.3)]">
+            <div className="py-3 px-4 border-b border-[var(--border)] font-semibold text-sm text-[var(--text)]">
               Alerts ({unread} unread)
             </div>
             {data.convictionAlerts
               .filter((a) => !a.read)
               .map((a) => (
-              <div
-                key={a.id}
-                style={{
-                  padding: "10px 16px",
-                  borderBottom: "1px solid var(--border)",
-                }}
-              >
                 <div
-                  style={{ display: "flex", alignItems: "flex-start", gap: 8 }}
+                  key={a.id}
+                  className="py-[10px] px-4 border-b border-[var(--border)]"
                 >
-                  <span
-                    style={{
-                      width: 8,
-                      height: 8,
-                      borderRadius: "50%",
-                      marginTop: 4,
-                      flexShrink: 0,
-                      background:
+                  <div className="flex items-start gap-2">
+                    <span
+                      className={`w-2 h-2 rounded-full mt-1 shrink-0 ${
                         a.severity === "high"
-                          ? "var(--loss)"
+                          ? "bg-[var(--loss)]"
                           : a.severity === "medium"
-                            ? "var(--warn)"
-                            : "var(--info)",
-                    }}
-                  />
-                  <div style={{ flex: 1 }}>
-                    <div
-                      style={{
-                        fontSize: 12,
-                        fontWeight: 600,
-                        color: "var(--text)",
-                      }}
-                    >
-                      {a.ticker} — {a.type}
-                    </div>
-                    <div
-                      style={{
-                        fontSize: 11,
-                        color: "var(--muted)",
-                        marginTop: 2,
-                      }}
-                    >
-                      {a.message}
-                    </div>
-                    <div
-                      style={{
-                        fontSize: 10,
-                        color: "var(--muted)",
-                        marginTop: 3,
-                        fontFamily: "var(--font-mono)",
-                      }}
-                    >
-                      {a.date}
+                            ? "bg-[var(--warn)]"
+                            : "bg-[var(--info)]"
+                      }`}
+                    />
+                    <div className="flex-1">
+                      <div className="text-xs font-semibold text-[var(--text)]">
+                        {a.ticker} — {a.type}
+                      </div>
+                      <div className="text-[11px] text-[var(--muted)] mt-0.5">
+                        {a.message}
+                      </div>
+                      <div className="text-[10px] text-[var(--muted)] mt-[3px] font-[var(--font-mono)]">
+                        {a.date}
+                      </div>
                     </div>
                   </div>
                 </div>
-              </div>
-            ))}
+              ))}
             {unread === 0 && (
-              <div
-                style={{
-                  padding: 20,
-                  textAlign: "center",
-                  fontSize: 13,
-                  color: "var(--muted)",
-                }}
-              >
+              <div className="p-5 text-center text-sm text-[var(--muted)]">
                 All caught up — no unread alerts
               </div>
             )}
@@ -396,14 +205,10 @@ export default function TopBar({
         )}
       </div>
 
-      {/* Day change */}
+      {/* Day change — color kept dynamic (gain/loss depends on runtime value) */}
       <div
-        style={{
-          fontFamily: "var(--font-mono)",
-          fontSize: 12,
-          color: data.dayChange >= 0 ? "var(--gain)" : "var(--loss)",
-          whiteSpace: "nowrap",
-        }}
+        className="font-[var(--font-mono)] text-xs whitespace-nowrap"
+        style={{ color: data.dayChange >= 0 ? "var(--gain)" : "var(--loss)" }}
       >
         {data.dayChange >= 0 ? "+" : ""}₹
         {Math.abs(data.dayChange).toLocaleString("en-IN")} (

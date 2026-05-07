@@ -11,19 +11,8 @@ export function ConvictionDot({ score }: { score: number | null }) {
         : "var(--muted)";
   return (
     <span
-      style={{
-        display: "inline-flex",
-        alignItems: "center",
-        justifyContent: "center",
-        width: 22,
-        height: 22,
-        borderRadius: "50%",
-        background: "var(--surface2)",
-        color,
-        fontSize: 11,
-        fontWeight: 700,
-        fontFamily: "var(--font-mono)",
-      }}
+      className="inline-flex items-center justify-center w-[22px] h-[22px] rounded-full bg-[var(--surface2)] text-[11px] font-bold font-[var(--font-mono)]"
+      style={{ color }}
     >
       {score}
     </span>

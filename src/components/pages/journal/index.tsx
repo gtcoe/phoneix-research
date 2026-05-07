@@ -2,7 +2,7 @@
 import { useState } from "react";
 import { Icon } from "@/components/ui";
 import LogTransactionModal from "@/components/common/modals/LogTransactionModal";
-import type { PhoenixData } from "@/lib/data";
+import type { PhoenixData } from "@/types";
 import MonthlyDeploymentChart from "./MonthlyDeploymentChart";
 import FilterBar from "./FilterBar";
 import TransactionRow from "./TransactionRow";
@@ -48,7 +48,7 @@ export default function Journal({ data }: { data: PhoenixData }) {
   const maxMonthly = Math.max(...monthlyData.map(([, v]) => v), 1);
 
   return (
-    <div style={{ padding: 24 }}>
+    <div className="p-6">
       <MonthlyDeploymentChart monthlyData={monthlyData} maxMonthly={maxMonthly} />
       <FilterBar
         search={search}
@@ -68,17 +68,8 @@ export default function Journal({ data }: { data: PhoenixData }) {
           onClose={() => setShowLogTx(false)}
         />
       )}
-      <div style={{ position: "relative", paddingLeft: 24 }}>
-        <div
-          style={{
-            position: "absolute",
-            left: 8,
-            top: 0,
-            bottom: 0,
-            width: 2,
-            background: "var(--border)",
-          }}
-        />
+      <div className="relative pl-6">
+        <div className="absolute left-2 top-0 bottom-0 w-0.5 bg-[var(--border)]" />
         {filtered.map((t) => (
           <TransactionRow
             key={t.id}
@@ -89,11 +80,9 @@ export default function Journal({ data }: { data: PhoenixData }) {
         ))}
       </div>
       {filtered.length === 0 && (
-        <div
-          style={{ padding: 60, textAlign: "center", color: "var(--muted)" }}
-        >
+        <div className="p-[60px] text-center text-[var(--muted)]">
           <Icon name="note" size={36} color="var(--border)" />
-          <div style={{ marginTop: 12, fontSize: 14 }}>
+          <div className="mt-3 text-sm">
             No journal entries match your filter
           </div>
         </div>

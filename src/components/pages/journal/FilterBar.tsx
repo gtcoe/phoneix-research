@@ -27,41 +27,17 @@ export default function FilterBar({
   onAddClick,
 }: Props) {
   return (
-    <div
-      style={{
-        display: "flex",
-        gap: 10,
-        marginBottom: 16,
-        alignItems: "center",
-        flexWrap: "wrap",
-      }}
-    >
+    <div className="flex gap-[10px] mb-4 items-center flex-wrap">
       <input
         value={search}
         onChange={(e) => onSearchChange(e.target.value)}
         placeholder="Search…"
-        style={{
-          padding: "6px 12px",
-          background: "var(--surface)",
-          border: "1px solid var(--border)",
-          borderRadius: 8,
-          color: "var(--text)",
-          fontSize: 12,
-          outline: "none",
-          width: 180,
-        }}
+        className="py-1.5 px-3 bg-[var(--surface)] border border-[var(--border)] rounded-lg text-[var(--text)] text-xs outline-none w-[180px]"
       />
       <select
         value={filterType}
         onChange={(e) => onTypeChange(e.target.value)}
-        style={{
-          padding: "6px 12px",
-          background: "var(--surface)",
-          border: "1px solid var(--border)",
-          borderRadius: 8,
-          color: "var(--text)",
-          fontSize: 12,
-        }}
+        className="py-1.5 px-3 bg-[var(--surface)] border border-[var(--border)] rounded-lg text-[var(--text)] text-xs"
       >
         {allTypes.map((t) => (
           <option key={t} value={t}>
@@ -72,14 +48,7 @@ export default function FilterBar({
       <select
         value={filterCategory}
         onChange={(e) => onCategoryChange(e.target.value)}
-        style={{
-          padding: "6px 12px",
-          background: "var(--surface)",
-          border: "1px solid var(--border)",
-          borderRadius: 8,
-          color: "var(--text)",
-          fontSize: 12,
-        }}
+        className="py-1.5 px-3 bg-[var(--surface)] border border-[var(--border)] rounded-lg text-[var(--text)] text-xs"
       >
         {allCategories.map((c) => (
           <option key={c} value={c}>
@@ -87,32 +56,13 @@ export default function FilterBar({
           </option>
         ))}
       </select>
-      <span
-        style={{
-          fontSize: 12,
-          color: "var(--muted)",
-          fontFamily: "var(--font-mono)",
-          marginLeft: 4,
-        }}
-      >
+      <span className="text-xs text-[var(--muted)] font-[var(--font-mono)] ml-1">
         {filteredCount} entries
       </span>
       <button
+        type="button"
         onClick={onAddClick}
-        style={{
-          marginLeft: "auto",
-          display: "flex",
-          alignItems: "center",
-          gap: 6,
-          padding: "7px 14px",
-          background: "var(--accent)",
-          border: "none",
-          borderRadius: 8,
-          cursor: "pointer",
-          color: "#fff",
-          fontSize: 12,
-          fontWeight: 600,
-        }}
+        className="ml-auto flex items-center gap-1.5 py-[7px] px-3.5 bg-[var(--accent)] border-0 rounded-lg cursor-pointer text-white text-xs font-semibold"
       >
         <Icon name="plus" size={14} color="#fff" />
         Log Transaction

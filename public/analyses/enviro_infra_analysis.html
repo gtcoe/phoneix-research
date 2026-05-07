@@ -1,0 +1,452 @@
+<!DOCTYPE html>
+<html><head><meta charset="utf-8">
+<style>
+*{box-sizing:border-box;margin:0;padding:0}
+body{font-family:system-ui,sans-serif;padding:16px;background:#fff;color:#1a1a1a;font-size:14px}
+h1{font-size:20px;font-weight:500;margin-bottom:3px}
+.sub{font-size:12px;color:#666;margin-bottom:14px}
+.sg{display:grid;grid-template-columns:repeat(auto-fill,minmax(110px,1fr));gap:8px;margin-bottom:16px}
+.sc{background:#f5f5f3;border-radius:8px;padding:10px 12px}
+.sl{font-size:10px;color:#666;margin-bottom:2px}
+.sv{font-size:17px;font-weight:500}
+.tab-row{display:flex;gap:5px;flex-wrap:wrap;margin-bottom:14px}
+.tab{font-size:11.5px;padding:5px 13px;border-radius:20px;border:1px solid #ddd;background:#fff;cursor:pointer;white-space:nowrap}
+.tab.active{background:#1a1a1a;color:#fff;border-color:#1a1a1a}
+.panel{display:none}.panel.active{display:block}
+.sh{font-size:10.5px;font-weight:500;color:#666;text-transform:uppercase;letter-spacing:.06em;margin:16px 0 7px;padding-bottom:5px;border-bottom:1px solid #eee}
+table{width:100%;border-collapse:collapse;font-size:12px;margin:8px 0}
+th{font-size:10.5px;font-weight:500;color:#666;padding:5px 7px;text-align:left;border-bottom:1px solid #eee;white-space:nowrap}
+td{padding:8px 7px;border-bottom:1px solid #eee;color:#1a1a1a;vertical-align:top}
+tr:last-child td{border-bottom:none}
+tr:hover td{background:#fafaf9}
+.g{color:#0F6E56;font-weight:500}.r{color:#A32D2D;font-weight:500}.a{color:#854F0B;font-weight:500}.b{color:#185FA5;font-weight:500}
+.badge{display:inline-block;font-size:10px;padding:2px 7px;border-radius:10px;white-space:nowrap}
+.bg{background:#E1F5EE;color:#0F6E56}.bb{background:#E6F1FB;color:#185FA5}.ba{background:#FAEEDA;color:#854F0B}.br{background:#FCEBEB;color:#A32D2D}.bgray{background:#f1f0e8;color:#5F5E5A}.bwater{background:#E0F4FF;color:#01579B}.bteal{background:#E0F2F1;color:#004D40}
+.warn{padding:10px 13px;margin:8px 0;border-left:3px solid;font-size:12px;line-height:1.65}
+.warn.success{background:#E1F5EE;border-color:#1D9E75;color:#04342C}
+.warn.caution{background:#FAEEDA;border-color:#BA7517;color:#412402}
+.warn.danger{background:#FCEBEB;border-color:#A32D2D;color:#712B13}
+.warn.info{background:#E6F1FB;border-color:#185FA5;color:#042C53}
+.warn.water{background:#E0F4FF;border-color:#0288D1;color:#01579B}
+.warn.teal{background:#E0F2F1;border-color:#0097A7;color:#00363A}
+.warn strong{font-weight:500}
+.chart-wrap{position:relative;width:100%;height:240px;margin:8px 0}
+.kpi-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:10px;margin:10px 0}
+.kpi{background:#f5f5f3;border-radius:8px;padding:10px 12px;border-left:3px solid transparent}
+.kpi.green{border-left-color:#1D9E75}.kpi.amber{border-left-color:#EF9F27}.kpi.blue{border-left-color:#378ADD}.kpi.red{border-left-color:#A32D2D}.kpi.water{border-left-color:#0288D1}.kpi.teal{border-left-color:#0097A7}
+.kpi-l{font-size:10px;color:#666;margin-bottom:3px}
+.kpi-v{font-size:17px;font-weight:500}
+.kpi-s{font-size:10px;color:#888;margin-top:2px}
+.point{display:flex;gap:9px;align-items:flex-start;padding:9px 0;border-bottom:1px solid #eee;font-size:12px;line-height:1.6;color:#555}
+.point:last-child{border-bottom:none}
+.point strong{color:#1a1a1a;font-weight:500}
+.dot{width:19px;height:19px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:10px;font-weight:500;flex-shrink:0;margin-top:1px}
+.dg{background:#E1F5EE;color:#0F6E56}.dr{background:#FCEBEB;color:#A32D2D}.da{background:#FAEEDA;color:#854F0B}.db{background:#E6F1FB;color:#185FA5}.dw{background:#E0F4FF;color:#01579B}.dt{background:#E0F2F1;color:#004D40}
+.two-col{display:grid;grid-template-columns:1fr 1fr;gap:12px}
+.pane{border:1px solid #ddd;border-radius:10px;padding:13px}
+.pane-h{font-size:13px;font-weight:500;margin-bottom:9px}
+.scenario{border:1px solid #ddd;border-radius:10px;padding:13px;margin-bottom:9px}
+.sc-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:7px;margin:9px 0}
+.sc-cell{background:#f5f5f3;border-radius:6px;padding:7px 9px}
+.sc-l{font-size:10px;color:#666}
+.sc-v{font-size:12px;font-weight:500;margin-top:2px}
+.comp-h{display:grid;grid-template-columns:160px repeat(3,1fr);background:#f5f5f3;border-radius:8px 8px 0 0;overflow:hidden}
+.comp-row{display:grid;grid-template-columns:160px repeat(3,1fr);border-bottom:1px solid #eee}
+.comp-row:last-child{border-bottom:none}
+.cc{padding:8px 10px;font-size:11px;border-right:1px solid #eee}
+.cc:last-child{border-right:none}
+.cc-h{font-size:10px;font-weight:500;color:#444;padding:8px 10px;border-right:1px solid #ddd}
+.cc-h:last-child{border-right:none}
+.cc-label{color:#666;font-size:11px}
+.winner-cell{background:#E1F5EE}.mid-cell{background:#FAEEDA}.loser-cell{background:#fff5f5}
+.verdict-card{border-radius:10px;padding:13px 15px;margin-bottom:10px}
+.vc-h{font-size:13px;font-weight:500;margin-bottom:6px}
+.vc-b{font-size:12px;line-height:1.65;color:#444}
+.sector-card{border:1px solid #ddd;border-radius:10px;overflow:hidden;margin-bottom:10px}
+.sc-hdr{padding:10px 13px;display:flex;justify-content:space-between;align-items:center;background:#fafaf9}
+.sc-nm{font-size:13px;font-weight:500}
+.sc-tg{font-size:11px;color:#666;margin-top:2px}
+.sc-bd{padding:10px 13px;font-size:12px;line-height:1.65;color:#555;border-top:1px solid #eee}
+.sc-bd strong{color:#1a1a1a}
+.guid-card{border-radius:10px;padding:12px 14px;margin-bottom:8px;border-left:3px solid #0288D1;background:#E0F4FF}
+.guid-h{font-size:11.5px;font-weight:500;margin-bottom:4px;color:#01579B}
+.guid-b{font-size:11.5px;color:#333;line-height:1.6}
+.guid-s{font-size:10px;color:#888;margin-top:4px}
+.guid-card.beat{background:#E1F5EE;border-left-color:#1D9E75}.guid-card.beat .guid-h{color:#0F6E56}
+.guid-card.miss{background:#FCEBEB;border-left-color:#A32D2D}.guid-card.miss .guid-h{color:#A32D2D}
+.guid-card.watch{background:#FAEEDA;border-left-color:#BA7517}.guid-card.watch .guid-h{color:#854F0B}
+.order-burst{background:#E0F4FF;border:2px solid #0288D1;border-radius:10px;padding:13px;margin:10px 0}
+.ob-h{font-size:14px;font-weight:500;color:#01579B;margin-bottom:6px}
+.ob-b{font-size:12px;color:#1a1a1a;line-height:1.65}
+.flag-box{background:#FCEBEB;border:2px solid #A32D2D;border-radius:10px;padding:13px;margin:10px 0}
+.flag-h{font-size:13px;font-weight:500;color:#A32D2D;margin-bottom:6px}
+.flag-b{font-size:12px;color:#333;line-height:1.65}
+.scheme-grid{display:grid;grid-template-columns:1fr 1fr;gap:8px;margin:10px 0}
+.scheme-card{border:1px solid #ddd;border-radius:8px;padding:10px;font-size:11.5px}
+.scheme-nm{font-weight:500;font-size:12px;margin-bottom:3px;color:#01579B}
+.scheme-tag{font-size:10px;color:#666;margin-bottom:4px}
+.scheme-bd{font-size:11px;color:#555;line-height:1.5}
+.scheme-val{font-size:11.5px;font-weight:500;color:#0F6E56;margin-top:4px}
+</style>
+</head>
+<body>
+
+<h1>Enviro Infra Engineers Ltd — Deep Investment Analysis</h1>
+<div class="sub">NSE: EIEL · BSE: 544290 · Water + Wastewater EPC + O&M + BESS (new) · Founded 2009 · Chairman: Sanjay Jain · Delhi · 15 years EPC expertise · IPO Nov 2024 at ₹148 · Market cap ~₹3,627 Cr</div>
+
+<div class="sg">
+  <div class="sc"><div class="sl">Market cap</div><div class="sv" style="color:#0288D1">~₹3,627 Cr</div></div>
+  <div class="sc"><div class="sl">TTM revenue</div><div class="sv" style="color:#1D9E75">₹1,111 Cr</div></div>
+  <div class="sc"><div class="sl">TTM PAT</div><div class="sv" style="color:#1D9E75">₹208 Cr</div></div>
+  <div class="sc"><div class="sl">EBITDA margin</div><div class="sv" style="color:#1D9E75">22–28%</div></div>
+  <div class="sc"><div class="sl">Order book (Apr '26)</div><div class="sv" style="color:#1D9E75">₹4,600+ Cr</div></div>
+  <div class="sc"><div class="sl">BESS entry (NTPC)</div><div class="sv" style="color:#0097A7">₹1,070 Cr</div></div>
+  <div class="sc"><div class="sl">Trailing PE</div><div class="sv" style="color:#1D9E75">~17–18x</div></div>
+  <div class="sc"><div class="sl">Promoter holding</div><div class="sv" style="color:#1D9E75">70.2%</div></div>
+  <div class="sc"><div class="sl">D/E ratio</div><div class="sv" style="color:#1D9E75">0.26x</div></div>
+  <div class="sc"><div class="sl">⚠ WC days</div><div class="sv" style="color:#A32D2D">89.2 days ↑</div></div>
+  <div class="sc"><div class="sl">FY27 guidance</div><div class="sv" style="color:#185FA5">~₹2,000 Cr</div></div>
+  <div class="sc"><div class="sl">Garvit's P&L</div><div class="sv" style="color:#A32D2D">-2.5% loss</div></div>
+</div>
+
+<div class="tab-row">
+  <button class="tab active" onclick="show('portfolio',this)">Portfolio context</button>
+  <button class="tab" onclick="show('revenue',this)">Revenue history</button>
+  <button class="tab" onclick="show('sectorKPI',this)">Sector KPIs</button>
+  <button class="tab" onclick="show('business',this)">Business model</button>
+  <button class="tab" onclick="show('guidance',this)">Guidance</button>
+  <button class="tab" onclick="show('risks',this)">Risks</button>
+  <button class="tab" onclick="show('scenarios',this)">3x scenarios</button>
+  <button class="tab" onclick="show('compare',this)">Sector peers</button>
+  <button class="tab" onclick="show('verdict',this)">Verdict</button>
+</div>
+
+<!-- PORTFOLIO CONTEXT -->
+<div id="portfolio" class="panel active">
+  <div class="sh">Start here — Garvit's specific situation with EIEL</div>
+  <div class="warn water"><strong>Portfolio position:</strong> 400 shares | Invested: ₹84,372 (avg ~₹211) | Current: ₹82,232 (~₹205) | Loss: -₹2,140 (-2.5%). This is a nearly flat position. The stock was recommended in the portfolio review as "HOLD — VERIFY ORDER BOOK." Now, in one week (April 11–16, 2026), EIEL announced ₹2,240+ Cr in new orders — more than doubling the order book to ₹4,600+ Cr. This changes the calculus significantly.</div>
+
+  <div class="order-burst">
+    <div class="ob-h">🚨 Breaking development: ₹2,240 Cr in orders since March 2026 — order book crosses ₹4,600 Cr</div>
+    <div class="ob-b">In the past 4 weeks (late March to April 16, 2026), EIEL secured:<br>
+    • <strong>₹972.19 Cr</strong> — Two EPC sewage projects in Pune + Nashik, Maharashtra (Swachh Bharat Mission 2.0) — 120.5 MLD + 121.1 MLD STPs, 24-month execution<br>
+    • <strong>₹1,070 Cr</strong> — Four BESS projects from NTPC (930 MWh capacity), Uttar Pradesh, Assam, Karnataka, Telangana — <strong>company's maiden BESS entry</strong><br>
+    • <strong>₹411 Cr</strong> — Bihar Urban Infrastructure, Aurangabad sewerage + STP (AMRUT 2.0)<br>
+    • Multiple smaller orders totalling ~₹200+ Cr<br><br>
+    This is EIEL's largest single-month order inflow in history. The order book went from ~₹1,800–2,000 Cr to ₹4,600+ Cr in one month. At FY27 guided revenue of ₹2,000 Cr, this represents <strong>2.3x revenue coverage</strong>. This dramatically changes the near-term outlook.</div>
+  </div>
+
+  <div class="sh">Position context in Garvit's portfolio</div>
+  <table>
+    <tr><th>Aspect</th><th>Current status</th><th>Updated recommendation</th></tr>
+    <tr><td>Position size</td><td class="a">₹82,232 — fifth-largest India holding</td><td class="g">Appropriate for current conviction level — hold</td></tr>
+    <tr><td>P&L</td><td class="r">-₹2,140 (-2.5%) — small loss</td><td class="a">Ignore — business improved dramatically in last 4 weeks</td></tr>
+    <tr><td>Order book change</td><td class="g">₹1,800 Cr → ₹4,600 Cr in 1 month</td><td class="g">Major positive — thesis dramatically strengthened</td></tr>
+    <tr><td>BESS entry</td><td class="g">₹1,070 Cr from NTPC — new vertical</td><td class="g">Positive — high-quality government counterparty</td></tr>
+    <tr><td>Working capital concern</td><td class="r">89.2 days (up from 30.4) — key risk</td><td class="r">Must track — government client slow payments</td></tr>
+    <tr><td>Governance flag</td><td class="r">Auditor-flagged concern (per one source)</td><td class="r">Must verify with Q4 FY26 results — potential red flag</td></tr>
+    <tr><td>Action</td><td>Portfolio review said "HOLD"</td><td class="g"><strong>HOLD and consider adding ₹20–30K after Q4 clarity</strong></td></tr>
+  </table>
+</div>
+
+<!-- REVENUE -->
+<div id="revenue" class="panel">
+  <div class="sh">Revenue &amp; profit history — consistent growth with EBITDA margins that are exceptional for EPC</div>
+  <div class="chart-wrap"><canvas id="rc"></canvas></div>
+  <div style="display:flex;gap:14px;font-size:11.5px;color:#666;margin-bottom:10px">
+    <span><span style="display:inline-block;width:10px;height:10px;border-radius:2px;background:#0288D1;margin-right:4px"></span>Revenue ₹ Cr</span>
+    <span><span style="display:inline-block;width:10px;height:10px;border-radius:2px;background:#1D9E75;margin-right:4px"></span>PAT ₹ Cr</span>
+    <span><span style="display:inline-block;width:10px;height:10px;border-radius:2px;background:#80DEEA;margin-right:4px"></span>Projected</span>
+  </div>
+  <table>
+    <tr><th>Period</th><th>Revenue</th><th>Growth</th><th>EBITDA%</th><th>PAT</th><th>PAT%</th><th>Order book</th><th>Key event</th></tr>
+    <tr><td>FY22</td><td>~₹300 Cr</td><td>—</td><td>~20%</td><td>~₹50 Cr</td><td class="a">16.7%</td><td>~₹1,000 Cr</td><td>Water treatment EPC for state govts. Jal Jeevan Mission gaining scale. AMRUT 1.0 projects.</td></tr>
+    <tr><td>FY23</td><td>~₹450 Cr</td><td class="g">+50%</td><td>~22%</td><td>~₹85 Cr</td><td class="g">18.9%</td><td>~₹1,500 Cr</td><td>Strong project execution. Multiple states: UP, Haryana, Rajasthan. O&M revenue growing.</td></tr>
+    <tr><td>FY24</td><td>~₹650 Cr</td><td class="g">+44%</td><td>~23%</td><td>~₹120 Cr</td><td class="g">18.5%</td><td>~₹1,800 Cr</td><td>IPO Nov 2024 (₹148 issue price, ₹ 650 Cr raised). Revenue scaling. Pre-IPO momentum.</td></tr>
+    <tr><td>FY25</td><td>~₹850 Cr</td><td class="g">+31%</td><td>~24%</td><td>~₹165 Cr</td><td class="g">19.4%</td><td>~₹1,800–2,000 Cr</td><td>Post-IPO. Namami Gange, AMRUT 2.0, Swachh Bharat Mission accelerating. O&M ₹932 Cr portfolio.</td></tr>
+    <tr><td>Q1 FY26</td><td>~₹247 Cr</td><td class="g">~+30% YoY</td><td>~24%</td><td>~₹45 Cr</td><td class="g">18.2%</td><td>~₹1,800+ Cr</td><td>Steady execution. Cumulative order inflows ₹1,178 Cr FY26 YTD. FY26 order guidance ₹2,500 Cr maintained.</td></tr>
+    <tr><td>Q2 FY26</td><td>₹227 Cr</td><td class="g">+6.7% YoY</td><td>28.6%</td><td>₹50 Cr</td><td class="g">22%</td><td>~₹1,900 Cr</td><td>EBITDA margin at 28.6% — exceptionally high. PAT +36%. Revenue growth slowing (lumpiness). O&M high-margin contribution.</td></tr>
+    <tr><td>Q3 FY26</td><td>₹250 Cr</td><td class="a">+1% YoY</td><td>~22%</td><td>₹40 Cr</td><td class="a">16%</td><td>~₹2,000 Cr</td><td>Revenue nearly flat YoY — slow quarter. PAT +10%. Government payments delayed (working capital strain). Revenue recognition lumpiness in EPC.</td></tr>
+    <tr><td>9M FY26</td><td>~₹724 Cr</td><td class="a">~+8–10% YoY</td><td>~25%</td><td>~₹135 Cr</td><td class="g">18.6%</td><td>~₹2,000 Cr</td><td>9M revenue behind full-year guidance trajectory. Strong Q4 needed for guidance delivery.</td></tr>
+    <tr><td>FY26E</td><td>~₹1,000–1,100 Cr</td><td class="g">~18–29%</td><td>~24%</td><td>~₹185–210 Cr</td><td class="g">~19%</td><td>₹4,600+ Cr (Apr '26)</td><td>Q4 FY26 board meeting pending. ORDER BOOK EXPLOSION — ₹2,240 Cr new orders in March–April 2026 alone. FY27 visibility confirmed.</td></tr>
+    <tr><td>FY27E</td><td>~₹1,800–2,200 Cr</td><td class="g">+80–100%</td><td>~23–24%</td><td>~₹300–380 Cr</td><td class="g">~17–19%</td><td>₹5,000+ Cr</td><td>Management guided ~₹2,000 Cr. BESS projects (₹1,070 Cr, 15–24 months execution) begin contributing. Maharashtra + Bihar projects executing. O&M recurring income growing.</td></tr>
+  </table>
+  <div class="warn water"><strong>The critical revenue observation:</strong> EIEL's revenue growth (9M FY26: +8–10% YoY) appears slow — but this is misleading. Government EPC businesses are lumpy; revenue is recognised on milestone completion. Q4 is typically the strongest quarter for government EPC companies (year-end push by government clients). The real signal is the order book: ₹4,600+ Cr provides 2+ years of revenue visibility at ₹2,000 Cr/year. The business is building the pipeline; execution will follow.</div>
+</div>
+
+<!-- SECTOR KPIs -->
+<div id="sectorKPI" class="panel">
+  <div class="sh">Water/wastewater EPC sector KPIs — what sets EIEL apart</div>
+  <div class="warn water"><strong>Five key metrics for water infrastructure EPC companies:</strong> (1) EBITDA margin — EIEL's 22–28% is exceptional (most EPC peers: 10–15%), (2) O&M revenue as a % of total — recurring income quality, (3) Order book coverage — provides long-term visibility, (4) Government client quality — AAA-rated clients = certain payment, slow timing, (5) Working capital cycle — government project businesses have long cycles.</div>
+  <div class="kpi-grid">
+    <div class="kpi water"><div class="kpi-l">Order book (Apr '26)</div><div class="kpi-v">₹4,600+ Cr</div><div class="kpi-s">2.3x FY27 guided revenue — exceptional</div></div>
+    <div class="kpi green"><div class="kpi-l">EBITDA margin</div><div class="kpi-v">22–28.6%</div><div class="kpi-s">Best-in-class for EPC — water sector premium</div></div>
+    <div class="kpi teal"><div class="kpi-l">O&M portfolio</div><div class="kpi-v">₹932 Cr</div><div class="kpi-s">5–15 yr recurring contracts — annuity quality</div></div>
+    <div class="kpi green"><div class="kpi-l">Promoter holding</div><div class="kpi-v">70.2%</div><div class="kpi-s">Strong alignment — stable</div></div>
+    <div class="kpi red"><div class="kpi-l">Working capital days</div><div class="kpi-v" style="color:#A32D2D">89.2 days</div><div class="kpi-s">Up from 30.4 — government payment delays</div></div>
+    <div class="kpi amber"><div class="kpi-l">D/E ratio</div><div class="kpi-v">0.26x</div><div class="kpi-s">Very healthy — low leverage</div></div>
+  </div>
+
+  <div class="sh">Why EIEL's 22–28% EBITDA margin is extraordinary for EPC</div>
+  <div class="point"><div class="dot dw">+</div><div><strong>Specialised water/wastewater = limited competition + technology premium:</strong> Designing and operating sewage treatment plants (STPs) requires specific technical expertise in biological treatment, SCADA systems, effluent quality monitoring. This complexity filters out generic civil contractors. EIEL has 15 years of water-specific engineering knowledge that commodity EPC companies lack — hence the premium margin.</div></div>
+  <div class="point"><div class="dot dg">+</div><div><strong>O&M revenue (₹932 Cr portfolio) has 90%+ gross margin:</strong> Once an STP is built and handed over, EIEL's 5–15 year O&M contracts generate recurring income at near-zero variable cost (just staff and chemicals). This annuity layer creates a stable revenue base that makes the business significantly less lumpy than pure EPC competitors.</div></div>
+  <div class="point"><div class="dot da">!</div><div><strong>Government client concentration is a feature AND a risk:</strong> 100% revenue from government bodies (municipal corporations, state DISCOMs, AMRUT/Namami Gange authorities). Feature: Zero client credit risk — government will always pay eventually. Risk: Payment timing is slow and unpredictable — which is why working capital days rose from 30.4 to 89.2. This is structural, not unique to EIEL.</div></div>
+
+  <div class="sh">India water infrastructure — the multi-scheme tailwind</div>
+  <div class="scheme-grid">
+    <div class="scheme-card">
+      <div class="scheme-nm">Jal Jeevan Mission</div>
+      <div class="scheme-tag">Rural water supply · ₹3.6 lakh Cr total · FY24-FY25</div>
+      <div class="scheme-bd">Provides tap water connections to all rural households. 19 Cr+ connections targeted. Requires water treatment plants and supply networks. EIEL's core competency.</div>
+      <div class="scheme-val">~₹3.6 lakh Cr total allocation</div>
+    </div>
+    <div class="scheme-card">
+      <div class="scheme-nm">AMRUT 2.0</div>
+      <div class="scheme-tag">Urban water + sewage · ₹2.77 lakh Cr · All cities >1 lakh pop.</div>
+      <div class="scheme-bd">Atal Mission for Rejuvenation and Urban Transformation. Covers sewage treatment, water supply, urban drainage. Bihar Aurangabad ₹411 Cr = direct AMRUT 2.0 win.</div>
+      <div class="scheme-val">₹2.77 lakh Cr over 5 years</div>
+    </div>
+    <div class="scheme-card">
+      <div class="scheme-nm">Namami Gange</div>
+      <div class="scheme-tag">Ganga rejuvenation · ₹37,000 Cr Phase 1+2 · Ghats + sewage</div>
+      <div class="scheme-bd">National Mission for Clean Ganga — building STPs along Ganga basin states (UP, Bihar, West Bengal, Uttarakhand). EIEL has strong presence in these states.</div>
+      <div class="scheme-val">₹37,000+ Cr (Phase 1+2)</div>
+    </div>
+    <div class="scheme-card">
+      <div class="scheme-nm">Swachh Bharat Mission 2.0</div>
+      <div class="scheme-tag">Urban sanitation · ₹1.41 lakh Cr · Sewage + waste</div>
+      <div class="scheme-bd">Urban sanitation focus — building STPs, I&D networks. Maharashtra Pune (₹587 Cr) + Nashik (₹385 Cr) = direct SBM 2.0 wins for EIEL in April 2026.</div>
+      <div class="scheme-val">₹1.41 lakh Cr (FY22–FY26)</div>
+    </div>
+  </div>
+</div>
+
+<!-- BUSINESS MODEL -->
+<div id="business" class="panel">
+  <div class="sh">What EIEL builds and operates — the full service offering</div>
+  <div class="warn water"><strong>EIEL's business model has three distinct layers:</strong> (1) EPC construction — one-time revenue from building water/sewage infrastructure, (2) O&M operations — 5–15 year recurring contracts from operating the infrastructure built, and (3) BESS/Renewables — new, transformative vertical entered in FY26. The EPC builds the revenue base; O&M creates the recurring moat; BESS opens the next growth chapter.</div>
+
+  <div class="two-col" style="margin:10px 0">
+    <div class="pane">
+      <div class="pane-h">Core water business — EPC + O&M</div>
+      <div class="point"><div class="dot dw">1</div><div><strong>Sewage Treatment Plants (STPs):</strong> Biological treatment facilities processing sewage from cities/towns. EIEL uses SBR (Sequencing Batch Reactor), MBR, and MBBR technologies. Projects: 20 MLD to 300+ MLD capacity. Maharashtra Pune (120.5 MLD) + Nashik (121.1 MLD) = two of largest ever won.</div></div>
+      <div class="point"><div class="dot dw">2</div><div><strong>Sewerage Schemes (SS):</strong> Building underground pipeline networks, pumping stations, and rising mains that collect sewage from households and route it to STPs. Bihar Aurangabad = 196 km sewerage network + 8 pumping stations.</div></div>
+      <div class="point"><div class="dot dw">3</div><div><strong>Common Effluent Treatment Plants (CETPs):</strong> Shared industrial effluent treatment for clusters of SME industries (textile, pharma, leather). Gurugram GMDA Tertiary Treatment Plants (90 MLD + 75 MLD) = direct CETP-adjacent work.</div></div>
+      <div class="point"><div class="dot dt">+</div><div><strong>Water Treatment Plants (WTPs):</strong> Surface/groundwater treatment for potable water supply. Pumping stations, distribution networks. Jal Jeevan Mission primary beneficiary. EIEL operates WTPs for 5–15 years post-construction under O&M contracts.</div></div>
+      <div class="point"><div class="dot dg">$</div><div><strong>O&M portfolio ₹932 Cr:</strong> Recurring revenue from operating completed facilities. 15+ states. 5–15 year contract terms. Once a facility is built and EIEL's O&M team is embedded, switching cost is very high — client would need to retender, retrain, and transition to a new operator. This creates sticky, annuity-like revenue with 90%+ gross margins.</div></div>
+    </div>
+    <div class="pane">
+      <div class="pane-h">New verticals — BESS and Solar</div>
+      <div class="point"><div class="dot dt">🔋</div><div><strong>BESS (₹1,070 Cr, NTPC, 930 MWh) — April 2026 entry:</strong> Four BESS projects from NTPC across UP, Assam, Karnataka, Telangana. This is EIEL's maiden entry into battery energy storage. NTPC is India's largest power company — being chosen as a BESS EPC contractor by NTPC is a very strong quality validation. These projects are EPC (not BOO) — NTPC builds, NTPC owns, EIEL constructs. Lower risk for EIEL vs BOO model. 15–24 month execution timeline.</div></div>
+      <div class="point"><div class="dot dt">☀</div><div><strong>Solar IPP (79 MW, via EIE Renewables Pvt Ltd subsidiary):</strong> EIEL entered solar IPP/C&I in FY26 through a subsidiary. 79 MW in development under IPP and C&I models. If these projects are commissioned, they generate 25-year recurring power sale revenue — transforming EIEL from a pure EPC company to an asset owner. Early stage.</div></div>
+      <div class="point"><div class="dot da">!</div><div><strong>Why BESS entry is positive but needs monitoring:</strong> BESS EPC is different from water EPC — technology (lithium/BESS systems), supply chain (battery cells, inverters), and operational complexity are different. EIEL's 15-year water expertise doesn't automatically transfer. However, EPC project management skills are broadly transferable. NTPC choosing EIEL for BESS suggests confidence in their EPC execution quality.</div></div>
+    </div>
+  </div>
+
+  <div class="sh">Geographic presence — multi-state diversification</div>
+  <table>
+    <tr><th>State/Region</th><th>Key projects</th><th>Significance</th></tr>
+    <tr><td><strong>Maharashtra</strong></td><td>Pune ₹587 Cr + Nashik ₹385 Cr (Apr '26), GMDA TTPs</td><td class="g">Largest state wins ever. Maharashtra's urban centres = massive sewage treatment need</td></tr>
+    <tr><td><strong>Bihar</strong></td><td>Aurangabad ₹411 Cr (AMRUT 2.0), Namami Gange</td><td class="g">High-growth state with AMRUT 2.0 + Namami Gange (Ganga basin)</td></tr>
+    <tr><td><strong>Haryana (GMDA)</strong></td><td>Gurugram TTPs ₹165 Cr (90 MLD + 75 MLD)</td><td class="g">Premium urban market; first reclaimed water (tertiary treatment)</td></tr>
+    <tr><td><strong>UP/Assam/Karnataka/Telangana</strong></td><td>BESS projects from NTPC</td><td class="a">New geography via BESS — national diversification</td></tr>
+    <tr><td><strong>Other states</strong></td><td>Rajasthan, Delhi, Punjab, Gujarat, Tamil Nadu</td><td class="a">Broad national presence across 15+ states</td></tr>
+  </table>
+</div>
+
+<!-- GUIDANCE -->
+<div id="guidance" class="panel">
+  <div class="sh">Guidance analysis — management is conservative and credible</div>
+  <div class="warn success"><strong>EIEL management has a good guidance track record for a recently-listed IPO company.</strong> The FY26 order booking guidance of ₹2,500 Cr has been maintained despite early-year slower-than-expected pace — and then ₹2,240 Cr of orders came in just in March–April 2026, likely meeting or exceeding the full-year guidance. Revenue guidance of 35–40% growth for FY26 was ambitious given 9M tracking; Q4 FY26 results (pending) will confirm.</div>
+
+  <div class="guid-card beat">
+    <div class="guid-h">✓ FY26 order booking: Guided ₹2,500 Cr → ₹2,240 Cr in March–April alone</div>
+    <div class="guid-b">EIEL's FY26 order booking guidance was ₹2,500 Cr. For most of FY26, progress was slow (~₹1,178 Cr by October 2025). But in the final weeks (March–April 2026), the company secured ₹2,240+ Cr in new orders — effectively matching the full-year guidance in a single month. Full FY26 order inflow (including earlier ₹1,178 Cr YTD + March–April ₹2,240 Cr) likely exceeds ₹3,000+ Cr — significantly above guidance. Order book now ₹4,600+ Cr.</div>
+    <div class="guid-s">Credibility: 9/10 on order booking. Delivered on guidance and then some.</div>
+  </div>
+
+  <div class="guid-card watch">
+    <div class="guid-h">⚠ FY26 revenue guidance: 35–40% growth — tracking below on 9M, Q4 key</div>
+    <div class="guid-b">Revenue guidance was 35–40% growth for FY26 (vs FY25 ~₹850 Cr = target ₹1,150–1,190 Cr). 9M FY26 revenue is only ~₹724 Cr — tracking below pace. Q4 FY26 (January–March 2026) needs to be ~₹380–465 Cr to meet the guidance. Government EPC companies typically see 35–40% of annual revenue in Q4 (year-end project completion and billing push). Full-year FY26 likely ₹1,000–1,100 Cr — slightly below the 35–40% growth guidance but still 18–29% growth. Revenue recognition timing, not execution pace, is the issue.</div>
+    <div class="guid-s">Credibility: 6/10 on full revenue guidance. Good business; revenue recognition timing creates quarterly volatility.</div>
+  </div>
+
+  <div class="guid-card">
+    <div class="guid-h">FY27 guidance: ~₹2,000 Cr revenue — supported by ₹4,600+ Cr order book</div>
+    <div class="guid-b">EIEL expects to achieve ₹2,000 Cr revenue in FY27. This requires 80–100% growth over FY26E (~₹1,050 Cr). The order book of ₹4,600+ Cr provides ~2.3x coverage for this target — which is very strong. Key contributors: (1) Maharashtra ₹972 Cr (24-month execution = ~₹486 Cr/year), (2) BESS ₹1,070 Cr (15–24 months = ₹535–714 Cr/year), (3) Bihar ₹411 Cr, (4) Legacy projects, (5) O&M continuation. Management stated: "The company expects to achieve a revenue of around ₹2,000 crore in FY27."</div>
+    <div class="guid-s">Credibility: 8/10. Order book mathematically supports the ₹2,000 Cr target. Execution pace is the variable.</div>
+  </div>
+
+  <div class="guid-card watch">
+    <div class="guid-h">EBITDA margin guidance: 22–24% — has actually exceeded (28.6% in Q2 FY26)</div>
+    <div class="guid-b">Management guided 22–24% EBITDA margins. Q2 FY26 actually delivered 28.6% — significantly above the top end of guidance. This is driven by high-margin O&M contracts contributing a larger share of revenue in some quarters. The blended margin is likely to moderate toward 22–24% as large EPC projects (lower margin ~18–20%) dominate FY27 revenue mix. The O&M portfolio (₹932 Cr) provides the high-margin base; EPC projects dilute but grow the overall earnings.</div>
+    <div class="guid-s">Credibility: 9/10. Has consistently delivered at or above EBITDA guidance.</div>
+  </div>
+
+  <div class="sh">Guidance scorecard</div>
+  <table>
+    <tr><th>Item</th><th>Credibility</th><th>Base case</th><th>Key risk</th></tr>
+    <tr><td>FY26 order booking ₹2,500 Cr</td><td class="g">9/10 — ₹3,000+ Cr likely</td><td>₹3,200+ Cr</td><td>None — already achieved</td></tr>
+    <tr><td>FY26 revenue 35–40% growth</td><td class="a">6/10 — 9M tracking below</td><td>₹1,000–1,100 Cr (18–29%)</td><td>Q4 government billing timing</td></tr>
+    <tr><td>FY27 revenue ₹2,000 Cr</td><td class="g">8/10 — order book confirms</td><td>₹1,800–2,100 Cr</td><td>BESS execution pace; government payment timing</td></tr>
+    <tr><td>EBITDA margin 22–24%</td><td class="g">9/10 — often exceeded</td><td>22–25%</td><td>EPC project mix dilution; BESS lower margins initially</td></tr>
+    <tr><td>BESS execution (NTPC ₹1,070 Cr)</td><td class="a">6/10 — new segment</td><td>₹535 Cr revenue FY27</td><td>Technology learning curve; supply chain for batteries</td></tr>
+  </table>
+</div>
+
+<!-- RISKS -->
+<div id="risks" class="panel">
+  <div class="sh">Risks — what to watch carefully before adding more</div>
+
+  <div class="flag-box">
+    <div class="flag-h">🚨 Auditor-flagged concern — must verify with Q4 FY26 results</div>
+    <div class="flag-b">One market source mentioned an "auditor's fraud flag" related to EIEL. This reference requires immediate verification from the actual Q3 FY26 auditor's report and annual audit when released. The Q3 FY26 results (revenue ₹250 Cr, PAT ₹40 Cr) were otherwise clean — but any auditor qualification or concern note in the annual FY26 results would be a serious governance signal requiring re-evaluation. This is the single most important risk to investigate before adding more capital to EIEL. If the Q4 FY26 annual audit report (typically published May 2026) is clean — the concern is resolved. If it has notes — reduce position immediately.</div>
+  </div>
+
+  <div class="point"><div class="dot da">1</div><div><strong>Working capital days jumped from 30.4 to 89.2 — government client slow payments.</strong><br>This mirrors the Oriana Power concern (107 → 146 days). EIEL's clients are government bodies — municipal corporations, state water boards. They are creditworthy but bureaucratically slow-paying. As revenue scales from ₹850 Cr to ₹2,000 Cr, if working capital days stay at 89+, the absolute receivables could reach ₹490 Cr+ (vs current PAT of ~₹200 Cr). The IPO proceeds (₹444 Cr utilized) funded this working capital build. Future scale may require further capital raises unless the government payment cycle improves.</div></div>
+
+  <div class="point"><div class="dot da">2</div><div><strong>BESS is a new, untested segment — execution risk with NTPC.</strong><br>₹1,070 Cr from NTPC for BESS is a massive order — 100% of EIEL's FY26E revenue. But EIEL has zero prior BESS execution experience. The technology (lithium iron phosphate batteries, inverters, BMS systems), supply chain (mostly imported from China/Korea), and commissioning requirements are entirely different from water treatment. The risk: EIEL may face technical learning curve delays in delivering these BESS projects, damaging its credibility with NTPC — India's most important power infrastructure client.</div></div>
+
+  <div class="point"><div class="dot da">3</div><div><strong>Revenue lumpiness — Q3 FY26 barely grew (+1% YoY).</strong><br>Government EPC revenue recognition is milestone-based and inherently lumpy. Q3 FY26 grew only 1% — barely above zero. While Q4 is typically the strongest (year-end billing), a pattern of slow quarterly revenue growth makes financial planning difficult and can spook short-term investors. EIEL's business model creates this lumpiness structurally — investors must have 12–18 month patience, not quarterly returns expectations.</div></div>
+
+  <div class="point"><div class="dot dg">+</div><div><strong>Genuine strengths that make EIEL compelling:</strong><br>70.2% promoter holding — strong alignment. 22–28% EBITDA margins — sector-leading. ₹932 Cr O&M portfolio — annuity quality. D/E 0.26x — near debt-free. ₹4,600+ Cr order book — 2.3x FY27 revenue coverage. NTPC as BESS client — quality validation. Government schemes (AMRUT 2.0, JJM, Namami Gange, SBM 2.0) = 10+ year structural demand tailwind. India's urban water crisis is real — only 30–35% of urban sewage is treated; mandate will force rapid expansion. 15 years of operational expertise = switching cost for clients post-commission.</div></div>
+</div>
+
+<!-- SCENARIOS -->
+<div id="scenarios" class="panel">
+  <div class="sh">Three scenarios — from Garvit's avg cost ~₹211 (400 shares, ₹84,372 invested)</div>
+  <div class="warn water"><strong>The order book explosion (₹4,600+ Cr) dramatically changes the scenario analysis.</strong> At the time of the portfolio review, EIEL had a modest ₹1,800 Cr order book. Now with ₹4,600+ Cr — including ₹1,070 Cr from NTPC BESS — the revenue visibility for FY27 (₹2,000 Cr guided) is confirmed. The scenarios below reflect this updated picture.</div>
+
+  <div class="scenario" style="border-left:3px solid #0288D1">
+    <div style="font-size:13px;font-weight:500;color:#01579B;margin-bottom:8px">Bull case — 3–4x in 2–3 years: BESS executes + FY27 ₹2,000 Cr + PE re-rating</div>
+    <div class="sc-grid">
+      <div class="sc-cell"><div class="sc-l">FY27 revenue</div><div class="sc-v">₹1,900–2,100 Cr</div></div>
+      <div class="sc-cell"><div class="sc-l">FY27 EBITDA%</div><div class="sc-v">22–24%</div></div>
+      <div class="sc-cell"><div class="sc-l">FY27 PAT</div><div class="sc-v">₹290–380 Cr</div></div>
+      <div class="sc-cell"><div class="sc-l">Forward PE</div><div class="sc-v">22–28x</div></div>
+      <div class="sc-cell"><div class="sc-l">FY27 mcap</div><div class="sc-v">₹6,380–10,640 Cr</div></div>
+      <div class="sc-cell"><div class="sc-l">Return from ₹3,627 Cr</div><div class="sc-v">1.8–2.9x</div></div>
+    </div>
+    <div style="font-size:11.5px;color:#333;margin-top:8px"><strong>What must happen:</strong> BESS ₹1,070 Cr executes on schedule (NTPC counterparty quality reduces risk). Maharashtra + Bihar projects ramp in H1 FY27. O&M revenue continues steady. Working capital days stabilise below 80. Clean FY26 audit report. At 25x PE on ₹340 Cr PAT = ₹8,500 Cr = 2.3x from current ₹3,627 Cr. <strong>3x requires FY28 continuation at ₹2,800+ Cr revenue + 25x PE on ₹380+ Cr PAT.</strong></div>
+  </div>
+
+  <div class="scenario" style="border-left:3px solid #378ADD">
+    <div style="font-size:13px;font-weight:500;color:#185FA5;margin-bottom:8px">Base case — 1.5–2x in 2 years: ₹1,800 Cr FY27, BESS partial, steady water business</div>
+    <div class="sc-grid">
+      <div class="sc-cell"><div class="sc-l">FY27 revenue</div><div class="sc-v">₹1,600–1,900 Cr</div></div>
+      <div class="sc-cell"><div class="sc-l">FY27 PAT</div><div class="sc-v">₹240–300 Cr</div></div>
+      <div class="sc-cell"><div class="sc-l">Forward PE</div><div class="sc-v">18–22x</div></div>
+      <div class="sc-cell"><div class="sc-l">FY27 mcap</div><div class="sc-v">₹4,320–6,600 Cr</div></div>
+      <div class="sc-cell"><div class="sc-l">Return</div><div class="sc-v">1.2–1.8x</div></div>
+      <div class="sc-cell"><div class="sc-l">Timeline</div><div class="sc-v">FY27</div></div>
+    </div>
+    <div style="font-size:11.5px;color:#333;margin-top:8px">Core water business grows 80%+ driven by massive order wins. BESS executes partially (6 months delay). PAT ₹260 Cr at 20x PE = ₹5,200 Cr = 1.43x from current. For Garvit: ₹84,372 → ₹1,20,690 = +43% from cost. Base case is meaningful but below 3x.</div>
+  </div>
+
+  <div class="scenario" style="border-left:3px solid #A32D2D">
+    <div style="font-size:13px;font-weight:500;color:#A32D2D;margin-bottom:8px">Bear case — -25 to -40%: Auditor concern escalates + BESS delays + working capital stress</div>
+    <div class="sc-grid">
+      <div class="sc-cell"><div class="sc-l">Trigger</div><div class="sc-v">Auditor fraud flag escalates</div></div>
+      <div class="sc-cell"><div class="sc-l">Trigger</div><div class="sc-v">WC days hit 120+</div></div>
+      <div class="sc-cell"><div class="sc-l">Trigger</div><div class="sc-v">BESS delays — NTPC penalty</div></div>
+      <div class="sc-cell"><div class="sc-l">FY27 PAT impact</div><div class="sc-v">₹120–160 Cr (write-offs)</div></div>
+      <div class="sc-cell"><div class="sc-l">PE at 12–14x</div><div class="sc-v">₹1,440–2,240 Cr</div></div>
+      <div class="sc-cell"><div class="sc-l">Stock impact</div><div class="sc-v">₹125–195/share (-8 to -41%)</div></div>
+    </div>
+    <div style="font-size:11.5px;color:#333;margin-top:8px"><strong>Bear probability: 20–25%.</strong> The auditor flag is the primary unknown. If it's a minor audit procedure note — negligible impact. If it's a material fraud allegation — catastrophic. Garvit's cost ₹211 vs bear case ₹125–195 = -8% to -41%. This is why the auditor issue MUST be investigated before adding more capital.</div>
+  </div>
+
+  <table style="margin-top:10px">
+    <tr><th>Target (cost ₹211)</th><th>Stock price</th><th>Mcap needed</th><th>Timeline</th><th>Probability</th></tr>
+    <tr><td>3x (₹633)</td><td>₹633</td><td>₹10,890 Cr</td><td>FY28</td><td class="a">20–25%</td></tr>
+    <tr><td>2x (₹422)</td><td>₹422</td><td>₹7,260 Cr</td><td>FY27</td><td class="a">30–35%</td></tr>
+    <tr><td>1.5x (₹317)</td><td>₹317</td><td>₹5,450 Cr</td><td>FY27</td><td class="g">40–45%</td></tr>
+    <tr><td>Bear (-30%: ₹148)</td><td>₹148</td><td>₹2,544 Cr</td><td>—</td><td class="a">20–25%</td></tr>
+  </table>
+</div>
+
+<!-- PEERS -->
+<div id="compare" class="panel">
+  <div class="sh">Water/wastewater infrastructure EPC — India sector peers</div>
+  <div style="border:1px solid #ddd;border-radius:10px;overflow:hidden;font-size:11px">
+    <div class="comp-h">
+      <div class="cc-h" style="background:#f5f5f3">Metric</div>
+      <div class="cc-h" style="background:#E0F4FF;color:#01579B">Enviro Infra ← Your stock</div>
+      <div class="cc-h" style="background:#E6F1FB;color:#185FA5">VA Tech Wabag</div>
+      <div class="cc-h" style="background:#f5f5f3">Ion Exchange India</div>
+    </div>
+    <div class="comp-row"><div class="cc cc-label">Market cap</div><div class="cc winner-cell">₹3,627 Cr</div><div class="cc loser-cell">₹5,000+ Cr</div><div class="cc loser-cell">₹5,500+ Cr</div></div>
+    <div class="comp-row"><div class="cc cc-label">Business focus</div><div class="cc winner-cell">Wastewater EPC + O&M + BESS (gov-only)</div><div class="cc winner-cell">Water EPC + O&M (global, diverse)</div><div class="cc mid-cell">Water treatment + resins + chemicals</div></div>
+    <div class="comp-row"><div class="cc cc-label">Revenue (FY26E)</div><div class="cc mid-cell">~₹1,050 Cr (+24% growth)</div><div class="cc winner-cell">~₹2,000+ Cr</div><div class="cc winner-cell">~₹2,200 Cr</div></div>
+    <div class="comp-row"><div class="cc cc-label">EBITDA margin</div><div class="cc winner-cell">22–28% (best in class)</div><div class="cc mid-cell">~12–15%</div><div class="cc mid-cell">~14–16%</div></div>
+    <div class="comp-row"><div class="cc cc-label">Order book</div><div class="cc winner-cell">₹4,600+ Cr (4.4x revenue)</div><div class="cc winner-cell">₹5,000+ Cr (2.5x revenue)</div><div class="cc mid-cell">~₹3,000 Cr</div></div>
+    <div class="comp-row"><div class="cc cc-label">Government client only</div><div class="cc winner-cell">100% govt (AAA credit quality)</div><div class="cc mid-cell">Mixed govt + industrial</div><div class="cc mid-cell">Mixed govt + industrial</div></div>
+    <div class="comp-row"><div class="cc cc-label">BESS entry</div><div class="cc winner-cell">₹1,070 Cr NTPC (2026)</div><div class="cc loser-cell">None</div><div class="cc loser-cell">None</div></div>
+    <div class="comp-row"><div class="cc cc-label">PE</div><div class="cc winner-cell">~17–18x (cheapest)</div><div class="cc mid-cell">~22–28x</div><div class="cc mid-cell">~25–30x</div></div>
+    <div class="comp-row"><div class="cc cc-label">Promoter holding</div><div class="cc winner-cell">70.2% (stable)</div><div class="cc mid-cell">~28% (institutional)</div><div class="cc mid-cell">~30%</div></div>
+    <div class="comp-row"><div class="cc cc-label">Governance concern</div><div class="cc loser-cell">Auditor flag (unverified)</div><div class="cc winner-cell">Clean</div><div class="cc winner-cell">Clean</div></div>
+    <div class="comp-row"><div class="cc cc-label">3x probability (3yr)</div><div class="cc mid-cell">20–25% (pending auditor clarity)</div><td class="cc a">15–18% (too large)</td><td class="cc a">15% (slow growth)</td></div>
+    <div class="comp-row"><div class="cc cc-label">Best for Garvit</div><div class="cc">Compelling if auditor concern is resolved — cheapest water EPC stock</div><div class="cc">Too large for 3x; quality exposure to same sector</div><div class="cc">Mixed model — less pure-play water</div></div>
+  </div>
+
+  <div class="sector-card" style="margin-top:12px">
+    <div class="sc-hdr"><div><div class="sc-nm">VA Tech Wabag — India's largest water company, global player</div><div class="sc-tg">₹5,000+ Cr mcap · India + Middle East + Africa · ₹2,000+ Cr revenue · 12–15% EBITDA · Listed on NSE</div></div><span class="badge bb">Premium player — different scale</span></div>
+    <div class="sc-bd">VA Tech Wabag is India's most established water treatment EPC company — global operations in 20+ countries, strong O&M portfolio, proven technology. EBITDA at 12–15% vs EIEL's 22–28% — lower margin because Wabag serves industrial clients (with tighter margins) alongside government. At ₹5,000+ Cr mcap, 3x needs ₹15,000 Cr — unlikely in 3 years. <strong>For the same government water infrastructure exposure, EIEL at ₹3,627 Cr with 28%+ EBITDA margins is the better 3x bet — IF the auditor concern is resolved.</strong></div>
+  </div>
+
+  <div class="warn water" style="margin-top:10px"><strong>The most important sector insight:</strong> EIEL commands higher EBITDA margins (22–28%) than VA Tech Wabag (12–15%) and Ion Exchange (14–16%) because EIEL focuses exclusively on government water infrastructure — where billing on milestone completion allows higher ASP (no competitive bidding on margin compression). The government "pure play" is EIEL's primary margin moat. VA Tech Wabag serves industrial clients (steel plants, power plants) where procurement is price-sensitive — squeezing margins. EIEL avoids this by focusing on government where technical qualification, not price, wins projects.</div>
+</div>
+
+<!-- VERDICT -->
+<div id="verdict" class="panel">
+  <div class="sh">The definitive verdict for Garvit's portfolio</div>
+
+  <div class="verdict-card" style="background:#E0F4FF;border:1px solid #4FC3F7">
+    <div class="vc-h" style="color:#01579B">Enviro Infra Engineers — Verdict: Hold 400 shares. The order book explosion (₹4,600+ Cr) dramatically changes the forward outlook. The auditor flag MUST be verified with Q4 FY26 annual results before adding more. This is your most improved situation in the portfolio over the past month.</div>
+    <div class="vc-b">Here is the complete, updated picture for EIEL after the massive April 2026 order announcements:<br><br><strong>What changed dramatically in the last 30 days:</strong><br>• Order book: ₹1,800 Cr → ₹4,600+ Cr (+156% in one month)<br>• BESS entry: ₹1,070 Cr from NTPC — India's highest-quality power sector client<br>• Maharashtra wins: ₹972 Cr (Pune + Nashik) — two of EIEL's largest ever single-project wins<br>• Bihar: ₹411 Cr (AMRUT 2.0)<br>• FY27 revenue visibility: ₹2,000 Cr target now backed by solid order book<br><br><strong>What remains concerning:</strong><br>• Working capital days: 30.4 → 89.2 (government client slow payments — structural concern)<br>• Auditor flag: One source mentioned an auditor's governance concern — this MUST be verified from actual Q3/Q4 FY26 results filings. If confirmed material, it changes the thesis significantly.<br>• BESS execution: New segment with no prior experience — NTPC relationship at risk if delays occur<br>• Revenue lumpiness: Q3 FY26 grew only +1% YoY — business is inherently lumpy<br><br><strong>Portfolio-specific recommendation:</strong><br>Garvit's position: 400 shares at ₹211 avg cost = ₹84,372 invested. Currently -2.5% (₹82,232). This is a small loss, not an exit signal. The business has dramatically improved over the past 4 weeks — the order book explosion validates the water infrastructure thesis and makes the -2.5% loss entirely noise.<br><br>Hold fully. Watch the Q4 FY26 annual results (May–June 2026): if the auditor's annual report is clean (no qualification, no adverse opinion), the governance concern resolves and EIEL becomes a strong buy to increase position to ₹1,00,000–1,20,000 (add ₹20–40K). If the audit has qualifications — exit immediately regardless of the business quality.<br><br><strong>Comparison with similar-sized holdings:</strong> At ₹82,232, EIEL is appropriately sized as a "mid-conviction" water infrastructure bet. It's smaller than Bondada (₹1.47L) and TARIL (₹63K) — both of which are higher-conviction sector picks. EIEL deserves more than the current -2.5% loss suggests, but not more capital until the auditor concern is resolved.</div>
+  </div>
+
+  <div class="sh">Allocation recommendation</div>
+  <table>
+    <tr><th>Action</th><th>Shares</th><th>Amount</th><th>Rationale</th></tr>
+    <tr><td><span class="badge bwater">HOLD all 400 shares — do not exit</span></td><td>Keep 400</td><td>₹82,232</td><td>Order book explosion validates the thesis. -2.5% loss is noise vs the business improvement. Hold.</td></tr>
+    <tr><td><span class="badge bb">ADD ₹20–30K if Q4 audit is clean</span></td><td>+100 shares</td><td>+₹20,500</td><td>Clean FY26 annual audit = auditor concern resolved → increase to ₹1,00,000 total. May 2026.</td></tr>
+    <tr><td><span class="badge br">EXIT if auditor qualification found</span></td><td>Sell 400</td><td>Exit all</td><td>Material auditor qualification = governance breakdown → exit regardless of business quality</td></tr>
+  </table>
+
+  <div class="sh">Six triggers to watch — Q4 FY26 results are the most critical</div>
+  <table>
+    <tr><th>#</th><th>Trigger</th><th>Status</th><th>Impact</th></tr>
+    <tr><td>1</td><td>Q4 FY26 annual audit report</td><td class="r">Pending — MOST IMPORTANT</td><td>🔥 Clean audit = buy more. Qualification = exit. Binary decision point. Due May–June 2026.</td></tr>
+    <tr><td>2</td><td>FY26 full year revenue (vs ₹2,500 Cr guidance)</td><td class="a">Pending — Q4 board results</td><td>🟢 ₹1,000+ Cr FY26 = 18%+ growth. ₹1,100+ Cr = 29% growth. Confirms execution quality.</td></tr>
+    <tr><td>3</td><td>BESS NTPC projects execution start</td><td class="a">Orders secured Apr '26; 15–24 month timeline</td><td>🟢 Any construction commencement update = BESS execution credibility established</td></tr>
+    <tr><td>4</td><td>Working capital days (next quarterly filing)</td><td class="r">89.2 days — must not go above 100</td><td>🔴 Above 100 = cash flow stress requires equity raise → dilution. 🟢 Below 70 = improvement signal.</td></tr>
+    <tr><td>5</td><td>Maharashtra project execution progress (Pune + Nashik, 24 months)</td><td class="g">Letters of Empanelment received Apr 10</td><td>🟢 First quarterly revenue recognition from ₹972 Cr Maharashtra = FY27 revenue trajectory confirmed</td></tr>
+    <tr><td>6</td><td>O&M portfolio growth</td><td class="g">₹932 Cr currently — growing with each new project</td><td>🟢 Every new project completed = O&M revenue added for 5–15 years. Watch O&M portfolio size quarterly.</td></tr>
+  </table>
+
+  <div class="warn water" style="margin-top:12px"><strong>One-line verdict:</strong> Enviro Infra Engineers is India's most margin-efficient government water/wastewater EPC company (22–28% EBITDA vs peers at 12–16%), with a ₹4,600+ Cr order book (4.4x revenue), a transformative BESS entry through NTPC (₹1,070 Cr), government scheme tailwinds spanning three decades (AMRUT 2.0, Namami Gange, JJM, SBM 2.0), and a 70.2% aligned promoter. The -2.5% loss in Garvit's portfolio is pure noise — the business improved dramatically in the past month. Hold all 400 shares. Verify the auditor concern with Q4 FY26 results (May 2026) — that's the single gate for adding more capital or exiting.</div>
+</div>
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/4.4.1/chart.umd.js"></script>
+<script>
+function show(id,btn){
+  document.querySelectorAll('.tab').forEach(t=>t.classList.remove('active'));
+  document.querySelectorAll('.panel').forEach(p=>p.classList.remove('active'));
+  btn.classList.add('active');
+  document.getElementById(id).classList.add('active');
+}
+new Chart(document.getElementById('rc').getContext('2d'),{
+  type:'bar',
+  data:{
+    labels:['FY22','FY23','FY24','FY25','Q1FY26','Q2FY26','Q3FY26','FY26E','FY27E','FY28E'],
+    datasets:[
+      {label:'Revenue ₹ Cr',data:[300,450,650,850,247,227,250,1050,2000,2800],backgroundColor:['#0288D1','#0288D1','#0288D1','#0288D1','#1D9E75','#1D9E75','#EF9F27','#80DEEA','#80DEEA','#80DEEA'],borderRadius:4,yAxisID:'y'},
+      {label:'PAT ₹ Cr',data:[50,85,120,165,45,50,40,200,340,480],type:'line',borderColor:'#1D9E75',backgroundColor:'transparent',pointBackgroundColor:'#1D9E75',tension:0.3,yAxisID:'y2'}
+    ]
+  },
+  options:{responsive:true,maintainAspectRatio:false,plugins:{legend:{display:false}},scales:{y:{ticks:{font:{size:10}}},y2:{position:'right',ticks:{font:{size:10}},grid:{drawOnChartArea:false}},x:{ticks:{font:{size:10}}}}}
+});
+</script>
+</body>
+</html>

@@ -6,14 +6,7 @@ import { NAV_ITEMS } from "@/constants/nav";
 // ─── PhoenixLogo ──────────────────────────────────────────────────────────────
 export function PhoenixLogo({ small = false }: { small?: boolean }) {
   return (
-    <div
-      style={{
-        display: "flex",
-        alignItems: "center",
-        gap: small ? 0 : 10,
-        justifyContent: small ? "center" : "flex-start",
-      }}
-    >
+    <div className={`flex items-center ${small ? "gap-0 justify-center" : "gap-[10px] justify-start"}`}>
       <svg width="28" height="28" viewBox="0 0 28 28" fill="none">
         <path
           d="M14 2 L26 22 L14 18 L2 22 Z"
@@ -28,16 +21,8 @@ export function PhoenixLogo({ small = false }: { small?: boolean }) {
         <circle cx="14" cy="14" r="3" fill="var(--accent)" />
       </svg>
       {!small && (
-        <span
-          style={{
-            fontSize: 16,
-            fontWeight: 700,
-            color: "var(--text)",
-            letterSpacing: ".01em",
-            fontFamily: "var(--font-mono)",
-          }}
-        >
-          Phoenix<span style={{ color: "var(--accent)" }}>.</span>
+        <span className="text-base font-bold text-[var(--text)] tracking-[.01em] font-[var(--font-mono)]">
+          Phoenix<span className="text-[var(--accent)]">.</span>
         </span>
       )}
     </div>
@@ -59,83 +44,42 @@ export function Sidebar({
   const W = collapsed ? 60 : 220;
   return (
     <aside
-      style={{
-        width: W,
-        minWidth: W,
-        maxWidth: W,
-        height: "100vh",
-        background: "var(--surface)",
-        borderRight: "1px solid var(--border)",
-        display: "flex",
-        flexDirection: "column",
-        transition: "width .2s ease",
-        overflow: "hidden",
-        flexShrink: 0,
-      }}
+      style={{ width: W, minWidth: W, maxWidth: W }}
+      className="h-screen bg-[var(--surface)] border-r border-[var(--border)] flex flex-col [transition:width_.2s_ease] overflow-hidden shrink-0"
     >
       {/* Logo area */}
       <div
-        style={{
-          padding: collapsed ? "18px 0" : "18px 16px",
-          display: "flex",
-          alignItems: "center",
-          justifyContent: collapsed ? "center" : "space-between",
-          borderBottom: "1px solid var(--border)",
-          minHeight: 60,
-        }}
+        className={`py-[18px] flex items-center border-b border-[var(--border)] min-h-[60px] ${
+          collapsed ? "px-0 justify-center" : "px-4 justify-between"
+        }`}
       >
         {!collapsed && <PhoenixLogo />}
         <button
+          type="button"
           onClick={onToggle}
-          style={{
-            background: "none",
-            border: "none",
-            cursor: "pointer",
-            color: "var(--muted)",
-            padding: 4,
-            display: "flex",
-            alignItems: "center",
-            borderRadius: 6,
-          }}
+          className="bg-transparent border-0 cursor-pointer text-[var(--muted)] p-1 flex items-center rounded-md"
         >
           <Icon name="menu" size={18} />
         </button>
       </div>
 
       {/* Nav items */}
-      <nav
-        style={{
-          flex: 1,
-          padding: "10px 0",
-          overflowY: "auto",
-          overflowX: "hidden",
-        }}
-      >
+      <nav className="flex-1 py-[10px] overflow-y-auto overflow-x-hidden">
         {NAV_ITEMS.map((item) => {
           const isActive = page === item.id;
           return (
             <button
+              type="button"
               key={item.id}
               onClick={() => onNav(item.id)}
               title={collapsed ? item.label : undefined}
-              style={{
-                width: "100%",
-                padding: collapsed ? "10px 0" : "10px 16px",
-                display: "flex",
-                alignItems: "center",
-                gap: 12,
-                background: isActive ? "var(--accent-dim)" : "transparent",
-                border: "none",
-                cursor: "pointer",
-                color: isActive ? "var(--accent)" : "var(--muted)",
-                fontWeight: isActive ? 600 : 400,
-                fontSize: 13,
-                transition: "all .15s",
-                borderLeft: isActive
-                  ? "2px solid var(--accent)"
-                  : "2px solid transparent",
-                justifyContent: collapsed ? "center" : "flex-start",
-              }}
+              className={`w-full flex items-center gap-3 border-0 cursor-pointer text-sm transition-all duration-150 border-l-2 ${
+                collapsed ? "py-[10px] px-0 justify-center" : "py-[10px] px-4 justify-start"
+              } ${
+                isActive
+                  ? "bg-[var(--accent-dim)] text-[var(--accent)] font-semibold border-l-[var(--accent)]"
+                  : "bg-transparent text-[var(--muted)] font-normal border-l-transparent"
+              }`}
               onMouseEnter={(e) => {
                 if (!isActive)
                   (e.currentTarget as HTMLButtonElement).style.color =
@@ -153,7 +97,7 @@ export function Sidebar({
                 color={isActive ? "var(--accent)" : "currentColor"}
               />
               {!collapsed && (
-                <span style={{ whiteSpace: "nowrap" }}>{item.label}</span>
+                <span className="whitespace-nowrap">{item.label}</span>
               )}
             </button>
           );

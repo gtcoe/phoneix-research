@@ -23,15 +23,12 @@ export function Badge({
   const fs = size === "xs" ? "10px" : "11px";
   return (
     <span
+      className="rounded-full font-bold tracking-[.04em] whitespace-nowrap"
       style={{
         background: c.bg,
         color: c.color,
         padding: px,
-        borderRadius: 99,
         fontSize: fs,
-        fontWeight: 700,
-        letterSpacing: ".04em",
-        whiteSpace: "nowrap",
       }}
     >
       {c.label}

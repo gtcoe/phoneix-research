@@ -27,38 +27,20 @@ export function ToastContainer() {
   if (toasts.length === 0) return null;
 
   return (
-    <div
-      style={{
-        position: "fixed",
-        bottom: 28,
-        right: 28,
-        display: "flex",
-        flexDirection: "column",
-        gap: 8,
-        zIndex: 9999,
-        pointerEvents: "none",
-      }}
-    >
+    <div className="fixed bottom-7 right-7 flex flex-col gap-2 z-[9999] pointer-events-none">
       {toasts.map((t) => {
         const s = TYPE_STYLES[t.type];
         return (
           <div
             key={t.id}
+            className="flex items-center gap-[10px] text-white py-[10px] px-[18px] rounded-[10px] font-semibold text-sm"
             style={{
-              display: "flex",
-              alignItems: "center",
-              gap: 10,
               background: s.bg,
-              color: "#fff",
-              padding: "10px 18px",
-              borderRadius: 10,
-              fontWeight: 600,
-              fontSize: 13,
               boxShadow: "0 4px 16px rgba(0,0,0,0.25)",
               animation: "toast-in 0.2s ease",
             }}
           >
-            <span style={{ fontSize: 15 }}>{s.icon}</span>
+            <span className="text-base">{s.icon}</span>
             {t.message}
           </div>
         );

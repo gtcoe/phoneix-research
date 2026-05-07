@@ -1,0 +1,435 @@
+<!DOCTYPE html>
+<html><head><meta charset="utf-8">
+<style>
+*{box-sizing:border-box;margin:0;padding:0}
+body{font-family:system-ui,sans-serif;padding:16px;background:#fff;color:#1a1a1a;font-size:14px}
+h1{font-size:20px;font-weight:500;margin-bottom:3px}
+.sub{font-size:12px;color:#666;margin-bottom:14px}
+.sg{display:grid;grid-template-columns:repeat(auto-fill,minmax(110px,1fr));gap:8px;margin-bottom:16px}
+.sc{background:#f5f5f3;border-radius:8px;padding:10px 12px}
+.sl{font-size:10px;color:#666;margin-bottom:2px}
+.sv{font-size:17px;font-weight:500}
+.tab-row{display:flex;gap:5px;flex-wrap:wrap;margin-bottom:14px}
+.tab{font-size:11.5px;padding:5px 13px;border-radius:20px;border:1px solid #ddd;background:#fff;cursor:pointer;white-space:nowrap}
+.tab.active{background:#1a1a1a;color:#fff;border-color:#1a1a1a}
+.panel{display:none}.panel.active{display:block}
+.sh{font-size:10.5px;font-weight:500;color:#666;text-transform:uppercase;letter-spacing:.06em;margin:16px 0 7px;padding-bottom:5px;border-bottom:1px solid #eee}
+table{width:100%;border-collapse:collapse;font-size:12px;margin:8px 0}
+th{font-size:10.5px;font-weight:500;color:#666;padding:5px 7px;text-align:left;border-bottom:1px solid #eee;white-space:nowrap}
+td{padding:8px 7px;border-bottom:1px solid #eee;color:#1a1a1a;vertical-align:top}
+tr:last-child td{border-bottom:none}
+tr:hover td{background:#fafaf9}
+.g{color:#0F6E56;font-weight:500}.r{color:#A32D2D;font-weight:500}.a{color:#854F0B;font-weight:500}.b{color:#185FA5;font-weight:500}
+.badge{display:inline-block;font-size:10px;padding:2px 7px;border-radius:10px;white-space:nowrap}
+.bg{background:#E1F5EE;color:#0F6E56}.bb{background:#E6F1FB;color:#185FA5}.ba{background:#FAEEDA;color:#854F0B}.br{background:#FCEBEB;color:#A32D2D}.bgray{background:#f1f0e8;color:#5F5E5A}.bchem{background:#E8EAF6;color:#283593}.bcarb{background:#FAFAFA;color:#212121}
+.warn{padding:10px 13px;margin:8px 0;border-left:3px solid;font-size:12px;line-height:1.65}
+.warn.success{background:#E1F5EE;border-color:#1D9E75;color:#04342C}
+.warn.caution{background:#FAEEDA;border-color:#BA7517;color:#412402}
+.warn.danger{background:#FCEBEB;border-color:#A32D2D;color:#712B13}
+.warn.info{background:#E6F1FB;border-color:#185FA5;color:#042C53}
+.warn.chem{background:#E8EAF6;border-color:#3949AB;color:#1A237E}
+.warn.dark{background:#F5F5F5;border-color:#424242;color:#212121}
+.warn strong{font-weight:500}
+.chart-wrap{position:relative;width:100%;height:240px;margin:8px 0}
+.kpi-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:10px;margin:10px 0}
+.kpi{background:#f5f5f3;border-radius:8px;padding:10px 12px;border-left:3px solid transparent}
+.kpi.green{border-left-color:#1D9E75}.kpi.amber{border-left-color:#EF9F27}.kpi.blue{border-left-color:#378ADD}.kpi.red{border-left-color:#A32D2D}.kpi.chem{border-left-color:#3949AB}.kpi.dark{border-left-color:#424242}
+.kpi-l{font-size:10px;color:#666;margin-bottom:3px}
+.kpi-v{font-size:17px;font-weight:500}
+.kpi-s{font-size:10px;color:#888;margin-top:2px}
+.point{display:flex;gap:9px;align-items:flex-start;padding:9px 0;border-bottom:1px solid #eee;font-size:12px;line-height:1.6;color:#555}
+.point:last-child{border-bottom:none}
+.point strong{color:#1a1a1a;font-weight:500}
+.dot{width:19px;height:19px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:10px;font-weight:500;flex-shrink:0;margin-top:1px}
+.dg{background:#E1F5EE;color:#0F6E56}.dr{background:#FCEBEB;color:#A32D2D}.da{background:#FAEEDA;color:#854F0B}.db{background:#E6F1FB;color:#185FA5}.dc{background:#E8EAF6;color:#283593}.dd{background:#F5F5F5;color:#424242}
+.two-col{display:grid;grid-template-columns:1fr 1fr;gap:12px}
+.pane{border:1px solid #ddd;border-radius:10px;padding:13px}
+.pane-h{font-size:13px;font-weight:500;margin-bottom:9px}
+.scenario{border:1px solid #ddd;border-radius:10px;padding:13px;margin-bottom:9px}
+.sc-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:7px;margin:9px 0}
+.sc-cell{background:#f5f5f3;border-radius:6px;padding:7px 9px}
+.sc-l{font-size:10px;color:#666}
+.sc-v{font-size:12px;font-weight:500;margin-top:2px}
+.comp-h{display:grid;grid-template-columns:160px repeat(3,1fr);background:#f5f5f3;border-radius:8px 8px 0 0;overflow:hidden}
+.comp-row{display:grid;grid-template-columns:160px repeat(3,1fr);border-bottom:1px solid #eee}
+.comp-row:last-child{border-bottom:none}
+.cc{padding:8px 10px;font-size:11px;border-right:1px solid #eee}
+.cc:last-child{border-right:none}
+.cc-h{font-size:10px;font-weight:500;color:#444;padding:8px 10px;border-right:1px solid #ddd}
+.cc-h:last-child{border-right:none}
+.cc-label{color:#666;font-size:11px}
+.winner-cell{background:#E1F5EE}.mid-cell{background:#FAEEDA}.loser-cell{background:#fff5f5}
+.verdict-card{border-radius:10px;padding:13px 15px;margin-bottom:10px}
+.vc-h{font-size:13px;font-weight:500;margin-bottom:6px}
+.vc-b{font-size:12px;line-height:1.65;color:#444}
+.sector-card{border:1px solid #ddd;border-radius:10px;overflow:hidden;margin-bottom:10px}
+.sc-hdr{padding:10px 13px;display:flex;justify-content:space-between;align-items:center;background:#fafaf9}
+.sc-nm{font-size:13px;font-weight:500}
+.sc-tg{font-size:11px;color:#666;margin-top:2px}
+.sc-bd{padding:10px 13px;font-size:12px;line-height:1.65;color:#555;border-top:1px solid #eee}
+.sc-bd strong{color:#1a1a1a}
+.guid-card{border-radius:10px;padding:12px 14px;margin-bottom:8px;border-left:3px solid #3949AB;background:#E8EAF6}
+.guid-h{font-size:11.5px;font-weight:500;margin-bottom:4px;color:#1A237E}
+.guid-b{font-size:11.5px;color:#333;line-height:1.6}
+.guid-s{font-size:10px;color:#888;margin-top:4px}
+.guid-card.beat{background:#E1F5EE;border-left-color:#1D9E75}.guid-card.beat .guid-h{color:#0F6E56}
+.guid-card.miss{background:#FCEBEB;border-left-color:#A32D2D}.guid-card.miss .guid-h{color:#A32D2D}
+.guid-card.watch{background:#FAEEDA;border-left-color:#BA7517}.guid-card.watch .guid-h{color:#854F0B}
+.crisis-box{background:#FCEBEB;border:2px solid #A32D2D;border-radius:10px;padding:13px;margin:10px 0}
+.cb-h{font-size:14px;font-weight:500;color:#A32D2D;margin-bottom:6px}
+.cb-b{font-size:12px;color:#333;line-height:1.65}
+.pivot-box{background:#E8EAF6;border:2px solid #3949AB;border-radius:10px;padding:13px;margin:10px 0}
+.pv-h{font-size:14px;font-weight:500;color:#1A237E;margin-bottom:6px}
+.pv-b{font-size:12px;color:#1a1a1a;line-height:1.65}
+.seg-grid{display:grid;grid-template-columns:1fr 1fr;gap:9px;margin:10px 0}
+.seg-card{border:1px solid #ddd;border-radius:8px;padding:11px 13px}
+.seg-nm{font-weight:500;font-size:12px;margin-bottom:3px}
+.seg-tag{font-size:10px;color:#666;margin-bottom:5px}
+.seg-bd{font-size:11.5px;color:#555;line-height:1.55}
+.seg-val{font-size:11.5px;font-weight:500;margin-top:5px}
+.vol-bar{display:flex;align-items:center;gap:8px;margin:5px 0}
+.vb-label{font-size:11px;color:#555;width:140px;flex-shrink:0}
+.vb-track{flex:1;background:#f5f5f3;border-radius:4px;height:15px;overflow:hidden}
+.vb-fill{height:100%;border-radius:4px;display:flex;align-items:center;padding-left:6px;font-size:9px;font-weight:600;color:#fff}
+.vb-val{font-size:11px;font-weight:500;width:90px;text-align:right}
+</style>
+</head>
+<body>
+
+<h1>PCBL Chemical Ltd — Deep Investment Analysis</h1>
+<div class="sub">NSE: PCBL · Carbon black + Specialty chemicals (Aquapharm) + Power · Part of RP-Sanjiv Goenka Group · Founded 1960 · India's largest carbon black producer · 7th globally · Market cap ~₹11,440 Cr · Stock -27% in 1 year</div>
+
+<div class="sg">
+  <div class="sc"><div class="sl">Market cap</div><div class="sv" style="color:#854F0B">~₹11,440 Cr</div></div>
+  <div class="sc"><div class="sl">TTM revenue</div><div class="sv" style="color:#1D9E75">₹8,211 Cr</div></div>
+  <div class="sc"><div class="sl">TTM PAT</div><div class="sv" style="color:#A32D2D">₹258 Cr</div></div>
+  <div class="sc"><div class="sl">Q3 FY26 PAT</div><div class="sv" style="color:#A32D2D">₹2 Cr (!</div></div>
+  <div class="sc"><div class="sl">Q3 FY26 revenue</div><div class="sv" style="color:#A32D2D">-8% YoY</div></div>
+  <div class="sc"><div class="sl">Specialty black vol.</div><div class="sv" style="color:#1D9E75">+17% YoY</div></div>
+  <div class="sc"><div class="sl">Capacity (KTPA)</div><div class="sv" style="color:#185FA5">790</div></div>
+  <div class="sc"><div class="sl">Trailing PE</div><div class="sv" style="color:#A32D2D">~37–44x</div></div>
+  <div class="sc"><div class="sl">Promoter holding</div><div class="sv" style="color:#1D9E75">53.4% ↑</div></div>
+  <div class="sc"><div class="sl">D/E ratio</div><div class="sv" style="color:#A32D2D">~0.8x</div></div>
+  <div class="sc"><div class="sl">Cost opt. program</div><div class="sv" style="color:#185FA5">₹200 Cr</div></div>
+  <div class="sc"><div class="sl">52-wk range</div><div class="sv" style="color:#A32D2D">₹226–₹444</div></div>
+</div>
+
+<div class="tab-row">
+  <button class="tab active" onclick="show('crisis',this)">Q3 FY26 crisis explained</button>
+  <button class="tab" onclick="show('revenue',this)">Revenue history</button>
+  <button class="tab" onclick="show('sectorKPI',this)">Sector KPIs</button>
+  <button class="tab" onclick="show('business',this)">Business & pivot</button>
+  <button class="tab" onclick="show('guidance',this)">Guidance</button>
+  <button class="tab" onclick="show('risks',this)">Risks</button>
+  <button class="tab" onclick="show('scenarios',this)">3x scenarios</button>
+  <button class="tab" onclick="show('compare',this)">Sector peers</button>
+  <button class="tab" onclick="show('verdict',this)">Verdict</button>
+</div>
+
+<!-- CRISIS EXPLAINED -->
+<div id="crisis" class="panel active">
+  <div class="sh">Start here — the Q3 FY26 PAT collapse: ₹93 Cr → ₹2 Cr in one quarter</div>
+
+  <div class="crisis-box">
+    <div class="cb-h">🚨 Q3 FY26 PAT fell 97.82% to ₹2 Cr. Revenue fell -8.2% YoY. This is the most alarming quarterly print in PCBL's recent history. Here's what happened.</div>
+    <div class="cb-b">In Q3 FY26 (October–December 2025), PCBL's consolidated PAT collapsed from ₹93.05 Cr to just ₹2.03 Cr — a -97.8% fall. Revenue fell from ₹2,010 Cr to ₹1,846 Cr (-8.2%). EBITDA margin crashed from ~15.8% to just 0.63%.<br><br>
+    <strong>The reasons are multi-layered:</strong><br>
+    1. <strong>Carbon black price-volume squeeze:</strong> Carbon black realisation prices fell as global supply (especially Chinese producers) flooded markets with cheap product, while CBFS (carbon black feedstock — an oil derivative) costs remained elevated. The spread compressed violently in Q3.<br>
+    2. <strong>Aquapharm integration costs:</strong> Phosphonate chemicals segment EBITDA fell from ₹44 Cr to ₹35 Cr YoY despite stable revenue (₹327 Cr). Higher overheads from the integration process.<br>
+    3. <strong>Depreciation surge:</strong> New capacity additions (790 KTPA total including Tamil Nadu + Mundra expansions) added significant depreciation charges that reduced PBT from ₹124 Cr (Q3 FY25) to ₹31 Cr (Q3 FY26).<br>
+    4. <strong>Higher interest costs:</strong> Debt for Aquapharm acquisition (~₹1,200 Cr) and capacity expansion adds interest burden. Low interest coverage flagged by Screener.<br>
+    5. <strong>Volume decline:</strong> Total carbon black volumes fell 2% YoY to 141,271 MT — despite specialty black growing +17% (16,700 MT), the larger rubber black segment shrank.</div>
+  </div>
+
+  <div class="sh">Is this a one-quarter blip or a structural problem?</div>
+  <div class="warn caution"><strong>It's partially structural, partially cyclical.</strong> The carbon black spread compression (oil input cost vs. selling price) is cyclical — historically it normalises as Chinese suppliers' margins compress and Indian tyre demand recovers. But the higher depreciation (from new plants) and higher interest (from Aquapharm debt) are structural additions. Q4 FY26 is expected to see improvement (analysts project PAT ₹105–130 Cr) as the spread normalises and management's ₹200 Cr cost optimisation begins yielding results. The FY26 full picture will only emerge in May 2026 with Q4 results.</div>
+
+  <div class="sh">The strategic pivot — from commodity carbon black to specialty chemicals</div>
+  <div class="pivot-box">
+    <div class="pv-h">🔵 Why PCBL is more interesting than it looks: The specialty transition</div>
+    <div class="pv-b">PCBL is not just a carbon black commodity company. It is executing a deliberate pivot:<br>
+    <strong>Specialty Black (+17% volume Q3):</strong> High-performance carbon black for batteries (Li-ion), printing inks, specialty coatings, UV protection. EBITDA margins are 25–35% vs 8–12% for rubber black. Currently 112 KT of 790 KT capacity (14%) — target to grow to 25–30% of volumes by FY28.<br><br>
+    <strong>Aquapharm (Specialty Chemicals):</strong> ₹1,300 Cr annual phosphonate-based chemicals revenue. Phosphonates are used in water treatment (scale/corrosion inhibition), oil &amp; gas (drilling fluid additives), agriculture (chelating agents). Top 3 global producer. This is a true specialty chemicals business with 20–25% EBITDA margins when running well — completely different from carbon black commodity.<br><br>
+    <strong>Battery Materials:</strong> PCBL is developing carbon black for lithium-ion batteries (anode + cathode components). This is early-stage but the EV megatrend makes it strategically significant. If successful, battery-grade carbon could command ₹200–400/kg vs ₹60–80/kg for standard rubber grade.<br><br>
+    <strong>The thesis:</strong> At current ₹11,440 Cr market cap, you're paying mostly for the commodity rubber carbon black business. The specialty black, Aquapharm chemicals, and battery materials are optionality — priced at near-zero. If any two of these verticals scale over FY27–FY29, the re-rating from commodity PE to specialty PE would be transformational.</div>
+  </div>
+</div>
+
+<!-- REVENUE -->
+<div id="revenue" class="panel">
+  <div class="sh">Revenue &amp; profit history — steady revenues, volatile margins tied to carbon black spreads</div>
+  <div class="chart-wrap"><canvas id="rc"></canvas></div>
+  <div style="display:flex;gap:14px;font-size:11.5px;color:#666;margin-bottom:10px">
+    <span><span style="display:inline-block;width:10px;height:10px;border-radius:2px;background:#424242;margin-right:4px"></span>Revenue ₹ Cr</span>
+    <span><span style="display:inline-block;width:10px;height:10px;border-radius:2px;background:#1D9E75;margin-right:4px"></span>PAT ₹ Cr</span>
+    <span><span style="display:inline-block;width:10px;height:10px;border-radius:2px;background:#bdbdbd;margin-right:4px"></span>Projected</span>
+  </div>
+  <table>
+    <tr><th>Period</th><th>Revenue</th><th>Growth</th><th>EBITDA%</th><th>PAT</th><th>CB volume (KT)</th><th>Key event</th></tr>
+    <tr><td>FY22</td><td>~₹4,400 Cr</td><td>—</td><td>~13%</td><td>~₹430 Cr</td><td>~530</td><td>Strong year — high oil prices = high carbon black realisations. Tyre demand strong.</td></tr>
+    <tr><td>FY23</td><td>~₹5,500 Cr</td><td class="g">+25%</td><td>~10%</td><td>~₹330 Cr</td><td>~550</td><td>Revenue up but margins compressed — CBFS prices spiked without proportional product price rise.</td></tr>
+    <tr><td>FY24</td><td>~₹5,705 Cr</td><td class="a">+4%</td><td>~11%</td><td>₹533 Cr</td><td>~562</td><td>PAT jumped on margin recovery. Aquapharm acquisition announced. Specialty black strategy formalised.</td></tr>
+    <tr><td>FY25</td><td>~₹5,944 Cr</td><td class="a">+4.2%</td><td>~11%</td><td>₹451 Cr</td><td>~565</td><td>PAT -15%. Aquapharm integration begins. New capacity (Tamil Nadu) ramp. Revenue growth slow.</td></tr>
+    <tr><td>Q1 FY26</td><td>₹2,114 Cr</td><td class="r">-1.4% YoY</td><td>~9%</td><td>₹94 Cr</td><td>~140</td><td>Spread compression beginning. Integration costs rising. Depreciation higher.</td></tr>
+    <tr><td>Q2 FY26</td><td>₹2,163 Cr</td><td class="a">~+2%</td><td>~10%</td><td>~₹162 Cr</td><td>~143</td><td>Moderate quarter. Specialty black growing. Aquapharm stable at ₹327 Cr/quarter.</td></tr>
+    <tr><td>Q3 FY26</td><td>₹1,846 Cr</td><td class="r">-8.2% YoY</td><td>0.63%</td><td class="r">₹2 Cr</td><td>141</td><td><strong>Crisis quarter.</strong> Spread collapse. Higher depreciation + interest. CB vol -2%. Specialty black +17%.</td></tr>
+    <tr><td>9M FY26</td><td>₹6,124 Cr</td><td class="r">-3% YoY</td><td>~7%</td><td>~₹258 Cr</td><td>424</td><td>Full year tracking below FY25. Q4 recovery expected. Cost optimisation initiated.</td></tr>
+    <tr><td>FY26E</td><td>~₹8,000–8,400 Cr</td><td class="a">~+5–10%</td><td>~9–11%</td><td>~₹360–430 Cr</td><td>~570</td><td>Q4 recovery (analyst est. PAT ₹105–130 Cr). Cost savings beginning. Specialty mix improving.</td></tr>
+    <tr><td>FY27E</td><td>~₹8,800–9,500 Cr</td><td class="a">~+10–15%</td><td>~11–13%</td><td>~₹500–650 Cr</td><td>~580–590</td><td>Carbon black spread normalisation. ₹200 Cr cost optimisation full benefit. Specialty: 18% of volume. Aquapharm scaling. Battery materials first revenues.</td></tr>
+    <tr><td>FY28–29E</td><td>~₹10,000–12,000 Cr</td><td>—</td><td>~12–15%</td><td>~₹700–1,100 Cr</td><td>~600+</td><td>Specialty black 25%+ of volume at 25–30% EBITDA vs commodity at 8–10%. Aquapharm ₹1,800+ Cr. Battery materials commercial. Full specialty transition impact.</td></tr>
+  </table>
+  <div class="warn dark"><strong>The revenue picture in context:</strong> PCBL's revenues (₹5,500–8,200 Cr) are largely driven by carbon black feedstock (CBFS) costs passed through to customers — so headline revenue growth often reflects oil price changes rather than genuine volume/value growth. The correct metric is EBITDA per tonne (contribution per unit of carbon black produced) not total revenue. In FY22, EBITDA/tonne was ~₹8,000–9,000; in Q3 FY26 it crashed to near-zero. Recovery to ₹6,000–7,000/tonne by FY27 is the core earnings recovery thesis.</div>
+</div>
+
+<!-- SECTOR KPIs -->
+<div id="sectorKPI" class="panel">
+  <div class="sh">Carbon black + specialty chemicals sector KPIs</div>
+  <div class="warn chem"><strong>Three businesses within one stock, each with different metrics:</strong> (1) Rubber carbon black — volume (KT), EBITDA/tonne (₹), spread (realisation minus CBFS cost), (2) Specialty black — volume (KT), pricing premium over rubber grade, customer industries, (3) Aquapharm chemicals — phosphonate volumes (KT), EBITDA margin %, client concentration. Standard PE analysis on the blended entity misses the three-part picture.</div>
+  <div class="kpi-grid">
+    <div class="kpi dark"><div class="kpi-l">Total CB capacity (KTPA)</div><div class="kpi-v">790</div><div class="kpi-s">678 rubber + 112 specialty — India's largest</div></div>
+    <div class="kpi chem"><div class="kpi-l">Specialty black volume (Q3)</div><div class="kpi-v">+17% YoY</div><div class="kpi-s">16,700 MT in Q3 — growing fast</div></div>
+    <div class="kpi chem"><div class="kpi-l">Aquapharm revenue (quarterly)</div><div class="kpi-v">₹327 Cr</div><div class="kpi-s">Stable; ~₹1,300 Cr annually</div></div>
+    <div class="kpi green"><div class="kpi-l">Global ranking (carbon black)</div><div class="kpi-v">7th globally</div><div class="kpi-s">4th largest specialty black player</div></div>
+    <div class="kpi red"><div class="kpi-l">Q3 FY26 EBITDA margin</div><div class="kpi-v" style="color:#A32D2D">0.63%</div><div class="kpi-s">Crisis level — spread compression</div></div>
+    <div class="kpi amber"><div class="kpi-l">Cost optimisation target</div><div class="kpi-v">₹200 Cr</div><div class="kpi-s">Over 2 years — significant vs FY26 PAT</div></div>
+  </div>
+
+  <div class="sh">Carbon black volume breakdown — the mix shift matters enormously</div>
+  <div class="vol-bar"><div class="vb-label">Rubber black (Q3 FY26)</div><div class="vb-track"><div class="vb-fill" style="width:88%;background:#424242">88.2% of volume</div></div><div class="vb-val">124,571 MT (-4% YoY)</div></div>
+  <div class="vol-bar"><div class="vb-label">Specialty black (Q3 FY26)</div><div class="vb-track"><div class="vb-fill" style="width:12%;background:#3949AB">11.8% of volume</div></div><div class="vb-val g">16,700 MT (+17% YoY)</div></div>
+  <div class="vol-bar"><div class="vb-label">FY28 specialty target</div><div class="vb-track"><div class="vb-fill" style="width:25%;background:#3949AB">~25% of volume</div></div><div class="vb-val b">~150,000 MT target</div></div>
+
+  <div class="sh">Why specialty black/chemicals are the thesis — the margin differential</div>
+  <table>
+    <tr><th>Segment</th><th>Revenue realisation</th><th>EBITDA margin</th><th>Growth outlook</th><th>Competitor moat</th></tr>
+    <tr><td><strong>Rubber carbon black</strong></td><td>₹60–80/kg (market-linked)</td><td class="r">6–12% (volatile)</td><td class="a">Low — tied to tyre demand + China competition</td><td class="r">Low — many global producers</td></tr>
+    <tr><td><strong>Specialty black (inks, coatings, battery)</strong></td><td>₹150–400/kg</td><td class="g">22–30%</td><td class="g">High — EV batteries, packaging, UV protection</td><td class="g">Medium-high — technical specs, long qual cycles</td></tr>
+    <tr><td><strong>Aquapharm phosphonates</strong></td><td>Premium per kg</td><td class="g">18–25% (normalised)</td><td class="g">Strong — water scarcity, oilfield growth</td><td class="g">High — top 3 globally, 275+ products</td></tr>
+    <tr><td><strong>Power (captive 122 MW)</strong></td><td>Intragroup + grid sale</td><td class="g">Very high (near-zero variable cost)</td><td class="a">Stable — waste heat recovery</td><td class="g">High — integrated, difficult to replicate</td></tr>
+  </table>
+</div>
+
+<!-- BUSINESS MODEL -->
+<div id="business" class="panel">
+  <div class="sh">Three businesses inside one PCBL — understanding the conglomerate</div>
+  <div class="seg-grid">
+    <div class="seg-card">
+      <div class="seg-nm" style="color:#424242">⚫ Carbon Black (India's largest, 7th globally)</div>
+      <div class="seg-tag">5 plants: Durgapur, Kochi, Palej, Mundra, Tamil Nadu · 790 KTPA</div>
+      <div class="seg-bd">Carbon black is a fine black powder produced by incomplete combustion of hydrocarbons (from petroleum). Used primarily as a reinforcing filler in tyres (~85% of all carbon black consumption). PCBL supplies to Apollo Tyres, MRF, CEAT, Bridgestone, Continental, Goodyear. India's rubber/tyre demand growing ~8% annually. However, China produces 4.5 million tons/year (vs India's 1.2 million tons/year), creating persistent supply overhang and price competition in global markets. The spread (product price minus CBFS input cost) is the fundamental driver of profitability — it compressed dramatically in Q3 FY26 and is the primary reason for the earnings crisis.</div>
+      <div class="seg-val">FY26E carbon black revenue: ~₹6,500 Cr | EBITDA: ~7–10%</div>
+    </div>
+    <div class="seg-card">
+      <div class="seg-nm" style="color:#3949AB">🔵 Specialty Black (high-growth, high-margin)</div>
+      <div class="seg-tag">112 KTPA capacity · inks, coatings, plastics, batteries · premium pricing</div>
+      <div class="seg-bd">Specialty carbon black has fundamentally different economics from rubber grade: higher purity, tighter particle size control, specific surface chemistry — enabling applications in printer inks (HP, Canon, Epson supply chain), UV-protective packaging, antistatic coatings, and critically, <strong>lithium-ion battery anodes and cathode conductive additives</strong>. Volume growing +17% YoY — accelerating as PCBL sells into newer markets. ASP is 2–5x rubber grade. Battery-grade specialty black for EVs is the long-term optionality that justifies paying a premium multiple for PCBL vs pure commodity carbon black peers.</div>
+      <div class="seg-val" style="color:#3949AB">Q3 FY26: +17% volume YoY; target 25% of total mix by FY28</div>
+    </div>
+    <div class="seg-card">
+      <div class="seg-nm" style="color:#0F6E56">🟢 Aquapharm Chemicals (phosphonates, specialty)</div>
+      <div class="seg-tag">Top 3 globally · 275+ products · Water treatment + oil &amp; gas</div>
+      <div class="seg-bd">Aquapharm (formerly Aquapharm Chemicals Pvt Ltd) was acquired by PCBL and is now a wholly-owned subsidiary. Business: phosphonate-based specialty chemicals — HEDP, ATMP, DTPMP (industry jargon for specific molecular compounds) used as scale inhibitors, corrosion inhibitors, chelating agents in water treatment, cooling towers, oilfield drilling, agriculture, and detergents. Revenue ~₹1,300 Cr/year. Stable despite Q3 EBITDA pressure. This segment is completely decoupled from carbon black commodity cycles — it is a genuine specialty chemicals business where pricing power is driven by product formulation IP, not raw material costs. Top 3 globally means PCBL has pricing power in this segment.</div>
+      <div class="seg-val" style="color:#0F6E56">₹327 Cr quarterly revenue; ~₹1,300 Cr annual; EBITDA 18–25% normalized</div>
+    </div>
+    <div class="seg-card">
+      <div class="seg-nm" style="color:#1D9E75">⚡ Power generation (122 MW captive + surplus sale)</div>
+      <div class="seg-tag">Waste heat recovery · Carbon black plants generate excess heat → electricity</div>
+      <div class="seg-bd">Carbon black manufacturing generates enormous thermal energy (the reaction is exothermic). PCBL captures this through waste heat recovery boilers to generate 122 MW of electricity. Most is used captively (reducing grid dependency), and surplus is sold to the grid. This creates a near-zero marginal cost electricity source that improves overall margin economics. The power segment typically has 35–45% EBITDA margins and is a genuine cost advantage over competitors who don't capture waste heat at this scale.</div>
+      <div class="seg-val">~₹500–600 Cr annual power revenue; EBITDA ~35–40%</div>
+    </div>
+  </div>
+
+  <div class="sh">The ₹200 Cr cost optimisation program — critical for FY27 recovery</div>
+  <div class="point"><div class="dot dc">$</div><div><strong>₹200 Cr cost savings target over 2 years:</strong> PCBL has launched a major cost optimisation initiative targeting ₹200 Cr in annual savings by FY28. Areas targeted: (1) Raw material procurement efficiency (CBFS source diversification to reduce input costs), (2) Energy efficiency (additional waste heat recovery investments reducing grid electricity purchases), (3) Logistics cost reduction (plant proximity to key tyre clients reduces freight), (4) Aquapharm integration synergies (shared procurement, shared R&D). At FY26 PAT run-rate of ~₹380 Cr annualised, ₹200 Cr savings = 53% PAT boost. If delivered, this is the single most powerful margin recovery lever.</div></div>
+</div>
+
+<!-- GUIDANCE -->
+<div id="guidance" class="panel">
+  <div class="sh">Guidance analysis — management has been cautious but transparent</div>
+  <div class="warn chem"><strong>PCBL management has a history of conservative, fact-based communication.</strong> They don't over-promise. The Q3 FY26 results were presented with clear explanations of the spread compression and higher depreciation impact. The ₹200 Cr cost optimisation was announced alongside Q3 results — a proactive response to a difficult quarter. Management credibility: reasonable for a 60-year-old company that has navigated many commodity cycles.</div>
+
+  <div class="guid-card beat">
+    <div class="guid-h">✓ Specialty black growth: Guided strong momentum — delivered +17% volume in Q3</div>
+    <div class="guid-b">Management has consistently flagged specialty black as the growth priority. Q3 FY26 specialty black volumes grew +17% YoY to 16,700 MT — confirming the pivot is gaining traction. The customer qualification cycle for specialty black (especially battery-grade) is 12–24 months — so volume growth now reflects decisions made 1–2 years ago. This pipeline momentum is a credible multi-quarter growth signal, independent of the rubber black commodity cycle.</div>
+    <div class="guid-s">Credibility: 8/10. Specialty volume growth consistently delivering.</div>
+  </div>
+
+  <div class="guid-card miss">
+    <div class="guid-h">✗ Revenue and margin trajectory for FY26 — well below FY25 levels</div>
+    <div class="guid-b">Entering FY26, PCBL management expected revenue and PAT growth over FY25 (₹5,944 Cr / ₹451 Cr). Actual 9M FY26: revenue declined 3% and PAT run-rate is tracking well below FY25. The Q3 FY26 PAT collapse to ₹2 Cr was a sharp negative surprise. While management attributed this to cyclical spread compression and structural depreciation (explainable), the severity and speed caught everyone off-guard. This is the single biggest credibility hit for PCBL management — the pace of deterioration wasn't telegraphed clearly in advance.</div>
+    <div class="guid-s">Credibility: 5/10 on near-term earnings guidance. Commodity cycle makes this inherently unpredictable.</div>
+  </div>
+
+  <div class="guid-card watch">
+    <div class="guid-h">⚠ Q4 FY26 recovery: Analyst consensus PAT ₹105–130 Cr — key inflection quarter</div>
+    <div class="guid-b">Analyst estimates for Q4 FY26 (January–March 2026): Revenue ₹1,850–2,050 Cr, PAT ₹105–130 Cr, EBITDA 10–13%. This represents a dramatic recovery from Q3's ₹2 Cr PAT. The reasons for expected recovery: (1) Seasonal tyre demand pickup (Q4 = pre-summer, strong automotive demand), (2) CBFS prices stabilising (US crude futures), (3) Some cost optimisation early benefits, (4) Mix improvement as specialty volumes continue +15%+. If Q4 delivers ₹105+ Cr PAT, full FY26 PAT would be ~₹360–390 Cr — below FY25 but recovering. Q4 FY26 results due May 2026.</div>
+    <div class="guid-s">Credibility watch: Q4 results are the most important near-term data point. Q4 PAT above ₹100 Cr = recovery thesis confirmed.</div>
+  </div>
+
+  <div class="guid-card">
+    <div class="guid-h">FY27 outlook: ₹200 Cr savings + spread normalisation + specialty scaling</div>
+    <div class="guid-b">If the three tailwinds materialise in FY27: (1) Carbon black spread normalises to FY24 levels (₹8,000–9,000 EBITDA/tonne), (2) ₹200 Cr cost optimisation delivers ₹100 Cr of savings in FY27, (3) Specialty black reaches 20% of volume (vs 12% now), PCBL FY27 PAT could reach ₹550–700 Cr — a significant recovery from FY26E ₹360–390 Cr. At 16–18x PE on ₹600 Cr PAT = ₹9,600–10,800 Cr mcap = roughly flat on current ₹11,440 Cr. <strong>3x requires FY28–29 PAT of ₹900+ Cr — which needs the specialty pivot to fully execute.</strong></div>
+    <div class="guid-s">Credibility: 6/10. Spread normalisation is cyclical (uncertain timing); cost savings and specialty volume are more controllable.</div>
+  </div>
+
+  <div class="sh">Guidance scorecard</div>
+  <table>
+    <tr><th>Item</th><th>Credibility</th><th>Base case</th><th>Key risk</th></tr>
+    <tr><td>Q4 FY26 PAT recovery ₹105–130 Cr</td><td class="a">6/10 — spread-dependent</td><td>₹90–120 Cr</td><td>CBFS price spike in Jan–Mar; volume shortfall</td></tr>
+    <tr><td>FY27 revenue +10–15%</td><td class="g">7/10 — volume growth visible</td><td>₹8,800–9,200 Cr</td><td>China dumping; oil price volatility</td></tr>
+    <tr><td>FY27 EBITDA margin 11–13%</td><td class="a">6/10 — spread + cost savings</td><td>10.5–12.5%</td><td>CBFS remains elevated; savings delayed</td></tr>
+    <tr><td>₹200 Cr cost savings (2 years)</td><td class="a">6/10 — early stage</td><td>₹80–100 Cr in FY27</td><td>Raw material procurement changes; energy market</td></tr>
+    <tr><td>Specialty black 25% of volumes FY28</td><td class="g">7/10 — qualification pipeline</td><td>20–22% by FY28</td><td>Battery material delays; customer qualification</td></tr>
+  </table>
+</div>
+
+<!-- RISKS -->
+<div id="risks" class="panel">
+  <div class="sh">Risks — why PCBL is complex and not straightforward for 3x</div>
+
+  <div class="point"><div class="dot dr">1</div><div><strong>China is the elephant in the room — 4.5 MT/year production vs India's 1.2 MT.</strong><br>China produces ~4x India's carbon black volume. Chinese producers (Sinolong, Orion China JV) have lower cost structures due to cheaper energy and scale. When China's domestic demand slows (real estate downturn, EV sector shifts), Chinese carbon black floods global markets — compressing global realisation prices. PCBL cannot easily differentiate rubber carbon black from Chinese product on quality (it's a commodity), only on supply reliability and local service. This structural competitive threat does not disappear — it is the primary reason rubber black margins are volatile and structurally weak.</div></div>
+
+  <div class="point"><div class="dot dr">2</div><div><strong>High D/E ratio (~0.8x) with low interest coverage — financial stress risk.</strong><br>Screener flags "low interest coverage ratio" for PCBL. The Aquapharm acquisition added ~₹1,200 Cr of debt. New capacity expansions added more. At 9M FY26 EBIT of ~₹200 Cr (annualised ~₹267 Cr), interest coverage is dangerously thin. If Q4 FY26 also disappoints (CBFS prices spike again), PCBL could face interest coverage below 1x — meaning operating profit doesn't cover interest payments. This is a real financial stress risk for a ₹11,440 Cr company.</div></div>
+
+  <div class="point"><div class="dot da">3</div><div><strong>Market cap is too large for Garvit's 3x thesis in 3 years.</strong><br>At ₹11,440 Cr market cap, 3x requires ₹34,320 Cr. At peak FY28–29 scenario PAT of ₹900–1,000 Cr, even at 30x PE (a premium for the specialty pivot) = ₹27,000–30,000 Cr — still below 3x. For Garvit's 3x-in-3-years goal, PCBL is fundamentally the wrong size. Compare to our smaller-cap picks (Bondada ₹3,895 Cr, Borana Weaves ₹1,013 Cr, DEE Development ₹2,827 Cr) — all have better 3x math because their base market cap is lower.</div></div>
+
+  <div class="point"><div class="dot da">4</div><div><strong>Aquapharm integration is still in progress — operational risk.</strong><br>Aquapharm EBITDA fell from ₹44 Cr (Q3 FY25) to ₹35 Cr (Q3 FY26) despite stable revenue — higher integration and overhead costs. Integrating a specialty chemicals company (different management culture, different client relationships, different supply chains) into a carbon black manufacturer is non-trivial. PCBL has no prior M&A track record of this scale. Any integration failure (key people leaving, customer churn) would be material given Aquapharm contributes ~16% of total revenue.</div></div>
+
+  <div class="point"><div class="dot dg">+</div><div><strong>Genuine strengths — why PCBL is not a sell at current prices:</strong><br>Promoter buying shares (53.4%, up from 51.41% in November 2025 — 1.9% acquired in 3 months). 60+ year track record. India's tyre industry growing with auto sector. Carbon black is a structural part of every tyre — 0 EV alternatives for tyre reinforcement. Specialty black EV battery market is the multi-year growth engine. Aquapharm phosphonates — top 3 globally with pricing power. ₹200 Cr cost optimisation is real (procurement, energy, logistics). Q3 FY26 is likely the trough. 122 MW captive green power reduces energy costs. Net Debt/EBITDA improving as recovery comes. Sanjiv Goenka group management quality — same group as RPSG Ventures (which we have high conviction in).</div></div>
+</div>
+
+<!-- SCENARIOS -->
+<div id="scenarios" class="panel">
+  <div class="sh">Three scenarios — from current ~₹248–₹311 (₹11,440 Cr market cap)</div>
+  <div class="warn caution"><strong>The fundamental 3x math challenge:</strong> At ₹11,440 Cr market cap, PCBL is already a large-cap company. 3x needs ₹34,320 Cr — which requires PAT of ₹1,140 Cr at 30x PE. PCBL's best PAT was ₹533 Cr (FY24). Getting to ₹1,140 Cr requires more than doubling PAT from the best year — which demands the specialty pivot to work fully AND the commodity cycle to improve. This is a 5–7 year story, not a 3-year story.</div>
+
+  <div class="scenario" style="border-left:3px solid #3949AB">
+    <div style="font-size:13px;font-weight:500;color:#1A237E;margin-bottom:8px">Bull case — 2–2.5x in 3–4 years: Full specialty pivot + cost optimisation + Aquapharm scaling</div>
+    <div class="sc-grid">
+      <div class="sc-cell"><div class="sc-l">FY28 revenue</div><div class="sc-v">₹10,500–12,000 Cr</div></div>
+      <div class="sc-cell"><div class="sc-l">FY28 EBITDA%</div><div class="sc-v">13–15%</div></div>
+      <div class="sc-cell"><div class="sc-l">FY28 PAT</div><div class="sc-v">₹850–1,100 Cr</div></div>
+      <div class="sc-cell"><div class="sc-l">PE (specialty re-rating)</div><div class="sc-v">22–28x</div></div>
+      <div class="sc-cell"><div class="sc-l">FY28 mcap</div><div class="sc-v">₹18,700–30,800 Cr</div></div>
+      <div class="sc-cell"><div class="sc-l">Return from ₹11,440 Cr</div><div class="sc-v">1.6–2.7x</div></div>
+    </div>
+    <div style="font-size:11.5px;color:#333;margin-top:8px"><strong>Specialty black reaches 25% of volume by FY28.</strong> Aquapharm EBITDA normalises to 22%. Full ₹200 Cr cost savings. Carbon black spread recovers to FY24 levels. Battery-grade carbon black begins commercial shipments. <strong>Even in the bull case, 3x is not achievable by FY27 — it's a FY28–FY29 outcome at best. For Garvit's 3-year goal, this undershoots.</strong></div>
+  </div>
+
+  <div class="scenario" style="border-left:3px solid #378ADD">
+    <div style="font-size:13px;font-weight:500;color:#185FA5;margin-bottom:8px">Base case — 1.3–1.7x in 3 years: Spread recovery + specialty growth + Aquapharm</div>
+    <div class="sc-grid">
+      <div class="sc-cell"><div class="sc-l">FY27 revenue</div><div class="sc-v">₹8,800–9,200 Cr</div></div>
+      <div class="sc-cell"><div class="sc-l">FY27 PAT</div><div class="sc-v">₹550–680 Cr</div></div>
+      <div class="sc-cell"><div class="sc-l">PE (partial re-rating)</div><div class="sc-v">18–22x</div></div>
+      <div class="sc-cell"><div class="sc-l">FY27 mcap</div><div class="sc-v">₹9,900–14,960 Cr</div></div>
+      <div class="sc-cell"><div class="sc-l">Return</div><div class="sc-v">0.9–1.3x</div></div>
+      <div class="sc-cell"><div class="sc-l">FY28 upside</div><div class="sc-v">₹15,000–20,000 Cr</div></div>
+    </div>
+    <div style="font-size:11.5px;color:#333;margin-top:8px">Base case delivers 1.3–1.7x over 3 years — <strong>below Garvit's 3x goal.</strong> PCBL is a value recovery story, not a growth compounding story at this market cap.</div>
+  </div>
+
+  <div class="scenario" style="border-left:3px solid #A32D2D">
+    <div style="font-size:13px;font-weight:500;color:#A32D2D;margin-bottom:8px">Bear case — -20 to -40%: CBFS remains elevated + China flooding + Aquapharm drag</div>
+    <div class="sc-grid">
+      <div class="sc-cell"><div class="sc-l">Trigger</div><div class="sc-v">CB spread stays near Q3 FY26 levels</div></div>
+      <div class="sc-cell"><div class="sc-l">Trigger</div><div class="sc-v">Interest coverage below 1x</div></div>
+      <div class="sc-cell"><div class="sc-l">Trigger</div><div class="sc-v">Capital raise needed</div></div>
+      <div class="sc-cell"><div class="sc-l">FY27 PAT</div><div class="sc-v">₹200–300 Cr</div></div>
+      <div class="sc-cell"><div class="sc-l">PE at 14–16x</div><div class="sc-v">₹2,800–4,800 Cr</div></div>
+      <div class="sc-cell"><div class="sc-l">Stock impact</div><div class="sc-v">-65% to -75% mcap</div></div>
+    </div>
+    <div style="font-size:11.5px;color:#333;margin-top:8px"><strong>Bear probability: 20–25%.</strong> If spread compression is structural (not cyclical) due to permanent Chinese overcapacity, PCBL's rubber carbon black business is in secular decline. Combined with Aquapharm integration difficulties, the stock could revisit ₹200–250 levels (bear case = return to 52-week lows). High debt limits the ability to wait out a prolonged cycle trough.</div>
+  </div>
+
+  <table style="margin-top:10px">
+    <tr><th>Target</th><th>Mcap needed</th><th>PAT needed</th><th>Timeline</th><th>3x probability</th></tr>
+    <tr><td>3x (₹34,320 Cr)</td><td>₹34,320 Cr</td><td>₹1,140 Cr at 30x PE</td><td>FY29–FY30</td><td class="r">8–12%</td></tr>
+    <tr><td>2x (₹22,880 Cr)</td><td>₹22,880 Cr</td><td>₹820 Cr at 28x PE</td><td>FY28</td><td class="a">18–22%</td></tr>
+    <tr><td>1.5x (₹17,160 Cr)</td><td>₹17,160 Cr</td><td>₹620 Cr at 28x PE</td><td>FY27</td><td class="a">28–33%</td></tr>
+    <tr><td>Bear (-30%: ₹8,000 Cr)</td><td>₹8,000 Cr</td><td>Spread stays compressed</td><td>—</td><td class="a">20–25%</td></tr>
+  </table>
+</div>
+
+<!-- PEERS -->
+<div id="compare" class="panel">
+  <div class="sh">Carbon black + specialty chemicals peers — India and global</div>
+  <div style="border:1px solid #ddd;border-radius:10px;overflow:hidden;font-size:11px">
+    <div class="comp-h">
+      <div class="cc-h" style="background:#f5f5f3">Metric</div>
+      <div class="cc-h" style="background:#E8EAF6;color:#1A237E">PCBL Chemical</div>
+      <div class="cc-h" style="background:#E6F1FB;color:#185FA5">Himadri Specialty</div>
+      <div class="cc-h" style="background:#f5f5f3">Cabot Corp. (US, global #1)</div>
+    </div>
+    <div class="comp-row"><div class="cc cc-label">Market cap</div><div class="cc mid-cell">₹11,440 Cr</div><div class="cc mid-cell">₹11,000+ Cr</div><div class="cc loser-cell">~₹28,000 Cr (USD 3.4B)</div></div>
+    <div class="comp-row"><div class="cc cc-label">Revenue</div><div class="cc mid-cell">₹8,211 Cr (TTM)</div><div class="cc mid-cell">~₹4,500 Cr</div><div class="cc loser-cell">~₹27,000 Cr</div></div>
+    <div class="comp-row"><div class="cc cc-label">CB capacity</div><div class="cc winner-cell">790 KTPA (largest in India)</div><div class="cc mid-cell">~500 KTPA</div><div class="cc winner-cell">~3,500 KTPA (global #1)</div></div>
+    <div class="comp-row"><div class="cc cc-label">Specialty focus</div><div class="cc mid-cell">~14% now → 25% target</div><div class="cc mid-cell">Coal tar pitch + carbon black</div><div class="cc winner-cell">~45% specialty black (mature)</div></div>
+    <div class="comp-row"><div class="cc cc-label">EBITDA margin</div><div class="cc loser-cell">0.63% Q3 (crisis); 10% normal</div><div class="cc mid-cell">~12–15%</div><div class="cc winner-cell">~18–22% (specialty premium)</div></div>
+    <div class="comp-row"><div class="cc cc-label">EV / battery exposure</div><div class="cc winner-cell">Active — battery materials program</div><div class="cc winner-cell">Yes — EV battery materials</div><div class="cc winner-cell">Leading — E2 battery black</div></div>
+    <div class="comp-row"><div class="cc cc-label">Aquapharm equivalent</div><div class="cc winner-cell">Yes — phosphonates (top 3 global)</div><td class="cc">No</td><td class="cc winner-cell">Multiple specialty chemical lines</td></div>
+    <div class="comp-row"><div class="cc cc-label">Debt level</div><div class="cc loser-cell">~0.8x D/E (elevated)</div><td class="cc winner-cell">Lower D/E</td><td class="cc mid-cell">Moderate</td></div>
+    <div class="comp-row"><div class="cc cc-label">Promoter buying</div><div class="cc winner-cell">Yes — 51.4% → 53.4% in Q3</div><td class="cc mid-cell">Stable</td><td class="cc">N/A (US listed)</td></div>
+    <div class="comp-row"><div class="cc cc-label">3x probability (3yr)</div><div class="cc loser-cell">8–12% (too large, slow transition)</div><td class="cc mid-cell">15–18% (similar stage)</td><td class="cc loser-cell">5% (mcap too large)</td></div>
+    <div class="comp-row"><div class="cc cc-label">Best for Garvit 3x</div><div class="cc">Not recommended — wrong size for 3x in 3 years</div><td class="cc a">Similar thesis, similar challenges</td><td class="cc">Wrong geography and size</td></div>
+  </div>
+
+  <div class="sector-card" style="margin-top:12px">
+    <div class="sc-hdr"><div><div class="sc-nm">Himadri Speciality Chemical — the closest India comps for specialty chemicals + carbon</div><div class="sc-tg">₹11,000+ Cr mcap · Coal tar pitch + carbon black + Li-ion battery materials · Also in EV pivot</div></div><span class="badge bchem">Direct comparable</span></div>
+    <div class="sc-bd">Himadri Speciality is PCBL's closest listed India peer — both are carbon-chemistry companies pivoting to EV/specialty applications. Himadri focuses on coal tar pitch (coal-based rather than oil-based like PCBL) and carbon black, and is also building lithium-ion battery material capacity. Similar market cap (~₹11,000 Cr), similar specialty transition stage. <strong>For an investor wanting India specialty carbon chemical exposure, choosing between PCBL and Himadri is the core decision — both have similar risk/reward profiles.</strong> Himadri has slightly better EBITDA margins but PCBL has the Aquapharm phosphonate advantage. Neither is a clear 3x-in-3-years pick at current market caps.</div>
+  </div>
+</div>
+
+<!-- VERDICT -->
+<div id="verdict" class="panel">
+  <div class="sh">The definitive verdict for Garvit's 3x portfolio goal</div>
+
+  <div class="verdict-card" style="background:#E8EAF6;border:1px solid #7986CB">
+    <div class="vc-h" style="color:#1A237E">PCBL Chemical — Verdict: DO NOT ADD to Garvit's portfolio at this stage. PCBL is not in the portfolio currently, and it should not enter it. Interesting 5–7 year compounding story — wrong instrument for the 3-year 3x goal.</div>
+    <div class="vc-b">Here is the complete, honest picture for PCBL:<br><br><strong>PCBL is NOT in Garvit's portfolio — this is a potential new entry decision.</strong> Let me be direct:<br><br><strong>The bull case is intellectually interesting:</strong><br>• India's largest carbon black manufacturer (790 KTPA)<br>• Specialty black growing +17% — EV batteries, inks, coatings<br>• Aquapharm: top 3 global phosphonate producer<br>• Promoter buying aggressively (51.4% → 53.4% in one quarter — very bullish signal)<br>• ₹200 Cr cost optimisation = 50%+ PAT boost if delivered<br>• Q3 FY26 PAT collapse is likely the trough — Q4 should recover sharply<br>• 5-year revenue CAGR solid; 60-year track record<br><br><strong>But for Garvit's specific 3x-in-3-years goal, the math doesn't work:</strong><br>• At ₹11,440 Cr market cap, 3x requires ₹34,320 Cr by FY27–FY28<br>• Best-case FY28 PAT: ₹900–1,000 Cr at 30x PE = ₹27,000–30,000 Cr = 2.4–2.7x<br>• Even the BULL CASE doesn't reach 3x in 3 years<br>• This is a 5–7 year specialty chemicals compounding story — not a 3-year aggressive growth story<br>• The Q3 FY26 PAT collapse (₹93 Cr → ₹2 Cr, -97.8%) shows the commodity risk is real and acute<br>• High D/E (~0.8x) limits financial flexibility during trough cycles<br><br><strong>Compare PCBL to where Garvit's capital is better deployed:</strong><br>• EFC I: ₹4,033 allocated vs ₹40K recommendation → better 3x bet<br>• RPSG Ventures: ₹0 allocated → better 3x bet with NAV discount<br>• DEE Development: ₹43K vs ₹65K recommendation → better quality EPC at lower PE<br><br><strong>The specific verdict for Garvit:</strong><br>Do not buy PCBL. The ₹11,440 Cr market cap is too large for the 3x thesis, the commodity carbon black cycle is in a trough creating uncertainty about the recovery timeline, and the existing portfolio has better-quality underweights (EFC I, RPSG Ventures, DEE Development) that should be addressed first.<br><br><strong>If Garvit is interested in specialty chemicals exposure:</strong> Wait for PCBL's Q4 FY26 results (May 2026) to confirm PAT recovery (₹100+ Cr), then evaluate whether to initiate a small (₹20–25K) long-term position as a 5-year specialty chemicals bet — not a 3-year 3x position.</div>
+  </div>
+
+  <div class="sh">Allocation recommendation</div>
+  <table>
+    <tr><th>Action</th><th>Amount</th><th>Rationale</th></tr>
+    <tr><td><span class="badge br">DO NOT BUY — not in portfolio, should not enter</span></td><td>₹0</td><td>Wrong size for 3x goal (₹11,440 Cr mcap). Q3 FY26 PAT collapse shows commodity risk. Better-conviction underweights in existing portfolio (EFC I, RPSG Ventures) should be funded first.</td></tr>
+    <tr><td><span class="badge ba">Watch for Q4 FY26 results (May 2026)</span></td><td>Watchlist only</td><td>If Q4 PAT recovers to ₹100+ Cr AND management provides clear FY27 guidance → consider small ₹20–25K 5-year position. Not for 3x goal — for long-term specialty chemicals exposure.</td></tr>
+    <tr><td><span class="badge bg">Better alternative: EFC I (8.5/10 conviction)</span></td><td>₹40,000</td><td>If you have new capital looking for deployment, EFC I at ₹4,033 (vs ₹40K recommendation) is a far better allocation than PCBL for the 3-year 3x goal.</td></tr>
+  </table>
+
+  <div class="sh">Six triggers to watch — if PCBL makes sense as a future addition</div>
+  <table>
+    <tr><th>#</th><th>Trigger</th><th>Signal</th></tr>
+    <tr><td>1</td><td>Q4 FY26 PAT (May 2026)</td><td>🟢 ₹100+ Cr = recovery confirmed. 🔴 Below ₹50 Cr = structural issue, avoid.</td></tr>
+    <tr><td>2</td><td>Carbon black spread (CBFS vs product price)</td><td>🟢 Spread recovery to ₹7,000+/tonne = FY27 margin normalisation. Watch quarterly EBITDA/tonne.</td></tr>
+    <tr><td>3</td><td>Specialty black volumes (quarterly)</td><td>🟢 Sustain +15%+ growth = pivot credible. Key: does specialty reach 20% of volume by FY27?</td></tr>
+    <tr><td>4</td><td>Aquapharm EBITDA margin recovery</td><td>🟢 Back to ₹44 Cr+/quarter = integration complete and full economics restored.</td></tr>
+    <tr><td>5</td><td>Cost optimisation milestones (₹200 Cr target)</td><td>🟢 Any disclosure of ₹50+ Cr savings in quarterly results = ₹200 Cr target credible.</td></tr>
+    <tr><td>6</td><td>Debt reduction trajectory</td><td>🔴 D/E must decline from 0.8x toward 0.5x. Any equity raise = dilution risk. Watch cash flow quarterly.</td></tr>
+  </table>
+
+  <div class="warn chem" style="margin-top:12px"><strong>One-line verdict:</strong> PCBL Chemical is India's most interesting carbon black + specialty chemicals company — with a compelling long-term pivot to specialty black, EV battery materials, and Aquapharm phosphonates. The promoter is buying shares aggressively. Q3 FY26's PAT collapse to ₹2 Cr is almost certainly the trough. But at ₹11,440 Cr market cap, the 3x math requires PAT to more than double from the best-ever year — achievable only by FY29–30, not FY27. For Garvit's 3-year 3x goal, this is the wrong instrument. The capital is better deployed in EFC I (₹4K vs ₹40K recommendation) and RPSG Ventures (₹0 vs ₹35K recommendation). Add PCBL to the watchlist; revisit after Q4 FY26 results confirm recovery.</div>
+</div>
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/4.4.1/chart.umd.js"></script>
+<script>
+function show(id,btn){
+  document.querySelectorAll('.tab').forEach(t=>t.classList.remove('active'));
+  document.querySelectorAll('.panel').forEach(p=>p.classList.remove('active'));
+  btn.classList.add('active');
+  document.getElementById(id).classList.add('active');
+}
+new Chart(document.getElementById('rc').getContext('2d'),{
+  type:'bar',
+  data:{
+    labels:['FY22','FY23','FY24','FY25','Q1FY26','Q2FY26','Q3FY26','FY26E','FY27E','FY28E'],
+    datasets:[
+      {label:'Revenue ₹ Cr',data:[4400,5500,5705,5944,2114,2163,1846,8200,9000,11000],backgroundColor:['#424242','#424242','#424242','#424242','#EF9F27','#EF9F27','#A32D2D','#bdbdbd','#bdbdbd','#bdbdbd'],borderRadius:4,yAxisID:'y'},
+      {label:'PAT ₹ Cr',data:[430,330,533,451,94,162,2,390,620,900],type:'line',borderColor:'#1D9E75',backgroundColor:'transparent',pointBackgroundColor:'#1D9E75',tension:0.3,yAxisID:'y2'}
+    ]
+  },
+  options:{responsive:true,maintainAspectRatio:false,plugins:{legend:{display:false}},scales:{y:{ticks:{font:{size:10}}},y2:{position:'right',ticks:{font:{size:10}},grid:{drawOnChartArea:false}},x:{ticks:{font:{size:10}}}}}
+});
+</script>
+</body>
+</html>

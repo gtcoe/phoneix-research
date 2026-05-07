@@ -1,5 +1,5 @@
 "use client";
-import type { PhoenixData } from "@/lib/data";
+import type { PhoenixData } from "@/types";
 
 export function ExcessReturnsChart({ data }: { data: PhoenixData }) {
   const W = 820,
@@ -24,7 +24,7 @@ export function ExcessReturnsChart({ data }: { data: PhoenixData }) {
   const bW = (gW / excessData.length) * 0.7;
 
   return (
-    <svg width="100%" viewBox={`0 0 ${W} ${H}`} style={{ display: "block" }}>
+    <svg width="100%" viewBox={`0 0 ${W} ${H}`} className="block">
       {/* Zero line */}
       <line
         x1={padL}

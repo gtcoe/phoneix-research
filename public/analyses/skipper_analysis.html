@@ -1,0 +1,432 @@
+<!DOCTYPE html>
+<html><head><meta charset="utf-8">
+<style>
+*{box-sizing:border-box;margin:0;padding:0}
+body{font-family:system-ui,sans-serif;padding:16px;background:#fff;color:#1a1a1a;font-size:14px}
+h1{font-size:20px;font-weight:500;margin-bottom:3px}
+.sub{font-size:12px;color:#666;margin-bottom:14px}
+.sg{display:grid;grid-template-columns:repeat(auto-fill,minmax(110px,1fr));gap:8px;margin-bottom:16px}
+.sc{background:#f5f5f3;border-radius:8px;padding:10px 12px}
+.sl{font-size:10px;color:#666;margin-bottom:2px}
+.sv{font-size:17px;font-weight:500}
+.tab-row{display:flex;gap:5px;flex-wrap:wrap;margin-bottom:14px}
+.tab{font-size:11.5px;padding:5px 13px;border-radius:20px;border:1px solid #ddd;background:#fff;cursor:pointer;white-space:nowrap}
+.tab.active{background:#1a1a1a;color:#fff;border-color:#1a1a1a}
+.panel{display:none}.panel.active{display:block}
+.sh{font-size:10.5px;font-weight:500;color:#666;text-transform:uppercase;letter-spacing:.06em;margin:16px 0 7px;padding-bottom:5px;border-bottom:1px solid #eee}
+table{width:100%;border-collapse:collapse;font-size:12px;margin:8px 0}
+th{font-size:10.5px;font-weight:500;color:#666;padding:5px 7px;text-align:left;border-bottom:1px solid #eee;white-space:nowrap}
+td{padding:8px 7px;border-bottom:1px solid #eee;color:#1a1a1a;vertical-align:top}
+tr:last-child td{border-bottom:none}
+tr:hover td{background:#fafaf9}
+.g{color:#0F6E56;font-weight:500}.r{color:#A32D2D;font-weight:500}.a{color:#854F0B;font-weight:500}.b{color:#185FA5;font-weight:500}
+.badge{display:inline-block;font-size:10px;padding:2px 7px;border-radius:10px;white-space:nowrap}
+.bg{background:#E1F5EE;color:#0F6E56}.bb{background:#E6F1FB;color:#185FA5}.ba{background:#FAEEDA;color:#854F0B}.br{background:#FCEBEB;color:#A32D2D}.bgray{background:#f1f0e8;color:#5F5E5A}.bpow{background:#FFF3E0;color:#E65100}.btd{background:#E8F5E9;color:#1B5E20}
+.warn{padding:10px 13px;margin:8px 0;border-left:3px solid;font-size:12px;line-height:1.65}
+.warn.success{background:#E1F5EE;border-color:#1D9E75;color:#04342C}
+.warn.caution{background:#FAEEDA;border-color:#BA7517;color:#412402}
+.warn.danger{background:#FCEBEB;border-color:#A32D2D;color:#712B13}
+.warn.info{background:#E6F1FB;border-color:#185FA5;color:#042C53}
+.warn.power{background:#FFF3E0;border-color:#F57C00;color:#3E2723}
+.warn.td{background:#E8F5E9;border-color:#2E7D32;color:#1B3A1E}
+.warn strong{font-weight:500}
+.chart-wrap{position:relative;width:100%;height:240px;margin:8px 0}
+.kpi-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:10px;margin:10px 0}
+.kpi{background:#f5f5f3;border-radius:8px;padding:10px 12px;border-left:3px solid transparent}
+.kpi.green{border-left-color:#1D9E75}.kpi.amber{border-left-color:#EF9F27}.kpi.blue{border-left-color:#378ADD}.kpi.red{border-left-color:#A32D2D}.kpi.power{border-left-color:#F57C00}.kpi.td{border-left-color:#2E7D32}
+.kpi-l{font-size:10px;color:#666;margin-bottom:3px}
+.kpi-v{font-size:17px;font-weight:500}
+.kpi-s{font-size:10px;color:#888;margin-top:2px}
+.point{display:flex;gap:9px;align-items:flex-start;padding:9px 0;border-bottom:1px solid #eee;font-size:12px;line-height:1.6;color:#555}
+.point:last-child{border-bottom:none}
+.point strong{color:#1a1a1a;font-weight:500}
+.dot{width:19px;height:19px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:10px;font-weight:500;flex-shrink:0;margin-top:1px}
+.dg{background:#E1F5EE;color:#0F6E56}.dr{background:#FCEBEB;color:#A32D2D}.da{background:#FAEEDA;color:#854F0B}.db{background:#E6F1FB;color:#185FA5}.dp{background:#FFF3E0;color:#E65100}.dt{background:#E8F5E9;color:#1B5E20}
+.two-col{display:grid;grid-template-columns:1fr 1fr;gap:12px}
+.pane{border:1px solid #ddd;border-radius:10px;padding:13px}
+.pane-h{font-size:13px;font-weight:500;margin-bottom:9px}
+.scenario{border:1px solid #ddd;border-radius:10px;padding:13px;margin-bottom:9px}
+.sc-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:7px;margin:9px 0}
+.sc-cell{background:#f5f5f3;border-radius:6px;padding:7px 9px}
+.sc-l{font-size:10px;color:#666}
+.sc-v{font-size:12px;font-weight:500;margin-top:2px}
+.comp-h{display:grid;grid-template-columns:160px repeat(3,1fr);background:#f5f5f3;border-radius:8px 8px 0 0;overflow:hidden}
+.comp-row{display:grid;grid-template-columns:160px repeat(3,1fr);border-bottom:1px solid #eee}
+.comp-row:last-child{border-bottom:none}
+.cc{padding:8px 10px;font-size:11px;border-right:1px solid #eee}
+.cc:last-child{border-right:none}
+.cc-h{font-size:10px;font-weight:500;color:#444;padding:8px 10px;border-right:1px solid #ddd}
+.cc-h:last-child{border-right:none}
+.cc-label{color:#666;font-size:11px}
+.winner-cell{background:#E1F5EE}.mid-cell{background:#FAEEDA}.loser-cell{background:#fff5f5}
+.verdict-card{border-radius:10px;padding:13px 15px;margin-bottom:10px}
+.vc-h{font-size:13px;font-weight:500;margin-bottom:6px}
+.vc-b{font-size:12px;line-height:1.65;color:#444}
+.sector-card{border:1px solid #ddd;border-radius:10px;overflow:hidden;margin-bottom:10px}
+.sc-hdr{padding:10px 13px;display:flex;justify-content:space-between;align-items:center;background:#fafaf9}
+.sc-nm{font-size:13px;font-weight:500}
+.sc-tg{font-size:11px;color:#666;margin-top:2px}
+.sc-bd{padding:10px 13px;font-size:12px;line-height:1.65;color:#555;border-top:1px solid #eee}
+.sc-bd strong{color:#1a1a1a}
+.guid-card{border-radius:10px;padding:12px 14px;margin-bottom:8px;border-left:3px solid #F57C00;background:#FFF3E0}
+.guid-h{font-size:11.5px;font-weight:500;margin-bottom:4px;color:#E65100}
+.guid-b{font-size:11.5px;color:#333;line-height:1.6}
+.guid-s{font-size:10px;color:#888;margin-top:4px}
+.guid-card.beat{background:#E1F5EE;border-left-color:#1D9E75}.guid-card.beat .guid-h{color:#0F6E56}
+.guid-card.miss{background:#FCEBEB;border-left-color:#A32D2D}.guid-card.miss .guid-h{color:#A32D2D}
+.guid-card.watch{background:#FAEEDA;border-left-color:#BA7517}.guid-card.watch .guid-h{color:#854F0B}
+.order-box{background:#E8F5E9;border:2px solid #2E7D32;border-radius:10px;padding:13px;margin:10px 0}
+.ob-h{font-size:14px;font-weight:500;color:#1B5E20;margin-bottom:6px}
+.ob-b{font-size:12px;color:#1a1a1a;line-height:1.65}
+.seg-grid{display:grid;grid-template-columns:1fr 1fr;gap:9px;margin:10px 0}
+.seg-card{border:1px solid #ddd;border-radius:8px;padding:11px 13px}
+.seg-nm{font-weight:500;font-size:12px;margin-bottom:3px}
+.seg-tag{font-size:10px;color:#666;margin-bottom:5px}
+.seg-bd{font-size:11.5px;color:#555;line-height:1.55}
+.seg-val{font-size:11.5px;font-weight:500;margin-top:5px}
+.cap-bar{display:flex;align-items:center;gap:8px;margin:5px 0}
+.cb-label{font-size:11px;color:#555;width:170px;flex-shrink:0}
+.cb-track{flex:1;background:#f5f5f3;border-radius:4px;height:16px;overflow:hidden}
+.cb-fill{height:100%;border-radius:4px;display:flex;align-items:center;padding-left:6px;font-size:9px;font-weight:600;color:#fff}
+.cb-val{font-size:11px;font-weight:500;width:100px;text-align:right}
+.flag{background:#FAEEDA;border:1px solid #BA7517;border-radius:8px;padding:10px 13px;margin:7px 0;font-size:12px;color:#412402;line-height:1.6}
+.flag strong{color:#854F0B}
+</style>
+</head>
+<body>
+
+<h1>Skipper Limited — Deep Investment Analysis</h1>
+<div class="sub">NSE: SKIPPER · BSE: 538562 · Transmission towers + EPC + Polymer pipes · Founded 1981 · Kolkata · MD: Sharan Bansal / Devesh Bansal (family) · FY26 results board meeting April 28, 2026 · 65+ countries · ₹5,129 Cr mcap</div>
+
+<div class="sg">
+  <div class="sc"><div class="sl">Market cap</div><div class="sv" style="color:#854F0B">~₹5,129 Cr</div></div>
+  <div class="sc"><div class="sl">FY26 revenue</div><div class="sv" style="color:#1D9E75">₹4,644 Cr</div></div>
+  <div class="sc"><div class="sl">FY26 PAT</div><div class="sv" style="color:#1D9E75">₹145.8 Cr</div></div>
+  <div class="sc"><div class="sl">H1 FY26 PAT growth</div><div class="sv" style="color:#1D9E75">+37% YoY</div></div>
+  <div class="sc"><div class="sl">EBITDA margin</div><div class="sv" style="color:#1D9E75">~10.3%</div></div>
+  <div class="sc"><div class="sl">Order book (Q2 end)</div><div class="sv" style="color:#185FA5">₹8,820 Cr</div></div>
+  <div class="sc"><div class="sl">Final order book</div><div class="sv" style="color:#185FA5">₹9,000 Cr+</div></div>
+  <div class="sc"><div class="sl">Bidding pipeline</div><div class="sv" style="color:#185FA5">₹30,000 Cr+</div></div>
+  <div class="sc"><div class="sl">Trailing PE</div><div class="sv" style="color:#854F0B">~35x</div></div>
+  <div class="sc"><div class="sl">Promoter holding</div><div class="sv" style="color:#1D9E75">66.5%</div></div>
+  <div class="sc"><div class="sl">Revenue CAGR (guided)</div><div class="sv" style="color:#1D9E75">25%</div></div>
+  <div class="sc"><div class="sl">52-wk range</div><div class="sv" style="color:#A32D2D">₹327–₹588</div></div>
+</div>
+
+<div class="tab-row">
+  <button class="tab active" onclick="show('revenue',this)">Revenue history</button>
+  <button class="tab" onclick="show('sectorKPI',this)">Sector KPIs</button>
+  <button class="tab" onclick="show('business',this)">Business model</button>
+  <button class="tab" onclick="show('guidance',this)">Guidance</button>
+  <button class="tab" onclick="show('risks',this)">Risks</button>
+  <button class="tab" onclick="show('scenarios',this)">3x scenarios</button>
+  <button class="tab" onclick="show('sectormap',this)">Sector landscape</button>
+  <button class="tab" onclick="show('compare',this)">Full comparison</button>
+  <button class="tab" onclick="show('verdict',this)">Verdict</button>
+</div>
+
+<!-- REVENUE -->
+<div id="revenue" class="panel active">
+  <div class="sh">Revenue &amp; profit history — consistent 14%+ growth with margin expansion trend</div>
+
+  <div class="order-box">
+    <div class="ob-h">🏆 Record order book of ₹9,000+ Cr = 1.94x current market cap</div>
+    <div class="ob-b">Skipper's order book reached an all-time high of ₹9,000+ Cr as of March 2026 — with 89% domestic (PGCIL, State Discoms) and 11% export (Australia Transgrid, Middle East utilities). The bidding pipeline exceeds ₹30,000 Cr — 6x the market cap. This is the most important number in the entire analysis: at ₹5,129 Cr market cap, you're buying nearly 1.75 years of forward revenue visibility at current run rates. The EPC division alone is executing ~5,000 circuit kilometres of EHV and HVDC projects — India's most comprehensive T&D EPC execution pipeline. Board meeting April 28, 2026 will reveal full FY26 results.</div>
+  </div>
+
+  <div class="chart-wrap"><canvas id="rc"></canvas></div>
+  <div style="display:flex;gap:14px;font-size:11.5px;color:#666;margin-bottom:10px">
+    <span><span style="display:inline-block;width:10px;height:10px;border-radius:2px;background:#2E7D32;margin-right:4px"></span>Revenue ₹ Cr</span>
+    <span><span style="display:inline-block;width:10px;height:10px;border-radius:2px;background:#1D9E75;margin-right:4px"></span>PAT ₹ Cr</span>
+    <span><span style="display:inline-block;width:10px;height:10px;border-radius:2px;background:#A5D6A7;margin-right:4px"></span>Projected</span>
+  </div>
+
+  <table>
+    <tr><th>Period</th><th>Revenue</th><th>Growth</th><th>EBITDA%</th><th>PAT</th><th>PAT%</th><th>Order book</th><th>Key event</th></tr>
+    <tr><td>FY22</td><td>~₹2,200 Cr</td><td>—</td><td>~9%</td><td>~₹45 Cr</td><td class="a">2%</td><td>~₹3,000 Cr</td><td>Post-COVID recovery. T&D demand resuming. Steel prices volatile compressing margins.</td></tr>
+    <tr><td>FY23</td><td>~₹2,850 Cr</td><td class="g">+30%</td><td>~9.5%</td><td>~₹80 Cr</td><td class="a">2.8%</td><td>~₹4,500 Cr</td><td>T&D supercycle begins. PGCIL Green Energy Corridor I+ orders. Polymer business expanding.</td></tr>
+    <tr><td>FY24</td><td>~₹3,700 Cr</td><td class="g">+30%</td><td>~9.8%</td><td>~₹120 Cr</td><td class="a">3.2%</td><td>~₹6,000 Cr</td><td>Record quarter and annual revenue. First 765 kV supply to PGCIL. Export revenue growing.</td></tr>
+    <tr><td>FY25</td><td>~₹4,100 Cr</td><td class="g">+11%</td><td>~10%</td><td>~₹140 Cr</td><td class="a">3.4%</td><td>₹7,458 Cr</td><td>Highest ever annual PAT. Most preferred 765 kV supplier to PGCIL. India's heaviest 400 kV pole fabricated.</td></tr>
+    <tr><td>Q1 FY26</td><td>₹1,254 Cr</td><td class="g">+15% YoY</td><td>10.1%</td><td>₹44.7 Cr</td><td class="a">3.6%</td><td>₹8,520 Cr</td><td>Highest-ever Q1 revenue. Record EBITDA margin 10.1%. 765 kV projects in Rajasthan + AP. Middle East design order.</td></tr>
+    <tr><td>Q2 FY26</td><td>₹1,262 Cr</td><td class="g">+14% YoY</td><td>10.4%</td><td>₹44.9 Cr</td><td class="a">3.6%</td><td>₹8,820 Cr</td><td>Highest-ever Q2 revenue. Export +27% YoY. 765 kV EPC orders in Rajasthan + MP. Australia Transgrid 500kV delivery.</td></tr>
+    <tr><td>H1 FY26</td><td>₹2,516 Cr</td><td class="g">+14% YoY</td><td>10.3%</td><td>₹89.5 Cr</td><td class="a">3.6%</td><td>₹8,820 Cr</td><td>H1 PAT before exceptional +37%. Export revenue ₹523 Cr (+27%). Strong EPC execution 5,000 circuit km.</td></tr>
+    <tr><td>FY26 (full year)</td><td>₹4,644 Cr</td><td class="g">+13% YoY</td><td>~10.3%</td><td>₹145.8 Cr</td><td class="a">3.1%</td><td>₹9,000+ Cr</td><td>FY26 results board meeting April 28, 2026. 75,000 MTPA additional capacity commissioned. SAP S/4HANA live.</td></tr>
+    <tr><td>FY27E</td><td>~₹5,800–6,200 Cr</td><td class="g">+25–34%</td><td>~11–12%</td><td>~₹220–290 Cr</td><td class="a">~3.8–4.7%</td><td>₹10,000+ Cr</td><td>25% revenue CAGR management target. Capacity at 525,000 MTPA. Substation EPC first revenues. UAE + USA subsidiaries contributing.</td></tr>
+    <tr><td>FY28E</td><td>~₹7,500–8,500 Cr</td><td class="g">+29–37%</td><td>~12–13%</td><td>~₹380–520 Cr</td><td class="g">~5–6%</td><td>₹12,000+ Cr</td><td>600,000 MTPA capacity target. Full substation EPC. International hubs (UAE, USA, Brazil, LATAM). Margin expansion on scale.</td></tr>
+  </table>
+
+  <div class="warn caution"><strong>The PAT margin challenge:</strong> Skipper's PAT margin at 3.1–3.6% looks very thin for a company of this quality. This reflects: (1) Steel/material pass-through (most tower contracts pass material cost to client, deflating revenue margin %), (2) High depreciation from recent capex, (3) Interest costs on growth capex. The more relevant metric is EBITDA margin (10.3%) and PAT growth trajectory (+32–37%). As capacity utilisation improves and scale benefits kick in, PAT margins should expand toward 5–6% by FY28.</div>
+</div>
+
+<!-- SECTOR KPIs -->
+<div id="sectorKPI" class="panel">
+  <div class="sh">Power T&D infrastructure sector KPIs — what matters for Skipper</div>
+  <div class="warn td"><strong>Five critical metrics for a T&D structures + EPC company:</strong> (1) Order book coverage ratio (higher = better), (2) EBITDA margin per tonne (reflects pricing power), (3) Export share (USD revenue = hedge + margin premium), (4) EPC vs supply mix (EPC = higher revenue but same or lower margin), and (5) Capacity utilisation (closer to full = better fixed cost absorption).</div>
+  <div class="kpi-grid">
+    <div class="kpi td"><div class="kpi-l">Order book (end Q2 FY26)</div><div class="kpi-v">₹8,820 Cr</div><div class="kpi-s">1.9x FY26 revenue — strong visibility</div></div>
+    <div class="kpi td"><div class="kpi-l">Bidding pipeline</div><div class="kpi-v">₹30,000+ Cr</div><div class="kpi-s">6x mcap — demand far exceeds capacity</div></div>
+    <div class="kpi green"><div class="kpi-l">EBITDA margin (H1 FY26)</div><div class="kpi-v">10.3%</div><div class="kpi-s">All-time high — expanding</div></div>
+    <div class="kpi green"><div class="kpi-l">Export revenue growth</div><div class="kpi-v">+27% YoY</div><div class="kpi-s">H1 FY26 — 65+ countries</div></div>
+    <div class="kpi power"><div class="kpi-l">Capacity target (FY28)</div><div class="kpi-v">600K MTPA</div><div class="kpi-s">From 450K current — +33% capacity</div></div>
+    <div class="kpi green"><div class="kpi-l">Promoter holding</div><div class="kpi-v">66.5%</div><div class="kpi-s">No pledge — stable</div></div>
+  </div>
+
+  <div class="sh">Capacity expansion roadmap — ₹525K MTPA in FY26 → 600K by FY28</div>
+  <div class="cap-bar"><div class="cb-label">Existing capacity (FY25)</div><div class="cb-track"><div class="cb-fill" style="width:75%;background:#2E7D32">Operational</div></div><div class="cb-val g">450,000 MTPA</div></div>
+  <div class="cap-bar"><div class="cb-label">Additional 75K commissioned FY26</div><div class="cb-track"><div class="cb-fill" style="width:87%;background:#2E7D32">Live</div></div><div class="cb-val g">525,000 MTPA</div></div>
+  <div class="cap-bar"><div class="cb-label">FY28 target (600K MTPA)</div><div class="cb-track"><div class="cb-fill" style="width:100%;background:#A5D6A7;color:#1B5E20">Target</div></div><div class="cb-val b">600,000 MTPA</div></div>
+
+  <div class="sh">India T&D supercycle — the structural demand engine</div>
+  <table>
+    <tr><th>Driver</th><th>Scale</th><th>Skipper benefit</th></tr>
+    <tr><td><strong>PGCIL Green Energy Corridor I+II+III</strong></td><td>₹3.5 lakh Cr T&D capex by 2032</td><td class="g">Primary client — PGCIL is largest customer; 765 kV preferred supplier</td></tr>
+    <tr><td><strong>HVDC corridors (renewables)</strong></td><td>₹1–3 lakh Cr over 10 years</td><td class="g">765 kV + HVDC towers — Skipper executes at 5,000 circuit km</td></tr>
+    <tr><td><strong>State Discom upgrades (RDSS scheme)</strong></td><td>₹3 lakh Cr</td><td class="a">Distribution level towers + poles — expanding product scope</td></tr>
+    <tr><td><strong>Railway electrification + OHE</strong></td><td>₹80,000 Cr</td><td class="a">Railway structures — growing but smaller contribution</td></tr>
+    <tr><td><strong>Global energy transition (exports)</strong></td><td>Multi-trillion USD global</td><td class="g">Australia, Middle East, USA, LATAM — 65+ countries, +27% export growth</td></tr>
+    <tr><td><strong>Telecom tower rollout (5G)</strong></td><td>₹1–2 lakh Cr</td><td class="a">Telecom towers — complementary to T&D structures manufacturing</td></tr>
+  </table>
+</div>
+
+<!-- BUSINESS MODEL -->
+<div id="business" class="panel">
+  <div class="sh">Three business segments — understanding Skipper's full picture</div>
+  <div class="warn td"><strong>Skipper has three segments that serve different markets but share manufacturing infrastructure.</strong> The synergy: the same steel fabrication plants that make transmission towers also make telecom towers, railway structures, and polymer pipe extrusion lines. This operational flexibility across segments is a genuine competitive advantage — capacity can be reallocated to whichever segment has the highest demand.</div>
+
+  <div class="seg-grid">
+    <div class="seg-card">
+      <div class="seg-nm" style="color:#2E7D32">⚡ Engineering — T&D Structures (core, ~70% of revenue)</div>
+      <div class="seg-tag">Transmission towers · Monopoles · EPC · Export supply · Railway structures</div>
+      <div class="seg-bd">Skipper manufactures power transmission and distribution structures — the steel lattice towers and monopoles that carry electricity across India's grid. Three sub-segments: (1) Supply: manufacturing and supplying towers to utilities (PGCIL, SEBs). Lower revenue per tonne but predictable. (2) EPC: engineering, procurement, AND construction — Skipper does the civil work too. Higher revenue, similar or lower EBITDA per rupee. Currently executing ~5,000 circuit km. (3) Export: supplies to 65+ countries (Australia, Middle East, North America, Africa). USD-denominated, premium pricing. H1 FY26 export +27% YoY. New subsidiaries: UAE (Abu Dhabi), USA (Texas), Brazil (São Paulo, LATAM LTDA).</div>
+      <div class="seg-val" style="color:#2E7D32">H1 FY26: Highest-ever revenue; export +27% YoY to ₹523 Cr</div>
+    </div>
+    <div class="seg-card">
+      <div class="seg-nm" style="color:#2E7D32">🌊 Polymer — Pipes &amp; Fittings (growing, ~25% of revenue)</div>
+      <div class="seg-tag">CPVC · UPVC · Agriculture pipes · Plumbing · Marina brand (bath fittings)</div>
+      <div class="seg-bd">Skipper is a significant polymer pipe manufacturer — CPVC, UPVC, HDPE pipes for agriculture irrigation and building plumbing. Brand name: 'Skipper' (pipes) + 'Marina' (bath fittings, water storage tanks). Distribution: 70,000+ retail touchpoints across India. This segment competes directly with Astral, Supreme Industries, Prince Pipes — established premium players. Skipper is positioned as a value player with competitive pricing. The polymer segment provides geographic diversification (sells across India via retail) vs Engineering (project-based, lumpy). Margin profile: ~12–15% EBITDA — slightly better than Engineering.</div>
+      <div class="seg-val" style="color:#2E7D32">~₹1,100–1,200 Cr annual revenue; 12–15% EBITDA</div>
+    </div>
+  </div>
+
+  <div class="sh">The EPC pivot — highest revenue but execution-intensive</div>
+  <div class="two-col" style="margin:10px 0">
+    <div class="pane">
+      <div class="pane-h">EPC (Engineering + Procurement + Construction)</div>
+      <div class="point"><div class="dot dt">+</div><div><strong>Why EPC is strategically critical:</strong> EPC converts Skipper from a "tower supplier" to a "project executor" — the distinction that separates commodity manufacturers from premium contractors. PGCIL prefers EPC vendors for large 765 kV projects (fewer contractors to manage, single-point accountability). EPC orders are typically 30–50% larger than pure supply orders. Market perception: EPC = higher quality, higher trust.</div></div>
+      <div class="point"><div class="dot dp">!</div><div><strong>EPC challenges:</strong> Higher working capital intensity (must manage civil contractors, land approvals, right-of-way). Execution risk — project delays can compress margin. Skipper currently executing 5,000+ circuit km — at this scale, even 1% project slippage is meaningful. Management's Q1 FY26 comment: "exceptional operational execution" suggests it's going well.</div></div>
+    </div>
+    <div class="pane">
+      <div class="pane-h">Substation EPC — new high-value entry</div>
+      <div class="point"><div class="dot dg">+</div><div><strong>Skipper diversifying into civil and electrical components within T&D:</strong> FY26 saw diversification into civil (foundations, civil structures) and electrical components (switchgear, control panels) within T&D projects. This further captures the project value chain — from towers (structural) to full substation (electrical + civil + structural). As a complete EPC contractor, Skipper commands higher ASP and better client stickiness.</div></div>
+      <div class="point"><div class="dot dg">+</div><div><strong>Second Tower Testing Station commissioned:</strong> India's largest Tower Monopole Load Testing Station was India's first (2020). The second test bed facility further differentiates Skipper — utilities (PGCIL, Middle East, Australia) require tower certification before procurement. Having in-house testing accelerates approval cycles and is a genuine competitive moat.</div></div>
+    </div>
+  </div>
+</div>
+
+<!-- GUIDANCE -->
+<div id="guidance" class="panel">
+  <div class="sh">Guidance analysis — management is credible and consistent</div>
+  <div class="warn td"><strong>Skipper management has a very good guidance track record.</strong> The 25% revenue CAGR target was first stated in Q4 FY25 and reaffirmed at Q1 FY26 and Q2 FY26 — management doesn't change its targets based on quarter-to-quarter noise. They also provide specific milestones (capacity numbers, order book figures) that can be independently verified. This transparency is above average for a mid-cap capital goods company.</div>
+
+  <div class="guid-card beat">
+    <div class="guid-h">✓ Record quarterly revenues every quarter in FY26 — guidance delivered</div>
+    <div class="guid-b">Q1 FY26 = highest-ever Q1 revenue. Q2 FY26 = highest-ever Q2 revenue. Management guided continued growth in Q3 and Q4 FY26. With full FY26 revenue at ₹4,644 Cr (+13% YoY) and board meeting April 28, the full picture is days away. The 25% revenue CAGR target implies FY26 at ₹5,125 Cr — actual ₹4,644 Cr is 90.6% of the 25% CAGR target (FY25 was ~₹4,100 Cr). Slightly below the target — but management is guiding for acceleration in H2 FY27 onwards with capacity additions and new segments.</div>
+    <div class="guid-s">Revenue delivery credibility: 8/10. Slight miss on 25% CAGR for FY26 (~13% actual) but record absolute numbers and improving margins.</div>
+  </div>
+
+  <div class="guid-card beat">
+    <div class="guid-h">✓ Order book guidance: Highest-ever every quarter — delivered consistently</div>
+    <div class="guid-b">Management guided "order book to reach new highs each quarter" — delivered: Q4 FY25: ₹7,458 Cr → Q1 FY26: ₹8,520 Cr → Q2 FY26: ₹8,820 Cr → March 2026: ₹9,000+ Cr. This consistent progression is one of the strongest indicators that demand is real and growing. The bidding pipeline of ₹30,000 Cr (6x market cap) provides substantial headroom for continued order wins. H1 FY26 order inflows: ₹3,220 Cr — +33% YoY.</div>
+    <div class="guid-s">Order book credibility: 10/10. Every quarter has been a new record. The pipeline is validated by PGCIL contract wins.</div>
+  </div>
+
+  <div class="guid-card watch">
+    <div class="guid-h">⚠ 25% revenue CAGR FY26 — slight miss (~13% actual); reaffirmed for FY27-28</div>
+    <div class="guid-b">The 25% revenue CAGR was guided for FY26 onward. FY26 actual revenue (₹4,644 Cr vs FY25 ~₹4,100 Cr) implies only 13% growth — significantly below the 25% target. Management explanation: H2 FY26 (Q3+Q4) is significantly stronger than H1 (the 60/40 split is typical for capital goods). Also: the new capacity (75,000 MTPA commissioned in FY26) and EPC ramp take time to generate revenue. Management has reaffirmed 25% CAGR for FY27 and FY28 as the base — with FY26 seen as a transition year. The order book of ₹9,000 Cr strongly supports FY27 revenue of ₹5,800–6,000 Cr (25%+ growth).</div>
+    <div class="guid-s">CAGR credibility: 7/10. FY26 was a mild miss; FY27 target is well-supported by order book math.</div>
+  </div>
+
+  <div class="guid-card">
+    <div class="guid-h">FY27–28 guidance: 25% CAGR + margin expansion toward 12–13% + global scale</div>
+    <div class="guid-b">Management's long-term roadmap: Revenue ₹5,800–6,200 Cr in FY27 (25% growth from ₹4,644 Cr); ₹7,500–8,500 Cr in FY28. EBITDA margins expanding from 10.3% toward 12–13% on scale (fixed cost absorption, higher EPC mix, premium export pricing). Global expansion via UAE (Abu Dhabi), USA (Texas), Brazil subsidiaries — each becoming local supply/service hubs for the respective regions. Capacity at 600,000 MTPA by FY28. If delivered: FY28 PAT of ₹380–520 Cr at 15x PE = ₹5,700–7,800 Cr mcap from current ₹5,129 Cr. At 20x PE = ₹7,600–10,400 Cr = 1.5–2x from today. 3x needs FY29–30 PAT of ₹650–750 Cr at 22x PE.</div>
+    <div class="guid-s">Credibility: 7/10. All three components (revenue growth, margin expansion, global scale) are individually credible. Together they compound.</div>
+  </div>
+
+  <div class="sh">Guidance scorecard</div>
+  <table>
+    <tr><th>Item</th><th>Credibility</th><th>Base case</th><th>Key risk</th></tr>
+    <tr><td>FY26 revenue ₹4,644 Cr (+13%)</td><td class="g">9/10 — actual data confirmed</td><td>Confirmed ₹4,644 Cr</td><td>Already delivered</td></tr>
+    <tr><td>FY27 revenue 25% growth</td><td class="g">8/10 — order book supports</td><td>₹5,800–6,000 Cr</td><td>Project execution delays; steel price impact</td></tr>
+    <tr><td>EBITDA margin 11–12% FY27</td><td class="a">7/10 — trajectory positive</td><td>10.8–11.5%</td><td>Steel prices spike; EPC mix reduces blended margin</td></tr>
+    <tr><td>Capacity 600K MTPA by FY28</td><td class="g">8/10 — funded, in progress</td><td>575–600K MTPA</td><td>Equipment delivery delays</td></tr>
+    <tr><td>Export revenue contribution (15%+)</td><td class="a">7/10 — +27% H1 FY26</td><td>15–18% by FY28</td><td>Geopolitical disruption; currency risk</td></tr>
+    <tr><td>Acuité rating withdrawn (Apr 2026)</td><td class="r">Concern — needs explanation</td><td>CARE A1 maintained</td><td>Watch for credit rating changes in Q4 results</td></tr>
+  </table>
+</div>
+
+<!-- RISKS -->
+<div id="risks" class="panel">
+  <div class="sh">Risks — the honest picture for a capital-goods mid-cap</div>
+
+  <div class="flag"><strong>⚠️ Acuité withdrew long- and short-term ratings for Skipper's ₹3,432 Cr facilities on April 21, 2026 (just days ago).</strong> Rating withdrawal is unusual and can indicate: (a) the company requested withdrawal to switch to another agency, or (b) the company failed to provide adequate information for rating assessment. Given CARE A1 is maintained for some facilities, this may be an agency change, not a credit concern — but investors should check management commentary at the April 28 board meeting for clarification.</div>
+
+  <div class="point"><div class="dot da">1</div><div><strong>PAT margin at 3.1–3.6% is thin — interest coverage may be a concern.</strong><br>Skipper's PAT margin of 3.1% (FY26: ₹145 Cr on ₹4,644 Cr revenue) is thin for a ₹5,129 Cr market cap company. This is structural for capital goods manufacturers with significant steel pass-through in EPC. Screener flags "company's cost of borrowing seems high." The Rights Issue raised ₹199 Cr — suggesting the company needed external equity. Watch the debt-to-equity ratio carefully. If EPC ramp-up requires more working capital debt without proportional EBITDA growth, interest coverage could fall further.</div></div>
+
+  <div class="point"><div class="dot dr">2</div><div><strong>Steel price volatility directly impacts margins.</strong><br>Transmission towers are predominantly steel. Steel prices fluctuate 20–30% annually. Most supply contracts have price-escalation clauses (protecting Skipper if steel rises), but the timing of cost recovery vs cost incurrence creates quarterly margin volatility. EPC contracts are more complex — partial escalation clauses mean Skipper bears some steel price risk. In FY22 (high steel prices), PAT margin was ~2%; in FY24 (lower steel), it recovered. This cyclicality is structural and unavoidable.</div></div>
+
+  <div class="point"><div class="dot dr">3</div><div><strong>Market cap ₹5,129 Cr — 3x needs ₹15,387 Cr. Requires PAT of ₹700+ Cr.</strong><br>For Garvit's 3x-in-3-years goal, Skipper at ₹5,129 Cr needs to reach ₹15,387 Cr. At 20x PE, this requires PAT of ₹769 Cr. Skipper's FY26 PAT is ₹145.8 Cr. Getting to ₹769 Cr requires 5.3x PAT growth in 3 years — which implies a 74% annual PAT growth rate from FY26. Even in the bull case (FY28 PAT ₹520 Cr at 22x PE = ₹11,440 Cr), 3x is not achievable in 3 years. 2x is more realistic by FY27–FY28. This is the fundamental math problem at the current market cap.</div></div>
+
+  <div class="point"><div class="dot da">4</div><div><strong>ROE at 9.72% (3-year avg) is low relative to quality expectations.</strong><br>Low ROE reflects: (1) Large capex cycles (building tower manufacturing plants requires significant capital), (2) Working capital locked in EPC projects (6–18 month billing cycles), (3) Polymer segment's distribution working capital. As EPC projects complete and receivables are collected, ROE should improve toward 15%+ by FY28. But until then, the stock trades on growth expectations rather than current returns — making it valuation-sensitive to any guidance miss.</div></div>
+
+  <div class="point"><div class="dot dg">+</div><div><strong>Genuine strengths that justify a premium multiple:</strong><br>World's leading T&D structure manufacturer (65+ countries). India's most preferred 765 kV supplier to PGCIL. Record order book ₹9,000 Cr growing every quarter. India's largest tower load testing station (two test beds now) — differentiates from competition. EBITDA margins at all-time highs (10.3–10.4%) and improving. Export revenue +27% YoY — growing global footprint. International subsidiaries (UAE, USA, Brazil) position Skipper as a global supplier. IIT Kharagpur R&D collaboration for galvanising process — engineering moat. SAP S/4HANA live — operational efficiency. 66.5% promoter holding, no pledge. 25% revenue CAGR guidance with ₹30,000 Cr bidding pipeline.</div></div>
+</div>
+
+<!-- SCENARIOS -->
+<div id="scenarios" class="panel">
+  <div class="sh">Three scenarios — from current ~₹450 (~₹5,129 Cr mcap)</div>
+  <div class="warn power"><strong>The 3x challenge at ₹5,129 Cr market cap:</strong> 3x = ₹15,387 Cr. At reasonable PE of 20x, this requires PAT of ₹769 Cr. Skipper's FY26 PAT: ₹145.8 Cr. The PAT needs to grow 5.3x in 3 years. Even at 40% annual PAT growth (exceptional), PAT reaches ₹395 Cr by FY29 — not ₹769 Cr. 3x is not a 3-year story. This is a 4–5 year story at best. For Garvit's specific 3-year 3x goal, the math doesn't work from current levels.</div>
+
+  <div class="scenario" style="border-left:3px solid #2E7D32">
+    <div style="font-size:13px;font-weight:500;color:#1B5E20;margin-bottom:8px">Bull case — 2–2.5x in 3 years: 25% CAGR delivers + margin expansion + PE re-rating</div>
+    <div class="sc-grid">
+      <div class="sc-cell"><div class="sc-l">FY28 revenue</div><div class="sc-v">₹7,500–8,500 Cr</div></div>
+      <div class="sc-cell"><div class="sc-l">FY28 EBITDA%</div><div class="sc-v">12–13%</div></div>
+      <div class="sc-cell"><div class="sc-l">FY28 PAT</div><div class="sc-v">₹400–520 Cr</div></div>
+      <div class="sc-cell"><div class="sc-l">PE (growth capital goods)</div><div class="sc-v">20–25x</div></div>
+      <div class="sc-cell"><div class="sc-l">FY28 mcap</div><div class="sc-v">₹8,000–13,000 Cr</div></div>
+      <div class="sc-cell"><div class="sc-l">Return from ₹5,129 Cr</div><div class="sc-v">1.6–2.5x</div></div>
+    </div>
+    <div style="font-size:11.5px;color:#333;margin-top:8px"><strong>What must happen:</strong> 25% CAGR sustained for FY27+FY28. EBITDA margins reach 12%+ on scale. Export contributes 18–20% (USD premium pricing). International subsidiaries win first large orders. Acuité rating issue resolved (CARE maintained). No major steel spike. At 22x PE on ₹500 Cr PAT = ₹11,000 Cr = 2.1x from ₹5,129 Cr. <strong>Bull case delivers 2–2.5x — a good return but not 3x in 3 years.</strong></div>
+  </div>
+
+  <div class="scenario" style="border-left:3px solid #378ADD">
+    <div style="font-size:13px;font-weight:500;color:#185FA5;margin-bottom:8px">Base case — 1.3–1.8x in 2–3 years: Revenue grows 20%, PAT grows 30–35%</div>
+    <div class="sc-grid">
+      <div class="sc-cell"><div class="sc-l">FY27 revenue</div><div class="sc-v">₹5,500–6,000 Cr</div></div>
+      <div class="sc-cell"><div class="sc-l">FY27 PAT</div><div class="sc-v">₹200–250 Cr</div></div>
+      <div class="sc-cell"><div class="sc-l">Forward PE</div><div class="sc-v">18–22x</div></div>
+      <div class="sc-cell"><div class="sc-l">FY27 mcap</div><div class="sc-v">₹3,600–5,500 Cr</div></div>
+      <div class="sc-cell"><div class="sc-l">Return</div><div class="sc-v">0.7–1.1x</div></div>
+      <div class="sc-cell"><div class="sc-l">FY28 cumul.</div><div class="sc-v">1.3–1.8x by FY28</div></div>
+    </div>
+    <div style="font-size:11.5px;color:#333;margin-top:8px">Revenue grows 20–25%, margins expand to 11%, PAT grows 35–40%. FY27 PAT ₹220 Cr at 20x PE = ₹4,400 Cr mcap = slight decline from current. FY28 PAT ₹350 Cr at 22x PE = ₹7,700 Cr = 1.5x. <strong>Base case 1.5x by FY28 — below 3x goal.</strong></div>
+  </div>
+
+  <div class="scenario" style="border-left:3px solid #A32D2D">
+    <div style="font-size:13px;font-weight:500;color:#A32D2D;margin-bottom:8px">Bear case — -25 to -35%: Rating issue + steel spike + EPC delays</div>
+    <div class="sc-grid">
+      <div class="sc-cell"><div class="sc-l">Trigger</div><div class="sc-v">Acuité withdrawal escalates</div></div>
+      <div class="sc-cell"><div class="sc-l">Trigger</div><div class="sc-v">Steel +30% YoY</div></div>
+      <div class="sc-cell"><div class="sc-l">Trigger</div><div class="sc-v">EPC project delays → cost overruns</div></div>
+      <div class="sc-cell"><div class="sc-l">FY27 PAT</div><div class="sc-v">₹120–150 Cr</div></div>
+      <div class="sc-cell"><div class="sc-l">PE at 18x</div><div class="sc-v">₹2,160–2,700 Cr</div></div>
+      <div class="sc-cell"><div class="sc-l">Stock impact</div><div class="sc-v">-50% mcap</div></div>
+    </div>
+    <div style="font-size:11.5px;color:#333;margin-top:8px"><strong>Bear probability: 20–25%.</strong> Rating issues + steel cost spike could compress FY27 margins to 9%. PAT stays flat at ₹130–150 Cr. PE de-rates from 35x to 18x on earnings disappointment. Stock revisits ₹290–330 range (near 52-week low).</div>
+  </div>
+
+  <table style="margin-top:10px">
+    <tr><th>Target</th><th>Mcap needed</th><th>Driver</th><th>Timeline</th><th>Probability</th></tr>
+    <tr><td>3x (₹15,387 Cr)</td><td>₹15,387 Cr</td><td>FY29 PAT ₹700 Cr at 22x PE</td><td>FY29–FY30</td><td class="r">10–15%</td></tr>
+    <tr><td>2.5x (₹12,822 Cr)</td><td>₹12,822 Cr</td><td>FY28 PAT ₹520 Cr at 25x PE</td><td>FY28</td><td class="a">18–22%</td></tr>
+    <tr><td>2x (₹10,258 Cr)</td><td>₹10,258 Cr</td><td>FY28 PAT ₹415 Cr at 25x PE</td><td>FY28</td><td class="a">25–30%</td></tr>
+    <tr><td>Bear (-30%: ₹3,590 Cr)</td><td>₹3,590 Cr</td><td>Rating issue + steel spike + PAT miss</td><td>—</td><td class="a">20–25%</td></tr>
+  </table>
+</div>
+
+<!-- SECTOR LANDSCAPE -->
+<div id="sectormap" class="panel">
+  <div class="sh">T&D structure + EPC sector landscape — where Skipper sits</div>
+  <div class="warn td"><strong>India's power transmission sector is a concentrated quality oligopoly.</strong> Four Indian companies dominate: KEC International (₹25,000+ Cr mcap), Kalpataru Projects (₹20,000+ Cr), Sterlite Power (unlisted), and Skipper (₹5,129 Cr). All four are beneficiaries of India's ₹3.5 lakh Cr T&D capex plan by 2032. The difference: KEC and Kalpataru are primarily EPC contractors; Skipper is unique as a manufacturer-cum-EPC player. This manufacturing integration creates margin differentiation.</div>
+
+  <div class="sector-card">
+    <div class="sc-hdr"><div><div class="sc-nm">KEC International — closest peer, much larger</div><div class="sc-tg">₹25,000+ Cr mcap · ₹20,000+ Cr revenue · T&D EPC + Railways + Buildings</div></div><span class="badge ba">Peer — too large for 3x</span></div>
+    <div class="sc-bd">KEC is Skipper's most direct comparable — both do T&D EPC. KEC is 5x larger. At ₹25,000 Cr mcap, 3x = ₹75,000 Cr — not a realistic 3-year target. However, KEC's margins (EBITDA ~8–10%) are similar to or slightly below Skipper's (10.3%) — partly because Skipper owns the tower manufacturing. KEC's order book (₹35,000+ Cr) is far larger, providing longer revenue visibility. <strong>KEC is a quality hold, not a 3x play.</strong></div>
+  </div>
+
+  <div class="sector-card">
+    <div class="sc-hdr"><div><div class="sc-nm">Skipper — Your stock in analysis</div><div class="sc-tg">₹5,129 Cr mcap · Manufacturing + EPC + Polymer · 65+ countries · Record order book</div></div><span class="badge ba">Good quality — wrong size for 3x in 3 years</span></div>
+    <div class="sc-bd">Skipper is a genuinely high-quality T&D infrastructure company. The manufacturing moat (own tower plants, two test stations, 600K MTPA capacity by FY28), export reach (65+ countries), PGCIL preferred supplier status (765 kV), and record order book (₹9,000 Cr) make it a blue-chip mid-cap in the sector. The challenge for Garvit's 3x-in-3-years goal: at ₹5,129 Cr mcap, 3x requires PAT of ₹770 Cr — which is FY29–30 on current trajectory. Not impossible — just not in 3 years.</div>
+  </div>
+</div>
+
+<!-- FULL COMPARISON -->
+<div id="compare" class="panel">
+  <div class="sh">Skipper vs T&D EPC peers — full comparison</div>
+  <div style="border:1px solid #ddd;border-radius:10px;overflow:hidden;font-size:11px">
+    <div class="comp-h">
+      <div class="cc-h" style="background:#f5f5f3">Metric</div>
+      <div class="cc-h" style="background:#E8F5E9;color:#1B5E20">Skipper ← Your stock</div>
+      <div class="cc-h" style="background:#E6F1FB;color:#185FA5">KEC International</div>
+      <div class="cc-h" style="background:#f5f5f3">Kalpataru Projects</div>
+    </div>
+    <div class="comp-row"><div class="cc cc-label">Market cap</div><div class="cc winner-cell">₹5,129 Cr</div><div class="cc loser-cell">₹25,000+ Cr</div><div class="cc loser-cell">₹20,000+ Cr</div></div>
+    <div class="comp-row"><div class="cc cc-label">Revenue (FY26)</div><div class="cc loser-cell">₹4,644 Cr</div><div class="cc winner-cell">~₹20,000 Cr</div><div class="cc winner-cell">~₹18,000 Cr</div></div>
+    <div class="comp-row"><div class="cc cc-label">Order book</div><div class="cc mid-cell">₹9,000 Cr (1.94x rev)</div><div class="cc winner-cell">₹35,000+ Cr (1.75x)</div><div class="cc winner-cell">₹55,000+ Cr (3x)</div></div>
+    <div class="comp-row"><div class="cc cc-label">EBITDA margin</div><div class="cc winner-cell">10.3% (improving)</div><div class="cc mid-cell">~8–10%</div><div class="cc mid-cell">~10–12%</div></div>
+    <div class="comp-row"><div class="cc cc-label">Manufacturing integration</div><div class="cc winner-cell">Yes — own tower plants (unique moat)</div><div class="cc loser-cell">No — pure EPC</div><div class="cc loser-cell">No — pure EPC</div></div>
+    <div class="comp-row"><div class="cc cc-label">Export market</div><div class="cc winner-cell">65+ countries (+27% YoY)</div><div class="cc winner-cell">40+ countries (strong)</div><div class="cc mid-cell">Growing</div></div>
+    <div class="comp-row"><div class="cc cc-label">Polymer segment</div><div class="cc winner-cell">Yes — diversification + margin</div><td class="cc">No</td><td class="cc">No</td></div>
+    <div class="comp-row"><div class="cc cc-label">Promoter holding</div><div class="cc winner-cell">66.5% (strong)</div><div class="cc mid-cell">~55%</div><div class="cc mid-cell">~40%</div></div>
+    <div class="comp-row"><div class="cc cc-label">Trailing PE</div><div class="cc mid-cell">~35x (moderate for growth)</div><div class="cc mid-cell">~30x</div><div class="cc loser-cell">~35–40x</div></div>
+    <div class="comp-row"><div class="cc cc-label">PAT margin</div><div class="cc loser-cell">3.1% (thin)</div><td class="cc a">~3–4%</td><td class="cc a">~4–5%</td></div>
+    <div class="comp-row"><div class="cc cc-label">3x probability (3yr)</div><div class="cc mid-cell">10–15% (mcap too large)</div><td class="cc loser-cell">5–8% (much larger)</td><td class="cc loser-cell">5–8%</td></div>
+    <div class="comp-row"><div class="cc cc-label">Best for Garvit</div><div class="cc">Best quality in sector — wrong size for 3x in 3 years. Better for 5-year wealth compounder post-3x goal.</div><div class="cc">Too large for 3x; quality T&D EPC exposure</div><div class="cc">Too large; longer project lifecycle</div></div>
+  </div>
+
+  <div class="warn td" style="margin-top:12px"><strong>The critical sector insight:</strong> All three T&D companies (Skipper, KEC, Kalpataru) are genuinely high-quality infrastructure businesses — beneficiaries of India's ₹3.5 lakh Cr power transmission supercycle. But all three are too large for Garvit's 3x-in-3-years math. Skipper is the smallest (and thus has the best 3x odds — 10–15%), but even Skipper's math requires exceptional execution through FY29. The right question for Garvit: should T&D sector exposure come via Skipper (quality mid-cap) or via companies like Bondada Engineering (smaller, better 3x math) or TARIL (already in portfolio, with HVDC catalyst)? Both Bondada and TARIL provide T&D infrastructure exposure at smaller market caps with better 3x probability.</div>
+</div>
+
+<!-- VERDICT -->
+<div id="verdict" class="panel">
+  <div class="sh">The definitive verdict for Garvit's 3x goal</div>
+
+  <div class="verdict-card" style="background:#E8F5E9;border:1px solid #81C784">
+    <div class="vc-h" style="color:#1B5E20">Skipper Limited — Verdict: Excellent company, wrong stage for Garvit's 3x-in-3-years goal. Consider only as a long-term 5–7 year compounder AFTER the current 3x portfolio goal is achieved.</div>
+    <div class="vc-b">Skipper is one of India's finest infrastructure companies in the power transmission space. The case is genuinely compelling:<br><br><strong>What makes Skipper exceptional:</strong><br>• World's leading T&D structure manufacturer with presence in 65+ countries<br>• India's most preferred 765 kV supplier to PGCIL — the highest-value transmission segment<br>• Record order book ₹9,000 Cr growing every quarter (+33% H1 FY26 inflows)<br>• 25% revenue CAGR target with ₹30,000 Cr bidding pipeline<br>• Own tower testing stations (competitive moat) — competitors must rely on external labs<br>• Export growth +27% YoY — USD-denominated, premium pricing<br>• EBITDA margins at all-time highs (10.3%) and expanding<br>• International expansion (UAE, USA, Brazil) positioning as global infrastructure supplier<br>• Polymer segment providing diversification and retail distribution network<br>• 66.5% promoter holding, no pledge<br><br><strong>Why the 3x math doesn't work in 3 years:</strong><br>₹5,129 Cr market cap → 3x = ₹15,387 Cr. At 20x PE, PAT needed = ₹769 Cr. FY26 PAT = ₹145.8 Cr. Growth needed = 5.3x in 3 years = 74% annual PAT growth. Even the most optimistic scenario (FY28 PAT ₹520 Cr at 25x PE = ₹13,000 Cr) achieves only 2.5x — and that requires perfect execution of the 25% CAGR through FY27 and FY28 simultaneously.<br><br><strong>Portfolio-specific recommendation:</strong><br>Skipper is NOT currently in Garvit's portfolio — this is a potential new entry evaluation. The verdict: do not buy Skipper at this stage. The portfolio already has excellent T&D/power infrastructure exposure through:<br>• Bondada Engineering (₹1.47L, 9.1/10 conviction — solar EPC + T&D adjacent)<br>• TARIL (₹63K, transformer manufacturer with HVDC breakthrough)<br>• DEE Development (₹43K, oil/gas piping + industrial)<br><br>Adding Skipper would create sector overlap without improving 3x probability. Instead, redirect any new capital to EFC I (₹4K vs ₹40K recommendation) and RPSG Ventures (₹0 vs ₹35K).<br><br><strong>When to reconsider Skipper:</strong> After the 3-year 3x portfolio goal is achieved, Skipper is an ideal wealth-preservation compounder for the next phase. At that point, ₹2–3 lakh in Skipper as a 5–7 year hold would be excellent — the company will be significantly larger, HVDC-qualified, and internationally established.</div>
+  </div>
+
+  <div class="sh">Allocation recommendation</div>
+  <table>
+    <tr><th>Action</th><th>Amount</th><th>Rationale</th></tr>
+    <tr><td><span class="badge br">DO NOT BUY — not in portfolio, should not enter now</span></td><td>₹0</td><td>₹5,129 Cr mcap is too large for 3x in 3 years. T&D exposure already covered by Bondada + TARIL. Better-conviction underweights (EFC I, RPSG Ventures) need funding first.</td></tr>
+    <tr><td><span class="badge ba">Watch April 28 board meeting results</span></td><td>Watchlist</td><td>FY26 full-year results + dividend + Acuité rating clarification. If PAT significantly beats ₹145 Cr and rating concern is resolved → reassess.</td></tr>
+    <tr><td><span class="badge bg">Better alternative: Bondada Engineering + TARIL</span></td><td>Already held</td><td>Both provide India T&D infrastructure exposure at better 3x math: Bondada (₹3,895 Cr mcap, 35–40% 3x prob) and TARIL (₹3,500 Cr mcap, with HVDC catalyst). Add to these instead.</td></tr>
+  </table>
+
+  <div class="sh">Key triggers — if reconsidering Skipper after current portfolio goals</div>
+  <table>
+    <tr><th>#</th><th>Trigger</th><th>Status</th><th>Impact</th></tr>
+    <tr><td>1</td><td>April 28 FY26 full year results + Acuité rating clarification</td><td class="a">Days away</td><td>🔥 Most urgent. PAT above ₹160 Cr + clean credit picture → stock re-rates. Rating concern if unresolved = avoid.</td></tr>
+    <tr><td>2</td><td>Order book crosses ₹10,000 Cr</td><td class="g">₹9,000+ Cr — close</td><td>🟢 Symbolic milestone. Every ₹1,000 Cr increase = ₹1,000 Cr revenue that doesn't need to be won again.</td></tr>
+    <tr><td>3</td><td>Export revenue reaches 18–20% of total</td><td class="a">~11% now, target 15%+</td><td>🟢 USD revenue = margin premium + geographic diversification. Watch quarterly export disclosure.</td></tr>
+    <tr><td>4</td><td>International subsidiaries (UAE/USA) first major orders</td><td class="a">Incorporated; no orders yet</td><td>🟢 First $50M+ order from UAE/USA = global player transformation begins.</td></tr>
+    <tr><td>5</td><td>EBITDA margin crossing 11%</td><td class="a">10.3% current — improving</td><td>🟢 11%+ sustained = scale benefits confirmed → margin expansion re-rating narrative strengthens.</td></tr>
+    <tr><td>6</td><td>Market correction to ₹350 (52-week low area)</td><td class="a">52-wk low: ₹327</td><td>🟢 At ₹350 (₹4,000 Cr mcap), the 3x math to ₹12,000 Cr requires FY28 PAT ₹500 Cr at 24x — more achievable. Consider if drops to this level.</td></tr>
+  </table>
+
+  <div class="warn td" style="margin-top:12px"><strong>One-line verdict:</strong> Skipper Limited is India's best-positioned integrated T&D structure manufacturer + EPC player — with a record ₹9,000+ Cr order book, 25% revenue CAGR guidance, 65+ country export reach, all-time high EBITDA margins, and a compelling global expansion play via UAE/USA/Brazil subsidiaries. The business is genuinely excellent. But at ₹5,129 Cr market cap, the 3x-in-3-years PAT math (needs ₹769 Cr PAT by FY28 vs current ₹145 Cr) makes this a 5–7 year wealth compounder, not a 3-year aggressive growth play. For Garvit's current portfolio goal, capital is better deployed in EFC I and RPSG Ventures (both underweighted vs conviction). Add Skipper to watchlist; revisit after FY26 results and after 3x portfolio goal is achieved.</div>
+</div>
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/4.4.1/chart.umd.js"></script>
+<script>
+function show(id,btn){
+  document.querySelectorAll('.tab').forEach(t=>t.classList.remove('active'));
+  document.querySelectorAll('.panel').forEach(p=>p.classList.remove('active'));
+  btn.classList.add('active');
+  document.getElementById(id).classList.add('active');
+}
+new Chart(document.getElementById('rc').getContext('2d'),{
+  type:'bar',
+  data:{
+    labels:['FY22','FY23','FY24','FY25','Q1FY26','Q2FY26','FY26','FY27E','FY28E'],
+    datasets:[
+      {label:'Revenue ₹ Cr',data:[2200,2850,3700,4100,1254,1262,4644,5900,7800],backgroundColor:['#2E7D32','#2E7D32','#2E7D32','#2E7D32','#1D9E75','#1D9E75','#1D9E75','#A5D6A7','#A5D6A7'],borderRadius:4,yAxisID:'y'},
+      {label:'PAT ₹ Cr',data:[45,80,120,140,44.7,44.9,145.8,235,430],type:'line',borderColor:'#1D9E75',backgroundColor:'transparent',pointBackgroundColor:'#1D9E75',tension:0.3,yAxisID:'y2'}
+    ]
+  },
+  options:{responsive:true,maintainAspectRatio:false,plugins:{legend:{display:false}},scales:{y:{ticks:{font:{size:10}}},y2:{position:'right',ticks:{font:{size:10}},grid:{drawOnChartArea:false}},x:{ticks:{font:{size:10}}}}}
+});
+</script>
+</body>
+</html>

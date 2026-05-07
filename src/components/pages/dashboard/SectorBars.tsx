@@ -13,22 +13,8 @@ interface Props {
 
 export default function SectorBars({ bars }: Props) {
   return (
-    <div
-      style={{
-        background: "var(--card)",
-        border: "1px solid var(--border)",
-        borderRadius: 12,
-        padding: "16px 20px",
-      }}
-    >
-      <div
-        style={{
-          fontSize: 13,
-          fontWeight: 600,
-          color: "var(--text)",
-          marginBottom: 14,
-        }}
-      >
+    <div className="bg-[var(--card)] border border-[var(--border)] rounded-xl py-4 px-5">
+      <div className="text-sm font-semibold text-[var(--text)] mb-3.5">
         Sector Exposure
       </div>
       <HBarChart data={bars} height={16} />

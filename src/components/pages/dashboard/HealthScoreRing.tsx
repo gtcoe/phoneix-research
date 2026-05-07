@@ -1,5 +1,5 @@
 import { THRESHOLDS } from "@/constants/thresholds";
-import type { PhoenixData } from "@/lib/data";
+import type { PhoenixData } from "@/types";
 
 interface Props {
   score: number;
@@ -30,8 +30,8 @@ export default function HealthScoreRing({ score, components }: Props) {
   ];
 
   return (
-    <div style={{ display: "flex", gap: 24, alignItems: "center" }}>
-      <div style={{ position: "relative", flexShrink: 0 }}>
+    <div className="flex gap-6 items-center">
+      <div className="relative shrink-0">
         <svg width={SIZE} height={SIZE} viewBox={`0 0 ${SIZE} ${SIZE}`}>
           <circle
             cx={cx}
@@ -78,9 +78,7 @@ export default function HealthScoreRing({ score, components }: Props) {
           </text>
         </svg>
       </div>
-      <div
-        style={{ flex: 1, display: "flex", flexDirection: "column", gap: 6 }}
-      >
+      <div className="flex-1 flex flex-col gap-1.5">
         {compRows.map((c) => {
           const c2 =
             c.value >= THRESHOLDS.GOOD_HEALTH_SCORE
@@ -89,40 +87,19 @@ export default function HealthScoreRing({ score, components }: Props) {
                 ? "var(--warn)"
                 : "var(--loss)";
           return (
-            <div
-              key={c.label}
-              style={{ display: "flex", alignItems: "center", gap: 8 }}
-            >
-              <span style={{ fontSize: 11, color: "var(--muted)", width: 90 }}>
+            <div key={c.label} className="flex items-center gap-2">
+              <span className="text-[11px] text-[var(--muted)] w-[90px]">
                 {c.label}
               </span>
-              <div
-                style={{
-                  flex: 1,
-                  background: "var(--border)",
-                  borderRadius: 99,
-                  height: 5,
-                  overflow: "hidden",
-                }}
-              >
+              <div className="flex-1 bg-[var(--border)] rounded-full h-[5px] overflow-hidden">
                 <div
-                  style={{
-                    width: `${c.value}%`,
-                    height: "100%",
-                    background: c2,
-                    borderRadius: 99,
-                    transition: "width .4s ease",
-                  }}
+                  className="h-full rounded-full transition-[width] duration-400"
+                  style={{ width: `${c.value}%`, background: c2 }}
                 />
               </div>
               <span
-                style={{
-                  fontSize: 11,
-                  color: c2,
-                  width: 28,
-                  textAlign: "right",
-                  fontFamily: "var(--font-mono)",
-                }}
+                className="text-[11px] w-7 text-right font-[var(--font-mono)]"
+                style={{ color: c2 }}
               >
                 {c.value}
               </span>

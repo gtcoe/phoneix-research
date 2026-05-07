@@ -1,6 +1,6 @@
 "use client";
 import { fmt } from "@/lib/formatters";
-import type { PhoenixData } from "@/lib/data";
+import type { PhoenixData } from "@/types";
 
 export function TaxPL({ data }: { data: PhoenixData }) {
   const ltcg = data.assets.filter((a) => a.isLTCG);
@@ -37,38 +37,22 @@ export function TaxPL({ data }: { data: PhoenixData }) {
   ];
 
   return (
-    <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: 20 }}>
+    <div className="grid grid-cols-2 gap-5">
       <div>
-        <div
-          style={{
-            fontSize: 13,
-            fontWeight: 600,
-            color: "var(--text)",
-            marginBottom: 16,
-          }}
-        >
+        <div className="text-sm font-semibold text-[var(--text)] mb-4">
           Tax Summary (FY 2025-26)
         </div>
         {summaryRows.map((r) => (
           <div
             key={r.label}
-            style={{
-              display: "flex",
-              justifyContent: "space-between",
-              padding: "10px 0",
-              borderBottom: "1px solid var(--border)",
-            }}
+            className="flex justify-between py-[10px] border-b border-[var(--border)]"
           >
-            <span style={{ fontSize: 13, color: "var(--muted)" }}>
+            <span className="text-sm text-[var(--muted)]">
               {r.label}
             </span>
             <span
-              style={{
-                fontSize: 14,
-                fontWeight: 700,
-                color: r.color,
-                fontFamily: "var(--font-mono)",
-              }}
+              className="text-sm font-bold font-[var(--font-mono)]"
+              style={{ color: r.color }}
             >
               {fmt(Math.abs(r.value))}
               {r.value < 0 ? " debit" : ""}
@@ -77,32 +61,17 @@ export function TaxPL({ data }: { data: PhoenixData }) {
         ))}
       </div>
       <div>
-        <div
-          style={{
-            fontSize: 13,
-            fontWeight: 600,
-            color: "var(--text)",
-            marginBottom: 16,
-          }}
-        >
+        <div className="text-sm font-semibold text-[var(--text)] mb-4">
           Per-Stock Breakdown
         </div>
-        <div style={{ overflowY: "auto", maxHeight: 400 }}>
-          <table
-            style={{ width: "100%", borderCollapse: "collapse", fontSize: 12 }}
-          >
+        <div className="overflow-y-auto max-h-[400px]">
+          <table className="w-full border-collapse text-xs">
             <thead>
-              <tr style={{ borderBottom: "1px solid var(--border)" }}>
+              <tr className="border-b border-[var(--border)]">
                 {["Ticker", "Type", "Gain", "Tax", "Post-Tax"].map((h) => (
                   <th
                     key={h}
-                    style={{
-                      padding: "6px 10px",
-                      textAlign: h === "Ticker" ? "left" : "right",
-                      fontSize: 10,
-                      color: "var(--muted)",
-                      fontWeight: 500,
-                    }}
+                    className={`py-1.5 px-[10px] text-[10px] text-[var(--muted)] font-medium ${h === "Ticker" ? "text-left" : "text-right"}`}
                   >
                     {h}
                   </th>
@@ -113,64 +82,31 @@ export function TaxPL({ data }: { data: PhoenixData }) {
               {[...data.assets]
                 .sort((a, b) => b.gain - a.gain)
                 .map((a) => (
-                  <tr
-                    key={a.id}
-                    style={{ borderBottom: "1px solid var(--border)" }}
-                  >
-                    <td
-                      style={{
-                        padding: "8px 10px",
-                        fontWeight: 600,
-                        color: "var(--text)",
-                        fontFamily: "var(--font-mono)",
-                      }}
-                    >
+                  <tr key={a.id} className="border-b border-[var(--border)]">
+                    <td className="py-2 px-[10px] font-semibold text-[var(--text)] font-[var(--font-mono)]">
                       {a.ticker ?? a.category}
                     </td>
-                    <td style={{ padding: "8px 10px", textAlign: "right" }}>
+                    <td className="py-2 px-[10px] text-right">
                       <span
+                        className={`text-[10px] py-[2px] px-1.5 rounded-full font-semibold ${a.isLTCG ? "text-[var(--gain)]" : "text-[var(--warn)]"}`}
                         style={{
-                          fontSize: 10,
-                          padding: "2px 6px",
-                          borderRadius: 99,
                           background: a.isLTCG
                             ? "rgba(16,185,129,.15)"
                             : "rgba(245,158,11,.15)",
-                          color: a.isLTCG ? "var(--gain)" : "var(--warn)",
-                          fontWeight: 600,
                         }}
                       >
                         {a.isLTCG ? "LTCG" : a.isLTCG === false ? "STCG" : "—"}
                       </span>
                     </td>
                     <td
-                      style={{
-                        padding: "8px 10px",
-                        textAlign: "right",
-                        color: a.gain >= 0 ? "var(--gain)" : "var(--loss)",
-                        fontFamily: "var(--font-mono)",
-                      }}
+                      className={`py-2 px-[10px] text-right font-[var(--font-mono)] ${a.gain >= 0 ? "text-[var(--gain)]" : "text-[var(--loss)]"}`}
                     >
                       {fmt(a.gain)}
                     </td>
-                    <td
-                      style={{
-                        padding: "8px 10px",
-                        textAlign: "right",
-                        color: "var(--loss)",
-                        fontFamily: "var(--font-mono)",
-                      }}
-                    >
+                    <td className="py-2 px-[10px] text-right text-[var(--loss)] font-[var(--font-mono)]">
                       {a.taxAmt != null ? `-${fmt(a.taxAmt)}` : "—"}
                     </td>
-                    <td
-                      style={{
-                        padding: "8px 10px",
-                        textAlign: "right",
-                        color: "var(--gain)",
-                        fontFamily: "var(--font-mono)",
-                      }}
-                    >
+                    <td className="py-2 px-[10px] text-right text-[var(--gain)] font-[var(--font-mono)]">
                       {fmt(a.postTaxGain)}
                     </td>
                   </tr>

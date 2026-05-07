@@ -3,13 +3,15 @@ import { useState } from "react";
 import { fmt } from "@/lib/formatters";
 import { Icon } from "@/components/ui";
 import { useToast } from "@/hooks/useToast";
-import type { PhoenixData } from "@/lib/data";
+import type { PhoenixData } from "@/types";
 import { ReviewCard } from "./ReviewCard";
 
+import { QUARTERS } from "@/constants/review";
+import type { Quarter } from "@/constants/review";
+
 export default function QuarterlyReview({ data }: { data: PhoenixData }) {
-  // Derive available quarters from mock data (backend returns a list via GET /api/v1/reviews/quarters)
-  const QUARTERS = ["Q3 FY26", "Q4 FY26"];
-  const [quarter, setQuarter] = useState("Q4 FY26");
+  // QUARTERS loaded from constants (future: from GET /api/v1/reviews/quarters via reviewService)
+  const [quarter, setQuarter] = useState<Quarter>("Q4 FY26");
   const { show: showToast } = useToast();
 
   // Per-quarter reviewed set — pre-populate from data.quarterlyReviews (backend seed)
@@ -48,46 +50,28 @@ export default function QuarterlyReview({ data }: { data: PhoenixData }) {
       : 0;
 
   return (
-    <div style={{ padding: 24, position: "relative" }}>
+    <div className="p-6 relative">
       {/* Header */}
-      <div
-        style={{
-          display: "flex",
-          justifyContent: "space-between",
-          alignItems: "center",
-          marginBottom: 20,
-        }}
-      >
+      <div className="flex justify-between items-center mb-5">
         <div>
-          <h2
-            style={{
-              fontSize: 20,
-              fontWeight: 700,
-              color: "var(--text)",
-              margin: 0,
-            }}
-          >
+          <h2 className="text-xl font-bold text-[var(--text)] m-0">
             Quarterly Review
           </h2>
-          <p style={{ fontSize: 13, color: "var(--muted)", margin: "4px 0 0" }}>
+          <p className="text-sm text-[var(--muted)] mt-1 mb-0">
             Review each position and update your thesis
           </p>
         </div>
-        <div style={{ display: "flex", gap: 8 }}>
+        <div className="flex gap-2">
           {QUARTERS.map((q) => (
             <button
               key={q}
+              type="button"
               onClick={() => setQuarter(q)}
-              style={{
-                padding: "6px 14px",
-                borderRadius: 8,
-                border: "1px solid var(--border)",
-                background: quarter === q ? "var(--accent)" : "var(--surface)",
-                color: quarter === q ? "#fff" : "var(--muted)",
-                cursor: "pointer",
-                fontSize: 12,
-                fontWeight: 500,
-              }}
+              className={`py-1.5 px-3.5 rounded-lg border border-[var(--border)] cursor-pointer text-xs font-medium ${
+                quarter === q
+                  ? "bg-[var(--accent)] text-white"
+                  : "bg-[var(--surface)] text-[var(--muted)]"
+              }`}
             >
               {q}
             </button>
@@ -96,57 +80,22 @@ export default function QuarterlyReview({ data }: { data: PhoenixData }) {
       </div>
 
       {/* Progress */}
-      <div
-        style={{
-          background: "var(--card)",
-          border: "1px solid var(--border)",
-          borderRadius: 12,
-          padding: "16px 20px",
-          marginBottom: 20,
-        }}
-      >
-        <div
-          style={{
-            display: "flex",
-            justifyContent: "space-between",
-            alignItems: "center",
-            marginBottom: 10,
-          }}
-        >
-          <div style={{ fontSize: 13, fontWeight: 600, color: "var(--text)" }}>
+      <div className="bg-[var(--card)] border border-[var(--border)] rounded-xl py-4 px-5 mb-5">
+        <div className="flex justify-between items-center mb-[10px]">
+          <div className="text-sm font-semibold text-[var(--text)]">
             {quarter} Progress
           </div>
-          <div
-            style={{
-              fontSize: 13,
-              fontFamily: "var(--font-mono)",
-              color: "var(--accent)",
-            }}
-          >
+          <div className="text-sm font-[var(--font-mono)] text-[var(--accent)]">
             {quarterReviewed.size} / {equityAssets.length} reviewed
           </div>
         </div>
-        <div
-          style={{
-            height: 8,
-            background: "var(--border)",
-            borderRadius: 99,
-            overflow: "hidden",
-          }}
-        >
+        <div className="h-2 bg-[var(--border)] rounded-full overflow-hidden">
           <div
-            style={{
-              width: `${progress}%`,
-              height: "100%",
-              background: "var(--accent)",
-              borderRadius: 99,
-              transition: "width .4s ease",
-            }}
+            className="h-full bg-[var(--accent)] rounded-full"
+            style={{ width: `${progress}%`, transition: "width .4s ease" }}
           />
         </div>
-        <div
-          style={{ display: "flex", gap: 20, marginTop: 12, flexWrap: "wrap" }}
-        >
+        <div className="flex gap-5 mt-3 flex-wrap">
           {[
             { label: "Total Positions", value: equityAssets.length },
             { label: "Reviewed", value: quarterReviewed.size },
@@ -154,26 +103,17 @@ export default function QuarterlyReview({ data }: { data: PhoenixData }) {
             { label: "Net Worth", value: fmt(data.netWorth) },
           ].map((m) => (
             <div key={m.label}>
-              <div
-                style={{ fontSize: 10, color: "var(--muted)", marginBottom: 2 }}
-              >
+              <div className="text-[10px] text-[var(--muted)] mb-0.5">
                 {m.label}
               </div>
-              <div
-                style={{
-                  fontSize: 15,
-                  fontWeight: 700,
-                  color: "var(--text)",
-                  fontFamily: "var(--font-mono)",
-                }}
-              >
+              <div className="text-base font-bold text-[var(--text)] font-[var(--font-mono)]">
                 {m.value}
               </div>
             </div>
           ))}
         </div>
         {/* Action summary */}
-        <div style={{ marginTop: 14, display: "flex", gap: 8 }}>
+        <div className="mt-3.5 flex gap-2">
           {[
             { label: "Buy", icon: "↑", color: "var(--gain)" },
             { label: "Hold", icon: "→", color: "var(--warn)" },
@@ -182,18 +122,12 @@ export default function QuarterlyReview({ data }: { data: PhoenixData }) {
           ].map((a) => (
             <div
               key={a.label}
-              style={{
-                padding: "6px 14px",
-                background: "var(--surface)",
-                border: "1px solid var(--border)",
-                borderRadius: 8,
-                fontSize: 12,
-              }}
+              className="py-1.5 px-3.5 bg-[var(--surface)] border border-[var(--border)] rounded-lg text-xs"
             >
-              <span style={{ color: a.color, fontWeight: 700, marginRight: 4 }}>
+              <span className="font-bold mr-1" style={{ color: a.color }}>
                 {a.icon}
               </span>
-              <span style={{ color: "var(--muted)" }}>{a.label}</span>
+              <span className="text-[var(--muted)]">{a.label}</span>
             </div>
           ))}
         </div>
@@ -201,28 +135,19 @@ export default function QuarterlyReview({ data }: { data: PhoenixData }) {
 
       {/* Review cards */}
       {equityAssets.length === 0 ? (
-        <div
-          style={{
-            padding: 80,
-            textAlign: "center",
-            color: "var(--muted)",
-          }}
-        >
+        <div className="p-20 text-center text-[var(--muted)]">
           <Icon name="review" size={40} color="var(--border)" />
-          <div style={{ marginTop: 16, fontSize: 15, fontWeight: 600, color: "var(--text)" }}>
+          <div className="mt-4 text-base font-semibold text-[var(--text)]">
             No positions to review yet
           </div>
-          <div style={{ marginTop: 6, fontSize: 13 }}>
+          <div className="mt-1.5 text-sm">
             Add equity holdings in your portfolio to start quarterly reviews
           </div>
         </div>
       ) : (
         <div
-          style={{
-            display: "grid",
-            gridTemplateColumns: "repeat(auto-fill, minmax(360px, 1fr))",
-            gap: 16,
-          }}
+          className="grid gap-4"
+          style={{ gridTemplateColumns: "repeat(auto-fill, minmax(360px, 1fr))" }}
         >
           {equityAssets.map((a) => (
             <div key={a.id}>

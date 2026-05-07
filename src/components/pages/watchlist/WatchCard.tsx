@@ -2,22 +2,15 @@
 import { useState } from "react";
 import { fmt, fmtPct } from "@/lib/formatters";
 import { Badge, ConvictionDot, Gain, Icon } from "@/components/ui";
-import type { PhoenixData } from "@/lib/data";
+import type { PhoenixData } from "@/types";
+import {
+  STATUS_OPTIONS,
+  STATUS_LABELS,
+  STATUS_COLORS,
+} from "@/constants/watchlist";
+import type { WatchStatus } from "@/constants/watchlist";
 
 type WatchItem = PhoenixData["watchlist"][number];
-
-const STATUS_OPTIONS = ["watching", "interested", "passed"] as const;
-type WatchStatus = (typeof STATUS_OPTIONS)[number];
-const STATUS_LABELS: Record<WatchStatus, string> = {
-  watching: "Watching",
-  interested: "Interested",
-  passed: "Passed",
-};
-const STATUS_COLORS: Record<WatchStatus, string> = {
-  watching: "var(--info)",
-  interested: "var(--warn)",
-  passed: "var(--muted)",
-};
 
 export function WatchCard({
   item,
@@ -44,71 +37,39 @@ export function WatchCard({
     setEditingThesis(false);
   };
 
+  const startEditing = () => {
+    setThesisVal(item.thesis || "");
+    setEditingThesis(true);
+  };
+
   return (
-    <div
-      style={{
-        background: "var(--card)",
-        border: "1px solid var(--border)",
-        borderRadius: 12,
-        overflow: "hidden",
-        transition: "border-color .15s",
-      }}
-    >
+    <div className="bg-[var(--card)] border border-[var(--border)] rounded-xl overflow-hidden transition-colors duration-150">
       {/* Card header */}
-      <div
-        style={{
-          padding: "14px 16px",
-          borderBottom: "1px solid var(--border)",
-        }}
-      >
-        <div
-          style={{
-            display: "flex",
-            justifyContent: "space-between",
-            alignItems: "flex-start",
-          }}
-        >
+      <div className="py-3.5 px-4 border-b border-[var(--border)]">
+        <div className="flex justify-between items-start">
           <div>
-            <div style={{ display: "flex", alignItems: "center", gap: 8 }}>
-              <span
-                style={{
-                  fontSize: 15,
-                  fontWeight: 700,
-                  color: "var(--accent)",
-                  fontFamily: "var(--font-mono)",
-                }}
-              >
+            <div className="flex items-center gap-2">
+              <span className="text-base font-bold text-[var(--accent)] font-[var(--font-mono)]">
                 {item.ticker}
               </span>
-              <span style={{ fontSize: 11, color: "var(--muted)" }}>
+              <span className="text-[11px] text-[var(--muted)]">
                 {item.exchange}
               </span>
               <Badge rec={item.rec} size="xs" />
             </div>
-            <div style={{ fontSize: 12, color: "var(--text)", marginTop: 3 }}>
+            <div className="text-xs text-[var(--text)] mt-[3px]">
               {item.name}
             </div>
-            <div style={{ fontSize: 11, color: "var(--muted)", marginTop: 2 }}>
+            <div className="text-[11px] text-[var(--muted)] mt-0.5">
               {item.sector} · {item.mcap}
             </div>
           </div>
-          <div
-            style={{
-              display: "flex",
-              flexDirection: "column",
-              alignItems: "flex-end",
-              gap: 4,
-            }}
-          >
+          <div className="flex flex-col items-end gap-1">
             <ConvictionDot score={item.conviction} />
             <span
+              className="text-[11px] py-0.5 px-2 rounded-full bg-[var(--surface)] font-semibold"
               style={{
-                fontSize: 11,
-                padding: "2px 8px",
-                borderRadius: 99,
-                background: "var(--surface)",
                 color: STATUS_COLORS[item.status as WatchStatus] || "var(--muted)",
-                fontWeight: 600,
                 border: `1px solid ${STATUS_COLORS[item.status as WatchStatus] || "var(--border)"}`,
               }}
             >
@@ -119,77 +80,47 @@ export function WatchCard({
       </div>
 
       {/* Price info */}
-      <div
-        style={{
-          padding: "12px 16px",
-          display: "grid",
-          gridTemplateColumns: "1fr 1fr 1fr",
-          gap: 8,
-        }}
-      >
+      <div className="py-3 px-4 grid grid-cols-3 gap-2">
         <div>
-          <div style={{ fontSize: 10, color: "var(--muted)", marginBottom: 2 }}>
+          <div className="text-[10px] text-[var(--muted)] mb-0.5">
             Current
           </div>
-          <div
-            style={{
-              fontSize: 14,
-              fontWeight: 700,
-              color: "var(--text)",
-              fontFamily: "var(--font-mono)",
-            }}
-          >
+          <div className="text-sm font-bold text-[var(--text)] font-[var(--font-mono)]">
             ₹{item.currentPrice.toFixed(2)}
           </div>
           <div
-            style={{
-              fontSize: 11,
-              color: priceDiffPct >= 0 ? "var(--gain)" : "var(--loss)",
-              fontFamily: "var(--font-mono)",
-            }}
+            className={`text-[11px] font-[var(--font-mono)] ${
+              priceDiffPct >= 0 ? "text-[var(--gain)]" : "text-[var(--loss)]"
+            }`}
           >
             {priceDiffPct >= 0 ? "+" : ""}
             {priceDiffPct.toFixed(1)}% since add
           </div>
         </div>
         <div>
-          <div style={{ fontSize: 10, color: "var(--muted)", marginBottom: 2 }}>
+          <div className="text-[10px] text-[var(--muted)] mb-0.5">
             Added At
           </div>
-          <div
-            style={{
-              fontSize: 13,
-              color: "var(--text)",
-              fontFamily: "var(--font-mono)",
-            }}
-          >
+          <div className="text-sm text-[var(--text)] font-[var(--font-mono)]">
             ₹{item.priceAtAdd.toFixed(2)}
           </div>
-          <div style={{ fontSize: 10, color: "var(--muted)" }}>
+          <div className="text-[10px] text-[var(--muted)]">
             {item.addedDate}
           </div>
         </div>
         <div>
-          <div style={{ fontSize: 10, color: "var(--muted)", marginBottom: 2 }}>
+          <div className="text-[10px] text-[var(--muted)] mb-0.5">
             Alert
           </div>
           {item.alertPrice ? (
             <>
-              <div
-                style={{
-                  fontSize: 13,
-                  color: "var(--text)",
-                  fontFamily: "var(--font-mono)",
-                }}
-              >
+              <div className="text-sm text-[var(--text)] font-[var(--font-mono)]">
                 ₹{item.alertPrice.toFixed(2)}
               </div>
               <div
-                style={{
-                  fontSize: 11,
-                  color: toAlert! <= 0 ? "var(--gain)" : "var(--muted)",
-                  fontFamily: "var(--font-mono)",
-                }}
+                className={`text-[11px] font-[var(--font-mono)] ${
+                  toAlert! <= 0 ? "text-[var(--gain)]" : "text-[var(--muted)]"
+                }`}
               >
                 {toAlert! <= 0
                   ? "🔔 Triggered"
@@ -197,33 +128,17 @@ export function WatchCard({
               </div>
             </>
           ) : (
-            <div style={{ fontSize: 12, color: "var(--muted)" }}>—</div>
+            <div className="text-xs text-[var(--muted)]">—</div>
           )}
         </div>
       </div>
 
       {/* Actions */}
-      <div
-        style={{
-          padding: "8px 16px 12px",
-          display: "flex",
-          gap: 8,
-          alignItems: "center",
-          flexWrap: "wrap",
-        }}
-      >
+      <div className="pt-2 px-4 pb-3 flex gap-2 items-center flex-wrap">
         <select
           value={item.status}
           onChange={(e) => onStatusChange(item.id, e.target.value as WatchStatus)}
-          style={{
-            padding: "4px 8px",
-            background: "var(--bg)",
-            border: "1px solid var(--border)",
-            borderRadius: 6,
-            color: "var(--text)",
-            fontSize: 12,
-            cursor: "pointer",
-          }}
+          className="py-1 px-2 bg-[var(--bg)] border border-[var(--border)] rounded-md text-[var(--text)] text-xs cursor-pointer"
         >
           {STATUS_OPTIONS.map((s) => (
             <option key={s} value={s}>
@@ -236,127 +151,80 @@ export function WatchCard({
             href={`/analyses/${item.reportFile.replace(/^analyses\//, "")}`}
             target="_blank"
             rel="noreferrer"
-            style={{
-              display: "flex",
-              alignItems: "center",
-              gap: 4,
-              fontSize: 12,
-              color: "var(--accent)",
-              textDecoration: "none",
-              padding: "4px 10px",
-              border: "1px solid var(--border)",
-              borderRadius: 6,
-            }}
+            className="flex items-center gap-1 text-xs text-[var(--accent)] no-underline py-1 px-[10px] border border-[var(--border)] rounded-md"
           >
             <Icon name="external" size={12} />
             Report
           </a>
         )}
         <button
+          type="button"
           onClick={() => setExpanded((v) => !v)}
-          style={{
-            marginLeft: "auto",
-            padding: "4px 10px",
-            background: "none",
-            border: "1px solid var(--border)",
-            borderRadius: 6,
-            cursor: "pointer",
-            fontSize: 12,
-            color: "var(--muted)",
-          }}
+          aria-expanded={expanded}
+          className="ml-auto py-1 px-[10px] bg-transparent border border-[var(--border)] rounded-md cursor-pointer text-xs text-[var(--muted)]"
         >
           {expanded ? "Hide" : "Thesis"}
         </button>
         <button
+          type="button"
           onClick={() => onRemove(item.id)}
-          style={{
-            padding: 4,
-            background: "none",
-            border: "none",
-            cursor: "pointer",
-            color: "var(--muted)",
-            display: "flex",
-          }}
+          aria-label={`Remove ${item.ticker} from watchlist`}
+          className="p-1 bg-transparent border-none cursor-pointer text-[var(--muted)] flex"
         >
           <Icon name="trash" size={14} />
         </button>
       </div>
 
-      {/* Expanded thesis — state local to this card, never leaks */}
+      {/* Expanded thesis */}
       {expanded && (
-        <div
-          style={{
-            padding: "12px 16px",
-            borderTop: "1px solid var(--border)",
-            background: "var(--surface)",
-          }}
-        >
+        <div className="py-3 px-4 border-t border-[var(--border)] bg-[var(--surface)]">
           {editingThesis ? (
-            <div style={{ display: "flex", flexDirection: "column", gap: 8 }}>
+            <div className="flex flex-col gap-2">
               <textarea
                 value={thesisVal}
                 onChange={(e) => setThesisVal(e.target.value)}
                 rows={4}
-                style={{
-                  width: "100%",
-                  padding: 10,
-                  background: "var(--bg)",
-                  border: "1px solid var(--border)",
-                  borderRadius: 6,
-                  color: "var(--text)",
-                  fontSize: 12,
-                  fontFamily: "inherit",
-                  resize: "vertical",
-                  boxSizing: "border-box",
-                }}
+                className="w-full p-2.5 bg-[var(--bg)] border border-[var(--border)] rounded-md text-[var(--text)] text-xs resize-y box-border"
+                style={{ fontFamily: "inherit" }}
               />
-              <div style={{ display: "flex", gap: 8 }}>
+              <div className="flex gap-2">
                 <button
+                  type="button"
                   onClick={saveThesis}
-                  style={{
-                    padding: "5px 14px",
-                    background: "var(--accent)",
-                    border: "none",
-                    borderRadius: 6,
-                    color: "#fff",
-                    cursor: "pointer",
-                    fontSize: 12,
-                  }}
+                  className="py-[5px] px-3.5 bg-[var(--accent)] border-none rounded-md text-white cursor-pointer text-xs"
                 >
                   Save
                 </button>
                 <button
+                  type="button"
                   onClick={() => {
                     setThesisVal(item.thesis || "");
                     setEditingThesis(false);
                   }}
-                  style={{
-                    padding: "5px 14px",
-                    background: "var(--surface2)",
-                    border: "1px solid var(--border)",
-                    borderRadius: 6,
-                    color: "var(--muted)",
-                    cursor: "pointer",
-                    fontSize: 12,
-                  }}
+                  className="py-[5px] px-3.5 bg-[var(--surface2)] border border-[var(--border)] rounded-md text-[var(--muted)] cursor-pointer text-xs"
                 >
                   Cancel
                 </button>
               </div>
             </div>
           ) : (
+            /* M4: thesis edit area — proper keyboard-accessible interactive element */
             <div
-              onClick={() => {
-                setThesisVal(item.thesis || "");
-                setEditingThesis(true);
+              role="button"
+              tabIndex={0}
+              onClick={startEditing}
+              onKeyDown={(e) => {
+                if (e.key === "Enter" || e.key === " ") {
+                  e.preventDefault();
+                  startEditing();
+                }
               }}
-              style={{ cursor: "text" }}
+              aria-label="Click to edit thesis"
+              className="cursor-text outline-none"
             >
-              <div
-                style={{ fontSize: 12, color: "var(--text)", lineHeight: 1.6 }}
-              >
+              <div className="text-xs text-[var(--text)] leading-relaxed">
                 {item.thesis || (
-                  <span style={{ color: "var(--muted)", fontStyle: "italic" }}>
+                  <span className="text-[var(--muted)] italic">
                     Click to add thesis…
                   </span>
                 )}

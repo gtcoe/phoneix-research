@@ -1,60 +1,28 @@
 import { fmt } from "@/lib/formatters";
 import { Gain, StatCard, AreaChart } from "@/components/ui";
-import type { PhoenixData } from "@/lib/data";
+import type { PhoenixData } from "@/types";
 
 export default function NetWorthHero({ data }: { data: PhoenixData }) {
   return (
     <>
       {/* Net worth hero */}
-      <div
-        style={{
-          background: "var(--card)",
-          border: "1px solid var(--border)",
-          borderRadius: 12,
-          padding: "22px 24px",
-        }}
-      >
-        <div
-          style={{
-            display: "flex",
-            justifyContent: "space-between",
-            alignItems: "flex-start",
-            flexWrap: "wrap",
-            gap: 16,
-          }}
-        >
+      <div className="bg-[var(--card)] border border-[var(--border)] rounded-xl py-[22px] px-6">
+        <div className="flex justify-between items-start flex-wrap gap-4">
           <div>
-            <div
-              style={{
-                fontSize: 12,
-                color: "var(--muted)",
-                textTransform: "uppercase",
-                letterSpacing: ".05em",
-                marginBottom: 4,
-              }}
-            >
+            <div className="text-xs text-[var(--muted)] uppercase tracking-[.05em] mb-1">
               Portfolio Value
             </div>
-            <div
-              style={{
-                fontSize: 36,
-                fontWeight: 800,
-                color: "var(--text)",
-                fontFamily: "var(--font-mono)",
-              }}
-            >
+            <div className="text-4xl font-extrabold text-[var(--text)] font-[var(--font-mono)]">
               {fmt(data.netWorth)}
             </div>
-            <div style={{ marginTop: 6, fontSize: 14 }}>
+            <div className="mt-1.5 text-sm">
               <Gain value={data.totalGains} pct={data.totalGainsPct} />
-              <span
-                style={{ fontSize: 12, color: "var(--muted)", marginLeft: 12 }}
-              >
+              <span className="text-xs text-[var(--muted)] ml-3">
                 invested {fmt(data.totalInvested)}
               </span>
             </div>
           </div>
-          <div style={{ display: "flex", gap: 12, flexWrap: "wrap" }}>
+          <div className="flex gap-3 flex-wrap">
             <StatCard
               label="XIRR"
               value={`${data.xirr.toFixed(1)}%`}
@@ -77,22 +45,8 @@ export default function NetWorthHero({ data }: { data: PhoenixData }) {
       </div>
 
       {/* Area chart */}
-      <div
-        style={{
-          background: "var(--card)",
-          border: "1px solid var(--border)",
-          borderRadius: 12,
-          padding: "18px 20px",
-        }}
-      >
-        <div
-          style={{
-            fontSize: 13,
-            fontWeight: 600,
-            color: "var(--text)",
-            marginBottom: 14,
-          }}
-        >
+      <div className="bg-[var(--card)] border border-[var(--border)] rounded-xl py-[18px] px-5">
+        <div className="text-sm font-semibold text-[var(--text)] mb-3.5">
           Portfolio Growth
         </div>
         <AreaChart

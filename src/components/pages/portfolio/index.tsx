@@ -1,8 +1,8 @@
 "use client";
-import React, { useState } from "react";
+import { useMemo, useState } from "react";
 import { Icon } from "@/components/ui";
 import LogTransactionModal from "@/components/common/modals/LogTransactionModal";
-import type { PhoenixData } from "@/lib/data";
+import type { PhoenixData } from "@/types";
 import SummaryCards from "./SummaryCards";
 import FilterBar from "./FilterBar";
 import HoldingRow from "./HoldingRow";
@@ -38,41 +38,41 @@ export default function Portfolio({ data }: { data: PhoenixData }) {
     else { setSortKey(key); setSortAsc(false); }
   };
 
-  const filtered = data.assets.filter(
-    (a) => category === "All" || a.category === category,
+  const filtered = useMemo(
+    () => data.assets.filter((a) => category === "All" || a.category === category),
+    [data.assets, category],
   );
-  const sorted = [...filtered].sort((a, b) => {
-    const av = a[sortKey] as number | string;
-    const bv = b[sortKey] as number | string;
-    const cmp =
-      typeof av === "string"
-        ? (av as string).localeCompare(bv as string)
-        : (av as number) - (bv as number);
-    return sortAsc ? cmp : -cmp;
-  });
+  const sorted = useMemo(
+    () => [...filtered].sort((a, b) => {
+      const av = a[sortKey] as number | string;
+      const bv = b[sortKey] as number | string;
+      const cmp =
+        typeof av === "string"
+          ? (av as string).localeCompare(bv as string)
+          : (av as number) - (bv as number);
+      return sortAsc ? cmp : -cmp;
+    }),
+    [filtered, sortKey, sortAsc],
+  );
 
-  const catTotals = data.assets.reduce<
-    Record<string, { invested: number; current: number }>
-  >((acc, a) => {
-    if (!acc[a.category]) acc[a.category] = { invested: 0, current: 0 };
-    acc[a.category].invested += a.invested;
-    acc[a.category].current += a.current;
-    return acc;
-  }, {});
+  const catTotals = useMemo(
+    () => data.assets.reduce<Record<string, { invested: number; current: number }>>(
+      (acc, a) => {
+        if (!acc[a.category]) acc[a.category] = { invested: 0, current: 0 };
+        acc[a.category].invested += a.invested;
+        acc[a.category].current += a.current;
+        return acc;
+      },
+      {},
+    ),
+    [data.assets],
+  );
 
-  const thStyle = (k: SortKey): React.CSSProperties => ({
-    padding: "8px 10px",
-    fontSize: 11,
-    color: sortKey === k ? "var(--accent)" : "var(--muted)",
-    fontWeight: 500,
-    cursor: "pointer",
-    userSelect: "none",
-    whiteSpace: "nowrap",
-    letterSpacing: ".04em",
-  });
+  const thBase = "py-2 px-[10px] text-[11px] font-medium cursor-pointer select-none whitespace-nowrap tracking-[.04em]";
+  const thColor = (k: SortKey) => sortKey === k ? "var(--accent)" : "var(--muted)";
 
   return (
-    <div style={{ padding: 24 }}>
+    <div className="p-6">
       <SummaryCards
         catTotals={catTotals}
         activeCategory={category}
@@ -90,52 +90,43 @@ export default function Portfolio({ data }: { data: PhoenixData }) {
           onClose={() => setShowLogTx(false)}
         />
       )}
-      <div
-        style={{
-          background: "var(--card)",
-          border: "1px solid var(--border)",
-          borderRadius: 12,
-          overflow: "hidden",
-        }}
-      >
-        <table
-          style={{ width: "100%", borderCollapse: "collapse", fontSize: 13 }}
-        >
-          <thead style={{ background: "var(--surface)" }}>
+      <div className="bg-[var(--card)] border border-[var(--border)] rounded-xl overflow-hidden">
+        <table className="w-full border-collapse text-sm">
+          <thead className="bg-[var(--surface)]">
             <tr>
-              <th style={{ ...thStyle("name"), textAlign: "left", paddingLeft: 16 }} onClick={() => handleSort("name")}>
-                <span style={{ display: "flex", alignItems: "center", gap: 4 }}>
+              <th className={`${thBase} text-left pl-4`} style={{ color: thColor("name") }} onClick={() => handleSort("name")}>
+                <span className="flex items-center gap-1">
                   Company <SortIcon sortKey={sortKey} sortAsc={sortAsc} k="name" />
                 </span>
               </th>
-              <th style={{ ...thStyle("current"), textAlign: "right" }} onClick={() => handleSort("current")}>
-                <span style={{ display: "flex", alignItems: "center", justifyContent: "flex-end", gap: 4 }}>
+              <th className={`${thBase} text-right`} style={{ color: thColor("current") }} onClick={() => handleSort("current")}>
+                <span className="flex items-center justify-end gap-1">
                   Value <SortIcon sortKey={sortKey} sortAsc={sortAsc} k="current" />
                 </span>
               </th>
-              <th style={{ ...thStyle("gainPct"), textAlign: "right" }} onClick={() => handleSort("gainPct")}>
-                <span style={{ display: "flex", alignItems: "center", justifyContent: "flex-end", gap: 4 }}>
+              <th className={`${thBase} text-right`} style={{ color: thColor("gainPct") }} onClick={() => handleSort("gainPct")}>
+                <span className="flex items-center justify-end gap-1">
                   Gain <SortIcon sortKey={sortKey} sortAsc={sortAsc} k="gainPct" />
                 </span>
               </th>
-              <th style={{ ...thStyle("xirr"), textAlign: "right" }} onClick={() => handleSort("xirr")}>
-                <span style={{ display: "flex", alignItems: "center", justifyContent: "flex-end", gap: 4 }}>
+              <th className={`${thBase} text-right`} style={{ color: thColor("xirr") }} onClick={() => handleSort("xirr")}>
+                <span className="flex items-center justify-end gap-1">
                   XIRR <SortIcon sortKey={sortKey} sortAsc={sortAsc} k="xirr" />
                 </span>
               </th>
-              <th style={{ padding: "8px 10px", fontSize: 11, color: "var(--muted)", fontWeight: 500 }}>Rec</th>
-              <th style={{ ...thStyle("conviction"), textAlign: "right" }} onClick={() => handleSort("conviction")}>
-                <span style={{ display: "flex", alignItems: "center", justifyContent: "flex-end", gap: 4 }}>
+              <th className="py-2 px-[10px] text-[11px] text-[var(--muted)] font-medium">Rec</th>
+              <th className={`${thBase} text-right`} style={{ color: thColor("conviction") }} onClick={() => handleSort("conviction")}>
+                <span className="flex items-center justify-end gap-1">
                   Conv <SortIcon sortKey={sortKey} sortAsc={sortAsc} k="conviction" />
                 </span>
               </th>
-              <th style={{ ...thStyle("holdingDays"), textAlign: "right" }} onClick={() => handleSort("holdingDays")}>
-                <span style={{ display: "flex", alignItems: "center", justifyContent: "flex-end", gap: 4 }}>
+              <th className={`${thBase} text-right`} style={{ color: thColor("holdingDays") }} onClick={() => handleSort("holdingDays")}>
+                <span className="flex items-center justify-end gap-1">
                   Holding <SortIcon sortKey={sortKey} sortAsc={sortAsc} k="holdingDays" />
                 </span>
               </th>
-              <th style={{ padding: "8px 10px", fontSize: 11, color: "var(--muted)", fontWeight: 500, textAlign: "right" }}>Target</th>
-              <th style={{ padding: "8px 10px", fontSize: 11, color: "var(--muted)", fontWeight: 500, textAlign: "right", paddingRight: 16 }}>Trend</th>
+              <th className="py-2 px-[10px] text-[11px] text-[var(--muted)] font-medium text-right">Target</th>
+              <th className="py-2 px-[10px] text-[11px] text-[var(--muted)] font-medium text-right pr-4">Trend</th>
             </tr>
           </thead>
           <tbody>
@@ -150,7 +141,7 @@ export default function Portfolio({ data }: { data: PhoenixData }) {
           </tbody>
         </table>
         {sorted.length === 0 && (
-          <div style={{ padding: 40, textAlign: "center", color: "var(--muted)", fontSize: 14 }}>
+          <div className="p-10 text-center text-[var(--muted)] text-sm">
             No holdings in this category
           </div>
         )}

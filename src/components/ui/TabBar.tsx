@@ -10,34 +10,13 @@ export function TabBar({
   onChange: (id: string) => void;
 }) {
   return (
-    <div
-      style={{
-        display: "flex",
-        gap: 2,
-        borderBottom: "1px solid var(--border)",
-        marginBottom: 20,
-      }}
-    >
+    <div className="flex gap-0.5 border-b border-[var(--border)] mb-5">
       {tabs.map((t) => (
         <button
           key={t.id}
+          type="button"
           onClick={() => onChange(t.id)}
-          style={{
-            padding: "8px 16px",
-            fontSize: 13,
-            fontWeight: 500,
-            border: "none",
-            background: "transparent",
-            cursor: "pointer",
-            color: active === t.id ? "var(--accent)" : "var(--muted)",
-            borderBottom:
-              active === t.id
-                ? "2px solid var(--accent)"
-                : "2px solid transparent",
-            marginBottom: -1,
-            transition: "color .15s",
-            whiteSpace: "nowrap",
-          }}
+          className={`py-2 px-4 text-sm font-medium border-0 bg-transparent cursor-pointer -mb-px whitespace-nowrap transition-colors duration-150 border-b-2 ${active === t.id ? "text-[var(--accent)] border-b-[var(--accent)]" : "text-[var(--muted)] border-b-transparent"}`}
         >
           {t.label}
         </button>

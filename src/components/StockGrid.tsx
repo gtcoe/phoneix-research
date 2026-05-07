@@ -104,6 +104,7 @@ export default function StockGrid({ stocks }: { stocks: Stock[] }) {
           {(["newest", "oldest", "conviction"] as SortOption[]).map((opt) => (
             <button
               key={opt}
+                type="button"
               onClick={() => setSort(opt)}
               className={`rounded-full px-3 py-1.5 text-xs font-medium capitalize transition-colors cursor-pointer ${
                 sort === opt
@@ -128,6 +129,7 @@ export default function StockGrid({ stocks }: { stocks: Stock[] }) {
           return (
             <button
               key={opt.value}
+                type="button"
               onClick={() => setActiveFilter(opt.value)}
               className={`rounded-full px-4 py-1.5 text-sm font-medium transition-colors cursor-pointer ${
                 activeFilter === opt.value

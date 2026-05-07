@@ -11,13 +11,8 @@ export function Skeleton({
 }) {
   return (
     <div
-      style={{
-        width,
-        height,
-        borderRadius: radius,
-        background: "var(--surface2)",
-        animation: "pulse 1.5s ease infinite",
-      }}
+      className="bg-[var(--surface2)] animate-pulse"
+      style={{ width, height, borderRadius: radius }}
     />
   );
 }

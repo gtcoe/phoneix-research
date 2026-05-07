@@ -12,56 +12,20 @@ interface Props {
 
 export default function AllocationDonut({ segments }: Props) {
   return (
-    <div
-      style={{
-        background: "var(--card)",
-        border: "1px solid var(--border)",
-        borderRadius: 12,
-        padding: "16px 20px",
-      }}
-    >
-      <div
-        style={{
-          fontSize: 13,
-          fontWeight: 600,
-          color: "var(--text)",
-          marginBottom: 14,
-        }}
-      >
+    <div className="bg-[var(--card)] border border-[var(--border)] rounded-xl py-4 px-5">
+      <div className="text-sm font-semibold text-[var(--text)] mb-3.5">
         Allocation
       </div>
-      <div
-        style={{
-          display: "flex",
-          flexDirection: "column",
-          alignItems: "center",
-          gap: 14,
-        }}
-      >
+      <div className="flex flex-col items-center gap-3.5">
         <DonutChart segments={segments} size={160} strokeWidth={26} />
-        <div
-          style={{
-            display: "flex",
-            flexWrap: "wrap",
-            gap: "6px 14px",
-            justifyContent: "center",
-          }}
-        >
+        <div className="flex flex-wrap gap-x-[14px] gap-y-1.5 justify-center">
           {segments.map((s) => (
-            <div
-              key={s.label}
-              style={{ display: "flex", alignItems: "center", gap: 5 }}
-            >
+            <div key={s.label} className="flex items-center gap-[5px]">
               <span
-                style={{
-                  width: 8,
-                  height: 8,
-                  borderRadius: "50%",
-                  background: s.color,
-                  flexShrink: 0,
-                }}
+                className="w-2 h-2 rounded-full shrink-0"
+                style={{ background: s.color }}
               />
-              <span style={{ fontSize: 11, color: "var(--muted)" }}>
+              <span className="text-[11px] text-[var(--muted)]">
                 {s.label}
               </span>
             </div>

@@ -14,23 +14,20 @@ export function Gain({
   const color = isPos ? "var(--gain)" : "var(--loss)";
   return (
     <span
-      style={{
-        display: "inline-flex",
-        flexDirection: "column",
-        alignItems: "flex-end",
-        gap: 2,
-        fontFamily: mono ? "var(--font-mono)" : "inherit",
-      }}
+      className="inline-flex flex-col items-end gap-0.5"
+      style={{ fontFamily: mono ? "var(--font-mono)" : "inherit" }}
     >
       <span
-        style={{ color, fontWeight: 700, fontSize: "0.95em", lineHeight: 1.2 }}
+        className="font-bold text-[0.95em] leading-[1.2]"
+        style={{ color }}
       >
         {isPos ? "+" : ""}
         {fmt(value)}
       </span>
       {pct !== undefined && (
         <span
-          style={{ color, opacity: 0.75, fontSize: "0.78em", lineHeight: 1.2 }}
+          className="opacity-75 text-[0.78em] leading-[1.2]"
+          style={{ color }}
         >
           {fmtPct(pct)}
         </span>

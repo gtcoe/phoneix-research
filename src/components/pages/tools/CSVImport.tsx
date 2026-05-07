@@ -30,14 +30,7 @@ export function CSVImport() {
 
   return (
     <div>
-      <div
-        style={{
-          fontSize: 13,
-          fontWeight: 600,
-          color: "var(--text)",
-          marginBottom: 16,
-        }}
-      >
+      <div className="text-sm font-semibold text-[var(--text)] mb-4">
         Import CSV Data
       </div>
       <div
@@ -53,15 +46,8 @@ export function CSVImport() {
           if (f) handleFile(f);
         }}
         onClick={() => fileRef.current?.click()}
-        style={{
-          border: `2px dashed ${dragging ? "var(--accent)" : "var(--border)"}`,
-          borderRadius: 12,
-          padding: 40,
-          textAlign: "center",
-          background: dragging ? "var(--accent-dim)" : "var(--surface)",
-          cursor: "pointer",
-          transition: "all .2s",
-        }}
+        className={`rounded-xl p-10 text-center cursor-pointer transition-all duration-200 ${dragging ? "bg-[var(--accent-dim)]" : "bg-[var(--surface)]"}`}
+        style={{ border: `2px dashed ${dragging ? "var(--accent)" : "var(--border)"}` }}
       >
         <Icon
           name="upload"
@@ -69,22 +55,18 @@ export function CSVImport() {
           color={dragging ? "var(--accent)" : "var(--muted)"}
         />
         <div
-          style={{
-            marginTop: 12,
-            fontSize: 14,
-            color: dragging ? "var(--accent)" : "var(--text)",
-          }}
+          className={`mt-3 text-sm ${dragging ? "text-[var(--accent)]" : "text-[var(--text)]"}`}
         >
           {dragging ? "Drop to upload" : "Drag & drop CSV or click to browse"}
         </div>
-        <div style={{ fontSize: 12, color: "var(--muted)", marginTop: 4 }}>
+        <div className="text-xs text-[var(--muted)] mt-1">
           Supports Zerodha, Groww, Kite export formats
         </div>
         <input
           ref={fileRef}
           type="file"
           accept=".csv"
-          style={{ display: "none" }}
+          className="hidden"
           onChange={(e) => {
             const f = e.target.files?.[0];
             if (f) handleFile(f);
@@ -93,38 +75,18 @@ export function CSVImport() {
       </div>
 
       {uploaded && (
-        <div style={{ marginTop: 16 }}>
-          <div style={{ fontSize: 12, color: "var(--gain)", marginBottom: 10 }}>
+        <div className="mt-4">
+          <div className="text-xs text-[var(--gain)] mb-[10px]">
             ✓ Loaded: {uploaded}
           </div>
-          <div
-            style={{
-              overflowX: "auto",
-              background: "var(--surface)",
-              borderRadius: 8,
-              border: "1px solid var(--border)",
-            }}
-          >
-            <table
-              style={{
-                borderCollapse: "collapse",
-                fontSize: 12,
-                fontFamily: "var(--font-mono)",
-                width: "100%",
-              }}
-            >
+          <div className="overflow-x-auto bg-[var(--surface)] rounded-lg border border-[var(--border)]">
+            <table className="border-collapse text-xs font-[var(--font-mono)] w-full">
               {preview.map((row, i) => (
-                <tr key={i} style={{ borderBottom: "1px solid var(--border)" }}>
+                <tr key={i} className="border-b border-[var(--border)]">
                   {row.map((cell, j) => (
                     <td
                       key={j}
-                      style={{
-                        padding: "7px 12px",
-                        color: i === 0 ? "var(--muted)" : "var(--text)",
-                        fontWeight: i === 0 ? 600 : 400,
-                        background: i === 0 ? "var(--surface2)" : "transparent",
-                        whiteSpace: "nowrap",
-                      }}
+                      className={`py-[7px] px-3 whitespace-nowrap ${i === 0 ? "text-[var(--muted)] font-semibold bg-[var(--surface2)]" : "text-[var(--text)] font-normal bg-transparent"}`}
                     >
                       {cell}
                     </td>
@@ -134,39 +96,19 @@ export function CSVImport() {
             </table>
           </div>
           <button
+              type="button"
             onClick={() => {
               const rowCount = Math.max(0, preview.length - 1); // minus header
               setImportedCount(rowCount);
               setUploaded(null);
               setPreview([]);
             }}
-            style={{
-              marginTop: 12,
-              padding: "8px 20px",
-              background: "var(--accent)",
-              border: "none",
-              borderRadius: 8,
-              color: "#fff",
-              cursor: "pointer",
-              fontSize: 13,
-              fontWeight: 600,
-            }}
+            className="mt-3 py-2 px-5 bg-[var(--accent)] border-0 rounded-lg text-white cursor-pointer text-sm font-semibold"
           >
             Import {preview.length - 1} Rows
           </button>
           {importedCount !== null && (
-            <div
-              style={{
-                marginTop: 10,
-                padding: "10px 14px",
-                background: "var(--surface)",
-                border: "1px solid var(--gain)",
-                borderRadius: 8,
-                color: "var(--gain)",
-                fontSize: 13,
-                fontWeight: 600,
-              }}
-            >
+            <div className="mt-[10px] py-[10px] px-3.5 bg-[var(--surface)] border border-[var(--gain)] rounded-lg text-[var(--gain)] text-sm font-semibold">
               ✓ {importedCount} transactions imported (prototype — backend will persist)
             </div>
           )}

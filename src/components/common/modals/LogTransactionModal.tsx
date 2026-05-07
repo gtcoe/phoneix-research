@@ -1,7 +1,7 @@
 "use client";
 import { useState } from "react";
 import { Icon } from "@/components/ui";
-import type { PhoenixData } from "@/lib/data";
+import type { PhoenixData } from "@/types";
 
 type Asset = PhoenixData["assets"][number];
 
@@ -17,27 +17,6 @@ const TX_TYPES = [
   { value: "DIVIDEND", label: "Dividend", color: "var(--info)" },
 ];
 
-const inputStyle: React.CSSProperties = {
-  padding: "8px 12px",
-  background: "var(--surface)",
-  border: "1px solid var(--border)",
-  borderRadius: 8,
-  color: "var(--text)",
-  fontSize: 13,
-  outline: "none",
-  width: "100%",
-  boxSizing: "border-box",
-};
-
-const labelStyle: React.CSSProperties = {
-  fontSize: 11,
-  fontWeight: 600,
-  color: "var(--muted)",
-  letterSpacing: ".05em",
-  textTransform: "uppercase",
-  marginBottom: 5,
-  display: "block",
-};
 
 export default function LogTransactionModal({
   assets,
@@ -75,57 +54,29 @@ export default function LogTransactionModal({
 
   if (submitted) {
     return (
-      <div style={overlayStyle} onClick={onClose}>
+      <div className="fixed inset-0 bg-black/55 z-[1000] flex items-center justify-center p-4" onClick={onClose}>
         <div
-          style={{ ...modalStyle, textAlign: "center", padding: "40px 32px" }}
+          className="bg-[var(--card)] border border-[var(--border)] rounded-[14px] py-10 px-8 w-full max-w-[480px] max-h-[90vh] overflow-y-auto text-center"
           onClick={(e) => e.stopPropagation()}
         >
-          <div
-            style={{
-              width: 48,
-              height: 48,
-              borderRadius: "50%",
-              background: "var(--gain-dim, rgba(34,197,94,.15))",
-              display: "flex",
-              alignItems: "center",
-              justifyContent: "center",
-              margin: "0 auto 16px",
-            }}
-          >
+          <div className="w-12 h-12 rounded-full bg-[var(--gain-dim,rgba(34,197,94,.15))] flex items-center justify-center mx-auto mb-4">
             <Icon name="check" size={22} color="var(--gain)" />
           </div>
-          <div
-            style={{
-              fontSize: 15,
-              fontWeight: 700,
-              color: "var(--text)",
-              marginBottom: 8,
-            }}
-          >
+          <div className="text-base font-bold text-[var(--text)] mb-2">
             Transaction logged
           </div>
-          <div
-            style={{ fontSize: 12, color: "var(--muted)", marginBottom: 24 }}
-          >
+          <div className="text-xs text-[var(--muted)] mb-6">
             {txType} · {ticker || assetName} · {date}
             {amount ? ` · ₹${parseInt(amount).toLocaleString("en-IN")}` : ""}
             <br />
-            <span style={{ opacity: 0.7 }}>
+            <span className="opacity-70">
               Will be persisted to the backend when connected.
             </span>
           </div>
           <button
+            type="button"
             onClick={onClose}
-            style={{
-              padding: "8px 24px",
-              background: "var(--accent)",
-              border: "none",
-              borderRadius: 8,
-              color: "#fff",
-              fontWeight: 600,
-              fontSize: 13,
-              cursor: "pointer",
-            }}
+            className="py-2 px-6 bg-[var(--accent)] border-0 rounded-lg text-white font-semibold text-sm cursor-pointer"
           >
             Done
           </button>
@@ -135,34 +86,20 @@ export default function LogTransactionModal({
   }
 
   return (
-    <div style={overlayStyle} onClick={onClose}>
+    <div className="fixed inset-0 bg-black/55 z-[1000] flex items-center justify-center p-4" onClick={onClose}>
       <div
-        style={modalStyle}
+        className="bg-[var(--card)] border border-[var(--border)] rounded-[14px] py-6 px-7 w-full max-w-[480px] max-h-[90vh] overflow-y-auto"
         onClick={(e) => e.stopPropagation()}
       >
         {/* Header */}
-        <div
-          style={{
-            display: "flex",
-            alignItems: "center",
-            justifyContent: "space-between",
-            marginBottom: 20,
-          }}
-        >
-          <div
-            style={{ fontSize: 15, fontWeight: 700, color: "var(--text)" }}
-          >
+        <div className="flex items-center justify-between mb-5">
+          <div className="text-base font-bold text-[var(--text)]">
             Log Transaction
           </div>
           <button
+            type="button"
             onClick={onClose}
-            style={{
-              background: "none",
-              border: "none",
-              cursor: "pointer",
-              color: "var(--muted)",
-              padding: 4,
-            }}
+            className="bg-transparent border-0 cursor-pointer text-[var(--muted)] p-1"
           >
             <Icon name="x" size={16} color="var(--muted)" />
           </button>
@@ -170,28 +107,22 @@ export default function LogTransactionModal({
 
         <form onSubmit={handleSubmit}>
           {/* Transaction type */}
-          <div style={{ marginBottom: 16 }}>
-            <label style={labelStyle}>Type</label>
-            <div style={{ display: "flex", gap: 8 }}>
+          <div className="mb-4">
+            <label className="text-[11px] font-semibold text-[var(--muted)] tracking-[.05em] uppercase mb-[5px] block">Type</label>
+            <div className="flex gap-2">
               {TX_TYPES.map((t) => (
                 <button
                   key={t.value}
                   type="button"
                   onClick={() => setTxType(t.value)}
+                  className="flex-1 py-2 px-0 rounded-lg text-sm font-semibold cursor-pointer transition-all duration-150"
                   style={{
-                    flex: 1,
-                    padding: "8px 0",
-                    borderRadius: 8,
                     border: `1px solid ${txType === t.value ? t.color : "var(--border)"}`,
                     background:
                       txType === t.value
                         ? `color-mix(in srgb, ${t.color} 15%, transparent)`
                         : "var(--surface)",
                     color: txType === t.value ? t.color : "var(--muted)",
-                    fontSize: 13,
-                    fontWeight: 600,
-                    cursor: "pointer",
-                    transition: "all .15s",
                   }}
                 >
                   {t.label}
@@ -201,22 +132,17 @@ export default function LogTransactionModal({
           </div>
 
           {/* Asset */}
-          <div style={{ marginBottom: 16 }}>
-            <label style={labelStyle}>Asset</label>
-            <div style={{ display: "flex", gap: 8, marginBottom: 8 }}>
+          <div className="mb-4">
+            <label className="text-[11px] font-semibold text-[var(--muted)] tracking-[.05em] uppercase mb-[5px] block">Asset</label>
+            <div className="flex gap-2 mb-2">
               <button
                 type="button"
                 onClick={() => setIsNew(false)}
+                className="flex-1 py-1.5 px-0 rounded-md text-xs font-semibold cursor-pointer"
                 style={{
-                  flex: 1,
-                  padding: "6px 0",
-                  borderRadius: 6,
                   border: `1px solid ${!isNew ? "var(--accent)" : "var(--border)"}`,
                   background: !isNew ? "var(--accent-dim)" : "var(--surface)",
                   color: !isNew ? "var(--accent)" : "var(--muted)",
-                  fontSize: 12,
-                  fontWeight: 600,
-                  cursor: "pointer",
                 }}
               >
                 Existing holding
@@ -224,32 +150,28 @@ export default function LogTransactionModal({
               <button
                 type="button"
                 onClick={() => setIsNew(true)}
+                className="flex-1 py-1.5 px-0 rounded-md text-xs font-semibold cursor-pointer"
                 style={{
-                  flex: 1,
-                  padding: "6px 0",
-                  borderRadius: 6,
                   border: `1px solid ${isNew ? "var(--accent)" : "var(--border)"}`,
                   background: isNew ? "var(--accent-dim)" : "var(--surface)",
                   color: isNew ? "var(--accent)" : "var(--muted)",
-                  fontSize: 12,
-                  fontWeight: 600,
-                  cursor: "pointer",
                 }}
               >
                 New position
               </button>
             </div>
             {isNew ? (
-              <div style={{ display: "flex", gap: 8 }}>
+              <div className="flex gap-2">
                 <input
-                  style={{ ...inputStyle, flex: 1 }}
+                  className="py-2 px-3 bg-[var(--surface)] border border-[var(--border)] rounded-lg text-[var(--text)] text-sm outline-none w-full box-border flex-1"
                   placeholder="Ticker (e.g. SKYGOLD)"
                   value={ticker}
                   onChange={(e) => setTicker(e.target.value.toUpperCase())}
                   required
                 />
                 <input
-                  style={{ ...inputStyle, flex: 2 }}
+                  className="py-2 px-3 bg-[var(--surface)] border border-[var(--border)] rounded-lg text-[var(--text)] text-sm outline-none w-full box-border"
+                  style={{ flex: 2 }}
                   placeholder="Company name"
                   value={assetName}
                   onChange={(e) => setAssetName(e.target.value)}
@@ -258,7 +180,7 @@ export default function LogTransactionModal({
               </div>
             ) : (
               <select
-                style={inputStyle}
+                className="py-2 px-3 bg-[var(--surface)] border border-[var(--border)] rounded-lg text-[var(--text)] text-sm outline-none w-full box-border"
                 value={ticker}
                 onChange={(e) => setTicker(e.target.value)}
                 required
@@ -274,10 +196,10 @@ export default function LogTransactionModal({
           </div>
 
           {/* Date */}
-          <div style={{ marginBottom: 16 }}>
-            <label style={labelStyle}>Date</label>
+          <div className="mb-4">
+            <label className="text-[11px] font-semibold text-[var(--muted)] tracking-[.05em] uppercase mb-[5px] block">Date</label>
             <input
-              style={inputStyle}
+              className="py-2 px-3 bg-[var(--surface)] border border-[var(--border)] rounded-lg text-[var(--text)] text-sm outline-none w-full box-border"
               placeholder="e.g. Apr 2025"
               value={date}
               onChange={(e) => setDate(e.target.value)}
@@ -287,13 +209,11 @@ export default function LogTransactionModal({
 
           {/* Qty + Price (equity transactions) */}
           {needsQtyPrice && (
-            <div
-              style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: 12, marginBottom: 16 }}
-            >
+            <div className="grid grid-cols-2 gap-3 mb-4">
               <div>
-                <label style={labelStyle}>Quantity</label>
+                <label className="text-[11px] font-semibold text-[var(--muted)] tracking-[.05em] uppercase mb-[5px] block">Quantity</label>
                 <input
-                  style={inputStyle}
+                  className="py-2 px-3 bg-[var(--surface)] border border-[var(--border)] rounded-lg text-[var(--text)] text-sm outline-none w-full box-border"
                   type="number"
                   step="0.0001"
                   min="0"
@@ -304,9 +224,9 @@ export default function LogTransactionModal({
                 />
               </div>
               <div>
-                <label style={labelStyle}>Price per unit (₹)</label>
+                <label className="text-[11px] font-semibold text-[var(--muted)] tracking-[.05em] uppercase mb-[5px] block">Price per unit (₹)</label>
                 <input
-                  style={inputStyle}
+                  className="py-2 px-3 bg-[var(--surface)] border border-[var(--border)] rounded-lg text-[var(--text)] text-sm outline-none w-full box-border"
                   type="number"
                   step="0.01"
                   min="0"
@@ -321,10 +241,10 @@ export default function LogTransactionModal({
 
           {/* Dividend amount */}
           {txType === "DIVIDEND" && (
-            <div style={{ marginBottom: 16 }}>
-              <label style={labelStyle}>Dividend amount (₹)</label>
+            <div className="mb-4">
+              <label className="text-[11px] font-semibold text-[var(--muted)] tracking-[.05em] uppercase mb-[5px] block">Dividend amount (₹)</label>
               <input
-                style={inputStyle}
+                className="py-2 px-3 bg-[var(--surface)] border border-[var(--border)] rounded-lg text-[var(--text)] text-sm outline-none w-full box-border"
                 type="number"
                 step="0.01"
                 min="0"
@@ -338,29 +258,12 @@ export default function LogTransactionModal({
 
           {/* Computed total */}
           {amount && (
-            <div
-              style={{
-                background: "var(--surface)",
-                border: "1px solid var(--border)",
-                borderRadius: 8,
-                padding: "10px 14px",
-                marginBottom: 16,
-                display: "flex",
-                justifyContent: "space-between",
-                alignItems: "center",
-              }}
-            >
-              <span style={{ fontSize: 12, color: "var(--muted)" }}>
+            <div className="bg-[var(--surface)] border border-[var(--border)] rounded-lg py-[10px] px-3.5 mb-4 flex justify-between items-center">
+              <span className="text-xs text-[var(--muted)]">
                 Total amount
               </span>
               <span
-                style={{
-                  fontSize: 14,
-                  fontWeight: 700,
-                  color:
-                    txType === "BUY" ? "var(--loss)" : "var(--gain)",
-                  fontFamily: "var(--font-mono)",
-                }}
+                className={`text-sm font-bold font-[var(--font-mono)] ${txType === "BUY" ? "text-[var(--loss)]" : "text-[var(--gain)]"}`}
               >
                 {txType === "BUY" ? "-" : "+"}₹
                 {parseInt(amount).toLocaleString("en-IN")}
@@ -369,15 +272,10 @@ export default function LogTransactionModal({
           )}
 
           {/* Notes */}
-          <div style={{ marginBottom: 20 }}>
-            <label style={labelStyle}>Notes / Reasoning</label>
+          <div className="mb-5">
+            <label className="text-[11px] font-semibold text-[var(--muted)] tracking-[.05em] uppercase mb-[5px] block">Notes / Reasoning</label>
             <textarea
-              style={{
-                ...inputStyle,
-                minHeight: 72,
-                resize: "vertical",
-                fontFamily: "inherit",
-              }}
+              className="py-2 px-3 bg-[var(--surface)] border border-[var(--border)] rounded-lg text-[var(--text)] text-sm outline-none w-full box-border min-h-[72px] resize-y font-[inherit]"
               placeholder="Why are you making this transaction? (optional)"
               value={notes}
               onChange={(e) => setNotes(e.target.value)}
@@ -385,37 +283,18 @@ export default function LogTransactionModal({
           </div>
 
           {/* Actions */}
-          <div style={{ display: "flex", gap: 10 }}>
+          <div className="flex gap-[10px]">
             <button
               type="button"
               onClick={onClose}
-              style={{
-                flex: 1,
-                padding: "10px 0",
-                borderRadius: 8,
-                border: "1px solid var(--border)",
-                background: "var(--surface)",
-                color: "var(--muted)",
-                fontSize: 13,
-                fontWeight: 600,
-                cursor: "pointer",
-              }}
+              className="flex-1 py-[10px] px-0 rounded-lg border border-[var(--border)] bg-[var(--surface)] text-[var(--muted)] text-sm font-semibold cursor-pointer"
             >
               Cancel
             </button>
             <button
               type="submit"
-              style={{
-                flex: 2,
-                padding: "10px 0",
-                borderRadius: 8,
-                border: "none",
-                background: "var(--accent)",
-                color: "#fff",
-                fontSize: 13,
-                fontWeight: 700,
-                cursor: "pointer",
-              }}
+              className="py-[10px] px-0 rounded-lg border-0 bg-[var(--accent)] text-white text-sm font-bold cursor-pointer"
+              style={{ flex: 2 }}
             >
               Log Transaction
             </button>
@@ -426,24 +305,3 @@ export default function LogTransactionModal({
   );
 }
 
-const overlayStyle: React.CSSProperties = {
-  position: "fixed",
-  inset: 0,
-  background: "rgba(0,0,0,0.55)",
-  zIndex: 1000,
-  display: "flex",
-  alignItems: "center",
-  justifyContent: "center",
-  padding: 16,
-};
-
-const modalStyle: React.CSSProperties = {
-  background: "var(--card)",
-  border: "1px solid var(--border)",
-  borderRadius: 14,
-  padding: "24px 28px",
-  width: "100%",
-  maxWidth: 480,
-  maxHeight: "90vh",
-  overflowY: "auto",
-};

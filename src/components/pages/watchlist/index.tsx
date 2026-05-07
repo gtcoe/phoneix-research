@@ -1,18 +1,15 @@
 "use client";
 import { useState } from "react";
 import { Icon } from "@/components/ui";
-import type { PhoenixData } from "@/lib/data";
+import type { PhoenixData } from "@/types";
+import {
+  STATUS_OPTIONS,
+  STATUS_LABELS,
+} from "@/constants/watchlist";
+import type { WatchStatus } from "@/constants/watchlist";
 import { WatchCard } from "./WatchCard";
 
 type WatchItem = PhoenixData["watchlist"][number];
-
-const STATUS_OPTIONS = ["watching", "interested", "passed"] as const;
-type WatchStatus = (typeof STATUS_OPTIONS)[number];
-const STATUS_LABELS: Record<WatchStatus, string> = {
-  watching: "Watching",
-  interested: "Interested",
-  passed: "Passed",
-};
 
 export default function Watchlist({ data }: { data: PhoenixData }) {
   const [items, setItems] = useState<WatchItem[]>(data.watchlist);
@@ -35,56 +32,32 @@ export default function Watchlist({ data }: { data: PhoenixData }) {
   };
 
   return (
-    <div style={{ padding: 24 }}>
+    <div className="p-6">
       {/* Filter bar */}
-      <div
-        style={{
-          display: "flex",
-          gap: 8,
-          marginBottom: 20,
-          alignItems: "center",
-          flexWrap: "wrap",
-        }}
-      >
+      <div className="flex gap-2 mb-5 items-center flex-wrap">
         {["all", ...STATUS_OPTIONS].map((s) => (
           <button
             key={s}
+            type="button"
             onClick={() => setStatusFilter(s)}
-            style={{
-              padding: "5px 14px",
-              borderRadius: 99,
-              fontSize: 12,
-              fontWeight: 500,
-              cursor: "pointer",
-              border: "1px solid var(--border)",
-              background:
-                statusFilter === s ? "var(--accent)" : "var(--surface)",
-              color: statusFilter === s ? "#fff" : "var(--muted)",
-              transition: "all .15s",
-            }}
+            className={`py-[5px] px-3.5 rounded-full text-xs font-medium cursor-pointer border border-[var(--border)] transition-all duration-150 ${
+              statusFilter === s
+                ? "bg-[var(--accent)] text-white"
+                : "bg-[var(--surface)] text-[var(--muted)]"
+            }`}
           >
             {s === "all" ? "All" : STATUS_LABELS[s as WatchStatus]}
           </button>
         ))}
-        <span
-          style={{
-            marginLeft: "auto",
-            fontSize: 12,
-            color: "var(--muted)",
-            fontFamily: "var(--font-mono)",
-          }}
-        >
+        <span className="ml-auto text-xs text-[var(--muted)] font-[var(--font-mono)]">
           {filtered.length} stocks
         </span>
       </div>
 
       {/* Cards grid */}
       <div
-        style={{
-          display: "grid",
-          gridTemplateColumns: "repeat(auto-fill, minmax(320px, 1fr))",
-          gap: 14,
-        }}
+        className="grid gap-3.5"
+        style={{ gridTemplateColumns: "repeat(auto-fill, minmax(320px, 1fr))" }}
       >
         {filtered.map((item) => (
           <WatchCard
@@ -98,11 +71,9 @@ export default function Watchlist({ data }: { data: PhoenixData }) {
       </div>
 
       {filtered.length === 0 && (
-        <div
-          style={{ padding: 60, textAlign: "center", color: "var(--muted)" }}
-        >
+        <div className="p-[60px] text-center text-[var(--muted)]">
           <Icon name="watchlist" size={36} color="var(--border)" />
-          <div style={{ marginTop: 12, fontSize: 14 }}>
+          <div className="mt-3 text-sm">
             No stocks in this filter
           </div>
         </div>

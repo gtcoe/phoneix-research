@@ -1,7 +1,6 @@
 "use client";
 
 import Link from "next/link";
-import { motion } from "framer-motion";
 import { Stock, Recommendation } from "@/types";
 
 const recConfig: Record<
@@ -38,10 +37,8 @@ export default function StockCard({ stock }: StockCardProps) {
   const rec = recConfig[stock.recommendation];
 
   return (
-    <motion.div
-      whileHover={{ y: -4, boxShadow: "0 12px 32px rgba(0,0,0,0.10)" }}
-      transition={{ duration: 0.18, ease: "easeOut" }}
-      className="rounded-xl border border-gray-200 bg-white overflow-hidden"
+    <div
+      className="rounded-xl border border-gray-200 bg-white overflow-hidden transition-shadow hover:shadow-md hover:-translate-y-1 duration-200"
     >
       <Link href={`/stocks/${stock.slug}`} className="block p-5">
         {/* Header row: name + badges */}
@@ -123,6 +120,6 @@ export default function StockCard({ stock }: StockCardProps) {
           </span>
         </div>
       </Link>
-    </motion.div>
+    </div>
   );
 }

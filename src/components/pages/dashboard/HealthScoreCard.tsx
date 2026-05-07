@@ -1,5 +1,5 @@
 import HealthScoreRing from "./HealthScoreRing";
-import type { PhoenixData } from "@/lib/data";
+import type { PhoenixData } from "@/types";
 
 interface Props {
   score: number;
@@ -8,22 +8,8 @@ interface Props {
 
 export default function HealthScoreCard({ score, components }: Props) {
   return (
-    <div
-      style={{
-        background: "var(--card)",
-        border: "1px solid var(--border)",
-        borderRadius: 12,
-        padding: "16px 20px",
-      }}
-    >
-      <div
-        style={{
-          fontSize: 13,
-          fontWeight: 600,
-          color: "var(--text)",
-          marginBottom: 14,
-        }}
-      >
+    <div className="bg-[var(--card)] border border-[var(--border)] rounded-xl py-4 px-5">
+      <div className="text-sm font-semibold text-[var(--text)] mb-3.5">
         Portfolio Health
       </div>
       <HealthScoreRing score={score} components={components} />

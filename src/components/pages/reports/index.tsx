@@ -1,7 +1,7 @@
 "use client";
 import { useState } from "react";
 import { Badge, ConvictionDot, Icon } from "@/components/ui";
-import type { PhoenixData } from "@/lib/data";
+import type { PhoenixData } from "@/types";
 
 export default function Reports({ data }: { data: PhoenixData }) {
   const [selectedSlug, setSelectedSlug] = useState<string | null>(
@@ -17,98 +17,40 @@ export default function Reports({ data }: { data: PhoenixData }) {
   const selected = data.reports.find((r) => r.slug === selectedSlug);
 
   return (
-    <div
-      style={{
-        display: "flex",
-        height: "calc(100vh - 56px)",
-        overflow: "hidden",
-      }}
-    >
+    <div className="flex h-[calc(100vh-56px)] overflow-hidden">
       {/* Sidebar list */}
-      <div
-        style={{
-          width: 280,
-          flexShrink: 0,
-          background: "var(--surface)",
-          borderRight: "1px solid var(--border)",
-          overflowY: "auto",
-        }}
-      >
-        <div
-          style={{
-            padding: "14px 16px",
-            borderBottom: "1px solid var(--border)",
-            fontSize: 13,
-            fontWeight: 600,
-            color: "var(--text)",
-          }}
-        >
+      <div className="w-[280px] shrink-0 bg-[var(--surface)] border-r border-[var(--border)] overflow-y-auto">
+        <div className="py-3.5 px-4 border-b border-[var(--border)] text-sm font-semibold text-[var(--text)]">
           Reports ({data.reports.length})
         </div>
         {data.reports.map((r) => (
           <button
+            type="button"
             key={r.slug}
             onClick={() => handleSlugChange(r.slug)}
-            style={{
-              width: "100%",
-              padding: "12px 16px",
-              textAlign: "left",
-              background:
-                selectedSlug === r.slug ? "var(--accent-dim)" : "transparent",
-              border: "none",
-              borderBottom: "1px solid var(--border)",
-              cursor: "pointer",
-              borderLeft:
-                selectedSlug === r.slug
-                  ? "3px solid var(--accent)"
-                  : "3px solid transparent",
-            }}
+            className={`w-full py-3 px-4 text-left border-none border-b border-[var(--border)] cursor-pointer border-l-[3px] ${
+              selectedSlug === r.slug
+                ? "bg-[var(--accent-dim)] border-l-[var(--accent)]"
+                : "bg-transparent border-l-transparent"
+            }`}
           >
-            <div
-              style={{
-                display: "flex",
-                justifyContent: "space-between",
-                alignItems: "flex-start",
-                gap: 8,
-              }}
-            >
-              <div style={{ flex: 1 }}>
+            <div className="flex justify-between items-start gap-2">
+              <div className="flex-1">
                 <div
-                  style={{
-                    fontSize: 12,
-                    fontWeight: 700,
-                    color:
-                      selectedSlug === r.slug ? "var(--accent)" : "var(--text)",
-                    fontFamily: "var(--font-mono)",
-                    marginBottom: 2,
-                  }}
+                  className={`text-xs font-bold font-[var(--font-mono)] mb-0.5 ${
+                    selectedSlug === r.slug ? "text-[var(--accent)]" : "text-[var(--text)]"
+                  }`}
                 >
                   {r.ticker}
                 </div>
-                <div
-                  style={{
-                    fontSize: 12,
-                    color: "var(--text)",
-                    fontWeight: 500,
-                    lineHeight: 1.3,
-                  }}
-                >
+                <div className="text-xs text-[var(--text)] font-medium leading-[1.3]">
                   {r.name}
                 </div>
-                <div
-                  style={{ fontSize: 11, color: "var(--muted)", marginTop: 3 }}
-                >
+                <div className="text-[11px] text-[var(--muted)] mt-[3px]">
                   {r.date} · {r.sector}
                 </div>
               </div>
-              <div
-                style={{
-                  display: "flex",
-                  flexDirection: "column",
-                  alignItems: "flex-end",
-                  gap: 4,
-                }}
-              >
+              <div className="flex flex-col items-end gap-1">
                 <Badge rec={r.rec} size="xs" />
                 <ConvictionDot score={r.conviction} />
               </div>
@@ -118,39 +60,15 @@ export default function Reports({ data }: { data: PhoenixData }) {
       </div>
 
       {/* Report viewer */}
-      <div
-        style={{
-          flex: 1,
-          display: "flex",
-          flexDirection: "column",
-          overflow: "hidden",
-        }}
-      >
+      <div className="flex-1 flex flex-col overflow-hidden">
         {selected ? (
           <>
-            <div
-              style={{
-                padding: "12px 20px",
-                borderBottom: "1px solid var(--border)",
-                display: "flex",
-                alignItems: "center",
-                justifyContent: "space-between",
-                background: "var(--surface)",
-                flexShrink: 0,
-              }}
-            >
-              <div style={{ display: "flex", alignItems: "center", gap: 10 }}>
-                <span
-                  style={{
-                    fontSize: 14,
-                    fontWeight: 700,
-                    color: "var(--accent)",
-                    fontFamily: "var(--font-mono)",
-                  }}
-                >
+            <div className="py-3 px-5 border-b border-[var(--border)] flex items-center justify-between bg-[var(--surface)] shrink-0">
+              <div className="flex items-center gap-[10px]">
+                <span className="text-sm font-bold text-[var(--accent)] font-[var(--font-mono)]">
                   {selected.ticker}
                 </span>
-                <span style={{ fontSize: 13, color: "var(--text)" }}>
+                <span className="text-sm text-[var(--text)]">
                   {selected.name}
                 </span>
                 <Badge rec={selected.rec} />
@@ -160,14 +78,7 @@ export default function Reports({ data }: { data: PhoenixData }) {
                 href={`/analyses/${selected.file?.replace(/^analyses\//, "")}`}
                 target="_blank"
                 rel="noreferrer"
-                style={{
-                  display: "flex",
-                  alignItems: "center",
-                  gap: 6,
-                  fontSize: 12,
-                  color: "var(--accent)",
-                  textDecoration: "none",
-                }}
+                className="flex items-center gap-1.5 text-xs text-[var(--accent)] no-underline"
               >
                 <Icon name="external" size={14} />
                 Open in new tab
@@ -175,44 +86,24 @@ export default function Reports({ data }: { data: PhoenixData }) {
             </div>
             <iframe
               src={`/analyses/${selected.file?.replace(/^analyses\//, "")}`}
-              style={{ flex: 1, border: "none", background: "var(--bg)", display: iframeError ? "none" : "block" }}
+              className={`flex-1 border-none bg-[var(--bg)] ${iframeError ? "hidden" : "block"}`}
               title={`${selected.ticker} Analysis`}
               onError={() => setIframeError(true)}
             />
             {iframeError && (
-              <div
-                style={{
-                  flex: 1,
-                  display: "flex",
-                  flexDirection: "column",
-                  alignItems: "center",
-                  justifyContent: "center",
-                  color: "var(--muted)",
-                  gap: 12,
-                }}
-              >
+              <div className="flex-1 flex flex-col items-center justify-center text-[var(--muted)] gap-3">
                 <Icon name="alert" size={32} color="var(--border)" />
-                <div style={{ fontSize: 14 }}>Report not found</div>
-                <div style={{ fontSize: 12, color: "var(--muted)" }}>
+                <div className="text-sm">Report not found</div>
+                <div className="text-xs text-[var(--muted)]">
                   {selected.file || "No file linked"}
                 </div>
               </div>
             )}
           </>
         ) : (
-          <div
-            style={{
-              flex: 1,
-              display: "flex",
-              alignItems: "center",
-              justifyContent: "center",
-              flexDirection: "column",
-              gap: 10,
-              color: "var(--muted)",
-            }}
-          >
+          <div className="flex-1 flex items-center justify-center flex-col gap-[10px] text-[var(--muted)]">
             <Icon name="reports" size={40} />
-            <span style={{ fontSize: 15 }}>Select a report to view</span>
+            <span className="text-base">Select a report to view</span>
           </div>
         )}
       </div>

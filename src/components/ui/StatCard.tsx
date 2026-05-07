@@ -20,44 +20,23 @@ export function StatCard({
 }) {
   return (
     <div
-      style={{
-        background: accent ? "var(--accent)" : "var(--card)",
-        border: accent ? "none" : "1px solid var(--border)",
-        borderRadius: 10,
-        padding: "14px 18px",
-        display: "flex",
-        flexDirection: "column",
-        gap: 4,
-      }}
+      className={`rounded-[10px] py-[14px] px-[18px] flex flex-col gap-1 ${accent ? "bg-[var(--accent)] border-0" : "bg-[var(--card)] border border-[var(--border)]"}`}
     >
       <span
-        style={{
-          fontSize: 11,
-          color: accent ? "rgba(255,255,255,0.7)" : "var(--muted)",
-          letterSpacing: ".04em",
-          textTransform: "uppercase",
-        }}
+        className="text-[11px] tracking-[.04em] uppercase"
+        style={{ color: accent ? "rgba(255,255,255,0.7)" : "var(--muted)" }}
       >
         {label}
       </span>
       <span
-        style={{
-          fontSize: 22,
-          fontWeight: 700,
-          color: accent ? "#fff" : "var(--text)",
-          fontFamily: mono ? "var(--font-mono)" : "inherit",
-          lineHeight: 1.1,
-        }}
+        className={`text-[22px] font-bold leading-[1.1] ${accent ? "text-white" : "text-[var(--text)]"} ${mono ? "font-[var(--font-mono)]" : ""}`}
       >
         {value}
       </span>
       {sub && (
         <span
-          style={{
-            fontSize: 12,
-            color:
-              subColor || (accent ? "rgba(255,255,255,0.75)" : "var(--muted)"),
-          }}
+          className="text-xs"
+          style={{ color: subColor || (accent ? "rgba(255,255,255,0.75)" : "var(--muted)") }}
         >
           {sub}
         </span>

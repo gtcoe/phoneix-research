@@ -2,7 +2,7 @@
 import React from "react";
 import { fmt } from "@/lib/formatters";
 import { Badge, ConvictionDot, Gain, Sparkline, Icon } from "@/components/ui";
-import type { PhoenixData } from "@/lib/data";
+import type { PhoenixData } from "@/types";
 
 type Asset = PhoenixData["assets"][number];
 
@@ -23,11 +23,7 @@ export default function HoldingRow({ asset: a, expanded, onToggle }: Props) {
   return (
     <>
       <tr
-        style={{
-          borderBottom: "1px solid var(--border)",
-          cursor: "pointer",
-          transition: "background .12s",
-        }}
+        className="border-b border-[var(--border)] cursor-pointer transition-colors duration-100"
         onClick={onToggle}
         onMouseEnter={(e) =>
           ((e.currentTarget as HTMLTableRowElement).style.background =
@@ -38,56 +34,36 @@ export default function HoldingRow({ asset: a, expanded, onToggle }: Props) {
             "transparent")
         }
       >
-        <td style={{ padding: "12px 10px 12px 16px" }}>
-          <div
-            style={{
-              display: "flex",
-              alignItems: "center",
-              gap: 8,
-            }}
-          >
+        <td className="py-3 px-[10px] pl-4">
+          <div className="flex items-center gap-2">
             <Icon
               name={expanded ? "arrowDown" : "chevronRight"}
               size={14}
               color="var(--muted)"
             />
             <div>
-              <div
-                style={{
-                  fontWeight: 600,
-                  color: "var(--text)",
-                  fontFamily: "var(--font-mono)",
-                }}
-              >
+              <div className="font-semibold text-[var(--text)] font-[var(--font-mono)]">
                 {a.ticker ?? a.category}
               </div>
-              <div style={{ fontSize: 11, color: "var(--muted)" }}>
+              <div className="text-[11px] text-[var(--muted)]">
                 {a.name.slice(0, 24)}
                 {a.exchange ? ` · ${a.exchange}` : ""}
               </div>
             </div>
           </div>
         </td>
-        <td
-          style={{
-            textAlign: "right",
-            padding: "12px 10px",
-            fontFamily: "var(--font-mono)",
-          }}
-        >
-          <div style={{ color: "var(--text)" }}>{fmt(a.current)}</div>
-          <div style={{ fontSize: 11, color: "var(--muted)" }}>
+        <td className="text-right py-3 px-[10px] font-[var(--font-mono)]">
+          <div className="text-[var(--text)]">{fmt(a.current)}</div>
+          <div className="text-[11px] text-[var(--muted)]">
             {fmt(a.invested)} in
           </div>
         </td>
-        <td style={{ textAlign: "right", padding: "12px 10px" }}>
+        <td className="text-right py-3 px-[10px]">
           <Gain value={a.gain} pct={a.gainPct} />
         </td>
         <td
+          className="text-right py-3 px-[10px] font-[var(--font-mono)]"
           style={{
-            textAlign: "right",
-            padding: "12px 10px",
-            fontFamily: "var(--font-mono)",
             color:
               (a.xirr ?? 0) >= 15
                 ? "var(--gain)"
@@ -98,55 +74,33 @@ export default function HoldingRow({ asset: a, expanded, onToggle }: Props) {
         >
           {a.xirr != null ? `${a.xirr.toFixed(1)}%` : "—"}
         </td>
-        <td style={{ padding: "12px 10px" }}>
+        <td className="py-3 px-[10px]">
           <Badge rec={a.rec} />
         </td>
-        <td style={{ textAlign: "right", padding: "12px 10px" }}>
+        <td className="text-right py-3 px-[10px]">
           <ConvictionDot score={a.conviction} />
         </td>
-        <td
-          style={{
-            textAlign: "right",
-            padding: "12px 10px",
-            fontFamily: "var(--font-mono)",
-            color: "var(--muted)",
-            fontSize: 12,
-          }}
-        >
+        <td className="text-right py-3 px-[10px] font-[var(--font-mono)] text-[var(--muted)] text-xs">
           <div>{a.holdingDays != null ? `${a.holdingDays}d` : "—"}</div>
-          <div style={{ fontSize: 10 }}>{a.isLTCG ? "LTCG" : "STCG"}</div>
+          <div className="text-[10px]">{a.isLTCG ? "LTCG" : "STCG"}</div>
         </td>
-        <td
-          style={{
-            textAlign: "right",
-            padding: "12px 10px",
-            fontFamily: "var(--font-mono)",
-            fontSize: 12,
-          }}
-        >
+        <td className="text-right py-3 px-[10px] font-[var(--font-mono)] text-xs">
           {a.targetPrice ? (
             <>
-              <div style={{ color: "var(--text)" }}>{fmt(a.targetPrice)}</div>
+              <div className="text-[var(--text)]">{fmt(a.targetPrice)}</div>
               <div
-                style={{
-                  color: toTarget! >= 0 ? "var(--gain)" : "var(--loss)",
-                  fontSize: 11,
-                }}
+                className="text-[11px]"
+                style={{ color: toTarget! >= 0 ? "var(--gain)" : "var(--loss)" }}
               >
                 {toTarget! >= 0 ? "+" : ""}
                 {toTarget!.toFixed(1)}%
               </div>
             </>
           ) : (
-            <span style={{ color: "var(--muted)" }}>—</span>
+            <span className="text-[var(--muted)]">—</span>
           )}
         </td>
-        <td
-          style={{
-            textAlign: "right",
-            padding: "12px 16px 12px 10px",
-          }}
-        >
+        <td className="text-right py-3 px-[10px] pr-4">
           <Sparkline
             data={sparkData}
             width={70}
@@ -156,125 +110,56 @@ export default function HoldingRow({ asset: a, expanded, onToggle }: Props) {
         </td>
       </tr>
       {expanded && (
-        <tr
-          style={{
-            borderBottom: "1px solid var(--border)",
-            background: "var(--surface)",
-          }}
-        >
-          <td colSpan={9} style={{ padding: "14px 24px" }}>
-            <div
-              style={{
-                display: "grid",
-                gridTemplateColumns: "repeat(4, 1fr)",
-                gap: 14,
-              }}
-            >
+        <tr className="border-b border-[var(--border)] bg-[var(--surface)]">
+          <td colSpan={9} className="py-3.5 px-6">
+            <div className="grid grid-cols-4 gap-3.5">
               <div>
-                <div
-                  style={{
-                    fontSize: 11,
-                    color: "var(--muted)",
-                    marginBottom: 5,
-                  }}
-                >
+                <div className="text-[11px] text-[var(--muted)] mb-[5px]">
                   Entry Details
                 </div>
-                <div style={{ fontSize: 12, color: "var(--text)" }}>
+                <div className="text-xs text-[var(--text)]">
                   Entry:{" "}
-                  <span style={{ fontFamily: "var(--font-mono)" }}>
+                  <span className="font-[var(--font-mono)]">
                     {fmt(a.entryPrice)} × {a.qty}
                   </span>
                 </div>
-                <div
-                  style={{
-                    fontSize: 12,
-                    color: "var(--muted)",
-                    marginTop: 3,
-                  }}
-                >
+                <div className="text-xs text-[var(--muted)] mt-[3px]">
                   Date: {a.entryDate}
                 </div>
-                <div
-                  style={{
-                    fontSize: 12,
-                    color: "var(--muted)",
-                    marginTop: 3,
-                  }}
-                >
+                <div className="text-xs text-[var(--muted)] mt-[3px]">
                   Sector: {a.sector}
                 </div>
               </div>
               <div>
-                <div
-                  style={{
-                    fontSize: 11,
-                    color: "var(--muted)",
-                    marginBottom: 5,
-                  }}
-                >
+                <div className="text-[11px] text-[var(--muted)] mb-[5px]">
                   Tax
                 </div>
-                <div style={{ fontSize: 12, color: "var(--text)" }}>
+                <div className="text-xs text-[var(--text)]">
                   Rate:{" "}
-                  <span style={{ fontFamily: "var(--font-mono)" }}>
+                  <span className="font-[var(--font-mono)]">
                     {a.taxRate != null
                       ? `${(a.taxRate * 100).toFixed(0)}%`
                       : "—"}
                   </span>
                 </div>
-                <div
-                  style={{
-                    fontSize: 12,
-                    color: "var(--muted)",
-                    marginTop: 3,
-                  }}
-                >
+                <div className="text-xs text-[var(--muted)] mt-[3px]">
                   Tax:{" "}
-                  <span
-                    style={{
-                      fontFamily: "var(--font-mono)",
-                      color: "var(--loss)",
-                    }}
-                  >
+                  <span className="font-[var(--font-mono)] text-[var(--loss)]">
                     -{fmt(a.taxAmt ?? 0)}
                   </span>
                 </div>
-                <div
-                  style={{
-                    fontSize: 12,
-                    color: "var(--muted)",
-                    marginTop: 3,
-                  }}
-                >
+                <div className="text-xs text-[var(--muted)] mt-[3px]">
                   Post-tax:{" "}
-                  <span
-                    style={{
-                      fontFamily: "var(--font-mono)",
-                      color: "var(--gain)",
-                    }}
-                  >
+                  <span className="font-[var(--font-mono)] text-[var(--gain)]">
                     {fmt(a.postTaxGain)}
                   </span>
                 </div>
               </div>
-              <div style={{ gridColumn: "span 2" }}>
-                <div
-                  style={{
-                    fontSize: 11,
-                    color: "var(--muted)",
-                    marginBottom: 5,
-                  }}
-                >
+              <div className="col-span-2">
+                <div className="text-[11px] text-[var(--muted)] mb-[5px]">
                   Research Note
                 </div>
-                <div
-                  style={{
-                    fontSize: 12,
-                    color: "var(--text)",
-                    lineHeight: 1.6,
-                  }}
-                >
+                <div className="text-xs text-[var(--text)] leading-relaxed">
                   {a.targetNote || "—"}
                 </div>
               </div>

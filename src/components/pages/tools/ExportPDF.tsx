@@ -2,7 +2,7 @@
 import { useState } from "react";
 import { fmt, fmtPct } from "@/lib/formatters";
 import { Icon } from "@/components/ui";
-import type { PhoenixData } from "@/lib/data";
+import type { PhoenixData } from "@/types";
 
 export function ExportPDF({ data }: { data: PhoenixData }) {
   const [selected, setSelected] = useState<Set<string>>(
@@ -44,62 +44,30 @@ ${data.assets.map((a) => `${a.ticker ?? a.category}: ${fmt(a.current)} | ${fmtPc
   };
 
   return (
-    <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: 20 }}>
+    <div className="grid grid-cols-2 gap-5">
       <div>
-        <div
-          style={{
-            fontSize: 13,
-            fontWeight: 600,
-            color: "var(--text)",
-            marginBottom: 16,
-          }}
-        >
+        <div className="text-sm font-semibold text-[var(--text)] mb-4">
           Select Sections
         </div>
         {sections.map((s) => (
           <div
             key={s.id}
-            style={{
-              display: "flex",
-              alignItems: "center",
-              gap: 10,
-              padding: "10px 14px",
-              background: selected.has(s.id)
-                ? "var(--accent-dim)"
-                : "var(--surface)",
-              border: `1px solid ${selected.has(s.id) ? "var(--accent)" : "var(--border)"}`,
-              borderRadius: 8,
-              marginBottom: 8,
-              cursor: "pointer",
-            }}
+            className={`flex items-center gap-[10px] py-[10px] px-3.5 rounded-lg mb-2 cursor-pointer ${selected.has(s.id) ? "bg-[var(--accent-dim)]" : "bg-[var(--surface)]"}`}
+            style={{ border: `1px solid ${selected.has(s.id) ? "var(--accent)" : "var(--border)"}` }}
             onClick={() => toggleSection(s.id)}
           >
             <div
-              style={{
-                width: 18,
-                height: 18,
-                borderRadius: 4,
-                background: selected.has(s.id)
-                  ? "var(--accent)"
-                  : "transparent",
-                border: `2px solid ${selected.has(s.id) ? "var(--accent)" : "var(--border)"}`,
-                display: "flex",
-                alignItems: "center",
-                justifyContent: "center",
-                flexShrink: 0,
-              }}
+              className={`w-[18px] h-[18px] rounded flex items-center justify-center shrink-0 ${selected.has(s.id) ? "bg-[var(--accent)]" : "bg-transparent"}`}
+              style={{ border: `2px solid ${selected.has(s.id) ? "var(--accent)" : "var(--border)"}` }}
             >
               {selected.has(s.id) && (
-                <span style={{ color: "#fff", fontSize: 10, fontWeight: 800 }}>
+                <span className="text-white text-[10px] font-extrabold">
                   ✓
                 </span>
               )}
             </div>
             <span
-              style={{
-                fontSize: 13,
-                color: selected.has(s.id) ? "var(--text)" : "var(--muted)",
-              }}
+              className={`text-sm ${selected.has(s.id) ? "text-[var(--text)]" : "text-[var(--muted)]"}`}
             >
               {s.label}
             </span>
@@ -107,31 +75,14 @@ ${data.assets.map((a) => `${a.ticker ?? a.category}: ${fmt(a.current)} | ${fmtPc
         ))}
       </div>
       <div>
-        <div
-          style={{
-            fontSize: 13,
-            fontWeight: 600,
-            color: "var(--text)",
-            marginBottom: 16,
-          }}
-        >
+        <div className="text-sm font-semibold text-[var(--text)] mb-4">
           Export Options
         </div>
-        <div
-          style={{
-            background: "var(--surface)",
-            border: "1px solid var(--border)",
-            borderRadius: 10,
-            padding: "16px 18px",
-            marginBottom: 16,
-          }}
-        >
-          <div
-            style={{ fontSize: 12, color: "var(--muted)", marginBottom: 10 }}
-          >
+        <div className="bg-[var(--surface)] border border-[var(--border)] rounded-[10px] py-4 px-[18px] mb-4">
+          <div className="text-xs text-[var(--muted)] mb-[10px]">
             Summary
           </div>
-          <div style={{ display: "flex", flexDirection: "column", gap: 6 }}>
+          <div className="flex flex-col gap-1.5">
             {[
               { label: "Portfolio Value", value: fmt(data.netWorth) },
               { label: "XIRR", value: `${data.xirr.toFixed(1)}%` },
@@ -141,19 +92,10 @@ ${data.assets.map((a) => `${a.ticker ?? a.category}: ${fmt(a.current)} | ${fmtPc
             ].map((r) => (
               <div
                 key={r.label}
-                style={{
-                  display: "flex",
-                  justifyContent: "space-between",
-                  fontSize: 12,
-                }}
+                className="flex justify-between text-xs"
               >
-                <span style={{ color: "var(--muted)" }}>{r.label}</span>
-                <span
-                  style={{
-                    color: "var(--text)",
-                    fontFamily: "var(--font-mono)",
-                  }}
-                >
+                <span className="text-[var(--muted)]">{r.label}</span>
+                <span className="text-[var(--text)] font-[var(--font-mono)]">
                   {r.value}
                 </span>
               </div>
@@ -161,23 +103,10 @@ ${data.assets.map((a) => `${a.ticker ?? a.category}: ${fmt(a.current)} | ${fmtPc
           </div>
         </div>
         <button
+            type="button"
           onClick={exportPDF}
           disabled={selected.size === 0}
-          style={{
-            width: "100%",
-            padding: "12px",
-            background: selected.size > 0 ? "var(--accent)" : "var(--border)",
-            border: "none",
-            borderRadius: 8,
-            color: "#fff",
-            cursor: selected.size > 0 ? "pointer" : "not-allowed",
-            fontSize: 14,
-            fontWeight: 600,
-            display: "flex",
-            alignItems: "center",
-            justifyContent: "center",
-            gap: 8,
-          }}
+          className={`w-full p-3 border-0 rounded-lg text-white text-sm font-semibold flex items-center justify-center gap-2 ${selected.size > 0 ? "bg-[var(--accent)] cursor-pointer" : "bg-[var(--border)] cursor-not-allowed"}`}
         >
           <Icon name="download" size={16} color="#fff" />
           Export PDF ({selected.size} sections)

@@ -3,7 +3,7 @@ import { THRESHOLDS } from "@/constants/thresholds";
 import { useState } from "react";
 import { fmt, fmtPct } from "@/lib/formatters";
 import { Badge, ConvictionDot, Gain, Icon } from "@/components/ui";
-import type { PhoenixData } from "@/lib/data";
+import type { PhoenixData } from "@/types";
 
 type Asset = PhoenixData["assets"][number];
 
@@ -27,51 +27,16 @@ export function ReviewCard({
   const STEPS = ["Thesis Check", "Result", "Conviction Delta", "Action"];
 
   return (
-    <div
-      style={{
-        background: "var(--card)",
-        border: "1px solid var(--border)",
-        borderRadius: 12,
-        overflow: "hidden",
-      }}
-    >
+    <div className="bg-[var(--card)] border border-[var(--border)] rounded-xl overflow-hidden">
       {/* Header */}
-      <div
-        style={{
-          padding: "12px 16px",
-          borderBottom: "1px solid var(--border)",
-          display: "flex",
-          justifyContent: "space-between",
-          alignItems: "center",
-          gap: 8,
-        }}
-      >
+      <div className="py-3 px-4 border-b border-[var(--border)] flex justify-between items-center gap-2">
         {/* Left: ticker + name + badge + conviction */}
-        <div
-          style={{ display: "flex", alignItems: "center", gap: 8, minWidth: 0 }}
-        >
-          <div style={{ minWidth: 0 }}>
-            <div
-              style={{
-                fontSize: 14,
-                fontWeight: 700,
-                color: "var(--accent)",
-                fontFamily: "var(--font-mono)",
-                whiteSpace: "nowrap",
-              }}
-            >
+        <div className="flex items-center gap-2 min-w-0">
+          <div className="min-w-0">
+            <div className="text-sm font-bold text-[var(--accent)] font-[var(--font-mono)] whitespace-nowrap">
               {asset.ticker ?? asset.category}
             </div>
-            <div
-              style={{
-                fontSize: 11,
-                color: "var(--muted)",
-                whiteSpace: "nowrap",
-                overflow: "hidden",
-                textOverflow: "ellipsis",
-                maxWidth: 140,
-              }}
-            >
+            <div className="text-[11px] text-[var(--muted)] truncate max-w-[140px]">
               {asset.name.slice(0, 22)}
             </div>
           </div>
@@ -81,28 +46,17 @@ export function ReviewCard({
           )}
         </div>
         {/* Right: gain + mark done */}
-        <div
-          style={{
-            display: "flex",
-            alignItems: "center",
-            gap: 10,
-            flexShrink: 0,
-          }}
-        >
+        <div className="flex items-center gap-[10px] shrink-0">
           <Gain value={asset.gain} pct={asset.gainPct} />
           <button
+            type="button"
             onClick={onComplete}
-            style={{
-              padding: "3px 10px",
-              fontSize: 11,
-              fontWeight: 600,
-              background: isReviewed ? "var(--gain)" : "var(--surface)",
-              border: `1px solid ${isReviewed ? "var(--gain)" : "var(--border)"}`,
-              borderRadius: 99,
-              cursor: "pointer",
-              color: isReviewed ? "#fff" : "var(--muted)",
-              whiteSpace: "nowrap",
-            }}
+            className={`py-[3px] px-[10px] text-[11px] font-semibold rounded-full cursor-pointer whitespace-nowrap ${
+              isReviewed
+                ? "bg-[var(--gain)] text-white"
+                : "bg-[var(--surface)] text-[var(--muted)]"
+            }`}
+            style={{ border: `1px solid ${isReviewed ? "var(--gain)" : "var(--border)"}` }}
           >
             {isReviewed ? "✓ Done" : "Mark Done"}
           </button>
@@ -110,72 +64,43 @@ export function ReviewCard({
       </div>
 
       {/* Step progress */}
-      <div
-        style={{
-          padding: "10px 16px",
-          borderBottom: "1px solid var(--border)",
-          background: "var(--surface)",
-          display: "flex",
-          gap: 4,
-        }}
-      >
+      <div className="py-[10px] px-4 border-b border-[var(--border)] bg-[var(--surface)] flex gap-1">
         {STEPS.map((s, i) => (
           <div
             key={s}
-            style={{
-              display: "flex",
-              alignItems: "center",
-              flex: i < STEPS.length - 1 ? 1 : "none",
-            }}
+            className="flex items-center"
+            style={{ flex: i < STEPS.length - 1 ? 1 : "none" }}
           >
             <div
-              style={{
-                display: "flex",
-                alignItems: "center",
-                gap: 5,
-                cursor: "pointer",
-              }}
+              className="flex items-center gap-[5px] cursor-pointer"
               onClick={() => setStep(i)}
             >
               <div
-                style={{
-                  width: 20,
-                  height: 20,
-                  borderRadius: "50%",
-                  background: i <= step ? "var(--accent)" : "var(--border)",
-                  display: "flex",
-                  alignItems: "center",
-                  justifyContent: "center",
-                }}
+                className={`w-5 h-5 rounded-full flex items-center justify-center ${
+                  i <= step ? "bg-[var(--accent)]" : "bg-[var(--border)]"
+                }`}
               >
                 <span
-                  style={{
-                    fontSize: 10,
-                    fontWeight: 700,
-                    color: i <= step ? "#fff" : "var(--muted)",
-                  }}
+                  className={`text-[10px] font-bold ${
+                    i <= step ? "text-white" : "text-[var(--muted)]"
+                  }`}
                 >
                   {i + 1}
                 </span>
               </div>
               <span
-                style={{
-                  fontSize: 11,
-                  color: i === step ? "var(--text)" : "var(--muted)",
-                  whiteSpace: "nowrap",
-                }}
+                className={`text-[11px] whitespace-nowrap ${
+                  i === step ? "text-[var(--text)]" : "text-[var(--muted)]"
+                }`}
               >
                 {s}
               </span>
             </div>
             {i < STEPS.length - 1 && (
               <div
-                style={{
-                  flex: 1,
-                  height: 1,
-                  background: i < step ? "var(--accent)" : "var(--border)",
-                  margin: "0 6px",
-                }}
+                className={`flex-1 h-px mx-1.5 ${
+                  i < step ? "bg-[var(--accent)]" : "bg-[var(--border)]"
+                }`}
               />
             )}
           </div>
@@ -183,27 +108,14 @@ export function ReviewCard({
       </div>
 
       {/* Step content */}
-      <div style={{ padding: "14px 16px" }}>
+      <div className="py-3.5 px-4">
         {step === 0 && (
           <div>
-            <div
-              style={{ fontSize: 12, color: "var(--muted)", marginBottom: 8 }}
-            >
+            <div className="text-xs text-[var(--muted)] mb-2">
               Is the original thesis still intact? What has changed?
             </div>
             {asset.targetNote && (
-              <div
-                style={{
-                  fontSize: 12,
-                  color: "var(--text)",
-                  background: "var(--surface)",
-                  padding: "8px 10px",
-                  borderRadius: 6,
-                  marginBottom: 10,
-                  lineHeight: 1.6,
-                  borderLeft: "3px solid var(--accent)",
-                }}
-              >
+              <div className="text-xs text-[var(--text)] bg-[var(--surface)] py-2 px-[10px] rounded-md mb-[10px] leading-relaxed border-l-[3px] border-l-[var(--accent)]">
                 {asset.targetNote}
               </div>
             )}
@@ -214,36 +126,17 @@ export function ReviewCard({
               }
               rows={3}
               placeholder="Thesis still holds because…"
-              style={{
-                width: "100%",
-                padding: "8px 10px",
-                background: "var(--bg)",
-                border: "1px solid var(--border)",
-                borderRadius: 6,
-                color: "var(--text)",
-                fontSize: 12,
-                fontFamily: "inherit",
-                resize: "vertical",
-                boxSizing: "border-box",
-              }}
+              className="w-full py-2 px-[10px] bg-[var(--bg)] border border-[var(--border)] rounded-md text-[var(--text)] text-xs resize-y box-border"
+              style={{ fontFamily: "inherit" }}
             />
           </div>
         )}
         {step === 1 && (
           <div>
-            <div
-              style={{ fontSize: 12, color: "var(--muted)", marginBottom: 8 }}
-            >
+            <div className="text-xs text-[var(--muted)] mb-2">
               How did the stock perform vs expectations?
             </div>
-            <div
-              style={{
-                display: "grid",
-                gridTemplateColumns: "1fr 1fr",
-                gap: 10,
-                marginBottom: 10,
-              }}
-            >
+            <div className="grid grid-cols-2 gap-[10px] mb-[10px]">
               {(
                 [
                 { label: "Entry Price", value: fmt(asset.entryPrice) },
@@ -263,23 +156,14 @@ export function ReviewCard({
               ).map((m) => (
                 <div
                   key={m.label}
-                  style={{
-                    background: "var(--surface)",
-                    padding: "8px 12px",
-                    borderRadius: 6,
-                  }}
+                  className="bg-[var(--surface)] py-2 px-3 rounded-md"
                 >
-                  <div style={{ fontSize: 10, color: "var(--muted)" }}>
+                  <div className="text-[10px] text-[var(--muted)]">
                     {m.label}
                   </div>
                   <div
-                    style={{
-                      fontSize: 14,
-                      fontWeight: 700,
-                      color: m.color || "var(--text)",
-                      fontFamily: "var(--font-mono)",
-                      marginTop: 2,
-                    }}
+                    className="text-sm font-bold font-[var(--font-mono)] mt-0.5"
+                    style={{ color: m.color || "var(--text)" }}
                   >
                     {m.value}
                   </div>
@@ -293,40 +177,21 @@ export function ReviewCard({
               }
               rows={2}
               placeholder="Result notes…"
-              style={{
-                width: "100%",
-                padding: "8px 10px",
-                background: "var(--bg)",
-                border: "1px solid var(--border)",
-                borderRadius: 6,
-                color: "var(--text)",
-                fontSize: 12,
-                fontFamily: "inherit",
-                resize: "vertical",
-                boxSizing: "border-box",
-              }}
+              className="w-full py-2 px-[10px] bg-[var(--bg)] border border-[var(--border)] rounded-md text-[var(--text)] text-xs resize-y box-border"
+              style={{ fontFamily: "inherit" }}
             />
           </div>
         )}
         {step === 2 && (
           <div>
-            <div
-              style={{ fontSize: 12, color: "var(--muted)", marginBottom: 12 }}
-            >
+            <div className="text-xs text-[var(--muted)] mb-3">
               Update your conviction score (1–10)
             </div>
-            <div
-              style={{
-                display: "flex",
-                alignItems: "center",
-                gap: 14,
-                marginBottom: 12,
-              }}
-            >
-              <span style={{ fontSize: 12, color: "var(--muted)" }}>
+            <div className="flex items-center gap-3.5 mb-3">
+              <span className="text-xs text-[var(--muted)]">
                 Previous: <ConvictionDot score={asset.conviction} />
               </span>
-              <span style={{ fontSize: 12, color: "var(--muted)" }}>New:</span>
+              <span className="text-xs text-[var(--muted)]">New:</span>
               <input
                 type="range"
                 min={1}
@@ -339,7 +204,7 @@ export function ReviewCard({
                     newConviction: Number(e.target.value),
                   }))
                 }
-                style={{ flex: 1 }}
+                className="flex-1"
               />
               <ConvictionDot score={data.newConviction} />
             </div>
@@ -347,36 +212,21 @@ export function ReviewCard({
         )}
         {step === 3 && (
           <div>
-            <div
-              style={{ fontSize: 12, color: "var(--muted)", marginBottom: 12 }}
-            >
+            <div className="text-xs text-[var(--muted)] mb-3">
               What action will you take?
             </div>
-            <div
-              style={{
-                display: "grid",
-                gridTemplateColumns: "repeat(4, 1fr)",
-                gap: 8,
-              }}
-            >
+            <div className="grid grid-cols-4 gap-2">
               {(["hold", "add", "trim", "exit"] as const).map((a) => (
                 <button
+                  type="button"
                   key={a}
                   onClick={() => setData((d) => ({ ...d, action: a }))}
-                  style={{
-                    padding: "10px 6px",
-                    borderRadius: 8,
-                    border: `1px solid ${data.action === a ? "var(--accent)" : "var(--border)"}`,
-                    background:
-                      data.action === a
-                        ? "var(--accent-dim)"
-                        : "var(--surface)",
-                    cursor: "pointer",
-                    color: data.action === a ? "var(--accent)" : "var(--muted)",
-                    fontSize: 13,
-                    fontWeight: 600,
-                    textTransform: "capitalize",
-                  }}
+                  className={`py-[10px] px-1.5 rounded-lg cursor-pointer text-sm font-semibold capitalize ${
+                    data.action === a
+                      ? "bg-[var(--accent-dim)] text-[var(--accent)]"
+                      : "bg-[var(--surface)] text-[var(--muted)]"
+                  }`}
+                  style={{ border: `1px solid ${data.action === a ? "var(--accent)" : "var(--border)"}` }}
                 >
                   {a}
                 </button>
@@ -385,30 +235,19 @@ export function ReviewCard({
           </div>
         )}
 
-        <div
-          style={{
-            display: "flex",
-            justifyContent: "space-between",
-            marginTop: 16,
-          }}
-        >
+        <div className="flex justify-between mt-4">
           <button
+            type="button"
             onClick={() => setStep((s) => Math.max(0, s - 1))}
             disabled={step === 0}
-            style={{
-              padding: "6px 14px",
-              background: "var(--surface)",
-              border: "1px solid var(--border)",
-              borderRadius: 6,
-              cursor: step === 0 ? "not-allowed" : "pointer",
-              color: "var(--muted)",
-              fontSize: 12,
-              opacity: step === 0 ? 0.4 : 1,
-            }}
+            className={`py-1.5 px-3.5 bg-[var(--surface)] border border-[var(--border)] rounded-md text-[var(--muted)] text-xs ${
+              step === 0 ? "cursor-not-allowed opacity-40" : "cursor-pointer opacity-100"
+            }`}
           >
             Back
           </button>
           <button
+            type="button"
             onClick={() => {
               if (step === STEPS.length - 1) {
                 onComplete();
@@ -416,17 +255,9 @@ export function ReviewCard({
                 setStep((s) => Math.min(STEPS.length - 1, s + 1));
               }
             }}
-            style={{
-              padding: "6px 14px",
-              background:
-                step === STEPS.length - 1 ? "var(--gain)" : "var(--accent)",
-              border: "none",
-              borderRadius: 6,
-              cursor: "pointer",
-              color: "#fff",
-              fontSize: 12,
-              fontWeight: 600,
-            }}
+            className={`py-1.5 px-3.5 border-none rounded-md cursor-pointer text-white text-xs font-semibold ${
+              step === STEPS.length - 1 ? "bg-[var(--gain)]" : "bg-[var(--accent)]"
+            }`}
           >
             {step === STEPS.length - 1 ? "Complete Review" : "Next"}
           </button>

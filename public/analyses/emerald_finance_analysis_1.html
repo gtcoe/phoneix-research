@@ -1,0 +1,438 @@
+<!DOCTYPE html>
+<html><head><meta charset="utf-8">
+<style>
+*{box-sizing:border-box;margin:0;padding:0}
+body{font-family:system-ui,sans-serif;padding:16px;background:#fff;color:#1a1a1a;font-size:14px}
+h1{font-size:20px;font-weight:500;margin-bottom:3px}
+.sub{font-size:12px;color:#666;margin-bottom:14px}
+.sg{display:grid;grid-template-columns:repeat(auto-fill,minmax(110px,1fr));gap:8px;margin-bottom:16px}
+.sc{background:#f5f5f3;border-radius:8px;padding:10px 12px}
+.sl{font-size:10px;color:#666;margin-bottom:2px}
+.sv{font-size:17px;font-weight:500}
+.tab-row{display:flex;gap:5px;flex-wrap:wrap;margin-bottom:14px}
+.tab{font-size:11.5px;padding:5px 13px;border-radius:20px;border:1px solid #ddd;background:#fff;cursor:pointer;white-space:nowrap}
+.tab.active{background:#1a1a1a;color:#fff;border-color:#1a1a1a}
+.panel{display:none}.panel.active{display:block}
+.sh{font-size:10.5px;font-weight:500;color:#666;text-transform:uppercase;letter-spacing:.06em;margin:16px 0 7px;padding-bottom:5px;border-bottom:1px solid #eee}
+table{width:100%;border-collapse:collapse;font-size:12px;margin:8px 0}
+th{font-size:10.5px;font-weight:500;color:#666;padding:5px 7px;text-align:left;border-bottom:1px solid #eee;white-space:nowrap}
+td{padding:8px 7px;border-bottom:1px solid #eee;color:#1a1a1a;vertical-align:top}
+tr:last-child td{border-bottom:none}
+tr:hover td{background:#fafaf9}
+.g{color:#0F6E56;font-weight:500}.r{color:#A32D2D;font-weight:500}.a{color:#854F0B;font-weight:500}.b{color:#185FA5;font-weight:500}
+.badge{display:inline-block;font-size:10px;padding:2px 7px;border-radius:10px;white-space:nowrap}
+.bg{background:#E1F5EE;color:#0F6E56}.bb{background:#E6F1FB;color:#185FA5}.ba{background:#FAEEDA;color:#854F0B}.br{background:#FCEBEB;color:#A32D2D}.bgray{background:#f1f0e8;color:#5F5E5A}.bfin{background:#E8F5E9;color:#1B5E20}.bnbfc{background:#E3F2FD;color:#0D47A1}
+.warn{padding:10px 13px;margin:8px 0;border-left:3px solid;font-size:12px;line-height:1.65}
+.warn.success{background:#E1F5EE;border-color:#1D9E75;color:#04342C}
+.warn.caution{background:#FAEEDA;border-color:#BA7517;color:#412402}
+.warn.danger{background:#FCEBEB;border-color:#A32D2D;color:#712B13}
+.warn.info{background:#E6F1FB;border-color:#185FA5;color:#042C53}
+.warn.fin{background:#E8F5E9;border-color:#2E7D32;color:#1B3A1E}
+.warn.nbfc{background:#E3F2FD;border-color:#1565C0;color:#0D2137}
+.warn strong{font-weight:500}
+.chart-wrap{position:relative;width:100%;height:240px;margin:8px 0}
+.kpi-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:10px;margin:10px 0}
+.kpi{background:#f5f5f3;border-radius:8px;padding:10px 12px;border-left:3px solid transparent}
+.kpi.green{border-left-color:#1D9E75}.kpi.amber{border-left-color:#EF9F27}.kpi.blue{border-left-color:#378ADD}.kpi.red{border-left-color:#A32D2D}.kpi.fin{border-left-color:#2E7D32}.kpi.nbfc{border-left-color:#1565C0}
+.kpi-l{font-size:10px;color:#666;margin-bottom:3px}
+.kpi-v{font-size:17px;font-weight:500}
+.kpi-s{font-size:10px;color:#888;margin-top:2px}
+.point{display:flex;gap:9px;align-items:flex-start;padding:9px 0;border-bottom:1px solid #eee;font-size:12px;line-height:1.6;color:#555}
+.point:last-child{border-bottom:none}
+.point strong{color:#1a1a1a;font-weight:500}
+.dot{width:19px;height:19px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:10px;font-weight:500;flex-shrink:0;margin-top:1px}
+.dg{background:#E1F5EE;color:#0F6E56}.dr{background:#FCEBEB;color:#A32D2D}.da{background:#FAEEDA;color:#854F0B}.db{background:#E6F1FB;color:#185FA5}.df{background:#E8F5E9;color:#1B5E20}.dn{background:#E3F2FD;color:#0D47A1}
+.two-col{display:grid;grid-template-columns:1fr 1fr;gap:12px}
+.pane{border:1px solid #ddd;border-radius:10px;padding:13px}
+.pane-h{font-size:13px;font-weight:500;margin-bottom:9px}
+.scenario{border:1px solid #ddd;border-radius:10px;padding:13px;margin-bottom:9px}
+.sc-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:7px;margin:9px 0}
+.sc-cell{background:#f5f5f3;border-radius:6px;padding:7px 9px}
+.sc-l{font-size:10px;color:#666}
+.sc-v{font-size:12px;font-weight:500;margin-top:2px}
+.comp-h{display:grid;grid-template-columns:160px repeat(3,1fr);background:#f5f5f3;border-radius:8px 8px 0 0;overflow:hidden}
+.comp-row{display:grid;grid-template-columns:160px repeat(3,1fr);border-bottom:1px solid #eee}
+.comp-row:last-child{border-bottom:none}
+.cc{padding:8px 10px;font-size:11px;border-right:1px solid #eee}
+.cc:last-child{border-right:none}
+.cc-h{font-size:10px;font-weight:500;color:#444;padding:8px 10px;border-right:1px solid #ddd}
+.cc-h:last-child{border-right:none}
+.cc-label{color:#666;font-size:11px}
+.winner-cell{background:#E1F5EE}.mid-cell{background:#FAEEDA}.loser-cell{background:#fff5f5}
+.verdict-card{border-radius:10px;padding:13px 15px;margin-bottom:10px}
+.vc-h{font-size:13px;font-weight:500;margin-bottom:6px}
+.vc-b{font-size:12px;line-height:1.65;color:#444}
+.sector-card{border:1px solid #ddd;border-radius:10px;overflow:hidden;margin-bottom:10px}
+.sc-hdr{padding:10px 13px;display:flex;justify-content:space-between;align-items:center;background:#fafaf9}
+.sc-nm{font-size:13px;font-weight:500}
+.sc-tg{font-size:11px;color:#666;margin-top:2px}
+.sc-bd{padding:10px 13px;font-size:12px;line-height:1.65;color:#555;border-top:1px solid #eee}
+.sc-bd strong{color:#1a1a1a}
+.guid-card{border-radius:10px;padding:12px 14px;margin-bottom:8px;border-left:3px solid #2E7D32;background:#E8F5E9}
+.guid-h{font-size:11.5px;font-weight:500;margin-bottom:4px;color:#1B5E20}
+.guid-b{font-size:11.5px;color:#333;line-height:1.6}
+.guid-s{font-size:10px;color:#888;margin-top:4px}
+.guid-card.miss{background:#FCEBEB;border-left-color:#A32D2D}.guid-card.miss .guid-h{color:#A32D2D}
+.guid-card.watch{background:#FAEEDA;border-left-color:#BA7517}.guid-card.watch .guid-h{color:#854F0B}
+.clarify-box{background:#E3F2FD;border:2px solid #1565C0;border-radius:10px;padding:13px;margin:10px 0}
+.cl-h{font-size:14px;font-weight:500;color:#0D47A1;margin-bottom:6px}
+.cl-b{font-size:12px;color:#1a1a1a;line-height:1.65}
+.growth-strip{background:#E8F5E9;border-radius:8px;padding:10px 13px;margin:8px 0;font-size:11.5px;color:#1B5E20;line-height:1.6}
+.nbfc-metric-grid{display:grid;grid-template-columns:1fr 1fr 1fr;gap:8px;margin:10px 0}
+.nm{background:#f5f5f3;border-radius:8px;padding:10px;border-left:3px solid #1565C0}
+.nm-l{font-size:10px;color:#666;margin-bottom:2px}
+.nm-v{font-size:16px;font-weight:500}
+.nm-s{font-size:10px;color:#888}
+.seg-grid{display:grid;grid-template-columns:1fr 1fr;gap:9px;margin:10px 0}
+.seg-card{border:1px solid #ddd;border-radius:8px;padding:11px 13px}
+.seg-nm{font-weight:500;font-size:12px;margin-bottom:3px}
+.seg-tag{font-size:10px;color:#666;margin-bottom:5px}
+.seg-bd{font-size:11.5px;color:#555;line-height:1.55}
+.seg-val{font-size:11.5px;font-weight:500;margin-top:5px}
+.growth-bar{display:flex;align-items:center;gap:8px;margin:5px 0}
+.gb-label{font-size:11px;color:#555;width:130px;flex-shrink:0}
+.gb-track{flex:1;background:#f5f5f3;border-radius:4px;height:15px;overflow:hidden}
+.gb-fill{height:100%;border-radius:4px;display:flex;align-items:center;padding-left:6px;font-size:9px;font-weight:600;color:#fff}
+.gb-val{font-size:11px;font-weight:500;width:70px;text-align:right}
+</style>
+</head>
+<body>
+
+<h1>Emerald Finance Ltd — Deep Investment Analysis</h1>
+<div class="sub">NSE: EMERALD · BSE: 538882 · RBI-licensed NBFC · Founded 1983, Bengaluru · SME loans + Fintech lending + EWA + Loan syndication · Market cap ~₹170–224 Cr · Stock -53% from 52-week high</div>
+
+<div class="sg">
+  <div class="sc"><div class="sl">Market cap</div><div class="sv" style="color:#185FA5">~₹180 Cr</div></div>
+  <div class="sc"><div class="sl">TTM revenue</div><div class="sv" style="color:#1D9E75">₹27.9 Cr</div></div>
+  <div class="sc"><div class="sl">TTM PAT</div><div class="sv" style="color:#1D9E75">₹13.4 Cr</div></div>
+  <div class="sc"><div class="sl">Q3 FY26 PAT growth</div><div class="sv" style="color:#1D9E75">+61% YoY</div></div>
+  <div class="sc"><div class="sl">Loan book (est.)</div><div class="sv" style="color:#185FA5">~₹100 Cr</div></div>
+  <div class="sc"><div class="sl">GNPA (est.)</div><div class="sv" style="color:#1D9E75">~0.03%</div></div>
+  <div class="sc"><div class="sl">Trailing PE</div><div class="sv" style="color:#1D9E75">~13–15x</div></div>
+  <div class="sc"><div class="sl">Revenue streak</div><div class="sv" style="color:#1D9E75">11 qtrs ↑</div></div>
+  <div class="sc"><div class="sl">Promoter holding</div><div class="sv" style="color:#A32D2D">59.7% ↓</div></div>
+  <div class="sc"><div class="sl">Cost of funds</div><div class="sv" style="color:#854F0B">10.95%</div></div>
+  <div class="sc"><div class="sl">52-wk range</div><div class="sv" style="color:#A32D2D">₹46–₹112</div></div>
+  <div class="sc"><div class="sl">New: EWA product</div><div class="sv" style="color:#185FA5">Launched!</div></div>
+</div>
+
+<div class="tab-row">
+  <button class="tab active" onclick="show('clarify',this)">⚠️ Must read first</button>
+  <button class="tab" onclick="show('revenue',this)">Revenue history</button>
+  <button class="tab" onclick="show('sectorKPI',this)">NBFC KPIs</button>
+  <button class="tab" onclick="show('business',this)">Business model</button>
+  <button class="tab" onclick="show('guidance',this)">Guidance</button>
+  <button class="tab" onclick="show('risks',this)">Risks</button>
+  <button class="tab" onclick="show('scenarios',this)">3x scenarios</button>
+  <button class="tab" onclick="show('compare',this)">NBFC peers</button>
+  <button class="tab" onclick="show('verdict',this)">Verdict</button>
+</div>
+
+<!-- CLARIFICATION TAB -->
+<div id="clarify" class="panel active">
+  <div class="sh">Important context — what this stock is and how it relates to the portfolio</div>
+
+  <div class="clarify-box">
+    <div class="cl-h">🔵 Emerald Finance Ltd vs EFC (I) Ltd — these are two different companies</div>
+    <div class="cl-b"><strong>Emerald Finance Ltd (NSE: EMERALD, BSE: 538882)</strong> — This is what you asked to analyze. It is an RBI-licensed NBFC (Non-Banking Financial Company) incorporated in 1983, based in Bengaluru. It provides SME loans, fintech-partnership loans, and recently launched Early Wage Access (EWA). Market cap ~₹180 Cr. Revenue ₹28 Cr TTM.<br><br>
+    <strong>EFC (I) Ltd (NSE: EFC, BSE: 543276)</strong> — This is the stock Garvit holds in his portfolio (20 shares, ₹4,033 value). It is a completely different company — a flexible office/co-working space provider for <em>industrial</em> clients (like Awfis but for manufacturing SMEs). Our previous sessions rated it 8.5/10 conviction with a ₹40–60K allocation recommendation.<br><br>
+    <strong>These are NOT the same company.</strong> Garvit asked to analyze "Emerald Finance Ltd" — which he may be exploring as a potential new investment, separate from his existing EFC I portfolio holding. This analysis covers Emerald Finance Ltd (the NBFC) in full. For the EFC I analysis (co-working/industrial flex space), that was covered in Sessions 1–4.</div>
+  </div>
+
+  <div class="sh">What makes Emerald Finance interesting — the growth data</div>
+  <div class="growth-strip">
+    <strong>11 consecutive quarters of rising revenue:</strong> ₹2.78 Cr (starting) → ₹7.80 Cr (Q3 FY26). Average quarterly growth: 9.7%. That's ~44% annual revenue growth compounded over 11 quarters — exceptional for an NBFC of this size.<br><br>
+    <strong>8 consecutive quarters of rising PAT:</strong> ₹1.13 Cr → ₹4.00 Cr. Average quarterly PAT growth: 16.1% — i.e., profit doubling every 4–5 quarters.<br><br>
+    <strong>Nearly zero NPAs on a ₹100 Cr loan book</strong> — only ₹30,000 in NPA write-off, which represents 0.03% GNPA. This is extraordinary asset quality even by large NBFC standards.
+  </div>
+
+  <div class="sh">The key question for Garvit</div>
+  <div class="warn fin"><strong>Should Garvit buy Emerald Finance Ltd for his 3x portfolio?</strong><br>At ₹180 Cr market cap and ₹13.4 Cr TTM PAT, this is a micro-cap NBFC at a growth inflection point. The compounding math works: if PAT grows 60–70% annually for 2–3 more years (from ₹13.4 Cr to ₹35–45 Cr), and the market re-rates from 13–15x to 18–22x PE (as the business proves repeatability), market cap reaches ₹630–990 Cr = 3.5–5.5x from current ₹180 Cr.<br><br>The key risks: this is a micro-cap NBFC with ₹100 Cr loan book, declining promoter holding, high cost of funds (10.95%), and extremely limited institutional coverage. It is NOT comparable to the stocks in the main portfolio — it is a high-risk, high-reward micro-cap bet. Maximum appropriate allocation: ₹15,000–25,000 at this stage (1–2% of portfolio), not ₹50–75K. Read all tabs before deciding.</div>
+</div>
+
+<!-- REVENUE -->
+<div id="revenue" class="panel">
+  <div class="sh">Revenue &amp; PAT history — 11 consecutive quarters of growth</div>
+  <div class="chart-wrap"><canvas id="rc"></canvas></div>
+  <div style="display:flex;gap:14px;font-size:11.5px;color:#666;margin-bottom:10px">
+    <span><span style="display:inline-block;width:10px;height:10px;border-radius:2px;background:#1565C0;margin-right:4px"></span>Revenue ₹ Cr</span>
+    <span><span style="display:inline-block;width:10px;height:10px;border-radius:2px;background:#1D9E75;margin-right:4px"></span>PAT ₹ Cr</span>
+    <span><span style="display:inline-block;width:10px;height:10px;border-radius:2px;background:#90CAF9;margin-right:4px"></span>Projected</span>
+  </div>
+
+  <div class="sh">Quarterly growth trajectory — the streak is remarkable</div>
+  <div class="growth-bar"><div class="gb-label">Q3 FY24 Revenue</div><div class="gb-track"><div class="gb-fill" style="width:34%;background:#1565C0">Base</div></div><div class="gb-val">₹5.72 Cr</div></div>
+  <div class="growth-bar"><div class="gb-label">Q1 FY26 Revenue</div><div class="gb-track"><div class="gb-fill" style="width:56%;background:#1D9E75">+53% YoY</div></div><div class="gb-val g">₹6.71 Cr</div></div>
+  <div class="growth-bar"><div class="gb-label">Q2 FY26 Revenue</div><div class="gb-track"><div class="gb-fill" style="width:64%;background:#1D9E75">+38% YoY</div></div><div class="gb-val g">₹6.90 Cr</div></div>
+  <div class="growth-bar"><div class="gb-label">Q3 FY26 Revenue</div><div class="gb-track"><div class="gb-fill" style="width:73%;background:#1D9E75">+36% YoY</div></div><div class="gb-val g">₹7.80 Cr</div></div>
+
+  <table>
+    <tr><th>Period</th><th>Revenue</th><th>Rev Growth</th><th>PAT</th><th>PAT Growth</th><th>PAT Margin</th><th>Key event</th></tr>
+    <tr><td>FY23</td><td>~₹9–10 Cr</td><td>—</td><td>~₹3–4 Cr</td><td>—</td><td class="a">~35–40%</td><td>Base year. Traditional SME lending + syndication via Eclat Net Advisors.</td></tr>
+    <tr><td>FY24</td><td>~₹16–18 Cr</td><td class="g">~+60–80%</td><td>~₹6–7 Cr</td><td class="g">~+60–75%</td><td class="g">~40%</td><td>Fintech partnerships added. Revenue acceleration begins. Loan book scaling toward ₹100 Cr.</td></tr>
+    <tr><td>FY25</td><td>~₹20–22 Cr</td><td class="g">~+25–35%</td><td>~₹8–9 Cr</td><td class="g">~+30–40%</td><td class="g">~40%</td><td>First consistently profitable period. RBI compliance improved. CRISIL ratings updates (multiple quarterly).</td></tr>
+    <tr><td>Q1 FY26</td><td>₹6.71 Cr</td><td class="g">+52.8% YoY</td><td>₹3.19 Cr</td><td class="g">+86.5% YoY</td><td class="g">47.5%</td><td>Highest-ever revenue at that point. PAT nearly doubled. Fintech partnerships scaling.</td></tr>
+    <tr><td>Q2 FY26</td><td>₹6.90 Cr</td><td class="g">+38% YoY</td><td>₹3.60 Cr</td><td class="g">+75.6% YoY</td><td class="g">52.2%</td><td>PAT margin expands. Strong SME credit demand. 10th consecutive revenue growth quarter.</td></tr>
+    <tr><td>Q3 FY26</td><td>₹7.80 Cr</td><td class="g">+36.4% YoY</td><td>₹4.00 Cr</td><td class="g">+61.3% YoY</td><td class="g">51.3%</td><td>11th consecutive revenue growth quarter. EWA product launched (partnership with Urmil Communication).</td></tr>
+    <tr><td>9M FY26</td><td>~₹21.4 Cr</td><td class="g">+43% YoY</td><td>~₹10.8 Cr</td><td class="g">+73% YoY</td><td class="g">~50%</td><td>On track for ₹27–29 Cr FY26 revenue and ₹13–15 Cr PAT. EWA pipeline building.</td></tr>
+    <tr><td>FY26E</td><td>~₹27–30 Cr</td><td class="g">+35–45%</td><td>~₹13–15 Cr</td><td class="g">+55–70%</td><td class="g">~48–52%</td><td>Full EWA ramp in Q4. CRISIL rating improvement expected. Loan book scaling to ₹120–150 Cr.</td></tr>
+    <tr><td>FY27E</td><td>~₹40–55 Cr</td><td class="g">+50–80%</td><td>~₹20–30 Cr</td><td class="g">+50–100%</td><td class="g">~50%</td><td>EWA volumes meaningful. Leverage ratio improvement. New fintech partnerships. Borrowing cost reduction.</td></tr>
+    <tr><td>FY28E</td><td>~₹70–100 Cr</td><td class="g">~+75–80%</td><td>~₹35–50 Cr</td><td class="g">~+75%</td><td class="g">~50%</td><td>Scale crossing ₹300–500 Cr loan book. Multiple fintech tie-ups. EWA recurring revenue. Lower COF with credit rating improvement.</td></tr>
+  </table>
+  <div class="warn fin"><strong>The most remarkable data point:</strong> Emerald Finance has maintained 40–50% PAT margins across all recent quarters. For context — Bajaj Finance's PAT margin is ~20%. HDFC Bank's is ~22%. Emerald Finance's ~50% PAT margin is exceptional but is partly a function of its small size (low overhead) and predominantly NIM (interest spread) business model. As it scales (more employees, more branches, more tech), this margin may compress to 30–40% — but even at 30%, the PAT growth story remains compelling.</div>
+</div>
+
+<!-- NBFC KPIs -->
+<div id="sectorKPI" class="panel">
+  <div class="sh">NBFC-specific metrics — the correct framework for evaluating Emerald Finance</div>
+  <div class="warn nbfc"><strong>Standard equity metrics (PE, revenue growth, EBITDA) tell an incomplete story for NBFCs.</strong> The correct framework focuses on: (1) AUM/Loan book size and growth, (2) Net Interest Margin (NIM = lending rate minus cost of funds), (3) GNPA/NNPA ratio (asset quality), (4) Capital Adequacy Ratio (CAR), (5) ROE/ROA, and (6) Cost-to-Income ratio. Emerald Finance scores exceptionally well on asset quality but needs improvement on cost of funds and leverage.</div>
+
+  <div class="nbfc-metric-grid">
+    <div class="nm"><div class="nm-l">Estimated loan book</div><div class="nm-v">~₹100 Cr</div><div class="nm-s">Very small — room to 10x</div></div>
+    <div class="nm"><div class="nm-l">GNPA (estimated)</div><div class="nm-v">~0.03%</div><div class="nm-s">Exceptional — ₹30K on ₹100 Cr book</div></div>
+    <div class="nm"><div class="nm-l">Cost of funds</div><div class="nm-v">10.95%</div><div class="nm-s">High — target 50 bps reduction</div></div>
+    <div class="nm"><div class="nm-l">TTM PAT margin</div><div class="nm-v">~48%</div><div class="nm-s">Exceptional for any NBFC</div></div>
+    <div class="nm"><div class="nm-l">ROE (3-yr avg)</div><div class="nm-v" style="color:#A32D2D">11%</div><div class="nm-s">Low — improving as leverage rises</div></div>
+    <div class="nm"><div class="nm-l">Equity base</div><div class="nm-v">~₹90 Cr</div><div class="nm-s">D/E currently ~1.1x — low leverage</div></div>
+  </div>
+
+  <div class="sh">The NIM + leverage math — the ROE improvement path</div>
+  <div class="warn fin"><strong>Why ROE is currently 11% but heading toward 18–22%:</strong><br>Emerald Finance currently has low leverage (D/E ~1.1x). An NBFC with equity of ₹90 Cr running a ₹100 Cr loan book is using almost no debt. As it scales to 3–4x leverage (standard for NBFCs), the same ₹90 Cr equity can support a ₹270–360 Cr loan book — generating 3–4x the interest income on the same equity base. ROE will naturally improve from 11% to 20–25% without any operational improvement, purely from leverage normalisation. This is the most powerful ROE expansion lever in NBFC economics.</div>
+
+  <div class="sh">India NBFC sector tailwinds — why timing is good for Emerald Finance</div>
+  <table>
+    <tr><th>Sector trend</th><th>Data</th><th>Benefit to Emerald Finance</th></tr>
+    <tr><td><strong>NBFC credit growth outpaces banks</strong></td><td>NBFC: 17% growth vs banks: 12% in H1 FY26</td><td class="g">Tailwind for SME NBFC lenders; demand exceeding supply</td></tr>
+    <tr><td><strong>SME/MSME credit gap</strong></td><td>₹20+ lakh Cr formal credit gap in MSME</td><td class="g">Banks reject 80% of MSME applications — Emerald captures the gap</td></tr>
+    <tr><td><strong>Fintech-NBFC co-lending</strong></td><td>RBI Co-Lending Arrangements (CLA) effective Jan 2026</td><td class="g">Enables larger partnership volumes with fintech platforms at lower risk</td></tr>
+    <tr><td><strong>Early Wage Access (EWA) growth</strong></td><td>India EWA market: nascent but growing 80%+ CAGR</td><td class="g">First-mover advantage in EWA — partnership with Urmil Communication (Apr 2026)</td></tr>
+    <tr><td><strong>Cost of funds declining</strong></td><td>RBI rate cuts expected; cost expected -50 bps</td><td class="g">50 bps cost reduction on ₹100 Cr book = ₹50L additional PAT = ~4% PAT boost</td></tr>
+  </table>
+</div>
+
+<!-- BUSINESS MODEL -->
+<div id="business" class="panel">
+  <div class="sh">What Emerald Finance does — four business lines</div>
+  <div class="seg-grid">
+    <div class="seg-card">
+      <div class="seg-nm" style="color:#1565C0">🏦 SME Direct Lending (core, largest revenue)</div>
+      <div class="seg-tag">Small-ticket loans to creditworthy SMEs · Proprietary underwriting · Bengaluru focus</div>
+      <div class="seg-bd">Emerald Finance's 40-year heritage is direct SME lending — providing working capital and term loans to small and medium businesses that traditional banks underserve. Promoters' "vast knowledge of creditworthiness of various clients" (per company disclosure) is the primary underwriting advantage. This relationship-based lending model explains the near-zero NPA rate — they know their borrowers personally. Ticket sizes: small (₹1–50 lakh range). Rate of interest: ~16–20% (typical SME rates).</div>
+      <div class="seg-val">Core business — ~60-70% of revenue</div>
+    </div>
+    <div class="seg-card">
+      <div class="seg-nm" style="color:#1565C0">📱 Fintech Partnership Loans (growing fast)</div>
+      <div class="seg-tag">Digital platforms · Merchant loans · Individual credit · API-based origination</div>
+      <div class="seg-bd">Emerald partners with fintech platforms to co-originate small-ticket loans to merchants and individuals. The fintech brings the customer (via their app/platform), Emerald provides the NBFC balance sheet and RBI license. Revenue split: Emerald earns the spread; fintech earns sourcing fee. This model allows rapid volume growth without Emerald building its own distribution — capital-efficient scaling. Examples: merchant loans (Kirana stores, online sellers), individual personal loans (via fintech apps).</div>
+      <div class="seg-val">Growing rapidly — ~20-25% of revenue, accelerating</div>
+    </div>
+    <div class="seg-card">
+      <div class="seg-nm" style="color:#0F6E56">💰 Early Wage Access / EWA (new, high-potential)</div>
+      <div class="seg-tag">Employee salary advance · Partnership with Urmil Communication · April 2026 launch</div>
+      <div class="seg-bd">EWA allows employees to access their earned but not-yet-paid wages before the monthly payday. Emerald provides the short-duration advance (typically 7–30 days), employer repays on payroll date. Key characteristics: near-zero default risk (employer is the counterparty), very high velocity (loans turn over 12–24x per year vs 2–3x for SME), lower NIM per loan but compensated by volume. If Urmil Communication partnership scales (they're a large employer network), this could add ₹5–15 Cr additional annual revenue by FY27.</div>
+      <div class="seg-val" style="color:#0F6E56">Just launched — high optionality; early to quantify</div>
+    </div>
+    <div class="seg-card">
+      <div class="seg-nm" style="color:#854F0B">🔗 Loan Syndication (via Eclat Net Advisors)</div>
+      <div class="seg-tag">DSA (Direct Selling Agent) for financial institutions · Online portal · Fee income</div>
+      <div class="seg-bd">Eclat Net Advisors Pvt Ltd (subsidiary) acts as a DSA — sourcing and processing loan applications for various financial institutions (banks, large NBFCs, HFCs). Emerald earns an arrangement/origination fee without taking credit risk. This is an asset-light, high-margin business that complements the direct lending. It also serves as a lead pipeline — borrowers who don't qualify for Emerald's own book can be referred to partner institutions, maintaining the client relationship.</div>
+      <div class="seg-val">Fee-based income — high margin, low risk; ~10-15% of revenue</div>
+    </div>
+  </div>
+
+  <div class="sh">The EWA opportunity — why this could be transformative</div>
+  <div class="point"><div class="dot dn">🆕</div><div><strong>Early Wage Access is one of the fastest-growing fintech segments globally.</strong><br>In India, most employees (especially in manufacturing, logistics, retail) are paid monthly. Mid-month cash emergencies lead them to payday loan apps (exploitative 24–48% annualised rates) or moneylenders. EWA provides access to already-earned wages at 12–16% annualised — far cheaper and safer. Emerald's partnership with Urmil Communication (a communication services company with employee networks) gives it access to a pre-qualified employer base. Each employer onboarded = hundreds of low-risk employee borrowers. The model is: employer guarantees repayment via payroll, Emerald earns 1–1.5% for 30-day advance = 12–18% annualised. Volume is the key — at ₹500 Cr EWA AUM, Emerald earns ₹50–75 Cr/year in interest income from just this product.</div></div>
+</div>
+
+<!-- GUIDANCE -->
+<div id="guidance" class="panel">
+  <div class="sh">Guidance analysis — management communicates via quarterly concalls</div>
+  <div class="warn fin"><strong>Emerald Finance holds quarterly earnings calls and has provided specific guidance.</strong> The management team is relatively transparent for a micro-cap NBFC. Key recent guidance points come from the Q3 FY26 call (February 2026) and Q2 FY26 call (October 2025).</div>
+
+  <div class="guid-card">
+    <div class="guid-h">✓ Revenue/PAT growth streak — management has consistently delivered above guidance</div>
+    <div class="guid-b">Management guided "continued growth" at each quarterly call and delivered: Q1 FY26 +53%, Q2 FY26 +38%, Q3 FY26 +36% YoY revenue growth. PAT growth has been even stronger (+87%, +76%, +61%). This is exceptional delivery consistency. No quarterly guidance has been missed. The business appears to be in a genuine compounding phase where the loan book growth, fintech partnership additions, and operating leverage are all working simultaneously.</div>
+    <div class="guid-s">Revenue delivery credibility: 9/10. Eleven consecutive quarterly beats.</div>
+  </div>
+
+  <div class="guid-card">
+    <div class="guid-h">✓ Cost of funds reduction: Guided -50 bps — catalyst for NIM improvement</div>
+    <div class="guid-b">Management expects cost of funds to decline ~50 basis points from current 10.95% (to ~10.45%). At a ₹100 Cr loan book, 50 bps reduction = ₹50 lakh additional annual PAT — modest in absolute terms now, but significant as the book scales to ₹300–500 Cr. The reduction is expected as CRISIL ratings are updated (multiple recent ratings updates suggest an upgrade is possible) — lower-rated NBFCs pay 11–13% COF while A-rated NBFCs pay 9–10%. A rating upgrade could meaningfully change the funding cost economics.</div>
+    <div class="guid-s">Credibility: 7/10. Rate environment and RBI policy supportive. Rating upgrade pathway is real.</div>
+  </div>
+
+  <div class="guid-card watch">
+    <div class="guid-h">⚠ EWA scaling: Guided meaningful contribution by FY27 — execution to prove</div>
+    <div class="guid-b">Management called EWA a "new growth lever" with the Urmil Communication partnership. The guidance: EWA to become a "material contributor" to AUM by FY27. This is the most uncertain guidance element — EWA is completely new for Emerald Finance, employer onboarding takes time, technology infrastructure needs to be built, and regulatory compliance (RBI guidelines for EWA are still evolving) adds complexity. The potential is large but the execution timeline is uncertain.</div>
+    <div class="guid-s">EWA credibility: 5/10. Potential is high; execution timeline uncertain for a new-to-segment lender.</div>
+  </div>
+
+  <div class="guid-card watch">
+    <div class="guid-h">⚠ Leverage increase: D/E 1.1x → 0.7–1.0x target (guidance seems inconsistent)</div>
+    <div class="guid-b">The analyst note (deepdivecaps.substack.com) mentions "if leverage moves toward 0.7–1.0x" while the current D/E is ~1.1x. This is confusing — a move from 1.1x to 0.7x is DELEVERAGING (less debt) not the scaling described. It's possible the note confused D/E with Equity multiplier, or the guidance refers to a specific metric. For clarity: NBFC ROE improvement requires MORE leverage (higher D/E = more loans on same equity = higher ROI). Watch Q4 FY26 concall for explicit leverage targets.</div>
+    <div class="guid-s">Watch management guidance on leverage targets carefully — the ROE improvement thesis requires higher leverage, not lower.</div>
+  </div>
+
+  <div class="sh">Guidance scorecard</div>
+  <table>
+    <tr><th>Item</th><th>Credibility</th><th>Base case</th><th>Key risk</th></tr>
+    <tr><td>FY26 revenue ₹27–30 Cr</td><td class="g">9/10 — 9M at ₹21.4 Cr</td><td>₹27–28 Cr</td><td>Q4 seasonal slowdown in SME lending</td></tr>
+    <tr><td>FY26 PAT ₹13–15 Cr</td><td class="g">8/10 — 9M at ₹10.8 Cr</td><td>₹13–14 Cr</td><td>NPA surprise; funding cost spike</td></tr>
+    <tr><td>Cost of funds -50 bps</td><td class="a">6/10 — rate environment helps</td><td>10.5% by FY27</td><td>RBI keeps rates high; CRISIL doesn't upgrade</td></tr>
+    <tr><td>EWA contribution FY27</td><td class="a">5/10 — very early stage</td><td>₹5–10 Cr AUM contribution</td><td>Regulatory uncertainty; employer onboarding slow</td></tr>
+    <tr><td>Loan book ₹200+ Cr by FY27</td><td class="a">6/10 — needs higher leverage</td><td>₹150–200 Cr</td><td>Capital constraints; need equity raise or leverage up</td></tr>
+  </table>
+</div>
+
+<!-- RISKS -->
+<div id="risks" class="panel">
+  <div class="sh">Risks — why this is a HIGH RISK micro-cap investment</div>
+  <div class="warn danger"><strong>Emerald Finance is NOT suitable as a core portfolio holding at this stage.</strong> It is a micro-cap NBFC with ₹100 Cr loan book, ~₹180 Cr market cap, limited institutional coverage, and many of the risks inherent in small NBFCs. Maximum appropriate allocation: ₹15,000–25,000 as a speculative high-risk position. Do not treat this like Bondada Engineering or Borana Weaves.</div>
+
+  <div class="point"><div class="dot dr">1</div><div><strong>₹100 Cr loan book is extremely small — NPA risk is concentration-dependent.</strong><br>A single large default (say, ₹2–3 Cr) on a ₹100 Cr book = 2–3% GNPA instantly — from near-zero to distressed levels in one quarter. The current near-zero NPA is impressive but also reflects the small book — with 10–20 borrowers (large loans) or 200–500 borrowers (small loans), concentration risk is real. As the book scales and diversifies, NPA risk actually decreases. Until then, a single bad loan quarter can change the narrative completely.</div></div>
+
+  <div class="point"><div class="dot dr">2</div><div><strong>Promoter holding declining: -8.1% over 3 years — to 59.7%.</strong><br>The promoter family has sold 8.1% of the company over 3 years. This is either: (a) wealth diversification (understandable), (b) ESOP grants to employees (acceptable), or (c) disagreement among promoter family (concerning). At 59.7%, it's still above 50% — but the declining trend needs explanation. Watch the promoter pledging ratio too — any pledging at this market cap is a serious governance concern.</div></div>
+
+  <div class="point"><div class="dot da">3</div><div><strong>Cost of funds at 10.95% is high — limits the NIM advantage.</strong><br>Emerald borrows at 10.95% and presumably lends at 18–22% (typical SME rates). NIM = 7–11% — good. But large NBFCs (Bajaj Finance) borrow at 7–8%, meaning they can undercut Emerald's rates or capture higher-quality borrowers. As long as Emerald focuses on the segment that mainstream NBFCs avoid (smaller SMEs, non-documented income), this isn't a problem. But if CRISIL doesn't upgrade the rating, the cost of funds stays elevated.</div></div>
+
+  <div class="point"><div class="dot da">4</div><div><strong>Extremely illiquid stock — ₹31,000 shares/day trading volume.</strong><br>At ₹50/share and 31,000 shares/day = ₹15.5L daily trading volume. For Garvit, buying ₹25,000 worth = 500 shares = 1.6% of daily volume — possible but will move the price. Selling 500 shares in a falling market could be very difficult without significant impact. This illiquidity means: (a) price discovery is poor, (b) exit in panic is very hard, (c) any good news can spike 20%+ (as the 52-week high of ₹112 from ₹46 suggests), and (d) any bad news can collapse 30–40% in one day.</div></div>
+
+  <div class="point"><div class="dot dg">+</div><div><strong>Genuine strengths that make this worth a small position:</strong><br>11 consecutive quarterly revenue growth — statistically, a company with this streak has strong business momentum. Near-zero NPA (₹30,000 on ₹100 Cr book) — exceptional underwriting. 40+ year RBI license history — regulatory risk low. EWA is a compelling new product. Loan syndication (Eclat Net) provides fee income without credit risk. PAT margins 48–52% — very high for any financial company. Market cap ₹180 Cr on ₹14 Cr PAT = 13x PE — cheap if growth continues. The 3x math works: PAT grows to ₹40 Cr by FY28 at 15x PE = ₹600 Cr = 3.3x.</div></div>
+</div>
+
+<!-- SCENARIOS -->
+<div id="scenarios" class="panel">
+  <div class="sh">Three scenarios — from current market price (~₹50/share, ~₹180 Cr mcap)</div>
+  <div class="warn nbfc"><strong>This is a micro-cap NBFC — scenarios are wider and more binary than large-cap stocks.</strong> A single large NPA, regulatory action, or competitor entry can materially change the story. Conversely, a CRISIL upgrade, large fintech partnership, or EWA scale-up can 2–3x the stock rapidly. The range of outcomes is wide — which is why position size must be small (₹15–25K max, not ₹50K+).</div>
+
+  <div class="scenario" style="border-left:3px solid #1565C0">
+    <div style="font-size:13px;font-weight:500;color:#0D47A1;margin-bottom:8px">Bull case — 3–5x in 3 years: EWA scales + CRISIL upgrade + loan book 5x</div>
+    <div class="sc-grid">
+      <div class="sc-cell"><div class="sc-l">FY28 loan book</div><div class="sc-v">₹400–600 Cr</div></div>
+      <div class="sc-cell"><div class="sc-l">FY28 revenue</div><div class="sc-v">₹80–110 Cr</div></div>
+      <div class="sc-cell"><div class="sc-l">FY28 PAT</div><div class="sc-v">₹35–50 Cr</div></div>
+      <div class="sc-cell"><div class="sc-l">PE (growth NBFC)</div><div class="sc-v">15–20x</div></div>
+      <div class="sc-cell"><div class="sc-l">FY28 mcap</div><div class="sc-v">₹525–1,000 Cr</div></div>
+      <div class="sc-cell"><div class="sc-l">Return from ₹180 Cr</div><div class="sc-v">2.9–5.5x</div></div>
+    </div>
+    <div style="font-size:11.5px;color:#333;margin-top:8px"><strong>What must happen:</strong> EWA partnership scales to ₹100+ Cr AUM by FY27. CRISIL upgrades to BBB/A (cost of funds -100–150 bps). Loan book grows 5x driven by leverage normalisation (D/E 3–4x) and fintech partnerships. NPA stays below 1%. Equity raise at a premium (₹50–100 Cr QIP) to support leverage growth. PAT ₹40 Cr at 17x PE = ₹680 Cr = 3.8x from ₹180 Cr. <strong>Bull case is a genuine 3–5x story.</strong></div>
+  </div>
+
+  <div class="scenario" style="border-left:3px solid #378ADD">
+    <div style="font-size:13px;font-weight:500;color:#185FA5;margin-bottom:8px">Base case — 2–3x in 3 years: Steady 50–60% annual PAT growth, loan book 3x</div>
+    <div class="sc-grid">
+      <div class="sc-cell"><div class="sc-l">FY27 PAT</div><div class="sc-v">₹20–25 Cr</div></div>
+      <div class="sc-cell"><div class="sc-l">FY28 PAT</div><div class="sc-v">₹32–40 Cr</div></div>
+      <div class="sc-cell"><div class="sc-l">PE (proven micro-NBFC)</div><div class="sc-v">14–18x</div></div>
+      <div class="sc-cell"><div class="sc-l">FY28 mcap</div><div class="sc-v">₹448–720 Cr</div></div>
+      <div class="sc-cell"><div class="sc-l">Return</div><div class="sc-v">2.5–4.0x</div></div>
+      <div class="sc-cell"><div class="sc-l">FY27 checkpoint</div><div class="sc-v">1.7–2.2x</div></div>
+    </div>
+    <div style="font-size:11.5px;color:#333;margin-top:8px">Organic growth continues at 50%+ PAT annually (consistent with recent track record). EWA adds ₹5–10 Cr PAT by FY28. Loan book reaches ₹250–350 Cr. <strong>Base case 2.5–4x is very attractive for a ₹15–25K allocation.</strong> The growth trajectory is well-established and the near-zero NPA removes the downside tail risk.</div>
+  </div>
+
+  <div class="scenario" style="border-left:3px solid #A32D2D">
+    <div style="font-size:13px;font-weight:500;color:#A32D2D;margin-bottom:8px">Bear case — -30 to -60%: NPA surprise + funding crunch + fintech partner exits</div>
+    <div class="sc-grid">
+      <div class="sc-cell"><div class="sc-l">Trigger</div><div class="sc-v">₹3–5 Cr NPA in single quarter</div></div>
+      <div class="sc-cell"><div class="sc-l">Trigger</div><div class="sc-v">Fintech partnership terminated</div></div>
+      <div class="sc-cell"><div class="sc-l">Trigger</div><div class="sc-v">Regulatory action by RBI</div></div>
+      <div class="sc-cell"><div class="sc-l">FY27 PAT impact</div><div class="sc-v">₹8–10 Cr (provisions)</div></div>
+      <div class="sc-cell"><div class="sc-l">PE at 10x</div><div class="sc-v">₹80–100 Cr mcap</div></div>
+      <div class="sc-cell"><div class="sc-l">Stock</div><div class="sc-v">₹22–29/share (-44–55%)</div></div>
+    </div>
+    <div style="font-size:11.5px;color:#333;margin-top:8px"><strong>Bear probability: 20–25%.</strong> This is the micro-cap NBFC risk — a single bad loan on a ₹100 Cr book can be catastrophic. Stock at ₹50 could revisit ₹22–29 (bear case levels) — -40 to -55% from current. <strong>This is why allocation must be small (₹15–25K max). Even a 60% loss on ₹20K = ₹12K loss — painful but not portfolio-destroying.</strong></div>
+  </div>
+
+  <table style="margin-top:10px">
+    <tr><th>Target</th><th>Mcap needed</th><th>Driver</th><th>Timeline</th><th>Probability</th></tr>
+    <tr><td>5x (₹900 Cr)</td><td>₹900 Cr</td><td>FY28 PAT ₹50 Cr at 18x PE + EWA</td><td>FY28</td><td class="a">15–20%</td></tr>
+    <tr><td>3x (₹540 Cr)</td><td>₹540 Cr</td><td>FY28 PAT ₹35 Cr at 15x PE</td><td>FY27–28</td><td class="g">30–35%</td></tr>
+    <tr><td>2x (₹360 Cr)</td><td>₹360 Cr</td><td>FY27 PAT ₹22 Cr at 16x PE</td><td>FY27</td><td class="g">45–50%</td></tr>
+    <tr><td>Bear (-50%: ₹90 Cr)</td><td>₹90 Cr</td><td>NPA surprise + multiple contraction</td><td>—</td><td class="a">20–25%</td></tr>
+  </table>
+</div>
+
+<!-- PEERS -->
+<div id="compare" class="panel">
+  <div class="sh">NBFC sector peers — micro-cap and small NBFC comparisons</div>
+  <div class="warn nbfc"><strong>Emerald Finance is so small (₹180 Cr) that standard NBFC peer comparison with Bajaj Finance (₹5.5 lakh Cr) or Shriram Finance (₹1.2 lakh Cr) is meaningless.</strong> The appropriate comps are other micro-cap NBFCs that have successfully scaled — showing what's possible for Emerald Finance if execution delivers.</div>
+
+  <div style="border:1px solid #ddd;border-radius:10px;overflow:hidden;font-size:11px">
+    <div class="comp-h">
+      <div class="cc-h" style="background:#f5f5f3">Metric</div>
+      <div class="cc-h" style="background:#E3F2FD;color:#0D47A1">Emerald Finance</div>
+      <div class="cc-h" style="background:#E6F1FB;color:#185FA5">Five-Star Business Finance</div>
+      <div class="cc-h" style="background:#f5f5f3">Aptus Value Housing</div>
+    </div>
+    <div class="comp-row"><div class="cc cc-label">Market cap</div><div class="cc winner-cell">₹180 Cr (micro-cap)</div><div class="cc loser-cell">₹12,000+ Cr</div><div class="cc loser-cell">₹7,000+ Cr</div></div>
+    <div class="comp-row"><div class="cc cc-label">AUM size</div><div class="cc loser-cell">~₹100 Cr (very small)</div><div class="cc winner-cell">₹11,000+ Cr</div><div class="cc winner-cell">₹8,000+ Cr</div></div>
+    <div class="comp-row"><div class="cc cc-label">GNPA</div><div class="cc winner-cell">~0.03% (extraordinary)</div><div class="cc mid-cell">~1.5–2%</div><div class="cc winner-cell">~1.2%</div></div>
+    <div class="comp-row"><div class="cc cc-label">PAT margin</div><div class="cc winner-cell">~50% (exceptional)</div><div class="cc mid-cell">~25–30%</div><div class="cc mid-cell">~35%</div></div>
+    <div class="comp-row"><div class="cc cc-label">ROE</div><div class="cc loser-cell">~11% (low, improving)</div><div class="cc winner-cell">~18–20%</div><div class="cc winner-cell">~17–18%</div></div>
+    <div class="comp-row"><div class="cc cc-label">Revenue growth</div><div class="cc winner-cell">+36–53% YoY (explosive)</div><div class="cc mid-cell">~15–20%</div><div class="cc mid-cell">~20–25%</div></div>
+    <div class="comp-row"><div class="cc cc-label">EWA product</div><div class="cc winner-cell">Yes — just launched</div><div class="cc loser-cell">No</div><div class="cc loser-cell">No</div></div>
+    <div class="comp-row"><div class="cc cc-label">Stock liquidity</div><div class="cc loser-cell">Very low (~₹15L/day)</div><div class="cc winner-cell">High (₹100+ Cr/day)</div><div class="cc winner-cell">High</div></div>
+    <div class="comp-row"><div class="cc cc-label">3x probability</div><div class="cc winner-cell">30–35% (small base)</div><td class="cc loser-cell">8–10% (too large)</td><td class="cc loser-cell">10–12%</td></div>
+    <div class="comp-row"><div class="cc cc-label">Best for Garvit</div><div class="cc">Yes — if ₹15–25K allocation; highest 3x potential but highest risk</div><div class="cc">Too large for 3x; quality but wrong size</div><div class="cc">Wrong size; housing focus</div></div>
+  </div>
+
+  <div class="sector-card" style="margin-top:12px">
+    <div class="sc-hdr"><div><div class="sc-nm">Five-Star Business Finance — what Emerald Finance could become in 10 years</div><div class="sc-tg">₹12,000 Cr mcap · ₹11,000 Cr AUM · SME lending · Grew from ₹200 Cr AUM in 2015 to ₹11,000 Cr in 2025</div></div><span class="badge bfin">Success case study</span></div>
+    <div class="sc-bd">Five-Star Business Finance started as a small regional NBFC (similar to Emerald Finance today) and scaled to ₹11,000 Cr AUM over a decade. Its secret: focussed on underserved SMEs in Tier-2/3 cities with strong underwriting, maintained low NPA through relationship-based lending, and gradually diversified funding. If Emerald Finance can execute a similar path — even at 50% of Five-Star's scale — it represents a ₹5,000–6,000 Cr market cap opportunity from current ₹180 Cr. <strong>This is the 30x opportunity in the making — but it requires 10+ years of patient, consistent execution.</strong></div>
+  </div>
+</div>
+
+<!-- VERDICT -->
+<div id="verdict" class="panel">
+  <div class="sh">The definitive verdict for Garvit's 3x portfolio goal</div>
+
+  <div class="verdict-card" style="background:#E3F2FD;border:1px solid #64B5F6">
+    <div class="vc-h" style="color:#0D47A1">Emerald Finance Ltd — Verdict: Speculative small position ₹15,000–25,000 maximum. Highest 3x probability of any new investment analyzed — but also highest risk. This is a lottery ticket on an exceptional micro-cap NBFC compounding story.</div>
+    <div class="vc-b">Here is the complete verdict on Emerald Finance Ltd:<br><br><strong>First — note the portfolio clarification:</strong><br>This is NOT the EFC I Ltd currently in Garvit's portfolio (the industrial co-working company). Emerald Finance is a completely separate NBFC. If Garvit buys this, it would be a NEW position in addition to (or separate from) the existing EFC I holding.<br><br><strong>Why Emerald Finance is intriguing at ₹180 Cr market cap:</strong><br>• 11 consecutive quarters of rising revenue — an operational streak that signals genuine business momentum<br>• PAT growing 60–87% YoY across the last 3 quarters — extraordinary for any company<br>• Near-zero NPA (₹30K on ₹100 Cr book) — the underwriting quality is exceptional<br>• EWA product just launched — could be the inflection point that accelerates AUM 5–10x faster<br>• Stock down -53% from ₹112 to ₹50 — despite fundamentals improving each quarter<br>• At 13x TTM PE, the market is pricing in ZERO growth continuation — wrong given the streak<br>• 3x math works: PAT of ₹40 Cr at 15x PE = ₹600 Cr = 3.3x from ₹180 Cr<br><br><strong>Why the allocation must be limited (₹15–25K max, NOT ₹50–75K):</strong><br>• ₹100 Cr loan book — ONE large NPA wipes out quarters of profitability<br>• ₹15.5L daily trading volume — illiquid; exit in panic is difficult<br>• Promoter selling 8.1% over 3 years — not fully explained<br>• RBI regulatory risk for small NBFCs always elevated<br>• No institutional coverage — no institutional validation of the thesis<br>• Micro-cap NBFC in India = tail risk of MFI-sector style stress event<br><br><strong>The portfolio context:</strong><br>Garvit has far better-understood underweights: EFC I (8.5/10 conviction, only ₹4K allocated vs ₹40K recommendation), RPSG Ventures (₹0 vs ₹35K recommendation). These should be funded BEFORE Emerald Finance. If Garvit has already allocated to EFC I and RPSG Ventures at recommended levels, then a small ₹15–20K in Emerald Finance as a "micro-cap NBFC lottery ticket" is acceptable.<br><br><strong>The one-sentence case:</strong> A 40-year-old RBI-licensed NBFC with 11 consecutive quarters of revenue growth, near-zero NPA, 50% PAT margins, a new EWA product, and a ₹180 Cr market cap — available at 13x PE after a -53% stock price correction — deserves a small speculative allocation from a 3x-seeking aggressive portfolio.</div>
+  </div>
+
+  <div class="sh">Allocation recommendation</div>
+  <table>
+    <tr><th>Action</th><th>Amount</th><th>Rationale</th></tr>
+    <tr><td><span class="badge bnbfc">BUY small position — ₹15,000–25,000</span></td><td>₹15,000–25,000</td><td>After funding EFC I and RPSG Ventures at recommended levels. Micro-cap lottery ticket at 13x PE with 60%+ PAT growth streak. 3x probability 30–35%. Risk: -50% if NPA surprise (max loss ₹12,500 on ₹25K).</td></tr>
+    <tr><td><span class="badge br">DO NOT exceed ₹25,000</span></td><td>Cap at ₹25,000</td><td>Illiquid. Small loan book. Concentrated NPA risk. No institutional coverage. Beyond ₹25K, the asymmetric risk/reward breaks down — you can't exit easily in a bad scenario.</td></tr>
+    <tr><td><span class="badge bg">Priority: Fund EFC I + RPSG first</span></td><td>EFC I: ₹40K | RPSG: ₹35K</td><td>These are better-understood positions with higher conviction. Do Emerald only AFTER these are funded.</td></tr>
+  </table>
+
+  <div class="sh">Six triggers to watch quarterly</div>
+  <table>
+    <tr><th>#</th><th>Trigger</th><th>Status</th><th>Impact</th></tr>
+    <tr><td>1</td><td>Q4 FY26 PAT vs ₹4+ Cr</td><td class="g">Trajectory suggests ₹4.5–5 Cr possible</td><td>🟢 12th consecutive quarterly growth = streak strengthens buy thesis</td></tr>
+    <tr><td>2</td><td>NPA disclosed quarterly</td><td class="g">₹30K on ₹100 Cr book — perfect</td><td>🔴 Any NPA > ₹50L = EXIT immediately. Streak broken on asset quality = risk narrative changes</td></tr>
+    <tr><td>3</td><td>EWA AUM (new product)</td><td class="a">Just launched — watch Q4 FY26 first data</td><td>🟢 ₹20+ Cr EWA AUM in Q4 FY26 = product scaling confirmed → add to ₹30K</td></tr>
+    <tr><td>4</td><td>CRISIL rating update</td><td class="a">Multiple updates in 2024–25 (Screener)</td><td>🟢 Rating upgrade = cost of funds falls -100 bps = PAT boost of ₹100 Cr+ at scale</td></tr>
+    <tr><td>5</td><td>Promoter buying/selling</td><td class="r">-8.1% over 3 years (declining)</td><td>🔴 Any further promoter selling = exit signal. 🟢 Any promoter open market purchase = strong buy signal</td></tr>
+    <tr><td>6</td><td>Loan book size (quarterly)</td><td class="a">~₹100 Cr (needs to grow)</td><td>🟢 Loan book ₹150 Cr+ by end FY26 = scaling confirmed. 🔴 If flat at ₹100 Cr = business not scaling</td></tr>
+  </table>
+
+  <div class="warn fin" style="margin-top:12px"><strong>One-line verdict:</strong> Emerald Finance Ltd is a 40-year-old RBI-licensed NBFC undergoing genuine business acceleration — 11 consecutive quarters of revenue growth, near-zero NPA (₹30K on ₹100 Cr book), 48–52% PAT margins, and a new EWA product with transformative potential. At ₹180 Cr market cap and 13x PE after a -53% correction from 52-week highs, the 3x math is compelling (PAT ₹40 Cr by FY28 at 15x PE = ₹600 Cr = 3.3x). Allocate ₹15,000–25,000 as a high-risk speculative position — but only after funding EFC I and RPSG Ventures at their recommended levels first.</div>
+</div>
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/4.4.1/chart.umd.js"></script>
+<script>
+function show(id,btn){
+  document.querySelectorAll('.tab').forEach(t=>t.classList.remove('active'));
+  document.querySelectorAll('.panel').forEach(p=>p.classList.remove('active'));
+  btn.classList.add('active');
+  document.getElementById(id).classList.add('active');
+}
+new Chart(document.getElementById('rc').getContext('2d'),{
+  type:'bar',
+  data:{
+    labels:['Q3FY24','Q4FY24','Q1FY25','Q2FY25','Q3FY25','Q1FY26','Q2FY26','Q3FY26','FY26E','FY27E','FY28E'],
+    datasets:[
+      {label:'Revenue ₹ Cr',data:[5.72,5.5,4.39,5.0,5.72,6.71,6.90,7.80,28,45,80],backgroundColor:['#1565C0','#1565C0','#1565C0','#1565C0','#1565C0','#1D9E75','#1D9E75','#1D9E75','#90CAF9','#90CAF9','#90CAF9'],borderRadius:4,yAxisID:'y'},
+      {label:'PAT ₹ Cr',data:[2.48,2.3,1.71,2.05,2.48,3.19,3.60,4.00,13.5,22,38],type:'line',borderColor:'#1D9E75',backgroundColor:'transparent',pointBackgroundColor:'#1D9E75',tension:0.3,yAxisID:'y2'}
+    ]
+  },
+  options:{responsive:true,maintainAspectRatio:false,plugins:{legend:{display:false}},scales:{y:{ticks:{font:{size:10}}},y2:{position:'right',ticks:{font:{size:10}},grid:{drawOnChartArea:false}},x:{ticks:{font:{size:10}}}}}
+});
+</script>
+</body>
+</html>

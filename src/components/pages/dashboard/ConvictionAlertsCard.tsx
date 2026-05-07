@@ -6,37 +6,19 @@ interface Props {
 
 export default function ConvictionAlertsCard({ alerts }: Props) {
   return (
-    <div
-      style={{
-        background: "var(--card)",
-        border: "1px solid var(--border)",
-        borderRadius: 12,
-        padding: "16px 20px",
-      }}
-    >
-      <div
-        style={{
-          fontSize: 13,
-          fontWeight: 600,
-          color: "var(--text)",
-          marginBottom: 14,
-        }}
-      >
+    <div className="bg-[var(--card)] border border-[var(--border)] rounded-xl py-4 px-5">
+      <div className="text-sm font-semibold text-[var(--text)] mb-3.5">
         Conviction Alerts
       </div>
-      <div style={{ display: "flex", flexDirection: "column", gap: 10 }}>
+      <div className="flex flex-col gap-[10px]">
         {alerts.slice(0, 6).map((a) => (
           <div
             key={a.id}
-            style={{ display: "flex", gap: 10, opacity: a.read ? 0.55 : 1 }}
+            className={`flex gap-[10px] ${a.read ? "opacity-55" : "opacity-100"}`}
           >
             <span
+              className="w-2 h-2 rounded-full mt-1 shrink-0"
               style={{
-                width: 8,
-                height: 8,
-                borderRadius: "50%",
-                marginTop: 4,
-                flexShrink: 0,
                 background:
                   a.severity === "high"
                     ? "var(--loss)"
@@ -46,22 +28,10 @@ export default function ConvictionAlertsCard({ alerts }: Props) {
               }}
             />
             <div>
-              <div
-                style={{
-                  fontSize: 12,
-                  fontWeight: 600,
-                  color: "var(--text)",
-                }}
-              >
+              <div className="text-xs font-semibold text-[var(--text)]">
                 {a.ticker} — {a.type}
               </div>
-              <div
-                style={{
-                  fontSize: 11,
-                  color: "var(--muted)",
-                  lineHeight: 1.4,
-                }}
-              >
+              <div className="text-[11px] text-[var(--muted)] leading-[1.4]">
                 {a.message}
               </div>
             </div>

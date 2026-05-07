@@ -1,0 +1,459 @@
+<!DOCTYPE html>
+<html><head><meta charset="utf-8">
+<style>
+*{box-sizing:border-box;margin:0;padding:0}
+body{font-family:system-ui,sans-serif;padding:16px;background:#fff;color:#1a1a1a;font-size:14px}
+h1{font-size:20px;font-weight:500;margin-bottom:3px}
+.sub{font-size:12px;color:#666;margin-bottom:14px}
+.sg{display:grid;grid-template-columns:repeat(auto-fill,minmax(110px,1fr));gap:8px;margin-bottom:16px}
+.sc{background:#f5f5f3;border-radius:8px;padding:10px 12px}
+.sl{font-size:10px;color:#666;margin-bottom:2px}
+.sv{font-size:17px;font-weight:500}
+.tab-row{display:flex;gap:5px;flex-wrap:wrap;margin-bottom:14px}
+.tab{font-size:11.5px;padding:5px 13px;border-radius:20px;border:1px solid #ddd;background:#fff;cursor:pointer;white-space:nowrap}
+.tab.active{background:#1a1a1a;color:#fff;border-color:#1a1a1a}
+.panel{display:none}.panel.active{display:block}
+.sh{font-size:10.5px;font-weight:500;color:#666;text-transform:uppercase;letter-spacing:.06em;margin:16px 0 7px;padding-bottom:5px;border-bottom:1px solid #eee}
+table{width:100%;border-collapse:collapse;font-size:12px;margin:8px 0}
+th{font-size:10.5px;font-weight:500;color:#666;padding:5px 7px;text-align:left;border-bottom:1px solid #eee;white-space:nowrap}
+td{padding:8px 7px;border-bottom:1px solid #eee;color:#1a1a1a;vertical-align:top}
+tr:last-child td{border-bottom:none}
+tr:hover td{background:#fafaf9}
+.g{color:#0F6E56;font-weight:500}.r{color:#A32D2D;font-weight:500}.a{color:#854F0B;font-weight:500}.b{color:#185FA5;font-weight:500}
+.badge{display:inline-block;font-size:10px;padding:2px 7px;border-radius:10px;white-space:nowrap}
+.bg{background:#E1F5EE;color:#0F6E56}.bb{background:#E6F1FB;color:#185FA5}.ba{background:#FAEEDA;color:#854F0B}.br{background:#FCEBEB;color:#A32D2D}.bgray{background:#f1f0e8;color:#5F5E5A}.bpurp{background:#EDE7F6;color:#4527A0}.bslate{background:#E8EAF6;color:#283593}
+.warn{padding:10px 13px;margin:8px 0;border-left:3px solid;font-size:12px;line-height:1.65}
+.warn.success{background:#E1F5EE;border-color:#1D9E75;color:#04342C}
+.warn.caution{background:#FAEEDA;border-color:#BA7517;color:#412402}
+.warn.danger{background:#FCEBEB;border-color:#A32D2D;color:#712B13}
+.warn.info{background:#E6F1FB;border-color:#185FA5;color:#042C53}
+.warn.purp{background:#EDE7F6;border-color:#5E35B1;color:#1A0035}
+.warn.slate{background:#E8EAF6;border-color:#3949AB;color:#1A237E}
+.warn strong{font-weight:500}
+.chart-wrap{position:relative;width:100%;height:240px;margin:8px 0}
+.kpi-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:10px;margin:10px 0}
+.kpi{background:#f5f5f3;border-radius:8px;padding:10px 12px;border-left:3px solid transparent}
+.kpi.green{border-left-color:#1D9E75}.kpi.amber{border-left-color:#EF9F27}.kpi.blue{border-left-color:#378ADD}.kpi.red{border-left-color:#A32D2D}.kpi.purp{border-left-color:#5E35B1}.kpi.slate{border-left-color:#3949AB}
+.kpi-l{font-size:10px;color:#666;margin-bottom:3px}
+.kpi-v{font-size:17px;font-weight:500}
+.kpi-s{font-size:10px;color:#888;margin-top:2px}
+.point{display:flex;gap:9px;align-items:flex-start;padding:9px 0;border-bottom:1px solid #eee;font-size:12px;line-height:1.6;color:#555}
+.point:last-child{border-bottom:none}
+.point strong{color:#1a1a1a;font-weight:500}
+.dot{width:19px;height:19px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:10px;font-weight:500;flex-shrink:0;margin-top:1px}
+.dg{background:#E1F5EE;color:#0F6E56}.dr{background:#FCEBEB;color:#A32D2D}.da{background:#FAEEDA;color:#854F0B}.db{background:#E6F1FB;color:#185FA5}.dp{background:#EDE7F6;color:#4527A0}.ds{background:#E8EAF6;color:#283593}
+.two-col{display:grid;grid-template-columns:1fr 1fr;gap:12px}
+.pane{border:1px solid #ddd;border-radius:10px;padding:13px}
+.pane-h{font-size:13px;font-weight:500;margin-bottom:9px}
+.scenario{border:1px solid #ddd;border-radius:10px;padding:13px;margin-bottom:9px}
+.sc-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:7px;margin:9px 0}
+.sc-cell{background:#f5f5f3;border-radius:6px;padding:7px 9px}
+.sc-l{font-size:10px;color:#666}
+.sc-v{font-size:12px;font-weight:500;margin-top:2px}
+.comp-h{display:grid;grid-template-columns:160px repeat(3,1fr);background:#f5f5f3;border-radius:8px 8px 0 0;overflow:hidden}
+.comp-row{display:grid;grid-template-columns:160px repeat(3,1fr);border-bottom:1px solid #eee}
+.comp-row:last-child{border-bottom:none}
+.cc{padding:8px 10px;font-size:11px;border-right:1px solid #eee}
+.cc:last-child{border-right:none}
+.cc-h{font-size:10px;font-weight:500;color:#444;padding:8px 10px;border-right:1px solid #ddd}
+.cc-h:last-child{border-right:none}
+.cc-label{color:#666;font-size:11px}
+.winner-cell{background:#E1F5EE}.mid-cell{background:#FAEEDA}.loser-cell{background:#fff5f5}
+.verdict-card{border-radius:10px;padding:13px 15px;margin-bottom:10px}
+.vc-h{font-size:13px;font-weight:500;margin-bottom:6px}
+.vc-b{font-size:12px;line-height:1.65;color:#444}
+.sector-card{border:1px solid #ddd;border-radius:10px;overflow:hidden;margin-bottom:10px}
+.sc-hdr{padding:10px 13px;display:flex;justify-content:space-between;align-items:center;background:#fafaf9}
+.sc-nm{font-size:13px;font-weight:500}
+.sc-tg{font-size:11px;color:#666;margin-top:2px}
+.sc-bd{padding:10px 13px;font-size:12px;line-height:1.65;color:#555;border-top:1px solid #eee}
+.sc-bd strong{color:#1a1a1a}
+.guid-card{border-radius:10px;padding:12px 14px;margin-bottom:8px;border-left:3px solid #5E35B1;background:#EDE7F6}
+.guid-h{font-size:11.5px;font-weight:500;margin-bottom:4px;color:#1A0035}
+.guid-b{font-size:11.5px;color:#333;line-height:1.6}
+.guid-s{font-size:10px;color:#888;margin-top:4px}
+.guid-card.beat{background:#E1F5EE;border-left-color:#1D9E75}.guid-card.beat .guid-h{color:#0F6E56}
+.guid-card.miss{background:#FCEBEB;border-left-color:#A32D2D}.guid-card.miss .guid-h{color:#A32D2D}
+.guid-card.watch{background:#FAEEDA;border-left-color:#BA7517}.guid-card.watch .guid-h{color:#854F0B}
+.portfolio-box{background:#FAEEDA;border:2px solid #BA7517;border-radius:10px;padding:13px;margin:10px 0}
+.pb-h{font-size:14px;font-weight:500;color:#7B5E00;margin-bottom:6px}
+.pb-b{font-size:12px;color:#333;line-height:1.65}
+.occ-bar{display:flex;align-items:center;gap:8px;margin:6px 0}
+.ob-label{font-size:11px;color:#555;width:160px;flex-shrink:0}
+.ob-track{flex:1;background:#f5f5f3;border-radius:4px;height:16px;overflow:hidden}
+.ob-fill{height:100%;border-radius:4px;display:flex;align-items:center;padding-left:6px;font-size:9px;font-weight:600;color:#fff}
+.ob-val{font-size:11px;font-weight:500;width:80px;text-align:right}
+.red-flag{background:#FCEBEB;border:2px solid #A32D2D;border-radius:10px;padding:13px;margin:10px 0}
+.rf-h{font-size:13px;font-weight:500;color:#A32D2D;margin-bottom:6px}
+.rf-b{font-size:12px;color:#333;line-height:1.65}
+.model-grid{display:grid;grid-template-columns:1fr 1fr;gap:8px;margin:10px 0}
+.model-card{border:1px solid #ddd;border-radius:8px;padding:10px;font-size:12px}
+.model-nm{font-weight:500;font-size:12px;margin-bottom:3px;color:#5E35B1}
+.model-tag{font-size:10px;color:#666;margin-bottom:4px}
+.model-bd{font-size:11px;color:#555;line-height:1.5}
+.model-val{font-size:11.5px;font-weight:500;margin-top:4px}
+</style>
+</head>
+<body>
+
+<h1>Awfis Space Solutions Ltd — Deep Investment Analysis</h1>
+<div class="sub">NSE: AWFIS · Flexible workspace solutions (India's largest listed) · Founded 2014 · CEO: Amit Ramani · New Delhi · 257 centres, 177K seats, 80 cities · IPO May 2024 · Market cap ~₹2,500 Cr · 52-wk high ₹718 → current ~₹350</div>
+
+<div class="sg">
+  <div class="sc"><div class="sl">Market cap</div><div class="sv" style="color:#854F0B">~₹2,500 Cr</div></div>
+  <div class="sc"><div class="sl">TTM revenue</div><div class="sv" style="color:#1D9E75">₹1,423 Cr</div></div>
+  <div class="sc"><div class="sl">TTM PAT</div><div class="sv" style="color:#854F0B">₹58.8 Cr</div></div>
+  <div class="sc"><div class="sl">Q3 FY26 rev growth</div><div class="sv" style="color:#1D9E75">+20% YoY</div></div>
+  <div class="sc"><div class="sl">EBITDA margin</div><div class="sv" style="color:#1D9E75">36.5% (Q3)</div></div>
+  <div class="sc"><div class="sl">PAT margin</div><div class="sv" style="color:#A32D2D">~4–6%</div></div>
+  <div class="sc"><div class="sl">Seats (operational)</div><div class="sv" style="color:#1D9E75">152K+</div></div>
+  <div class="sc"><div class="sl">Blended occupancy</div><div class="sv" style="color:#854F0B">75%</div></div>
+  <div class="sc"><div class="sl">⚠ Promoter holding</div><div class="sv" style="color:#A32D2D">17.0%</div></div>
+  <div class="sc"><div class="sl">Net debt</div><div class="sv" style="color:#1D9E75">Net cash</div></div>
+  <div class="sc"><div class="sl">52-wk range</div><div class="sv" style="color:#A32D2D">₹251–₹719</div></div>
+  <div class="sc"><div class="sl">Garvit's gain</div><div class="sv" style="color:#1D9E75">+20.5%</div></div>
+</div>
+
+<div class="tab-row">
+  <button class="tab active" onclick="show('portfolio',this)">Portfolio context</button>
+  <button class="tab" onclick="show('revenue',this)">Revenue history</button>
+  <button class="tab" onclick="show('sectorKPI',this)">Sector KPIs</button>
+  <button class="tab" onclick="show('business',this)">Business model</button>
+  <button class="tab" onclick="show('guidance',this)">Guidance</button>
+  <button class="tab" onclick="show('risks',this)">Risks & red flags</button>
+  <button class="tab" onclick="show('scenarios',this)">3x scenarios</button>
+  <button class="tab" onclick="show('compare',this)">Sector peers</button>
+  <button class="tab" onclick="show('verdict',this)">Verdict</button>
+</div>
+
+<!-- PORTFOLIO CONTEXT -->
+<div id="portfolio" class="panel active">
+  <div class="sh">Start here — Garvit's specific context before the business deep-dive</div>
+
+  <div class="portfolio-box">
+    <div class="pb-h">📊 Position: 200 shares | Invested ₹57,800 (avg ~₹289) | Current ₹69,650 (~₹348) | Gain: +₹11,850 (+20.5%)</div>
+    <div class="pb-b">Garvit holds 200 shares of Awfis at ₹289 average cost. Current price ₹348 = +20.5% gain. In the original portfolio review, we flagged this as "HOLD — BOOK PARTIAL PROFITS" citing Awfis as a good business (India's largest listed co-working company) that had earned a +20% gain worth locking in partly.<br><br>The stock has fallen dramatically from its ₹719 IPO-era high to ₹348 — a -52% correction. Garvit bought near the lows (₹289 average) — excellent timing. The stock also saw unusual volume recently (NSE/BSE sought clarification on April 16 and April 24, 2026 — stock moved on unverified news). <br><br><strong>The key question this analysis answers:</strong> Is Awfis a "book profits and exit" or "hold for 2–3x from here" given the current fundamentals, Design &amp; Build slump sale, CFO change, and flex workspace market dynamics?</div>
+  </div>
+
+  <div class="sh">The most important recent development — Design &amp; Build slump sale</div>
+  <div class="warn purp"><strong>Awfis is restructuring strategically.</strong> The company has announced it will sell/transfer its Design &amp; Build (construction/fit-out) business into a separate subsidiary (Awfis Transform), with a slump sale extended to end-2026. This is CRITICAL for understanding Awfis's future:<br><br>D&amp;B contributed ~16% of 9M FY26 revenue (₹60 Cr/quarter). It is also the LOWER-margin business with GRAP/regulatory disruption. By spinning it off, Awfis focuses purely on its high-margin flexible workspace rental business (36%+ EBITDA). Post-sale, the core co-working business is cleaner, higher-margin, and more predictable. The question is what value the D&amp;B business is sold at — and whether Awfis retains upside.</div>
+
+  <div class="sh">Quick scorecard for Garvit's 3x goal</div>
+  <table>
+    <tr><th>Parameter</th><th>Awfis</th><th>Verdict for 3x goal</th></tr>
+    <tr><td>Current market cap</td><td class="a">₹2,500 Cr (correct size)</td><td class="g">Right size — 3x = ₹7,500 Cr, achievable</td></tr>
+    <tr><td>Revenue growth</td><td class="g">+20% YoY (5yr CAGR 41%)</td><td class="g">Strong — but decelerating from 40%+ earlier</td></tr>
+    <tr><td>PAT margin</td><td class="r">4–6% (thin)</td><td class="a">Key concern — high D&A from leases distorts</td></tr>
+    <tr><td>EBITDA margin</td><td class="g">36.5% (all-time high)</td><td class="g">Excellent — expanding every quarter</td></tr>
+    <tr><td>Promoter holding</td><td class="r">17% (very low)</td><td class="r">Major concern — VC-diluted IPO</td></tr>
+    <tr><td>Occupancy</td><td class="a">75% blended (84% mature)</td><td class="a">Room to grow — 85%+ = significant margin uplift</td></tr>
+    <tr><td>CFO resignation</td><td class="r">Feb 2, 2026 (new CFO appointed)</td><td class="a">Yellow flag — watch Q4 audit</td></tr>
+    <tr><td>3x probability</td><td class="a">20–25%</td><td class="a">Possible but below our higher-conviction picks</td></tr>
+    <tr><td>Garvit's entry price</td><td class="g">₹289 avg — near 52-week lows</td><td class="g">Excellent entry — substantial cushion vs 52-wk high</td></tr>
+  </table>
+</div>
+
+<!-- REVENUE -->
+<div id="revenue" class="panel">
+  <div class="sh">Revenue &amp; EBITDA history — 5-year CAGR of 41%, EBITDA margins at all-time highs</div>
+  <div class="chart-wrap"><canvas id="rc"></canvas></div>
+  <div style="display:flex;gap:14px;font-size:11.5px;color:#666;margin-bottom:10px">
+    <span><span style="display:inline-block;width:10px;height:10px;border-radius:2px;background:#5E35B1;margin-right:4px"></span>Revenue ₹ Cr</span>
+    <span><span style="display:inline-block;width:10px;height:10px;border-radius:2px;background:#1D9E75;margin-right:4px"></span>EBITDA ₹ Cr</span>
+    <span><span style="display:inline-block;width:10px;height:10px;border-radius:2px;background:#D1C4E9;margin-right:4px"></span>Projected</span>
+  </div>
+  <table>
+    <tr><th>Period</th><th>Revenue</th><th>Growth</th><th>EBITDA%</th><th>PAT</th><th>Seats</th><th>Key event</th></tr>
+    <tr><td>FY22</td><td>~₹420 Cr</td><td>—</td><td>~28%</td><td class="r">-₹85 Cr</td><td>~57,000</td><td>Post-COVID recovery. Hybrid work model emerges. Enterprise demand begins. MA model scales.</td></tr>
+    <tr><td>FY23</td><td>~₹680 Cr</td><td class="g">+62%</td><td>~31%</td><td class="r">-₹59 Cr</td><td>~83,000</td><td>Strong bounce-back. Enterprise clients returning. Tier-2 city expansion begins.</td></tr>
+    <tr><td>FY24</td><td>~₹890 Cr</td><td class="g">+31%</td><td>~33%</td><td class="r">-₹26 Cr</td><td>~95,000</td><td>IPO May 2024 at ₹383 (raised ₹600 Cr). Near-breakeven. D&B segment growing fast.</td></tr>
+    <tr><td>FY25</td><td>₹1,144 Cr</td><td class="g">+29%</td><td>~35%</td><td class="g">₹64 Cr</td><td>135,000</td><td><strong>First full profitable year.</strong> +40K seats added. Operational seats 135K. Co-working +32%. EPS ₹9.6. Mature center occupancy 84%.</td></tr>
+    <tr><td>Q1 FY26</td><td>₹336 Cr</td><td class="g">+34% YoY</td><td>~36%</td><td class="g">₹9.6 Cr</td><td>144,000</td><td>EBITDA margin +300 bps. Strong volume. Occupancy improving. Transform segment solid.</td></tr>
+    <tr><td>Q2 FY26</td><td>₹367 Cr</td><td class="g">+25.5% YoY</td><td>36.1%</td><td class="r">₹15.97 Cr</td><td>~150,000</td><td>PAT fell 58.7% due to one-time items/exceptional. EBITDA +32% YoY. D&B slump sale announced. CFO resigned Feb 2026.</td></tr>
+    <tr><td>Q3 FY26</td><td>₹382 Cr</td><td class="g">+20.2% YoY</td><td>36.5% (ATH)</td><td class="g">₹22 Cr (ex-exceptional)</td><td>152,000</td><td>EBITDA all-time high margin. Blended occupancy 75%. Large seat cohort = 36% of portfolio. Seat guidance revised from 40K to 32K.</td></tr>
+    <tr><td>9M FY26</td><td>₹1,085 Cr</td><td class="g">+26% YoY</td><td>~36%</td><td class="g">~₹48 Cr</td><td>152,000</td><td>On track for ₹1,400–1,500 Cr FY26. Design &amp; Build slump sale timeline: end-2026. New CFO Sumit Rochlani appointed Feb 3, 2026.</td></tr>
+    <tr><td>FY26E</td><td>~₹1,430–1,500 Cr</td><td class="g">~25–31%</td><td>~36%</td><td class="g">~₹60–75 Cr</td><td>~166,000</td><td>Management target: 166K seats by end-FY26. Co-working ~84% revenue; D&B ~16% (pre-slump sale separation). Tax-free (carry-forward losses fully utilised Q4 FY26/Q1 FY27).</td></tr>
+    <tr><td>FY27E (core only)</td><td>~₹1,700–2,000 Cr</td><td class="g">~19–40%</td><td>~37–38%</td><td class="g">~₹100–160 Cr</td><td>~185,000+</td><td>Post D&B separation: pure co-working platform. Occupancy 80%+. Tax normalisation begins. Operating leverage meaningful. EPS forecast ₹11.9 (FY26) → ₹16.9 (FY28).</td></tr>
+  </table>
+  <div class="warn purp"><strong>Understanding the PAT vs EBITDA disconnect:</strong> Awfis has 36.5% EBITDA margins but only 4–6% PAT margins. The gap is explained by Ind AS 116 accounting — all lease payments (rent to building owners) are booked as depreciation + interest, not as operating expense. This inflates EBITDA but reduces PAT. The correct business metric to use is Adjusted EBITDA (post-lease-costs) or EBITDA minus lease payments, not standard EBITDA. At the operating level, Awfis is genuinely improving — but the PAT numbers are structurally depressed by the lease accounting standard that all co-working companies globally face.</div>
+</div>
+
+<!-- SECTOR KPIs -->
+<div id="sectorKPI" class="panel">
+  <div class="sh">Flexible workspace sector KPIs — the right metrics for co-working</div>
+  <div class="warn slate"><strong>Co-working companies are NOT evaluated like traditional businesses.</strong> The key metrics are: (1) Seats x Occupancy x Revenue per seat = Revenue, (2) Mature center EBITDA margin (centers >12 months old, stabilised), (3) MA (Managed Aggregation) vs Lease model — MA = capital-light, lower risk, (4) Net Revenue per Seat (after building owner payout), and (5) Center-level economics at maturity.</div>
+  <div class="kpi-grid">
+    <div class="kpi purp"><div class="kpi-l">Total seats (Dec '25)</div><div class="kpi-v">177,000</div><div class="kpi-s">257 centers across 80 cities</div></div>
+    <div class="kpi purp"><div class="kpi-l">Operational seats</div><div class="kpi-v">152,000</div><div class="kpi-s">FY26 target: 166,000 by March '26</div></div>
+    <div class="kpi green"><div class="kpi-l">EBITDA margin Q3</div><div class="kpi-v">36.5%</div><div class="kpi-s">All-time high — expanding every quarter</div></div>
+    <div class="kpi amber"><div class="kpi-l">Blended occupancy</div><div class="kpi-v">75%</div><div class="kpi-s">Mature centers: 84% — improving</div></div>
+    <div class="kpi red"><div class="kpi-l">Promoter holding</div><div class="kpi-v" style="color:#A32D2D">17.0%</div><div class="kpi-s">Very low — VC-backed IPO dilution</div></div>
+    <div class="kpi green"><div class="kpi-l">MA model share</div><div class="kpi-v">~67%</div><div class="kpi-s">Capital-light; lower balance sheet risk</div></div>
+  </div>
+
+  <div class="sh">The seat → revenue → EBITDA math</div>
+  <div class="occ-bar"><div class="ob-label">Mature center occupancy</div><div class="ob-track"><div class="ob-fill" style="width:84%;background:#1D9E75">84%</div></div><div class="ob-val g">84% ↑ target 90%</div></div>
+  <div class="occ-bar"><div class="ob-label">Blended occupancy (all seats)</div><div class="ob-track"><div class="ob-fill" style="width:75%;background:#EF9F27">75%</div></div><div class="ob-val a">75% (Q3 FY26)</div></div>
+  <div class="occ-bar"><div class="ob-label">Target FY27 blended</div><div class="ob-track"><div class="ob-fill" style="width:82%;background:#5E35B1">82%</div></div><div class="ob-val b">80–82% target</div></div>
+  <div class="occ-bar"><div class="ob-label">Theoretical max utilisation</div><div class="ob-track"><div class="ob-fill" style="width:90%;background:#1D9E75">90%</div></div><div class="ob-val g">90% (industry best)</div></div>
+
+  <div class="sh">Why occupancy expansion is the most powerful margin lever</div>
+  <div class="warn success"><strong>The operating leverage of co-working is extraordinary:</strong> A center with 500 seats has fixed costs of ₹15–20L/month (rent in MA model is waived; for owned leases, it's depreciation). At 70% occupancy (350 seats), it may break even. At 85% occupancy (425 seats), incremental revenue of 75 seats at ₹8–10K/seat/month = ₹6–7.5L/month additional revenue at near-100% margin (no additional cost). Each 1% improvement in blended occupancy across 152,000 seats = ~1,520 more seats × ₹9,000 avg = ₹13.7 Cr additional annual revenue — almost entirely falling to EBITDA/PAT.</div>
+
+  <div class="sh">Revenue per seat — Awfis's pricing power</div>
+  <table>
+    <tr><th>Product tier</th><th>Avg monthly realization</th><th>Target client</th><th>Margin profile</th></tr>
+    <tr><td>Standard co-working</td><td>₹6,000–8,000/seat</td><td>Freelancers, startups, SMEs</td><td class="a">~25–30%</td></tr>
+    <tr><td>Enterprise managed offices</td><td>₹9,000–14,000/seat</td><td>MNCs, large corporates</td><td class="g">~35–40%</td></tr>
+    <tr><td>Awfis Gold / Elite</td><td>₹12,000–18,000/seat</td><td>Premium enterprise, C-suite</td><td class="g">40%+ (Elite &gt;30% leased)</td></tr>
+    <tr><td>Mobility / day passes</td><td>₹500–2,000/day</td><td>Travelling professionals</td><td class="g">High (minimal cost)</td></tr>
+  </table>
+</div>
+
+<!-- BUSINESS MODEL -->
+<div id="business" class="panel">
+  <div class="sh">How Awfis makes money — three business segments</div>
+  <div class="warn slate"><strong>Awfis is NOT a simple co-working company.</strong> It operates three distinct businesses: (1) Co-working and Allied Services (core, high-margin recurring), (2) Design &amp; Build / Awfis Transform (construction/fit-out, being separated), and (3) Managed Aggregation (capital-light white-label co-working for building owners). Understanding all three is essential.</div>
+
+  <div class="model-grid">
+    <div class="model-card">
+      <div class="model-nm">🏢 Co-working &amp; Allied Services (84% of Q3 FY26 revenue)</div>
+      <div class="model-tag">Core business · Growing 32% YoY · High recurring revenue</div>
+      <div class="model-bd">Awfis rents office space, fits it out, and sub-leases as flexible workspaces. Revenue: monthly seat fee from clients (enterprise, SME, individual). Two models: (a) Lease model — Awfis takes direct lease from building owner, owns the client relationship fully. Higher capex, higher margin. (b) MA model — building owner brings Awfis to manage their space; Awfis earns a management fee. Capital-light, ~67% of portfolio. Allied services: facility management, IT support, event hosting, mobility solutions (ECOS partnership for employee transport).</div>
+      <div class="model-val" style="color:#0F6E56">Q3 FY26: ₹322 Cr revenue (+32% YoY)</div>
+    </div>
+    <div class="model-card">
+      <div class="model-nm">🔨 Awfis Transform / Design &amp; Build (16% of Q3 FY26 revenue)</div>
+      <div class="model-tag">Being separated via slump sale · Lower margin · GRAP-impacted in Q3</div>
+      <div class="model-bd">External office fit-out and construction for corporate clients (banks, IT companies, retail). Think of it as a commercial interior contractor. Revenue: project-based (₹60 Cr Q3 vs ₹75 Cr Q2 — declined due to GRAP IV pollution norms in NCR, project deferrals). Being transferred to Awfis Transform (100% subsidiary), with slump sale completion expected by end-2026. Post-separation, Awfis core business is purely co-working — simpler and higher-quality earnings.</div>
+      <div class="model-val" style="color:#854F0B">Q3 FY26: ₹60 Cr revenue (–10% 9M period)</div>
+    </div>
+    <div class="model-card">
+      <div class="model-nm">📍 Awfis Go / Mobility Solutions</div>
+      <div class="model-tag">B2B enterprise · Day passes · Virtual office</div>
+      <div class="model-bd">Enterprise clients purchase bulk day-pass credits for employees who need occasional workspace (travelling employees, field force needing office access). Virtual Office product: provides business address + mail handling for companies that don't need permanent space. Low cost for client, high margin for Awfis. ECOS mobility partnership adds employee transportation to the value bundle.</div>
+      <div class="model-val">Included in Allied Services revenue</div>
+    </div>
+    <div class="model-card">
+      <div class="model-nm">⭐ Awfis Elite / Office Elite (premium, new)</div>
+      <div class="model-tag">Super-premium · Corporates · EBITDA &gt;30%</div>
+      <div class="model-bd">Tier 3 product (Standard → Gold → Elite). Three Elite centers live (Hyderabad, 2×Bengaluru). Plan: 4–5 more in FY26. Higher price point (₹15,000–18,000/seat), premium build quality, dedicated reception, premium amenities. Target: large corporates and MNC India offices wanting prestige workspace. EBITDA margin &gt;30% in leased model, 23–27% in MA model.</div>
+      <div class="model-val" style="color:#0F6E56">Growing — 5 Elite centers target FY26</div>
+    </div>
+  </div>
+
+  <div class="sh">The MA vs Lease model split — why 67% MA is a strength</div>
+  <div class="two-col" style="margin:10px 0">
+    <div class="pane">
+      <div class="pane-h">Managed Aggregation (67% of portfolio)</div>
+      <div class="point"><div class="dot dp">+</div><div><strong>Building owner funds the capex — Awfis brings clients and management expertise.</strong> Awfis earns a revenue share (30–40% of seat revenue) without any capital investment. This is the WeWork global failure's lesson learned — WeWork over-leveraged on direct leases. Awfis uses MA to grow without balance sheet risk.</div></div>
+      <div class="point"><div class="dot dp">+</div><div><strong>Risk: if occupancy falls below breakeven, building owner bears the loss, not Awfis.</strong> In a downturn, the MA model protects Awfis's balance sheet. This is why Awfis survived where WeWork globally collapsed — the risk architecture is fundamentally different.</div></div>
+    </div>
+    <div class="pane">
+      <div class="pane-h">Lease model (33% of portfolio)</div>
+      <div class="point"><div class="dot ds">+</div><div><strong>Higher margin when occupancy is good:</strong> Awfis keeps all revenue above the fixed lease cost. At 85%+ occupancy, lease model centers are 35–40% EBITDA margin vs 23–27% for MA centers. These are Awfis's most profitable assets.</div></div>
+      <div class="point"><div class="dot da">!</div><div><strong>Risk if occupancy falls:</strong> Lease model centers have fixed rent even if seats are empty. Under Ind AS 116, this shows as depreciation + interest — depressing PAT even if occupancy temporarily dips. This is the lease accounting distortion that makes PAT look worse than the underlying business.</div></div>
+    </div>
+  </div>
+</div>
+
+<!-- GUIDANCE -->
+<div id="guidance" class="panel">
+  <div class="sh">Guidance analysis — conservative but a pattern of downward revisions</div>
+  <div class="warn slate"><strong>Awfis management conducts quarterly earnings calls with detailed guidance.</strong> The track record: revenue guidance has been generally on track; seat addition guidance was revised down (40K → 32K for FY26). The core co-working business consistently beats margin expectations. D&amp;B was the unpredictable element — now being separated.</div>
+
+  <div class="guid-card beat">
+    <div class="guid-h">✓ FY25 profitability: First profitable year as guided — EPS ₹9.6</div>
+    <div class="guid-b">Management guided FY25 as the first profitable year (after years of losses). Delivered: PAT ₹64 Cr, EPS ₹9.6. This was the most important milestone for the stock's re-rating — transitioning from loss-making startup to profitable platform. The co-working segment drove 84% of revenue and all of the profit. This guidance was delivered on time, which establishes basic credibility.</div>
+    <div class="guid-s">Credibility: 9/10 on profitability milestone delivery.</div>
+  </div>
+
+  <div class="guid-card beat">
+    <div class="guid-h">✓ EBITDA margin expansion: Guided "broadly stable or slightly higher" FY26 vs FY25 — Actual hitting ATH 36.5%</div>
+    <div class="guid-b">At Q4 FY25, management guided FY26 EBITDA margin "broadly stable vs FY25 and possibly trending slightly higher." Q3 FY26 delivered 36.5% — an all-time high, 270 bps above Q3 FY25. This reflects better occupancy (75%), premium product mix (Elite centers), and operating leverage from larger seat cohorts contributing 36% of portfolio. Margin delivery consistently ahead of guidance.</div>
+    <div class="guid-s">Credibility: 9/10. EBITDA margin guidance consistently beaten.</div>
+  </div>
+
+  <div class="guid-card miss">
+    <div class="guid-h">✗ Seat addition guidance FY26: 40,000 seats guided → revised to 32,000</div>
+    <div class="guid-b">At the start of FY26, Awfis guided adding 40,000 seats (same as FY25). By Q3 FY26, this was revised down to 32,000 — a 20% cut. Reason: management is being disciplined about not signing leases at "peak commercial real estate cycle prices" and preferring a "capital-light, risk-managed approach." This is actually rational behavior (prioritising quality over quantity at peak valuations) — but it represents a guidance miss that contributed to the stock's correction from ₹719 to ₹250 lows.</div>
+    <div class="guid-s">Credibility: 6/10. The revision was prudent but still a guidance cut — market reacted negatively.</div>
+  </div>
+
+  <div class="guid-card">
+    <div class="guid-h">FY27 guidance: Revenue growth 25–30%, occupancy 80%+, EPS ₹11.9 (FY26) → ₹16.9 (FY28)</div>
+    <div class="guid-b">Management and analyst consensus (Choice Broking, Nuvama) project EPS growing from ₹9.6 (FY25) to ₹11.9 (FY26) to ₹16.9 (FY28). This implies ~75% EPS growth in 3 years — driven by: (1) Occupancy improving from 75% to 80%+ (operating leverage), (2) Carry-forward tax losses fully utilised → tax normalisation FY27, (3) D&B separation removing the lower-margin business, (4) 20%+ revenue growth continuing. Blended occupancy 80%+ target = 5% more on 166K seats = ₹71 Cr additional annualised revenue at near-100% margin.</div>
+    <div class="guid-s">Credibility: 7/10. Occupancy → EPS leverage is real; tax normalisation is confirmed (losses fully utilised Q4 FY26/Q1 FY27).</div>
+  </div>
+
+  <div class="sh">Guidance scorecard</div>
+  <table>
+    <tr><th>Item</th><th>Credibility</th><th>Base case</th><th>Key risk</th></tr>
+    <tr><td>FY26 revenue ~₹1,430–1,500 Cr</td><td class="g">8/10 — 9M at ₹1,085 Cr</td><td>₹1,430–1,480 Cr</td><td>Q4 D&B revenue recognition timing</td></tr>
+    <tr><td>FY26 seat additions ~32,000</td><td class="g">8/10 — revised guidance</td><td>30,000–33,000 net additions</td><td>Commercial real estate pricing; cautious approach</td></tr>
+    <tr><td>FY27 occupancy 80%+</td><td class="a">7/10 — trajectory supports</td><td>78–81%</td><td>New center ramp-up (takes 9–12 months to mature)</td></tr>
+    <tr><td>D&B slump sale by end-2026</td><td class="a">6/10 — extended once already</td><td>End-2026</td><td>Valuation negotiations; buyer availability</td></tr>
+    <tr><td>EPS ₹11.9 FY26 → ₹16.9 FY28</td><td class="a">6/10 — tax normalisation key</td><td>EPS ₹10–12 FY26; ₹15–18 FY28</td><td>Any further exceptional items; tax rate normalisation speed</td></tr>
+  </table>
+</div>
+
+<!-- RISKS -->
+<div id="risks" class="panel">
+  <div class="sh">Risks — what keeps this from being a higher-conviction pick</div>
+
+  <div class="red-flag">
+    <div class="rf-h">🚨 Promoter holding at 17% — the biggest structural concern</div>
+    <div class="rf-b">Awfis was founded by Amit Ramani in 2014. Multiple VC funding rounds (Sequoia, Nexus Venture Partners, Peak XV/Sequoia Growth) diluted the promoter progressively. Post-IPO, promoter holding is just 17% — the lowest of any stock in Garvit's portfolio. Compare to Bondada Engineering (45%), Borana Weaves (65%), DEE Development (70%). This low promoter holding means: (a) Management doesn't have "skin in the game" proportional to their responsibility, (b) Institutional investors (VCs) who hold large stakes can exit at any time, creating overhang, (c) Future dilution (ESOPs, potential QIPs) is more likely. The stock's -52% fall from ₹719 to ₹348 partly reflects VC overhang as early investors seek exits at various price points.</div>
+  </div>
+
+  <div class="point"><div class="dot dr">1</div><div><strong>CFO resigned February 2, 2026 — governance signal to watch.</strong><br>CFO Ravi Dugar resigned effective February 2, 2026, for "career opportunities." New CFO Sumit Rochlani appointed immediately. CFO departures at recently-listed companies raise questions — was it voluntary departure, board pressure, or disagreement on accounting/strategy? Watch Q4 FY26 results (April/May 2026) closely for any accounting changes, restatements, or unusual items that might explain the CFO departure timing.</div></div>
+
+  <div class="point"><div class="dot dr">2</div><div><strong>PAT margins at 4–6% are structurally thin due to Ind AS 116 lease accounting.</strong><br>Every lease payment to building owners is reclassified under Ind AS 116: the "interest" component reduces PAT, the "depreciation" component reduces PAT. This creates the paradox of 36.5% EBITDA but only 5.7% PAT. The actual cash generation is better than PAT suggests — but the thin PAT means any surprise (higher interest rates, lease renegotiation) can swing the company from profitable to loss-making in one quarter. This accounting structure creates permanent uncertainty around "real" profitability.</div></div>
+
+  <div class="point"><div class="dot da">3</div><div><strong>Seat addition guidance cut from 40K to 32K — growth is decelerating.</strong><br>FY25 added 40,000 seats. FY26 is adding only 32,000 (20% fewer). The reason given (discipline at peak real estate prices) is intellectually sound — but it also means revenue growth will slow from 30%+ to potentially 20–25% in FY27. For a company trading at 37x EBITDA, decelerating growth is the key valuation risk. If growth slows to 15% in FY28 as the market matures, the multiple should compress significantly.</div></div>
+
+  <div class="point"><div class="dot da">4</div><div><strong>India commercial real estate is at a cyclical peak — rents rising.</strong><br>India's office market (Mumbai, Bengaluru, NCR) has seen significant rent increases in FY24–FY26 driven by IT sector demand, MNC India expansion, and limited Grade A supply. This is good for Awfis's revenue (higher realisation per seat) but bad for new center economics (signing leases at peak prices = lower ROI on new centers). This is why management reduced seat additions — they see risk in signing expensive new leases at current prices. If rates correct, it opens expansion opportunities.</div></div>
+
+  <div class="point"><div class="dot dg">+</div><div><strong>Genuine strengths supporting the investment:</strong><br>India's largest listed flex workspace company (no other company of this scale, quality, and national presence is publicly traded). 5-year revenue CAGR 41% — even decelerating to 20% is strong. EBITDA margin at all-time highs (36.5%) and improving every quarter. Net cash position (D/E -0.06%). First profitable year (FY25) establishing credibility. 177K seats in 80 cities — moat via national coverage (clients with pan-India needs can work with one vendor). Enterprise clients (large corporates) driving higher occupancy and ASP. MA model protects balance sheet vs WeWork's failure. Design &amp; Build separation simplifies business and removes lower-margin drag. Tax-free in FY26 (carry-forward losses). EPS growing: ₹9.6 → ₹11.9 → ₹16.9.</div></div>
+</div>
+
+<!-- SCENARIOS -->
+<div id="scenarios" class="panel">
+  <div class="sh">Three scenarios — from Garvit's avg cost ₹289 (200 shares, ₹57,800 invested)</div>
+  <div class="warn purp"><strong>Garvit is in a fortunate position:</strong> He bought at ₹289 average — near the 52-week low of ₹251. The stock has already recovered to ₹348 (+20.5%). Even with the concerns around promoter holding and growth deceleration, the entry price provides significant cushion. The question is not "should I have bought?" (the entry was good) but "what is the optimal holding strategy from here?"</div>
+
+  <div class="scenario" style="border-left:3px solid #5E35B1">
+    <div style="font-size:13px;font-weight:500;color:#4527A0;margin-bottom:8px">Bull case — 2.5–3x in 3 years: Occupancy 85%+, D&B sale unlocks value, premium mix scales</div>
+    <div class="sc-grid">
+      <div class="sc-cell"><div class="sc-l">FY28 revenue</div><div class="sc-v">₹2,200–2,500 Cr</div></div>
+      <div class="sc-cell"><div class="sc-l">FY28 EBITDA%</div><div class="sc-v">38–40%</div></div>
+      <div class="sc-cell"><div class="sc-l">FY28 PAT</div><div class="sc-v">₹180–250 Cr</div></div>
+      <div class="sc-cell"><div class="sc-l">EPS FY28</div><div class="sc-v">₹24–33</div></div>
+      <div class="sc-cell"><div class="sc-l">PE (growth compounder)</div><div class="sc-v">30–40x</div></div>
+      <div class="sc-cell"><div class="sc-l">FY28 mcap</div><div class="sc-v">₹5,400–10,000 Cr</div></div>
+    </div>
+    <div style="font-size:11.5px;color:#333;margin-top:8px"><strong>What must happen:</strong> Blended occupancy reaches 85%+ by FY28. D&B slump sale completes (₹150–250 Cr valuation possible) — cash unlocked. Elite centers scale to 15+ with 30%+ EBITDA. Revenue per seat improves 8–10% from premium mix. New CFO maintains discipline. Promoter holding stable or rising (any insider buying = strong signal). At 35x PE on ₹200 Cr PAT = ₹7,000 Cr = <strong>2.8x from current ₹2,500 Cr.</strong> For Garvit: ₹57,800 → ₹1,60,000 = 2.8x.</div>
+  </div>
+
+  <div class="scenario" style="border-left:3px solid #378ADD">
+    <div style="font-size:13px;font-weight:500;color:#185FA5;margin-bottom:8px">Base case — 1.5–2x in 2 years: 20–25% revenue growth, occupancy 80%, EPS ₹16.9 FY28</div>
+    <div class="sc-grid">
+      <div class="sc-cell"><div class="sc-l">FY27 revenue</div><div class="sc-v">₹1,750–1,950 Cr</div></div>
+      <div class="sc-cell"><div class="sc-l">FY27 PAT</div><div class="sc-v">₹100–130 Cr</div></div>
+      <div class="sc-cell"><div class="sc-l">EPS FY28</div><div class="sc-v">₹16.9 (consensus)</div></div>
+      <div class="sc-cell"><div class="sc-l">PE (moderate)</div><div class="sc-v">28–35x</div></div>
+      <div class="sc-cell"><div class="sc-l">FY27 mcap</div><div class="sc-v">₹2,800–4,550 Cr</div></div>
+      <div class="sc-cell"><div class="sc-l">Return from ₹2,500 Cr</div><div class="sc-v">1.1–1.8x</div></div>
+    </div>
+    <div style="font-size:11.5px;color:#333;margin-top:8px">Core business grows 25%, occupancy reaches 80%, D&B separation complete, EPS ₹16.9 FY28 × 30x PE = ₹507/share × 7.5 Cr shares = ₹3,800 Cr = 1.5x. <strong>For Garvit: ₹57,800 → ₹86,700 (+50%) in 2 years. Decent gain but not 3x.</strong></div>
+  </div>
+
+  <div class="scenario" style="border-left:3px solid #A32D2D">
+    <div style="font-size:13px;font-weight:500;color:#A32D2D;margin-bottom:8px">Bear case — flat to -20%: Growth slows to 15%, commercial real estate cools, VC exits</div>
+    <div class="sc-grid">
+      <div class="sc-cell"><div class="sc-l">Trigger</div><div class="sc-v">Revenue growth slows to 12–15%</div></div>
+      <div class="sc-cell"><div class="sc-l">Trigger</div><div class="sc-v">VC funds sell large stakes</div></div>
+      <div class="sc-cell"><div class="sc-l">Trigger</div><div class="sc-v">D&B sale disappoints on value</div></div>
+      <div class="sc-cell"><div class="sc-l">FY27 EPS</div><div class="sc-v">₹8–10 (no growth)</div></div>
+      <div class="sc-cell"><div class="sc-l">PE de-rates to 20–25x</div><div class="sc-v">₹1,600–2,500 Cr</div></div>
+      <div class="sc-cell"><div class="sc-l">Stock</div><div class="sc-v">₹210–333/share</div></div>
+    </div>
+    <div style="font-size:11.5px;color:#333;margin-top:8px"><strong>Bear probability: 25–30%.</strong> Stock revisits ₹251 lows. Garvit's cost is ₹289 — bear case means -10 to -28% from cost. Not catastrophic but meaningful loss. Bear case is driven by VC overhang exits + growth deceleration, not a business failure. Even in the bear, Awfis doesn't collapse — it's India's largest flex workspace company with genuine demand.</div>
+  </div>
+
+  <table style="margin-top:10px">
+    <tr><th>Target from Garvit's cost (₹289)</th><th>Stock price</th><th>Mcap needed</th><th>Driver</th><th>Probability</th></tr>
+    <tr><td>3x (₹867, ₹1.73L total)</td><td>₹867</td><td>₹7,500 Cr</td><td>FY28 PAT ₹220 Cr at 34x PE</td><td class="a">15–20%</td></tr>
+    <tr><td>2x (₹578, ₹1.15L)</td><td>₹578</td><td>₹5,000 Cr</td><td>FY27 PAT ₹145 Cr at 34x PE</td><td class="a">25–30%</td></tr>
+    <tr><td>1.5x (₹434, ₹86.7K)</td><td>₹434</td><td>₹3,750 Cr</td><td>FY27 EPS ₹16.9 at 26x PE</td><td class="g">40–45%</td></tr>
+    <tr><td>Bear (₹230, -20% from cost)</td><td>₹230</td><td>₹2,000 Cr</td><td>Growth deceleration + VC exits</td><td class="a">25–30%</td></tr>
+  </table>
+</div>
+
+<!-- PEERS -->
+<div id="compare" class="panel">
+  <div class="sh">Flexible workspace sector — India and global peer comparison</div>
+  <div class="warn slate"><strong>India's flex workspace sector is dominated by unlisted companies.</strong> WeWork India (Blackstone-controlled, unlisted), Smartworks (unlisted), CoWrks (unlisted), The Executive Centre (unlisted) are all larger or comparable to Awfis. The only meaningful listed comparison is IndiQube Spaces (recently IPO'd in 2025). Globally: IWG (Regus parent, London-listed) and WeWork (US, emerged from bankruptcy 2023) are comps.</div>
+
+  <div style="border:1px solid #ddd;border-radius:10px;overflow:hidden;font-size:11px">
+    <div class="comp-h">
+      <div class="cc-h" style="background:#f5f5f3">Metric</div>
+      <div class="cc-h" style="background:#EDE7F6;color:#4527A0">Awfis ← Your stock</div>
+      <div class="cc-h" style="background:#E6F1FB;color:#185FA5">IndiQube Spaces</div>
+      <div class="cc-h" style="background:#f5f5f3">IWG (Regus, global)</div>
+    </div>
+    <div class="comp-row"><div class="cc cc-label">Market cap</div><div class="cc winner-cell">₹2,500 Cr</div><div class="cc loser-cell">₹4,500+ Cr</div><div class="cc loser-cell">~$2.5B (₹21,000 Cr)</div></div>
+    <div class="comp-row"><div class="cc cc-label">Seats / centres</div><div class="cc winner-cell">177K seats, 257 centres</div><div class="cc mid-cell">~50K seats</div><div class="cc winner-cell">~1M+ seats globally</div></div>
+    <div class="comp-row"><div class="cc cc-label">Revenue growth</div><div class="cc winner-cell">+20–25% YoY</div><div class="cc winner-cell">+35–40% (smaller base)</div><div class="cc loser-cell">~3–5%</div></div>
+    <div class="comp-row"><div class="cc cc-label">EBITDA margin</div><div class="cc winner-cell">36.5% (all-time high)</div><div class="cc mid-cell">~30–35%</div><div class="cc mid-cell">~28–32%</div></div>
+    <div class="comp-row"><div class="cc cc-label">PAT margin</div><div class="cc loser-cell">4–6% (thin, lease accounting)</div><td class="cc a">~5–8%</td><td class="cc a">~3–7%</td></div>
+    <div class="comp-row"><div class="cc cc-label">Promoter holding</div><div class="cc loser-cell">17% (very low)</div><div class="cc winner-cell">~55%+</div><div class="cc mid-cell">N/A (UK listed)</div></div>
+    <div class="comp-row"><div class="cc cc-label">MA model %</div><div class="cc winner-cell">67% MA (capital-light)</div><div class="cc mid-cell">~40–50% managed</div><div class="cc mid-cell">~50% management contracts</div></div>
+    <div class="comp-row"><div class="cc cc-label">Geographic presence</div><div class="cc winner-cell">80 cities, 18 states (national)</div><div class="cc mid-cell">South India focused</div><div class="cc winner-cell">120+ countries</div></div>
+    <div class="comp-row"><div class="cc cc-label">D&B separation</div><div class="cc winner-cell">Yes — simplifying to pure flex</div><td class="cc">N/A</td><td class="cc">N/A</td></div>
+    <div class="comp-row"><div class="cc cc-label">3x probability (3yr)</div><div class="cc mid-cell">15–20% (PAT growth + PE)</div><td class="cc a">20–25% (smaller base)</td><td class="cc loser-cell">5–8% (mature, large mcap)</td></div>
+    <div class="comp-row"><div class="cc cc-label">Best for Garvit</div><div class="cc">Hold — good entry price; 2x realistic</div><div class="cc">Higher growth but smaller, less proven</div><div class="cc">Wrong geography and wrong size</div></div>
+  </div>
+
+  <div class="sector-card" style="margin-top:12px">
+    <div class="sc-hdr"><div><div class="sc-nm">WeWork India (unlisted, Blackstone) — largest and direct competitor</div><div class="sc-tg">Unlisted · ~70,000+ seats · Premium positioning · Blackstone-backed</div></div><span class="badge bgray">Unlisted — key competitive threat</span></div>
+    <div class="sc-bd">WeWork India (operated by Embassy Buildcon, backed by Blackstone) is Awfis's most premium competitor — premium pricing, Grade A assets, strong brand. WeWork India has not gone public (unlike US WeWork which went bankrupt). Key difference from US WeWork: India operations are profitable and Blackstone's disciplined financial approach avoids the leverage disaster that sank WeWork globally. <strong>The unlisted nature actually helps Awfis — WeWork India's IPO (if it happens) would provide a valuation benchmark for the sector, likely valuing Awfis at higher multiples.</strong></div>
+  </div>
+
+  <div class="warn purp" style="margin-top:10px"><strong>The key sector insight for Garvit:</strong> Awfis is the ONLY large-scale, diversified, profitable flexible workspace company listed in India. IndiQube is smaller and more concentrated in South India. No other listed company provides comparable national flex workspace exposure. This listed scarcity premium justifies a higher PE multiple for Awfis than the underlying business quality alone would suggest — because institutional investors who want India flex workspace exposure have only Awfis as a viable option at scale.</div>
+</div>
+
+<!-- VERDICT -->
+<div id="verdict" class="panel">
+  <div class="sh">The definitive verdict for Garvit's portfolio</div>
+
+  <div class="verdict-card" style="background:#EDE7F6;border:1px solid #9575CD">
+    <div class="vc-h" style="color:#4527A0">Awfis Space Solutions — Verdict: HOLD 200 shares fully. Don't add; don't exit. Take partial profit (sell 80–100 shares) after Q4 FY26 results confirm clean audit and EPS trajectory. The +20.5% gain is real and deserves protection — but Awfis is not a 3x stock at this price from current conviction levels.</div>
+    <div class="vc-b">Here is the complete picture for Awfis in Garvit's portfolio:<br><br><strong>Why the stock has corrected -52% from ₹719 peak and why that's not an opportunity:</strong><br>The IPO price of ₹383 in May 2024 valued Awfis at ~₹3,300 Cr. The stock ran to ₹719 (FY25 excitement) and has since corrected to ₹348. The correction reflects: (1) seat addition guidance cut (40K → 32K), (2) CFO resignation, (3) D&B slump sale uncertainty, (4) VC overhang (17% promoter = 83% externals who may sell). Garvit bought at ₹289 near the lows — excellent timing. But buying more at ₹348 (after 20% rally from ₹289) doesn't have the same risk/reward.<br><br><strong>The business has genuine merit but is not our highest-conviction 3x pick:</strong><br>• 5-year revenue CAGR 41% — but decelerating to 20–25%<br>• EBITDA margins at ATH 36.5% — but PAT at 4–6% due to lease accounting<br>• 177,000 seats in 80 cities — India's largest, national moat<br>• Occupancy improving: mature centers 84%, blended 75% — room to grow<br>• Net cash, no financial stress<br>• EPS trajectory: ₹9.6 → ₹11.9 → ₹16.9 — solid growth<br><br>But: 17% promoter, CFO change, guidance cut, D&B uncertainty, thin PAT margins, and a PE of 40–47x on thin earnings make this a "moderate conviction hold" not a "high conviction add."<br><br><strong>Garvit's optimal action in the current portfolio context:</strong><br>The portfolio has much higher-conviction underweights (EFC I at ₹4K vs ₹40K recommendation; RPSG Ventures at ₹0 vs ₹35K recommendation). The ₹70K in Awfis is generating +20.5% — but capital is better deployed to EFC I and RPSG Ventures if choosing between them. Consider selling 80–100 shares (₹28K–₹35K) after Q4 FY26 results if they are clean (no CFO-related accounting surprises), booking ₹5,600–₹7,000 of profit on those shares, and redirecting to EFC I or RPSG Ventures. Keep 100–120 shares (₹35K–₹42K) as a long-term hold on the flex workspace India theme — it's a real structural story.</div>
+  </div>
+
+  <div class="sh">Allocation recommendation — updated</div>
+  <table>
+    <tr><th>Action</th><th>Shares</th><th>Amount</th><th>Rationale</th></tr>
+    <tr><td><span class="badge bpurp">HOLD fully until Q4 FY26 results</span></td><td>Keep 200</td><td>₹69,650</td><td>Don't sell until Q4 FY26 results confirm clean audit (CFO change concern). +20.5% gain should be protected, not exited prematurely.</td></tr>
+    <tr><td><span class="badge ba">After Q4 results: sell 80–100 shares</span></td><td>200 → 100–120</td><td>Recover ₹28K–₹35K</td><td>Book profit on ~50% of position. Redirect to EFC I (severely underweight). Keep 100–120 shares for flex workspace long-term theme.</td></tr>
+    <tr><td><span class="badge br">Exit all 200 if Q4 has audit concerns</span></td><td>0</td><td>Recover ₹69,650</td><td>Any auditor qualification or unusual accounting linked to CFO departure = full exit. Redeploy to EFC I + RPSG Ventures.</td></tr>
+  </table>
+
+  <div class="sh">Seven triggers to watch</div>
+  <table>
+    <tr><th>#</th><th>Trigger</th><th>Status</th><th>Impact</th></tr>
+    <tr><td>1</td><td>Q4 FY26 annual results + auditor report</td><td class="a">Board meeting ~April/May 2026</td><td>🔥 Most important. Clean audit = hold/partial sell. Any qualification = exit all.</td></tr>
+    <tr><td>2</td><td>Blended occupancy (quarterly)</td><td class="a">75% Q3 — target 80%+</td><td>🟢 Each 1% improvement = ₹13–14 Cr PAT. Track every quarter — it's the most reliable margin lever.</td></tr>
+    <tr><td>3</td><td>D&B slump sale completion and valuation</td><td class="a">Target end-2026; extended once</td><td>🟢 ₹150–250 Cr valuation likely. Cash inflow + pure co-working focus = positive re-rating. Any further delay = negative.</td></tr>
+    <tr><td>4</td><td>NSE/BSE unusual volume clarification (Apr 16, Apr 24)</td><td class="r">NSE sought clarification twice in April 2026</td><td>🔴 Awfis stated "no UPSI" — but watch for any corporate action announcement (acquisition, stake sale) that could follow.</td></tr>
+    <tr><td>5</td><td>Promoter / insider buying</td><td class="r">17% — no recent buying disclosed</td><td>🟢 Any promoter/senior management open market purchase = the strongest possible signal for immediate hold/add.</td></tr>
+    <tr><td>6</td><td>EPS trajectory (FY26 vs ₹11.9 consensus)</td><td class="a">9M FY26 EPS ~₹6.4 — full year needs ₹5.5 more in Q4</td><td>🟢 Q4 EPS confirmation that full-year tracks to ₹11.9 = thesis intact. Below ₹9 FY26 EPS = earnings disappointment.</td></tr>
+    <tr><td>7</td><td>Revenue per seat trend (quarterly)</td><td class="g">Improving — premium mix rising</td><td>🟢 Premium product mix (Elite, Gold, Enterprise MA) driving higher ASP is the most sustainable margin driver. Watch quarterly disclosure.</td></tr>
+  </table>
+
+  <div class="warn purp" style="margin-top:12px"><strong>One-line verdict:</strong> Awfis Space Solutions is India's only large-scale listed flexible workspace company — with 177,000 seats, 80 cities, EBITDA margins at all-time highs (36.5%), a clean balance sheet, and a genuine structural story in India's hybrid work revolution. But at 17% promoter holding, a recent CFO change, decelerating seat addition guidance, and thin PAT margins due to lease accounting, it is a "moderate conviction hold" not a "high conviction add." Garvit's excellent entry at ₹289 (near 52-week lows) has already generated +20.5%. Hold fully until Q4 FY26 clean audit, then sell 50% of position and redirect to EFC I — where conviction is 8.5/10 and allocation is critically underweight. Keep 100 shares as a long-term flex workspace India bet.</div>
+</div>
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/4.4.1/chart.umd.js"></script>
+<script>
+function show(id,btn){
+  document.querySelectorAll('.tab').forEach(t=>t.classList.remove('active'));
+  document.querySelectorAll('.panel').forEach(p=>p.classList.remove('active'));
+  btn.classList.add('active');
+  document.getElementById(id).classList.add('active');
+}
+new Chart(document.getElementById('rc').getContext('2d'),{
+  type:'bar',
+  data:{
+    labels:['FY22','FY23','FY24','FY25','Q1FY26','Q2FY26','Q3FY26','FY26E','FY27E','FY28E'],
+    datasets:[
+      {label:'Revenue ₹ Cr',data:[420,680,890,1144,336,367,382,1460,1850,2300],backgroundColor:['#5E35B1','#5E35B1','#5E35B1','#5E35B1','#1D9E75','#1D9E75','#1D9E75','#D1C4E9','#D1C4E9','#D1C4E9'],borderRadius:4,yAxisID:'y'},
+      {label:'EBITDA ₹ Cr',data:[118,211,294,400,121,132,139,525,685,900],type:'line',borderColor:'#1D9E75',backgroundColor:'transparent',pointBackgroundColor:'#1D9E75',tension:0.3,yAxisID:'y2'}
+    ]
+  },
+  options:{responsive:true,maintainAspectRatio:false,plugins:{legend:{display:false}},scales:{y:{ticks:{font:{size:10}}},y2:{position:'right',ticks:{font:{size:10}},grid:{drawOnChartArea:false}},x:{ticks:{font:{size:10}}}}}
+});
+</script>
+</body>
+</html>

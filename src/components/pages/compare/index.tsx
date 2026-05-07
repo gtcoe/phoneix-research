@@ -1,7 +1,8 @@
 "use client";
 import { useState } from "react";
 import { TabBar } from "@/components/ui";
-import type { PhoenixData } from "@/lib/data";
+import type { PhoenixData } from "@/types";
+import { ErrorBoundary } from "@/components/common/components/ErrorBoundary";
 import { GrowthChart } from "./GrowthChart";
 import { ExcessReturnsChart } from "./BenchmarkTable";
 import { AlphaTable } from "./AlphaTable";
@@ -16,16 +17,9 @@ export default function Compare({ data }: { data: PhoenixData }) {
   const [tab, setTab] = useState("growth");
 
   return (
-    <div style={{ padding: 24 }}>
+    <div className="p-6">
       {/* Summary bar */}
-      <div
-        style={{
-          display: "grid",
-          gridTemplateColumns: "repeat(4, 1fr)",
-          gap: 12,
-          marginBottom: 20,
-        }}
-      >
+      <div className="grid grid-cols-4 gap-3 mb-5">
         {[
           {
             label: "Portfolio XIRR",
@@ -53,30 +47,19 @@ export default function Compare({ data }: { data: PhoenixData }) {
         ].map((c) => (
           <div
             key={c.label}
-            style={{
-              background: "var(--card)",
-              border: "1px solid var(--border)",
-              borderRadius: 10,
-              padding: "12px 16px",
-            }}
+            className="bg-[var(--card)] border border-[var(--border)] rounded-[10px] py-3 px-4"
           >
-            <div
-              style={{ fontSize: 11, color: "var(--muted)", marginBottom: 4 }}
-            >
+            <div className="text-[11px] text-[var(--muted)] mb-1">
               {c.label}
             </div>
             <div
-              style={{
-                fontSize: 20,
-                fontWeight: 700,
-                color: c.color,
-                fontFamily: "var(--font-mono)",
-              }}
+              className="text-xl font-bold font-[var(--font-mono)]"
+              style={{ color: c.color }}
             >
               {c.value}
             </div>
             {c.sub && (
-              <div style={{ fontSize: 12, color: "var(--gain)", marginTop: 3 }}>
+              <div className="text-xs text-[var(--gain)] mt-[3px]">
                 {c.sub}
               </div>
             )}
@@ -86,83 +69,42 @@ export default function Compare({ data }: { data: PhoenixData }) {
 
       <TabBar tabs={TABS} active={tab} onChange={setTab} />
 
-      {tab === "growth" && (
-        <div
-          style={{
-            background: "var(--card)",
-            border: "1px solid var(--border)",
-            borderRadius: 12,
-            padding: "18px 20px",
-          }}
-        >
-          <div
-            style={{
-              fontSize: 13,
-              fontWeight: 600,
-              color: "var(--text)",
-              marginBottom: 16,
-            }}
-          >
-            Cumulative Growth (normalised to 100)
-          </div>
-          <GrowthChart data={data} />
-        </div>
-      )}
-
-      {tab === "excess" && (
-        <div
-          style={{
-            background: "var(--card)",
-            border: "1px solid var(--border)",
-            borderRadius: 12,
-            padding: "18px 20px",
-          }}
-        >
-          <div
-            style={{
-              fontSize: 13,
-              fontWeight: 600,
-              color: "var(--text)",
-              marginBottom: 16,
-            }}
-          >
-            Monthly Excess Returns vs Nifty 50
-          </div>
-          <ExcessReturnsChart data={data} />
-          <div style={{ display: "flex", gap: 16, marginTop: 10 }}>
-            <div style={{ display: "flex", alignItems: "center", gap: 6 }}>
-              <span
-                style={{
-                  width: 14,
-                  height: 10,
-                  background: "var(--gain)",
-                  borderRadius: 2,
-                  opacity: 0.8,
-                }}
-              />
-              <span style={{ fontSize: 11, color: "var(--muted)" }}>
-                Outperformed
-              </span>
+      {/* key=tab resets the ErrorBoundary on every tab switch so a broken chart doesn't affect siblings */}
+      <ErrorBoundary key={tab} pageName={TABS.find((t) => t.id === tab)?.label}>
+        {tab === "growth" && (
+          <div className="bg-[var(--card)] border border-[var(--border)] rounded-xl py-[18px] px-5">
+            <div className="text-sm font-semibold text-[var(--text)] mb-4">
+              Cumulative Growth (normalised to 100)
             </div>
-            <div style={{ display: "flex", alignItems: "center", gap: 6 }}>
-              <span
-                style={{
-                  width: 14,
-                  height: 10,
-                  background: "var(--loss)",
-                  borderRadius: 2,
-                  opacity: 0.8,
-                }}
-              />
-              <span style={{ fontSize: 11, color: "var(--muted)" }}>
-                Underperformed
-              </span>
+            <GrowthChart data={data} />
+          </div>
+        )}
+
+        {tab === "excess" && (
+          <div className="bg-[var(--card)] border border-[var(--border)] rounded-xl py-[18px] px-5">
+            <div className="text-sm font-semibold text-[var(--text)] mb-4">
+              Monthly Excess Returns vs Nifty 50
+            </div>
+            <ExcessReturnsChart data={data} />
+            <div className="flex gap-4 mt-[10px]">
+              <div className="flex items-center gap-1.5">
+                <span className="w-3.5 h-[10px] bg-[var(--gain)] rounded-[2px] opacity-80" />
+                <span className="text-[11px] text-[var(--muted)]">
+                  Outperformed
+                </span>
+              </div>
+              <div className="flex items-center gap-1.5">
+                <span className="w-3.5 h-[10px] bg-[var(--loss)] rounded-[2px] opacity-80" />
+                <span className="text-[11px] text-[var(--muted)]">
+                  Underperformed
+                </span>
+              </div>
             </div>
           </div>
-        </div>
-      )}
+        )}
 
-      {tab === "alpha" && <AlphaTable data={data} />}
+        {tab === "alpha" && <AlphaTable data={data} />}
+      </ErrorBoundary>
     </div>
   );
 }

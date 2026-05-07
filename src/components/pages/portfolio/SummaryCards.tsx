@@ -15,54 +15,28 @@ export default function SummaryCards({
   onCategoryChange,
 }: Props) {
   return (
-    <div
-      style={{
-        display: "grid",
-        gridTemplateColumns: "repeat(5, 1fr)",
-        gap: 12,
-        marginBottom: 20,
-      }}
-    >
+    <div className="grid grid-cols-5 gap-3 mb-5">
       {CATEGORIES.slice(1).map((cat) => {
         const t = catTotals[cat] || { invested: 0, current: 0 };
         const gain = t.current - t.invested;
         const pct = t.invested > 0 ? (gain / t.invested) * 100 : 0;
         return (
           <button
+            type="button"
             key={cat}
             onClick={() => onCategoryChange(cat === activeCategory ? "All" : cat)}
-            style={{
-              background:
-                activeCategory === cat ? "var(--accent-dim)" : "var(--card)",
-              border: `1px solid ${activeCategory === cat ? "var(--accent)" : "var(--border)"}`,
-              borderRadius: 10,
-              padding: "12px 14px",
-              cursor: "pointer",
-              textAlign: "left",
-            }}
+            className={`${activeCategory === cat ? "bg-[var(--accent-dim)]" : "bg-[var(--card)]"} rounded-[10px] py-3 px-3.5 cursor-pointer text-left`}
+            style={{ border: `1px solid ${activeCategory === cat ? "var(--accent)" : "var(--border)"}` }}
           >
-            <div
-              style={{ fontSize: 11, color: "var(--muted)", marginBottom: 4 }}
-            >
+            <div className="text-[11px] text-[var(--muted)] mb-1">
               {cat}
             </div>
-            <div
-              style={{
-                fontSize: 16,
-                fontWeight: 700,
-                color: "var(--text)",
-                fontFamily: "var(--font-mono)",
-              }}
-            >
+            <div className="text-base font-bold text-[var(--text)] font-[var(--font-mono)]">
               {fmt(t.current)}
             </div>
             <div
-              style={{
-                fontSize: 12,
-                color: gain >= 0 ? "var(--gain)" : "var(--loss)",
-                fontFamily: "var(--font-mono)",
-                marginTop: 2,
-              }}
+              className="text-xs font-[var(--font-mono)] mt-0.5"
+              style={{ color: gain >= 0 ? "var(--gain)" : "var(--loss)" }}
             >
               {gain >= 0 ? "+" : ""}
               {fmtPct(pct)}

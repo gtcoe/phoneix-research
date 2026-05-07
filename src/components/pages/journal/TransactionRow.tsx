@@ -24,134 +24,50 @@ export default function TransactionRow({
   const dotColor = TYPE_COLORS[t.type] || "var(--muted)";
 
   return (
-    <div style={{ position: "relative", marginBottom: 14 }}>
+    <div className="relative mb-3.5">
       <div
-        style={{
-          position: "absolute",
-          left: -19,
-          top: 12,
-          width: 10,
-          height: 10,
-          borderRadius: "50%",
-          background: dotColor,
-          border: "2px solid var(--surface)",
-          zIndex: 1,
-        }}
+        className="absolute -left-[19px] top-3 w-[10px] h-[10px] rounded-full border-2 border-[var(--surface)] z-[1]"
+        style={{ background: dotColor }}
       />
-      <div
-        style={{
-          background: "var(--card)",
-          border: "1px solid var(--border)",
-          borderRadius: 10,
-          overflow: "hidden",
-        }}
-      >
+      <div className="bg-[var(--card)] border border-[var(--border)] rounded-[10px] overflow-hidden">
         <div
-          style={{
-            padding: "11px 14px",
-            cursor: "pointer",
-            display: "flex",
-            justifyContent: "space-between",
-            alignItems: "flex-start",
-            gap: 12,
-          }}
+          className="py-[11px] px-3.5 cursor-pointer flex justify-between items-start gap-3"
           onClick={onToggle}
         >
-          <div style={{ flex: 1 }}>
-            <div
-              style={{
-                display: "flex",
-                alignItems: "center",
-                gap: 8,
-                flexWrap: "wrap",
-              }}
-            >
+          <div className="flex-1">
+            <div className="flex items-center gap-2 flex-wrap">
               <span
-                style={{
-                  fontSize: 11,
-                  fontWeight: 700,
-                  color: dotColor,
-                  textTransform: "uppercase",
-                  letterSpacing: ".05em",
-                }}
+                className="text-[11px] font-bold uppercase tracking-[.05em]"
+                style={{ color: dotColor }}
               >
                 {t.type}
               </span>
               {t.ticker && (
-                <span
-                  style={{
-                    fontWeight: 600,
-                    color: "var(--accent)",
-                    fontFamily: "var(--font-mono)",
-                    fontSize: 13,
-                  }}
-                >
+                <span className="font-semibold text-[var(--accent)] font-[var(--font-mono)] text-sm">
                   {t.ticker}
                 </span>
               )}
-              <span
-                style={{
-                  fontSize: 13,
-                  color: "var(--text)",
-                  fontWeight: 500,
-                }}
-              >
+              <span className="text-sm text-[var(--text)] font-medium">
                 {t.asset}
               </span>
-              <span
-                style={{
-                  fontSize: 11,
-                  color: "var(--muted)",
-                  padding: "1px 7px",
-                  border: "1px solid var(--border)",
-                  borderRadius: 99,
-                }}
-              >
+              <span className="text-[11px] text-[var(--muted)] py-px px-[7px] border border-[var(--border)] rounded-full">
                 {t.category}
               </span>
             </div>
             {t.notes && !isExpanded && (
-              <div
-                style={{
-                  fontSize: 12,
-                  color: "var(--muted)",
-                  marginTop: 4,
-                  overflow: "hidden",
-                  textOverflow: "ellipsis",
-                  whiteSpace: "nowrap",
-                  maxWidth: 500,
-                }}
-              >
+              <div className="text-xs text-[var(--muted)] mt-1 overflow-hidden text-ellipsis whitespace-nowrap max-w-[500px]">
                 {t.notes}
               </div>
             )}
           </div>
-          <div
-            style={{
-              display: "flex",
-              flexDirection: "column",
-              alignItems: "flex-end",
-              gap: 3,
-              flexShrink: 0,
-            }}
-          >
-            <span
-              style={{
-                fontSize: 11,
-                color: "var(--muted)",
-                fontFamily: "var(--font-mono)",
-              }}
-            >
+          <div className="flex flex-col items-end gap-[3px] shrink-0">
+            <span className="text-[11px] text-[var(--muted)] font-[var(--font-mono)]">
               {t.date}
             </span>
             {t.amount > 0 && (
               <span
-                style={{
-                  fontSize: 12,
-                  fontWeight: 600,
-                  color: t.type === "sell" ? "var(--loss)" : "var(--gain)",
-                  fontFamily: "var(--font-mono)",
-                }}
+                className="text-xs font-semibold font-[var(--font-mono)]"
+                style={{ color: t.type === "sell" ? "var(--loss)" : "var(--gain)" }}
               >
                 {t.type === "sell" ? "-" : "+"}
                 {fmt(t.amount)}
@@ -160,61 +76,33 @@ export default function TransactionRow({
           </div>
         </div>
         {isExpanded && (
-          <div
-            style={{
-              padding: "10px 14px",
-              borderTop: "1px solid var(--border)",
-              background: "var(--surface)",
-            }}
-          >
+          <div className="py-[10px] px-3.5 border-t border-[var(--border)] bg-[var(--surface)]">
             {t.notes && (
-              <div
-                style={{
-                  fontSize: 13,
-                  color: "var(--text)",
-                  lineHeight: 1.6,
-                  marginBottom: 10,
-                }}
-              >
+              <div className="text-sm text-[var(--text)] leading-relaxed mb-2.5">
                 {t.notes}
               </div>
             )}
-            <div style={{ display: "flex", gap: 20, flexWrap: "wrap" }}>
+            <div className="flex gap-5 flex-wrap">
               {t.price && (
-                <div style={{ fontSize: 12, color: "var(--muted)" }}>
+                <div className="text-xs text-[var(--muted)]">
                   Price:{" "}
-                  <span
-                    style={{
-                      fontFamily: "var(--font-mono)",
-                      color: "var(--text)",
-                    }}
-                  >
+                  <span className="font-[var(--font-mono)] text-[var(--text)]">
                     ₹{t.price}
                   </span>
                 </div>
               )}
               {t.qty && (
-                <div style={{ fontSize: 12, color: "var(--muted)" }}>
+                <div className="text-xs text-[var(--muted)]">
                   Qty:{" "}
-                  <span
-                    style={{
-                      fontFamily: "var(--font-mono)",
-                      color: "var(--text)",
-                    }}
-                  >
+                  <span className="font-[var(--font-mono)] text-[var(--text)]">
                     {t.qty}
                   </span>
                 </div>
               )}
               {t.amount > 0 && (
-                <div style={{ fontSize: 12, color: "var(--muted)" }}>
+                <div className="text-xs text-[var(--muted)]">
                   Amount:{" "}
-                  <span
-                    style={{
-                      fontFamily: "var(--font-mono)",
-                      color: "var(--text)",
-                    }}
-                  >
+                  <span className="font-[var(--font-mono)] text-[var(--text)]">
                     {fmt(t.amount)}
                   </span>
                 </div>

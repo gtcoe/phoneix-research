@@ -2,7 +2,7 @@
 import { useState } from "react";
 import { fmt } from "@/lib/formatters";
 import { Icon } from "@/components/ui";
-import type { PhoenixData } from "@/lib/data";
+import type { PhoenixData } from "@/types";
 
 export function GoalPlanning({ data }: { data: PhoenixData }) {
   const [goals, setGoals] = useState(data.goals);
@@ -46,32 +46,14 @@ export function GoalPlanning({ data }: { data: PhoenixData }) {
 
   return (
     <div>
-      <div
-        style={{
-          display: "flex",
-          justifyContent: "space-between",
-          alignItems: "center",
-          marginBottom: 20,
-        }}
-      >
-        <div style={{ fontSize: 13, fontWeight: 600, color: "var(--text)" }}>
+      <div className="flex justify-between items-center mb-5">
+        <div className="text-sm font-semibold text-[var(--text)]">
           Financial Goals
         </div>
         <button
+            type="button"
           onClick={() => setShowAdd(true)}
-          style={{
-            display: "flex",
-            alignItems: "center",
-            gap: 6,
-            padding: "7px 14px",
-            background: "var(--accent)",
-            border: "none",
-            borderRadius: 8,
-            cursor: "pointer",
-            color: "#fff",
-            fontSize: 12,
-            fontWeight: 600,
-          }}
+          className="flex items-center gap-1.5 py-[7px] px-3.5 bg-[var(--accent)] border-0 rounded-lg cursor-pointer text-white text-xs font-semibold"
         >
           <Icon name="plus" size={14} color="#fff" />
           Add Goal
@@ -79,33 +61,11 @@ export function GoalPlanning({ data }: { data: PhoenixData }) {
       </div>
 
       {showAdd && (
-        <div
-          style={{
-            background: "var(--card)",
-            border: "1px solid var(--border)",
-            borderRadius: 12,
-            padding: "16px 20px",
-            marginBottom: 20,
-          }}
-        >
-          <div
-            style={{
-              fontSize: 13,
-              fontWeight: 600,
-              color: "var(--text)",
-              marginBottom: 14,
-            }}
-          >
+        <div className="bg-[var(--card)] border border-[var(--border)] rounded-xl py-4 px-5 mb-5">
+          <div className="text-sm font-semibold text-[var(--text)] mb-3.5">
             New Goal
           </div>
-          <div
-            style={{
-              display: "grid",
-              gridTemplateColumns: "1fr 1fr 1fr",
-              gap: 12,
-              marginBottom: 12,
-            }}
-          >
+          <div className="grid grid-cols-3 gap-3 mb-3">
             {[
               {
                 label: "Goal Name",
@@ -139,14 +99,7 @@ export function GoalPlanning({ data }: { data: PhoenixData }) {
               },
             ].map((f) => (
               <div key={f.key}>
-                <label
-                  style={{
-                    fontSize: 11,
-                    color: "var(--muted)",
-                    display: "block",
-                    marginBottom: 4,
-                  }}
-                >
+                <label className="text-[11px] text-[var(--muted)] block mb-1">
                   {f.label}
                 </label>
                 <input
@@ -156,47 +109,23 @@ export function GoalPlanning({ data }: { data: PhoenixData }) {
                     setNewGoal((prev) => ({ ...prev, [f.key]: e.target.value }))
                   }
                   placeholder={f.placeholder}
-                  style={{
-                    width: "100%",
-                    padding: "7px 10px",
-                    background: "var(--bg)",
-                    border: "1px solid var(--border)",
-                    borderRadius: 6,
-                    color: "var(--text)",
-                    fontSize: 12,
-                    boxSizing: "border-box",
-                  }}
+                  className="w-full py-[7px] px-[10px] bg-[var(--bg)] border border-[var(--border)] rounded-md text-[var(--text)] text-xs box-border"
                 />
               </div>
             ))}
           </div>
-          <div style={{ display: "flex", gap: 8 }}>
+          <div className="flex gap-2">
             <button
+                type="button"
               onClick={addGoal}
-              style={{
-                padding: "7px 18px",
-                background: "var(--accent)",
-                border: "none",
-                borderRadius: 6,
-                color: "#fff",
-                cursor: "pointer",
-                fontSize: 12,
-                fontWeight: 600,
-              }}
+              className="py-[7px] px-[18px] bg-[var(--accent)] border-0 rounded-md text-white cursor-pointer text-xs font-semibold"
             >
               Save
             </button>
             <button
+                type="button"
               onClick={() => setShowAdd(false)}
-              style={{
-                padding: "7px 14px",
-                background: "var(--surface2)",
-                border: "1px solid var(--border)",
-                borderRadius: 6,
-                color: "var(--muted)",
-                cursor: "pointer",
-                fontSize: 12,
-              }}
+              className="py-[7px] px-3.5 bg-[var(--surface2)] border border-[var(--border)] rounded-md text-[var(--muted)] cursor-pointer text-xs"
             >
               Cancel
             </button>
@@ -205,28 +134,12 @@ export function GoalPlanning({ data }: { data: PhoenixData }) {
       )}
 
       {goals.length === 0 ? (
-        <div
-          style={{
-            padding: 60,
-            textAlign: "center",
-            color: "var(--muted)",
-            background: "var(--card)",
-            border: "1px solid var(--border)",
-            borderRadius: 12,
-          }}
-        >
-          <div style={{ fontSize: 40 }}>🎯</div>
-          <div
-            style={{
-              marginTop: 14,
-              fontSize: 15,
-              fontWeight: 600,
-              color: "var(--text)",
-            }}
-          >
+        <div className="p-[60px] text-center text-[var(--muted)] bg-[var(--card)] border border-[var(--border)] rounded-xl">
+          <div className="text-[40px]">🎯</div>
+          <div className="mt-3.5 text-base font-semibold text-[var(--text)]">
             No financial goals yet
           </div>
-          <div style={{ marginTop: 6, fontSize: 13 }}>
+          <div className="mt-1.5 text-sm">
             Click "Add Goal" to set your first financial target
           </div>
         </div>
@@ -253,169 +166,87 @@ export function GoalPlanning({ data }: { data: PhoenixData }) {
           return (
             <div
               key={g.id}
-              style={{
-                background: "var(--card)",
-                border: "1px solid var(--border)",
-                borderRadius: 12,
-                padding: "16px 18px",
-              }}
+              className="bg-[var(--card)] border border-[var(--border)] rounded-xl py-4 px-[18px]"
             >
-              <div
-                style={{
-                  display: "flex",
-                  justifyContent: "space-between",
-                  alignItems: "flex-start",
-                  marginBottom: 14,
-                }}
-              >
-                <div style={{ display: "flex", alignItems: "center", gap: 10 }}>
-                  <span style={{ fontSize: 24 }}>{g.icon}</span>
+              <div className="flex justify-between items-start mb-3.5">
+                <div className="flex items-center gap-[10px]">
+                  <span className="text-2xl">{g.icon}</span>
                   <div>
-                    <div
-                      style={{
-                        fontSize: 13,
-                        fontWeight: 600,
-                        color: "var(--text)",
-                      }}
-                    >
+                    <div className="text-sm font-semibold text-[var(--text)]">
                       {g.name}
                     </div>
-                    <div style={{ fontSize: 11, color: "var(--muted)" }}>
+                    <div className="text-[11px] text-[var(--muted)]">
                       Target: {g.targetYear}
                     </div>
                   </div>
                 </div>
                 <button
+                    type="button"
                   onClick={() => deleteGoal(g.id)}
-                  style={{
-                    background: "none",
-                    border: "none",
-                    cursor: "pointer",
-                    color: "var(--muted)",
-                    padding: 4,
-                  }}
+                  className="bg-transparent border-0 cursor-pointer text-[var(--muted)] p-1"
                 >
                   <Icon name="trash" size={14} />
                 </button>
               </div>
-              <div
-                style={{
-                  display: "flex",
-                  justifyContent: "space-between",
-                  marginBottom: 8,
-                }}
-              >
-                <span style={{ fontSize: 12, color: "var(--muted)" }}>
+              <div className="flex justify-between mb-2">
+                <span className="text-xs text-[var(--muted)]">
                   {fmt(g.currentAmount)} saved
                 </span>
-                <span
-                  style={{
-                    fontSize: 12,
-                    fontWeight: 600,
-                    color: "var(--text)",
-                    fontFamily: "var(--font-mono)",
-                  }}
-                >
+                <span className="text-xs font-semibold text-[var(--text)] font-[var(--font-mono)]">
                   {pct.toFixed(0)}%
                 </span>
               </div>
-              <div
-                style={{
-                  height: 8,
-                  background: "var(--border)",
-                  borderRadius: 99,
-                  overflow: "hidden",
-                  marginBottom: 12,
-                }}
-              >
+              <div className="h-2 bg-[var(--border)] rounded-full overflow-hidden mb-3">
                 <div
+                  className="h-full rounded-full transition-[width] duration-[400ms]"
                   style={{
                     width: `${pct}%`,
-                    height: "100%",
                     background: g.color || "var(--accent)",
-                    borderRadius: 99,
-                    transition: "width .4s",
                   }}
                 />
               </div>
-              <div
-                style={{
-                  display: "grid",
-                  gridTemplateColumns: "1fr 1fr",
-                  gap: 10,
-                }}
-              >
+              <div className="grid grid-cols-2 gap-[10px]">
                 <div>
-                  <div style={{ fontSize: 10, color: "var(--muted)" }}>
+                  <div className="text-[10px] text-[var(--muted)]">
                     Target
                   </div>
-                  <div
-                    style={{
-                      fontSize: 13,
-                      fontWeight: 700,
-                      fontFamily: "var(--font-mono)",
-                      color: "var(--text)",
-                    }}
-                  >
+                  <div className="text-sm font-bold font-[var(--font-mono)] text-[var(--text)]">
                     {fmt(g.targetAmount)}
                   </div>
                 </div>
                 <div>
-                  <div style={{ fontSize: 10, color: "var(--muted)" }}>
+                  <div className="text-[10px] text-[var(--muted)]">
                     Remaining
                   </div>
-                  <div
-                    style={{
-                      fontSize: 13,
-                      fontWeight: 700,
-                      fontFamily: "var(--font-mono)",
-                      color: "var(--text)",
-                    }}
-                  >
+                  <div className="text-sm font-bold font-[var(--font-mono)] text-[var(--text)]">
                     {fmt(remaining)}
                   </div>
                 </div>
                 <div>
-                  <div style={{ fontSize: 10, color: "var(--muted)" }}>
+                  <div className="text-[10px] text-[var(--muted)]">
                     Monthly SIP
                   </div>
-                  <div
-                    style={{
-                      fontSize: 13,
-                      fontWeight: 700,
-                      fontFamily: "var(--font-mono)",
-                      color: "var(--text)",
-                    }}
-                  >
+                  <div className="text-sm font-bold font-[var(--font-mono)] text-[var(--text)]">
                     {fmt(g.monthlyAddition)}
                   </div>
                 </div>
                 <div>
-                  <div style={{ fontSize: 10, color: "var(--muted)" }}>
+                  <div className="text-[10px] text-[var(--muted)]">
                     Needed/month
                   </div>
                   <div
-                    style={{
-                      fontSize: 13,
-                      fontWeight: 700,
-                      fontFamily: "var(--font-mono)",
-                      color: onTrack ? "var(--gain)" : "var(--loss)",
-                    }}
+                    className={`text-sm font-bold font-[var(--font-mono)] ${onTrack ? "text-[var(--gain)]" : "text-[var(--loss)]"}`}
                   >
                     {fmt(monthlyNeeded)}
                   </div>
                 </div>
               </div>
               <div
+                className={`mt-[10px] text-xs py-1.5 px-[10px] rounded-md ${onTrack ? "text-[var(--gain)]" : "text-[var(--loss)]"}`}
                 style={{
-                  marginTop: 10,
-                  fontSize: 12,
-                  padding: "6px 10px",
-                  borderRadius: 6,
                   background: onTrack
                     ? "rgba(16,185,129,.12)"
                     : "rgba(239,68,68,.12)",
-                  color: onTrack ? "var(--gain)" : "var(--loss)",
                 }}
               >
                 {yearsLeft}yr left ·{" "}
