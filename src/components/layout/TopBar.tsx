@@ -55,11 +55,11 @@ export default function TopBar({
           ...data.reports
             .filter(
               (r) =>
-                r.ticker.toLowerCase().includes(q) ||
+                r.ticker?.toLowerCase().includes(q) ||
                 r.name.toLowerCase().includes(q),
             )
             .slice(0, THRESHOLDS.SEARCH.REPORTS_RESULTS)
-            .map((r) => ({ label: r.ticker, sub: r.name, dest: "reports" as const, tag: "Reports" })),
+            .map((r) => ({ label: r.ticker ?? r.name, sub: r.name, dest: "reports" as const, tag: "Reports" })),
         ];
 
   return (

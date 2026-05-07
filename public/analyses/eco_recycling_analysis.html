@@ -1,0 +1,449 @@
+<!DOCTYPE html>
+<html><head><meta charset="utf-8">
+<style>
+*{box-sizing:border-box;margin:0;padding:0}
+body{font-family:system-ui,sans-serif;padding:16px;background:#fff;color:#1a1a1a;font-size:14px}
+h1{font-size:20px;font-weight:500;margin-bottom:3px}
+.sub{font-size:12px;color:#666;margin-bottom:14px}
+.sg{display:grid;grid-template-columns:repeat(auto-fill,minmax(110px,1fr));gap:8px;margin-bottom:16px}
+.sc{background:#f5f5f3;border-radius:8px;padding:10px 12px}
+.sl{font-size:10px;color:#666;margin-bottom:2px}
+.sv{font-size:17px;font-weight:500}
+.tab-row{display:flex;gap:5px;flex-wrap:wrap;margin-bottom:14px}
+.tab{font-size:11.5px;padding:5px 13px;border-radius:20px;border:1px solid #ddd;background:#fff;cursor:pointer;white-space:nowrap}
+.tab.active{background:#1a1a1a;color:#fff;border-color:#1a1a1a}
+.panel{display:none}.panel.active{display:block}
+.sh{font-size:10.5px;font-weight:500;color:#666;text-transform:uppercase;letter-spacing:.06em;margin:16px 0 7px;padding-bottom:5px;border-bottom:1px solid #eee}
+table{width:100%;border-collapse:collapse;font-size:12px;margin:8px 0}
+th{font-size:10.5px;font-weight:500;color:#666;padding:5px 7px;text-align:left;border-bottom:1px solid #eee;white-space:nowrap}
+td{padding:8px 7px;border-bottom:1px solid #eee;color:#1a1a1a;vertical-align:top}
+tr:last-child td{border-bottom:none}
+tr:hover td{background:#fafaf9}
+.g{color:#0F6E56;font-weight:500}.r{color:#A32D2D;font-weight:500}.a{color:#854F0B;font-weight:500}.b{color:#185FA5;font-weight:500}
+.badge{display:inline-block;font-size:10px;padding:2px 7px;border-radius:10px;white-space:nowrap}
+.bg{background:#E1F5EE;color:#0F6E56}.bb{background:#E6F1FB;color:#185FA5}.ba{background:#FAEEDA;color:#854F0B}.br{background:#FCEBEB;color:#A32D2D}.bgray{background:#f1f0e8;color:#5F5E5A}.bgrn{background:#E8F5E9;color:#1B5E20}.bteal{background:#E0F2F1;color:#004D40}
+.warn{padding:10px 13px;margin:8px 0;border-left:3px solid;font-size:12px;line-height:1.65}
+.warn.success{background:#E1F5EE;border-color:#1D9E75;color:#04342C}
+.warn.caution{background:#FAEEDA;border-color:#BA7517;color:#412402}
+.warn.danger{background:#FCEBEB;border-color:#A32D2D;color:#712B13}
+.warn.info{background:#E6F1FB;border-color:#185FA5;color:#042C53}
+.warn.grn{background:#E8F5E9;border-color:#2E7D32;color:#1B3A1E}
+.warn.teal{background:#E0F2F1;border-color:#0097A7;color:#00363A}
+.warn strong{font-weight:500}
+.chart-wrap{position:relative;width:100%;height:240px;margin:8px 0}
+.kpi-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:10px;margin:10px 0}
+.kpi{background:#f5f5f3;border-radius:8px;padding:10px 12px;border-left:3px solid transparent}
+.kpi.green{border-left-color:#1D9E75}.kpi.amber{border-left-color:#EF9F27}.kpi.blue{border-left-color:#378ADD}.kpi.red{border-left-color:#A32D2D}.kpi.grn{border-left-color:#2E7D32}.kpi.teal{border-left-color:#0097A7}
+.kpi-l{font-size:10px;color:#666;margin-bottom:3px}
+.kpi-v{font-size:17px;font-weight:500}
+.kpi-s{font-size:10px;color:#888;margin-top:2px}
+.point{display:flex;gap:9px;align-items:flex-start;padding:9px 0;border-bottom:1px solid #eee;font-size:12px;line-height:1.6;color:#555}
+.point:last-child{border-bottom:none}
+.point strong{color:#1a1a1a;font-weight:500}
+.dot{width:19px;height:19px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:10px;font-weight:500;flex-shrink:0;margin-top:1px}
+.dg{background:#E1F5EE;color:#0F6E56}.dr{background:#FCEBEB;color:#A32D2D}.da{background:#FAEEDA;color:#854F0B}.db{background:#E6F1FB;color:#185FA5}.df{background:#E8F5E9;color:#1B5E20}.dt{background:#E0F2F1;color:#004D40}
+.two-col{display:grid;grid-template-columns:1fr 1fr;gap:12px}
+.pane{border:1px solid #ddd;border-radius:10px;padding:13px}
+.pane-h{font-size:13px;font-weight:500;margin-bottom:9px}
+.scenario{border:1px solid #ddd;border-radius:10px;padding:13px;margin-bottom:9px}
+.sc-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:7px;margin:9px 0}
+.sc-cell{background:#f5f5f3;border-radius:6px;padding:7px 9px}
+.sc-l{font-size:10px;color:#666}
+.sc-v{font-size:12px;font-weight:500;margin-top:2px}
+.comp-h{display:grid;grid-template-columns:160px repeat(3,1fr);background:#f5f5f3;border-radius:8px 8px 0 0;overflow:hidden}
+.comp-row{display:grid;grid-template-columns:160px repeat(3,1fr);border-bottom:1px solid #eee}
+.comp-row:last-child{border-bottom:none}
+.cc{padding:8px 10px;font-size:11px;border-right:1px solid #eee}
+.cc:last-child{border-right:none}
+.cc-h{font-size:10px;font-weight:500;color:#444;padding:8px 10px;border-right:1px solid #ddd}
+.cc-h:last-child{border-right:none}
+.cc-label{color:#666;font-size:11px}
+.winner-cell{background:#E1F5EE}.mid-cell{background:#FAEEDA}.loser-cell{background:#fff5f5}
+.verdict-card{border-radius:10px;padding:13px 15px;margin-bottom:10px}
+.vc-h{font-size:13px;font-weight:500;margin-bottom:6px}
+.vc-b{font-size:12px;line-height:1.65;color:#444}
+.sector-card{border:1px solid #ddd;border-radius:10px;overflow:hidden;margin-bottom:10px}
+.sc-hdr{padding:10px 13px;display:flex;justify-content:space-between;align-items:center;background:#fafaf9}
+.sc-nm{font-size:13px;font-weight:500}
+.sc-tg{font-size:11px;color:#666;margin-top:2px}
+.sc-bd{padding:10px 13px;font-size:12px;line-height:1.65;color:#555;border-top:1px solid #eee}
+.sc-bd strong{color:#1a1a1a}
+.guid-card{border-radius:10px;padding:12px 14px;margin-bottom:8px;border-left:3px solid #2E7D32;background:#E8F5E9}
+.guid-h{font-size:11.5px;font-weight:500;margin-bottom:4px;color:#1B5E20}
+.guid-b{font-size:11.5px;color:#333;line-height:1.6}
+.guid-s{font-size:10px;color:#888;margin-top:4px}
+.guid-card.miss{background:#FCEBEB;border-left-color:#A32D2D}.guid-card.miss .guid-h{color:#A32D2D}
+.guid-card.watch{background:#FAEEDA;border-left-color:#BA7517}.guid-card.watch .guid-h{color:#854F0B}
+.moat-box{background:#E8F5E9;border:2px solid #2E7D32;border-radius:10px;padding:13px;margin:10px 0}
+.mb-h{font-size:14px;font-weight:500;color:#1B5E20;margin-bottom:6px}
+.mb-b{font-size:12px;color:#1a1a1a;line-height:1.65}
+.flag{background:#FCEBEB;border:1px solid #A32D2D;border-radius:8px;padding:10px 13px;margin:7px 0;font-size:12px;color:#712B13;line-height:1.6}
+.flag strong{color:#A32D2D}
+.cap-bar{display:flex;align-items:center;gap:8px;margin:5px 0}
+.cb-label{font-size:11px;color:#555;width:180px;flex-shrink:0}
+.cb-track{flex:1;background:#f5f5f3;border-radius:4px;height:15px;overflow:hidden}
+.cb-fill{height:100%;border-radius:4px;display:flex;align-items:center;padding-left:6px;font-size:9px;font-weight:600;color:#fff}
+.cb-val{font-size:11px;font-weight:500;width:100px;text-align:right}
+</style>
+</head>
+<body>
+
+<h1>Eco Recycling Ltd (Ecoreco) — Deep Investment Analysis</h1>
+<div class="sub">BSE: 530643 · India's #1 and only BSE-listed e-waste management company · Founded 2005 · CMD: B K Soni · Mumbai (Vasai) · 120+ countries · 31,200 MTPA capacity · Market cap ~₹830 Cr · Stock -56% from 52-week high</div>
+
+<div class="sg">
+  <div class="sc"><div class="sl">Market cap</div><div class="sv" style="color:#854F0B">~₹830 Cr</div></div>
+  <div class="sc"><div class="sl">FY26 revenue (TTM)</div><div class="sv" style="color:#1D9E75">₹48.2 Cr</div></div>
+  <div class="sc"><div class="sl">FY26 PAT</div><div class="sv" style="color:#1D9E75">₹22.9 Cr</div></div>
+  <div class="sc"><div class="sl">Q4 FY26 PAT growth</div><div class="sv" style="color:#1D9E75">+248% YoY</div></div>
+  <div class="sc"><div class="sl">5-yr PAT CAGR</div><div class="sv" style="color:#1D9E75">99%</div></div>
+  <div class="sc"><div class="sl">ROCE</div><div class="sv" style="color:#1D9E75">30%</div></div>
+  <div class="sc"><div class="sl">Capacity</div><div class="sv" style="color:#185FA5">31,200 MTPA</div></div>
+  <div class="sc"><div class="sl">D/E ratio</div><div class="sv" style="color:#1D9E75">0.05 (debt-free)</div></div>
+  <div class="sc"><div class="sl">Promoter holding</div><div class="sv" style="color:#1D9E75">73.4%</div></div>
+  <div class="sc"><div class="sl">⚠ Debtor days</div><div class="sv" style="color:#A32D2D">119 days ↑</div></div>
+  <div class="sc"><div class="sl">Trailing PE</div><div class="sv" style="color:#854F0B">~36x</div></div>
+  <div class="sc"><div class="sl">52-wk range</div><div class="sv" style="color:#A32D2D">₹282–₹724</div></div>
+</div>
+
+<div class="tab-row">
+  <button class="tab active" onclick="show('revenue',this)">Revenue history</button>
+  <button class="tab" onclick="show('sectorKPI',this)">Sector KPIs</button>
+  <button class="tab" onclick="show('business',this)">Business model</button>
+  <button class="tab" onclick="show('guidance',this)">Guidance</button>
+  <button class="tab" onclick="show('risks',this)">Risks</button>
+  <button class="tab" onclick="show('scenarios',this)">3x scenarios</button>
+  <button class="tab" onclick="show('sectormap',this)">Sector landscape</button>
+  <button class="tab" onclick="show('compare',this)">Full comparison</button>
+  <button class="tab" onclick="show('verdict',this)">Verdict</button>
+</div>
+
+<!-- REVENUE -->
+<div id="revenue" class="panel active">
+  <div class="sh">Revenue &amp; profit history — 5-year PAT CAGR of 99%, but with significant quarterly volatility</div>
+
+  <div class="moat-box">
+    <div class="mb-h">♻️ India's #1 &amp; ONLY BSE-listed e-waste recycler — an irreplaceable regulatory moat</div>
+    <div class="mb-b">Eco Recycling (Ecoreco) has been India's pioneer in formal e-waste management since 2005 — 20 years before most competitors recognised the opportunity. It is <strong>the only BSE-listed pure-play e-waste management company in India</strong>. The regulatory moat is extraordinary: to legally recycle e-waste in India, companies must obtain CPCB (Central Pollution Control Board) authorization — a multi-year process. Ecoreco has had this for 20 years and is the go-to name for EPR (Extended Producer Responsibility) compliance across 120+ countries. As India's EPR enforcement tightens (mandatory since 2022, centralised portal 2024, Environmental Compensation provisions for non-compliance), demand for authorised recyclers like Ecoreco grows structurally. Q4 FY26 PAT jumped +248% YoY — validating the recovery from a difficult Q3.</div>
+  </div>
+
+  <div class="chart-wrap"><canvas id="rc"></canvas></div>
+  <div style="display:flex;gap:14px;font-size:11.5px;color:#666;margin-bottom:10px">
+    <span><span style="display:inline-block;width:10px;height:10px;border-radius:2px;background:#2E7D32;margin-right:4px"></span>Revenue ₹ Cr</span>
+    <span><span style="display:inline-block;width:10px;height:10px;border-radius:2px;background:#1D9E75;margin-right:4px"></span>PAT ₹ Cr</span>
+    <span><span style="display:inline-block;width:10px;height:10px;border-radius:2px;background:#A5D6A7;margin-right:4px"></span>Projected</span>
+  </div>
+
+  <table>
+    <tr><th>Period</th><th>Revenue</th><th>Growth</th><th>EBITDA%</th><th>PAT</th><th>PAT%</th><th>Capacity</th><th>Key event</th></tr>
+    <tr><td>FY22</td><td>~₹15–18 Cr</td><td>—</td><td>~55%</td><td>~₹5–6 Cr</td><td class="g">~33%</td><td>7,200 MTPA</td><td>Post-COVID recovery. E-waste rules tightening. EPR concept gaining traction. Stock begins re-rating from ₹20–30 range.</td></tr>
+    <tr><td>FY23</td><td>~₹22–26 Cr</td><td class="g">+40–50%</td><td>~58%</td><td>~₹8–10 Cr</td><td class="g">~38%</td><td>7,200 MTPA</td><td>E-waste Management Rules 2022 notified. EPR compliance becomes mandatory for all producers. Ecoreco positioned as go-to authorized recycler.</td></tr>
+    <tr><td>FY24</td><td>~₹28–35 Cr</td><td class="g">+30–40%</td><td>~60%</td><td>~₹12–15 Cr</td><td class="g">~42%</td><td>7,200 MTPA</td><td>EPR credit trading begins. Centralized EPR portal development. BookMyJunk app launched. PM Modi mentions Ecoreco in Mann Ki Baat. Stock hits ₹400+.</td></tr>
+    <tr><td>FY25</td><td>~₹35–40 Cr</td><td class="g">~+20–30%</td><td>~62%</td><td>~₹14–18 Cr</td><td class="g">~42–45%</td><td>7,200 MTPA</td><td>Record revenue at that time. Li-ion battery recycling partnership with MEITY. Capacity expansion planned. Stock peaks at ₹724. Working capital days rising.</td></tr>
+    <tr><td>Q1 FY26</td><td>~₹12–14 Cr</td><td class="g">+YoY</td><td>~60%</td><td>~₹7–8 Cr</td><td class="g">~55%</td><td>13,200 MTPA</td><td>Strong quarter. EPR compliance demand growing. Expansion plans announced. New Vasai facility announced.</td></tr>
+    <tr><td>Q2 FY26</td><td>~₹13–15 Cr</td><td class="g">+YoY</td><td>~58%</td><td>~₹8–9 Cr</td><td class="g">~55%</td><td>31,200 MTPA</td><td>31,200 MTPA capacity commissioned (expansion from 7,200 MTPA). Li-ion battery 6,000 MTPA Vasai plant live. Funded via internal accruals.</td></tr>
+    <tr><td>Q3 FY26</td><td>~₹5.9 Cr</td><td class="r">-40% YoY</td><td>~58.7%</td><td>₹2.05 Cr</td><td class="a">~35%</td><td>31,200 MTPA</td><td>Shocking revenue decline of -40% YoY. EBITDA ₹3.47 Cr vs ₹6.6 Cr YoY. Stock collapsed to ₹282 (52-week low). Key concern: what caused the sharp revenue drop?</td></tr>
+    <tr><td>Q4 FY26</td><td>~₹18–20 Cr</td><td class="g">+248% PAT YoY</td><td>~60%</td><td>₹7.14 Cr</td><td class="g">~38%</td><td>31,200 MTPA</td><td><strong>Strong recovery.</strong> PAT +248% YoY. EPS ₹3.85 vs ₹1.19 prior year. Stock hit 10% upper circuit. FY26 audited results approved.</td></tr>
+    <tr><td>FY26 (full year)</td><td>₹48.2 Cr</td><td class="g">~+25–35%</td><td>~60%</td><td>₹22.9 Cr</td><td class="g">~47%</td><td>31,200 MTPA</td><td>Full year: Revenue ₹48.2 Cr, PAT ₹22.9 Cr. ROCE 30%, ROE 23.3%. PEG ratio 0.47 (suggests undervaluation). Ecoreco Park subsidiary acquisition completed.</td></tr>
+    <tr><td>FY27E</td><td>~₹70–90 Cr</td><td class="g">+45–87%</td><td>~60–62%</td><td>~₹30–40 Cr</td><td class="g">~43–45%</td><td>31,200 MTPA</td><td>Full year of 31,200 MTPA capacity. Li-ion battery recycling scaling. EPR compliance enforcement strengthening. Working capital normalisation expected. Critical mineral recovery revenue starting.</td></tr>
+    <tr><td>FY28E</td><td>~₹100–150 Cr</td><td class="g">~+40–67%</td><td>~62–65%</td><td>~₹45–70 Cr</td><td class="g">~45–47%</td><td>50,000+ MTPA?</td><td>Possible capacity expansion. Critical minerals (lithium, cobalt, nickel from EV batteries) recovery revenue. Data center ITAD growing. Export EPR credits.</td></tr>
+  </table>
+
+  <div class="warn caution"><strong>The Q3 FY26 revenue decline (-40% YoY) requires explanation:</strong> E-waste revenue is inherently lumpy — large B2B collection drives, EPR credit purchases by producers, and ITAD contracts don't arrive evenly each quarter. The Q3 decline likely reflects timing of large contracts vs Q4's +248% PAT recovery. This lumpiness is structural and must be understood by any investor in this company. The business is fundamentally growing — but quarterly comparisons can be very misleading.</div>
+</div>
+
+<!-- SECTOR KPIs -->
+<div id="sectorKPI" class="panel">
+  <div class="sh">E-waste recycling sector KPIs — the right metrics for Ecoreco</div>
+  <div class="warn grn"><strong>E-waste recycling is fundamentally different from manufacturing businesses.</strong> The key metrics are: (1) Processing capacity (MTPA) vs actual throughput, (2) Revenue per tonne (mix of commodity recovery vs service fee), (3) EPR credit volumes and pricing, (4) Working capital cycle (EPR credit business locks capital), and (5) Recovery rates for precious metals (gold, silver, palladium from circuit boards).</div>
+  <div class="kpi-grid">
+    <div class="kpi grn"><div class="kpi-l">Total capacity (FY26)</div><div class="kpi-v">31,200 MTPA</div><div class="kpi-s">4.3x expansion from 7,200 MTPA in FY24</div></div>
+    <div class="kpi teal"><div class="kpi-l">Li-ion battery capacity</div><div class="kpi-v">6,000 MTPA</div><div class="kpi-s">New Vasai facility — EV battery goldmine</div></div>
+    <div class="kpi green"><div class="kpi-l">5-year PAT CAGR</div><div class="kpi-v">99%</div><div class="kpi-s">Doubling profit every year for 5 years</div></div>
+    <div class="kpi green"><div class="kpi-l">ROCE</div><div class="kpi-v">30%</div><div class="kpi-s">Excellent capital efficiency</div></div>
+    <div class="kpi red"><div class="kpi-l">Working capital days</div><div class="kpi-v" style="color:#A32D2D">321 days ↑</div><div class="kpi-s">Was 207 — major deterioration</div></div>
+    <div class="kpi green"><div class="kpi-l">D/E ratio</div><div class="kpi-v">0.05</div><div class="kpi-s">Essentially debt-free — self-funded growth</div></div>
+  </div>
+
+  <div class="sh">Capacity expansion — from niche to scale</div>
+  <div class="cap-bar"><div class="cb-label">FY22–FY24 capacity</div><div class="cb-track"><div class="cb-fill" style="width:23%;background:#2E7D32">7,200 MTPA original</div></div><div class="cb-val">7,200 MTPA</div></div>
+  <div class="cap-bar"><div class="cb-label">After e-waste expansion (+18K)</div><div class="cb-track"><div class="cb-fill" style="width:80%;background:#2E7D32">31,200 MTPA new total</div></div><div class="cb-val g">31,200 MTPA</div></div>
+  <div class="cap-bar"><div class="cb-label">Li-ion battery dedicated</div><div class="cb-track"><div class="cb-fill" style="width:19%;background:#0097A7">6,000 MTPA subset</div></div><div class="cb-val b">6,000 MTPA</div></div>
+  <div class="cap-bar"><div class="cb-label">India e-waste generated (est.)</div><div class="cb-track"><div class="cb-fill" style="width:100%;background:#A5D6A7;color:#1B5E20">3.2 million+ MTPA annually</div></div><div class="cb-val a">32,00,000+ MTPA</div></div>
+
+  <div class="sh">India e-waste market — the massive structural tailwind</div>
+  <table>
+    <tr><th>Driver</th><th>Scale</th><th>Timeline</th><th>Ecoreco benefit</th></tr>
+    <tr><td><strong>E-waste generated annually (India)</strong></td><td>3.2 million MTPA — growing 10%+ CAGR</td><td>Now</td><td class="g">Core market — Ecoreco processes only 1% of India's e-waste currently</td></tr>
+    <tr><td><strong>NITI Aayog — e-waste worth ₹51,000 Cr/yr</strong></td><td>₹51,000 Cr annual resource value</td><td>Now</td><td class="g">Precious metal recovery: gold, silver, palladium — very high-margin</td></tr>
+    <tr><td><strong>EPR compliance enforcement</strong></td><td>All electronics producers must comply</td><td>FY23+ (mandatory)</td><td class="g">EPR credits sold to producers — Ecoreco is an authorized generator</td></tr>
+    <tr><td><strong>Li-ion battery recycling (EV revolution)</strong></td><td>India EV fleet doubling every 2 years</td><td>FY26–30</td><td class="g">6,000 MTPA Li-ion facility positioned perfectly for EV battery end-of-life</td></tr>
+    <tr><td><strong>Critical mineral recovery</strong></td><td>India imports 100% of lithium, cobalt</td><td>FY27+</td><td class="g">MEITY partnership for recovering critical minerals from Li-ion batteries</td></tr>
+    <tr><td><strong>Data centre ITAD (IT Asset Disposition)</strong></td><td>India DC boom = massive ITAD demand</td><td>FY26+</td><td class="g">Secure data destruction + certified recycling for hyperscaler DCs</td></tr>
+  </table>
+</div>
+
+<!-- BUSINESS MODEL -->
+<div id="business" class="panel">
+  <div class="sh">What Ecoreco does — six business lines, each with distinct economics</div>
+  <div class="warn grn"><strong>Ecoreco's revenue comes from two fundamentally different sources:</strong> (1) Commodity recovery — selling recycled metals, plastics, glass extracted from e-waste (revenue = scrap sales, margin depends on commodity prices), and (2) Services — EPR compliance, data destruction, ITAD, lamp recycling (revenue = service fee, higher and more predictable margin). The services/EPR portion is the high-margin engine; commodity recovery is the bulk volume driver.</div>
+
+  <div class="two-col" style="margin:10px 0">
+    <div class="pane">
+      <div class="pane-h">High-margin services (the moat)</div>
+      <div class="point"><div class="dot df">1</div><div><strong>EPR compliance services:</strong> Extended Producer Responsibility requires electronics manufacturers (Apple, Samsung, Sony, LG, Tata) to ensure their products are recycled at end-of-life. Ecoreco collects, processes, and issues EPR certificates to producers. Revenue: service fee + EPR credit price. As enforcement tightens (Environmental Compensation for non-compliance), every producer must buy EPR credits from authorized recyclers like Ecoreco. This is a regulatory demand — not elastic. Margin: 60–70%.</div></div>
+      <div class="point"><div class="dot df">2</div><div><strong>ITAD + Data Destruction:</strong> IT Asset Disposition — securely recycling laptops, servers, phones from corporates and data centres. Data destruction certificates required for compliance. Increasingly important as India's data centre boom creates massive end-of-life IT equipment. Very high ASP per unit (₹500–5,000 per device depending on certification level). Margin: 65–75%.</div></div>
+      <div class="point"><div class="dot dt">3</div><div><strong>Precious Metal Recovery:</strong> Circuit boards contain gold (0.03–0.3 gm/kg), silver (3–5 gm/kg), palladium (0.01–0.05 gm/kg). With gold at ₹8,000/gram, this is a high-value revenue stream — especially from smartphones and servers. NITI Aayog estimated India's e-waste contains ₹51,000 Cr of materials. Ecoreco is one of very few companies with the technology to recover these metals at high purity. Margin: very high (near commodity price with low processing cost).</div></div>
+    </div>
+    <div class="pane">
+      <div class="pane-h">Volume-driven segments (growing)</div>
+      <div class="point"><div class="dot df">4</div><div><strong>Li-ion Battery Recycling (new, transformative):</strong> 6,000 MTPA dedicated facility at Vasai. Recovers lithium, cobalt, nickel, manganese from spent EV, laptop, phone batteries. MEITY partnership for technology. India imports 100% of these critical minerals — making domestic recovery strategically national-interest. This segment could become Ecoreco's largest revenue driver by FY28 if EV battery volumes ramp as expected.</div></div>
+      <div class="point"><div class="dot dt">5</div><div><strong>Lamp Recycling:</strong> Mercury-containing lamps (CFL, fluorescent) require specialized recycling under Hazardous Waste Rules. Ecoreco is one of very few authorized lamp recyclers. Small segment but high compliance barrier — essentially no competition.</div></div>
+      <div class="point"><div class="dot df">6</div><div><strong>BookMyJunk + Recycling on Wheels (SmartER):</strong> Consumer-facing collection app + mobile recycling vans for residential e-waste collection. Mentioned by PM Modi in Mann Ki Baat (national radio). Creates brand awareness and feeds the processing pipeline with consumer e-waste. Scales the informal sector into the formal economy by training and absorbing informal workers.</div></div>
+    </div>
+  </div>
+
+  <div class="sh">The EPR framework — the regulatory engine that makes Ecoreco's moat durable</div>
+  <div class="point"><div class="dot dg">+</div><div><strong>EPR is mandatory, non-negotiable, and heavily enforced from 2023:</strong> Every company that sells electronics in India must ensure an equivalent weight of e-waste is recycled each year. If they don't, they pay Environmental Compensation (EC) — essentially a fine. This means every major electronics brand (Samsung, Apple, Dell, HP) must buy EPR credits from authorized recyclers like Ecoreco. As more electronics are sold each year, more EPR credits are demanded. Ecoreco's authorized status (20-year CPCB history) is a virtually insurmountable barrier — new entrants take 2–4 years to get authorization and build trust with producers.</div></div>
+  <div class="point"><div class="dot dg">+</div><div><strong>Centralised EPR portal (2024) = compliance enforcement tightened:</strong> The government launched a centralized portal where producers must register their EPR targets and submit evidence of recycling. This removes the ability to get fake/low-quality EPR certificates and drives demand toward reputable, large-scale authorized recyclers like Ecoreco. Each new enforcement measure strengthens Ecoreco's competitive position.</div></div>
+</div>
+
+<!-- GUIDANCE -->
+<div id="guidance" class="panel">
+  <div class="sh">Guidance analysis — management communicates via quarterly earnings releases</div>
+  <div class="warn grn"><strong>Ecoreco management publishes quarterly earnings releases with qualitative commentary.</strong> Formal revenue guidance is not provided (typical for small-cap B2G businesses). Analysis relies on capacity expansion announcements, EPR market data, and quarterly trends.</div>
+
+  <div class="guid-card">
+    <div class="guid-h">✓ Capacity expansion (FY26): 7,200 → 31,200 MTPA — delivered on internal accruals</div>
+    <div class="guid-b">Management committed to a 4.3x capacity expansion — from 7,200 MTPA to 31,200 MTPA — all funded through internal accruals (zero debt). This was delivered in FY26. The new 40,000 sq ft Vasai plant includes the 18,000 MTPA e-waste expansion plus the dedicated 6,000 MTPA Li-ion battery facility. Self-funded expansion on a zero-debt balance sheet is a remarkable execution signal. Most infrastructure companies raise debt for expansions; Ecoreco's PAT margins (42–47%) generate enough cash to fund growth organically.</div>
+    <div class="guid-s">Credibility: 9/10. Delivered the expansion on time and without debt — exactly as committed.</div>
+  </div>
+
+  <div class="guid-card">
+    <div class="guid-h">✓ 5-year PAT CAGR of 99% — management has compounded at near-100% annually</div>
+    <div class="guid-b">This is extraordinary for any company. From FY21 PAT of approximately ₹1–2 Cr to FY26 PAT of ₹22.9 Cr — PAT has grown roughly 10–15x in 5 years. The 99% CAGR is not a one-year spike but a genuine 5-year compounding track record. This reflects the EPR regulation-driven demand growth + pricing power from being the only authorized large-scale recycler + operating leverage as fixed costs spread over growing volumes. The challenge is sustaining this pace as the base grows larger.</div>
+    <div class="guid-s">Credibility: 8/10. 99% CAGR over 5 years is genuinely exceptional. Maintaining 40–50% growth going forward is more realistic but still very strong.</div>
+  </div>
+
+  <div class="guid-card miss">
+    <div class="guid-h">✗ Q3 FY26 revenue -40% YoY — significant quarterly miss requiring explanation</div>
+    <div class="guid-b">Q3 FY26 saw a -40% revenue decline vs Q3 FY25. EBITDA fell from ₹6.6 Cr to ₹3.47 Cr YoY. The company attributed this to timing of large contracts — e-waste recycling is inherently lumpy as large producers purchase EPR credits in waves, not uniformly. The Q4 FY26 recovery (+248% PAT YoY) validates the "timing" explanation. However, this lumpiness creates significant risk for investors who assume quarterly linearity. Watch for H1 vs H2 revenue patterns — Ecoreco may be inherently back-weighted (most revenue in Q4 as producers rush to meet year-end EPR compliance targets).</div>
+    <div class="guid-s">The EPR cycle explanation is plausible: producers comply with annual targets, so Q4 (March year-end) is likely strongest. Verify this pattern in historical data.</div>
+  </div>
+
+  <div class="guid-card watch">
+    <div class="guid-h">⚠ Working capital deterioration: 207 → 321 days — management must explain and resolve</div>
+    <div class="guid-b">Working capital days have jumped from 207 to 321 in one year — a 55% deterioration. Debtor days rose from 79.9 to 119. For a business where the company collects e-waste (essentially getting paid to take product + material value), this working capital build is unusual. Possible explanation: EPR credit receivables from large producers being paid slowly, or advance purchases of e-waste material that hasn't been sold yet. Management must address this explicitly — if not, it suggests cash flow quality is worse than PAT suggests.</div>
+    <div class="guid-s">Watch: FY27 Q1 balance sheet. If working capital stays above 300 days, it's structural. If it normalises below 200, Q3 was an anomaly.</div>
+  </div>
+
+  <div class="sh">Guidance scorecard</div>
+  <table>
+    <tr><th>Item</th><th>Credibility</th><th>Base case</th><th>Key risk</th></tr>
+    <tr><td>FY27 revenue ₹70–90 Cr</td><td class="g">7/10 — capacity supports; lumpiness risk</td><td>₹65–80 Cr</td><td>Q-to-Q revenue lumpiness; EPR credit pricing changes</td></tr>
+    <tr><td>FY27 PAT ₹30–40 Cr</td><td class="g">7/10 — margins consistent at 40–47%</td><td>₹28–38 Cr</td><td>Commodity price (precious metals) volatility; working capital financing</td></tr>
+    <tr><td>Li-ion battery revenue (FY27)</td><td class="a">5/10 — facility live, orders building</td><td>₹5–15 Cr</td><td>EV battery volume ramp slower than expected; technology challenges</td></tr>
+    <tr><td>Working capital normalisation</td><td class="a">6/10 — management aware</td><td>~250 days by FY27</td><td>If EPR credit receivables remain slow-paying, stays elevated</td></tr>
+    <tr><td>Critical mineral recovery revenue</td><td class="a">5/10 — MEITY partnership early</td><td>₹3–8 Cr by FY27</td><td>Technology readiness; regulatory approvals for mineral exports</td></tr>
+  </table>
+</div>
+
+<!-- RISKS -->
+<div id="risks" class="panel">
+  <div class="sh">Risks — the full, honest picture</div>
+
+  <div class="flag"><strong>Working capital days 207 → 321 (55% deterioration in one year) — the biggest concern.</strong> In a capital-light service business, working capital of 321 days means the company has nearly a full year's revenue tied up in receivables and inventory. At ₹48 Cr revenue, 321 days WC = ~₹42 Cr locked up. For a company generating ₹22.9 Cr PAT, this is almost the entire annual profit in working capital. If this worsens, Ecoreco may need to raise equity (dilution risk) despite being profitable. The warrants issue (₹12.2 Cr at ₹408/share) suggests management is already aware of the funding gap. Monitor FY27 Q1 balance sheet very carefully.</div>
+
+  <div class="point"><div class="dot da">1</div><div><strong>Revenue lumpiness — Q3 FY26 -40% shows this is unpredictable.</strong><br>E-waste recycling revenue depends on large producers purchasing EPR credits, corporate ITAD contracts, and government collection drives. These arrive in lumps, not quarterly smoothly. Q3 FY26 showed this dramatically — revenue dropped 40% and then recovered 248% in Q4. For a stock that has risen 5x in recent years on growth expectations, a single bad quarter can trigger a 30–40% stock fall (as it did from ₹724 to ₹282). Investors must have a 12–18 month patience horizon, not a quarterly perspective.</div></div>
+
+  <div class="point"><div class="dot da">2</div><div><strong>Very small revenue base (₹48 Cr) at ₹830 Cr market cap = 17x Price/Sales.</strong><br>Similar to the Valiant Communications valuation concern — at 17x Price/Sales, the market is paying significantly for future growth. Unlike Valiant, Ecoreco's PAT margin (47%) partially justifies this — the trailing PE of 36x is actually reasonable for a monopoly with 99% PAT CAGR. But the absolute revenue size (₹48 Cr) means 3x requires ₹2,490 Cr market cap — at 30x PE on ₹83 Cr PAT = achievable if FY28 PAT targets are met.</div></div>
+
+  <div class="point"><div class="dot da">3</div><div><strong>Precious metal commodity price risk.</strong><br>A significant portion of Ecoreco's revenue comes from selling recovered gold, silver, palladium, and copper from e-waste. If gold prices correct 20–30% (unlikely given structural demand but possible), Ecoreco's revenue and margins compress. This commodity dependency is hidden in the revenue — the company is partially a precious metals play, not just a services company.</div></div>
+
+  <div class="point"><div class="dot da">4</div><div><strong>Competition from informal sector and new authorized entrants.</strong><br>India has a massive informal e-waste recycling sector (kabadiwalas, backyard operations) that handles 90%+ of e-waste at near-zero quality. While illegal, they are virtually impossible to eliminate quickly. Additionally, as EPR credit demand grows, new authorized recyclers may enter (the 2–4 year authorization process is a barrier but not impenetrable). If EPR credit supply grows faster than demand, prices fall and Ecoreco's margins compress.</div></div>
+
+  <div class="point"><div class="dot dg">+</div><div><strong>Genuine strengths that make this a compelling long-term story:</strong><br>India's ONLY BSE-listed e-waste company. 20-year CPCB authorization — impossible for new entrants to replicate overnight. 99% PAT CAGR over 5 years — among the best in listed India. ROCE 30%, ROE 23.3% — excellent capital efficiency. Essentially zero debt (D/E 0.05). 31,200 MTPA capacity (4.3x FY24) funded via internal accruals. Li-ion battery + critical minerals = enormous future optionality. PM Modi mentioned Ecoreco in Mann Ki Baat — rare B2G marketing. EPR compliance is getting stricter every year — captive demand growing. PEG ratio 0.47 — suggests undervaluation relative to growth.</div></div>
+</div>
+
+<!-- SCENARIOS -->
+<div id="scenarios" class="panel">
+  <div class="sh">Three scenarios — from current ~₹430 (~₹830 Cr mcap)</div>
+  <div class="warn teal"><strong>The 3x math at ₹830 Cr is more achievable than most stocks we've analyzed.</strong> 3x = ₹2,490 Cr. At 30x PE, this requires PAT of ₹83 Cr. FY26 PAT: ₹22.9 Cr. 3.6x PAT growth needed in 3 years = ~53% annual PAT growth. Given the 5-year 99% PAT CAGR track record, sustaining 50%+ PAT growth for 3 more years is well within historical capability. The 3x thesis is genuinely achievable here — unlike Valiant Communications or PCBL where the math was extremely difficult.</div>
+
+  <div class="scenario" style="border-left:3px solid #2E7D32">
+    <div style="font-size:13px;font-weight:500;color:#1B5E20;margin-bottom:8px">Bull case — 3–5x in 3 years: Li-ion + critical minerals + EPR enforcement + DC ITAD</div>
+    <div class="sc-grid">
+      <div class="sc-cell"><div class="sc-l">FY27 revenue</div><div class="sc-v">₹80–100 Cr</div></div>
+      <div class="sc-cell"><div class="sc-l">FY27 PAT</div><div class="sc-v">₹35–45 Cr</div></div>
+      <div class="sc-cell"><div class="sc-l">FY28 revenue</div><div class="sc-v">₹130–170 Cr</div></div>
+      <div class="sc-cell"><div class="sc-l">FY28 PAT</div><div class="sc-v">₹60–80 Cr</div></div>
+      <div class="sc-cell"><div class="sc-l">PE (monopoly premium)</div><div class="sc-v">30–40x</div></div>
+      <div class="sc-cell"><div class="sc-l">FY28 mcap</div><div class="sc-v">₹1,800–3,200 Cr</div></div>
+    </div>
+    <div style="font-size:11.5px;color:#333;margin-top:8px"><strong>What must happen:</strong> Li-ion battery recycling scales (₹20+ Cr revenue from 6,000 MTPA facility). Data centre ITAD contracts won from Anant Raj, NTT, Hiranandani (India DC boom creates massive IT disposal needs). Critical mineral recovery (lithium, cobalt) begins generating commercial revenue via MEITY partnership. EPR enforcement produces strong year-end (Q4) compliance purchases. Working capital normalises. At 35x PE on ₹75 Cr PAT = ₹2,625 Cr = <strong>3.2x from ₹830 Cr.</strong></div>
+  </div>
+
+  <div class="scenario" style="border-left:3px solid #378ADD">
+    <div style="font-size:13px;font-weight:500;color:#185FA5;margin-bottom:8px">Base case — 1.8–2.5x in 2–3 years: Organic EPR growth + steady capacity utilisation</div>
+    <div class="sc-grid">
+      <div class="sc-cell"><div class="sc-l">FY27 revenue</div><div class="sc-v">₹65–80 Cr</div></div>
+      <div class="sc-cell"><div class="sc-l">FY27 PAT</div><div class="sc-v">₹28–35 Cr</div></div>
+      <div class="sc-cell"><div class="sc-l">Forward PE</div><div class="sc-v">28–32x</div></div>
+      <div class="sc-cell"><div class="sc-l">FY27 mcap</div><div class="sc-v">₹784–1,120 Cr</div></div>
+      <div class="sc-cell"><div class="sc-l">Return from ₹830 Cr</div><div class="sc-v">0.9–1.35x</div></div>
+      <div class="sc-cell"><div class="sc-l">FY28 return</div><div class="sc-v">1.8–2.5x likely</div></div>
+    </div>
+    <div style="font-size:11.5px;color:#333;margin-top:8px">EPR grows 30–40% organically as more producers enter the compliance cycle. Li-ion contributes modestly. ITAD data centre pipeline building. FY27 PAT ₹32 Cr at 30x = ₹960 Cr = 1.16x (slight gain). FY28 PAT ₹48 Cr at 32x = ₹1,536 Cr = 1.85x. <strong>Base case is moderate 1.8–2.5x over FY28 — not 3x but solid absolute return.</strong></div>
+  </div>
+
+  <div class="scenario" style="border-left:3px solid #A32D2D">
+    <div style="font-size:13px;font-weight:500;color:#A32D2D;margin-bottom:8px">Bear case — -20 to -40%: WC crisis + EPR pricing falls + precious metal decline</div>
+    <div class="sc-grid">
+      <div class="sc-cell"><div class="sc-l">Trigger</div><div class="sc-v">WC days stays 300+; equity raise needed</div></div>
+      <div class="sc-cell"><div class="sc-l">Trigger</div><div class="sc-v">EPR credit oversupply, prices fall 30%</div></div>
+      <div class="sc-cell"><div class="sc-l">Trigger</div><div class="sc-v">Gold/precious metal price correction</div></div>
+      <div class="sc-cell"><div class="sc-l">FY27 PAT</div><div class="sc-v">₹15–18 Cr (dilution + margins)</div></div>
+      <div class="sc-cell"><div class="sc-l">PE at 22–25x</div><div class="sc-v">₹330–450 Cr mcap</div></div>
+      <div class="sc-cell"><div class="sc-l">Stock impact</div><div class="sc-v">₹170–233/share (-46% to -60%)</div></div>
+    </div>
+    <div style="font-size:11.5px;color:#333;margin-top:8px"><strong>Bear probability: 20–25%.</strong> If EPR credit oversupply emerges as more authorized recyclers enter, or if precious metal prices correct, Ecoreco's margin profile deteriorates. Combined with working capital stress requiring equity dilution, PE could de-rate from 36x to 22x. Stock revisits ₹170–230 (near or below 52-week low of ₹282).</div>
+  </div>
+
+  <table style="margin-top:10px">
+    <tr><th>Target</th><th>Mcap needed</th><th>Driver</th><th>Timeline</th><th>Probability</th></tr>
+    <tr><td>3x (₹2,490 Cr)</td><td>₹2,490 Cr</td><td>FY28 PAT ₹75 Cr at 33x PE</td><td>FY27–28</td><td class="a">25–30%</td></tr>
+    <tr><td>2x (₹1,660 Cr)</td><td>₹1,660 Cr</td><td>FY27 PAT ₹50 Cr at 33x PE</td><td>FY27</td><td class="a">35–40%</td></tr>
+    <tr><td>1.5x (₹1,245 Cr)</td><td>₹1,245 Cr</td><td>FY27 PAT ₹38 Cr at 33x PE</td><td>FY27</td><td class="g">45–50%</td></tr>
+    <tr><td>Bear (-35%: ₹540 Cr)</td><td>₹540 Cr</td><td>WC crisis + margin compression + EPR oversupply</td><td>—</td><td class="a">20–25%</td></tr>
+  </table>
+</div>
+
+<!-- SECTOR LANDSCAPE -->
+<div id="sectormap" class="panel">
+  <div class="sh">E-waste + recycling sector landscape — Ecoreco's competitive position</div>
+  <div class="warn grn"><strong>India's e-waste sector is highly fragmented, dominated by the informal sector (90%+ of volume), with very few formal authorised recyclers.</strong> Ecoreco's monopoly as the ONLY BSE-listed company is a genuine advantage — institutional investors, ESG mandates, and large MNC clients (who need publicly auditable recycling partners) naturally gravitate to Ecoreco.</div>
+
+  <div class="sector-card">
+    <div class="sc-hdr"><div><div class="sc-nm">Gravita India — lead/aluminium/rubber recycler</div><div class="sc-tg">₹8,000+ Cr mcap · Multi-material recycler · 278,000 MTPA · Strong financials</div></div><span class="badge ba">Adjacent — not direct competitor</span></div>
+    <div class="sc-bd">Gravita India is a multi-material recycler (lead, aluminium, plastics, rubber) — not focused on e-waste specifically. Revenue ~₹4,000+ Cr vs Ecoreco's ₹48 Cr — 80x larger. However, Gravita trades at similar PE multiples despite being much more mature. Gravita's strength is scale; Ecoreco's strength is regulatory moat (CPCB authorization + EPR framework). <strong>Both are recycling sector plays but addressing different waste streams.</strong></div>
+  </div>
+
+  <div class="sector-card">
+    <div class="sc-hdr"><div><div class="sc-nm">Informal sector — the 90% competitor</div><div class="sc-tg">Unorganized · No CPCB authorization · Cheap but non-compliant · Shrinking under EPR enforcement</div></div><span class="badge br">Real competition — but structurally declining</span></div>
+    <div class="sc-bd">India's informal e-waste sector is massive — 90%+ of e-waste is handled by kabadiwala networks and backyard operations. They are cheaper but not EPR-compliant. As EPR enforcement tightens (mandatory since 2022, EC provisions now in place), producers cannot use informal recyclers for compliance. Each tightening of EPR rules shifts demand from informal to formal — Ecoreco is the primary beneficiary of this formalisation trend that will run for 10+ years.</div>
+  </div>
+
+  <div class="sector-card">
+    <div class="sc-hdr"><div><div class="sc-nm">Attero Recycling + Clean Harbors India — unlisted competitors</div><div class="sc-tg">Unlisted · VC-backed · Growing rapidly · Not available to retail investors</div></div><span class="badge bgray">Unlisted — not investable</span></div>
+    <div class="sc-bd">Attero (Gurgaon-based, VC-funded) is the closest direct competitor to Ecoreco in formal e-waste recycling — but it's unlisted. If Attero or another formal recycler lists, it would provide a valuation benchmark for the sector. For now, Ecoreco's monopoly as the ONLY listed e-waste play means any ESG-oriented institutional investor who wants e-waste exposure MUST buy Ecoreco — a forced captive demand from the investor community itself.</div>
+  </div>
+</div>
+
+<!-- FULL COMPARISON -->
+<div id="compare" class="panel">
+  <div class="sh">Ecoreco vs recycling/waste management peers — full comparison</div>
+  <div style="border:1px solid #ddd;border-radius:10px;overflow:hidden;font-size:11px">
+    <div class="comp-h">
+      <div class="cc-h" style="background:#f5f5f3">Metric</div>
+      <div class="cc-h" style="background:#E8F5E9;color:#1B5E20">Eco Recycling (Ecoreco)</div>
+      <div class="cc-h" style="background:#E6F1FB;color:#185FA5">Gravita India</div>
+      <div class="cc-h" style="background:#f5f5f3">Antony Waste Handling</div>
+    </div>
+    <div class="comp-row"><div class="cc cc-label">Market cap</div><div class="cc winner-cell">₹830 Cr (right size for 3x)</div><div class="cc loser-cell">₹8,000+ Cr</div><div class="cc mid-cell">₹2,500+ Cr</div></div>
+    <div class="comp-row"><div class="cc cc-label">Revenue (FY26)</div><div class="cc loser-cell">₹48.2 Cr (tiny)</div><div class="cc winner-cell">~₹4,000+ Cr</div><div class="cc winner-cell">~₹1,400+ Cr</div></div>
+    <div class="comp-row"><div class="cc cc-label">PAT margin</div><div class="cc winner-cell">~47% (exceptional)</div><div class="cc mid-cell">~7–8%</div><div class="cc mid-cell">~12–15%</div></div>
+    <div class="comp-row"><div class="cc cc-label">5-yr PAT CAGR</div><div class="cc winner-cell">99% — doubling every year</div><div class="cc winner-cell">~65%</div><div class="cc mid-cell">~15–20%</div></div>
+    <div class="comp-row"><div class="cc cc-label">ROCE</div><div class="cc winner-cell">30% (excellent)</div><div class="cc winner-cell">~28–34%</div><div class="cc mid-cell">~18–22%</div></div>
+    <div class="comp-row"><div class="cc cc-label">Debt level</div><div class="cc winner-cell">D/E 0.05 — debt-free</div><div class="cc mid-cell">Moderate leverage</div><div class="cc mid-cell">Moderate</div></div>
+    <div class="comp-row"><div class="cc cc-label">E-waste monopoly</div><div class="cc winner-cell">Yes — only BSE-listed e-waste company</div><div class="cc loser-cell">No — lead/aluminium focus</div><div class="cc loser-cell">No — municipal solid waste</div></div>
+    <div class="comp-row"><div class="cc cc-label">EPR compliance driver</div><div class="cc winner-cell">Primary beneficiary — core business</div><div class="cc loser-cell">Not applicable</div><div class="cc loser-cell">Not applicable</div></div>
+    <div class="comp-row"><div class="cc cc-label">Li-ion battery recycling</div><div class="cc winner-cell">Yes — 6,000 MTPA dedicated</div><div class="cc loser-cell">No</div><div class="cc loser-cell">No</div></div>
+    <div class="comp-row"><div class="cc cc-label">Working capital concern</div><div class="cc loser-cell">Yes — 321 days (major concern)</div><div class="cc winner-cell">Well managed</div><div class="cc winner-cell">Moderate</div></div>
+    <div class="comp-row"><div class="cc cc-label">Promoter holding</div><div class="cc winner-cell">73.4% (strong)</div><div class="cc winner-cell">~70%</div><div class="cc mid-cell">~55%</div></div>
+    <div class="comp-row"><div class="cc cc-label">3x probability (3yr)</div><div class="cc winner-cell">25–30% — best in class recycling</div><td class="cc loser-cell">10–12% (too large)</td><td class="cc loser-cell">12–15%</td></div>
+    <div class="comp-row"><div class="cc cc-label">Best for Garvit 3x</div><div class="cc">Best listed recycling play — small position appropriate; WC concern limits conviction</div><div class="cc">Quality but wrong size</div><div class="cc">Municipal waste — different thesis</div></div>
+  </div>
+  <div class="warn grn" style="margin-top:12px"><strong>The key sector insight:</strong> Ecoreco's 47% PAT margin vs Gravita's 7–8% reveals fundamentally different business models. Ecoreco earns premium service fees (EPR compliance, data destruction, ITAD) rather than just commodity material sales. This margin quality justifies Ecoreco's PE premium. The only concern: at ₹48 Cr revenue, the entire company is smaller than a single large Gravita India project. Revenue scale must be demonstrated before the stock can attract institutional investors who need minimum liquidity thresholds.</div>
+</div>
+
+<!-- VERDICT -->
+<div id="verdict" class="panel">
+  <div class="sh">The definitive verdict for Garvit's 3x portfolio goal</div>
+
+  <div class="verdict-card" style="background:#E8F5E9;border:1px solid #81C784">
+    <div class="vc-h" style="color:#1B5E20">Eco Recycling (Ecoreco) — Verdict: Genuinely compelling India monopoly with a 99% PAT CAGR over 5 years and a regulatory moat that only strengthens over time. The 3x math works. But the working capital deterioration and revenue lumpiness limit conviction to a small speculative allocation (₹15–25K) until FY27 Q1 results validate sustainability.</div>
+    <div class="vc-b">Here is the complete picture:<br><br>
+    <strong>Why Ecoreco is genuinely exciting — the bull case in full:</strong><br>
+    • India's ONLY BSE-listed e-waste management company — monopoly listing premium is permanent<br>
+    • 20-year CPCB authorization — impossible to replicate; EPR framework makes this a captive demand business<br>
+    • 99% PAT CAGR over 5 years — doubling profit every year for 5 consecutive years<br>
+    • ROCE 30%, ROE 23.3% — exceptional capital efficiency<br>
+    • Near debt-free (D/E 0.05) — 4.3x capacity expansion funded via internal accruals<br>
+    • 31,200 MTPA capacity — enormous future revenue headroom vs current throughput<br>
+    • Li-ion battery recycling (6,000 MTPA) — perfectly positioned for India's EV boom<br>
+    • MEITY partnership for critical mineral recovery — lithium, cobalt from batteries<br>
+    • PM Modi mentioned Ecoreco in Mann Ki Baat — rare B2G brand endorsement<br>
+    • PEG ratio 0.47 — suggests undervaluation relative to growth<br>
+    • Q4 FY26 PAT +248% YoY — strong recovery after weak Q3<br>
+    • EPR enforcement only getting stricter — captive demand growing every year<br><br>
+    <strong>Why the position must be limited (₹15–25K max):</strong><br>
+    • Working capital days: 207 → 321 — 55% deterioration in one year is a major red flag<br>
+    • Revenue lumpiness: Q3 -40% YoY → Q4 +248% YoY — impossible to predict quarterly<br>
+    • Revenue base ₹48 Cr at ₹830 Cr mcap = 17x Price/Sales — not cheap<br>
+    • Warrants issue (₹12.2 Cr) suggests potential dilution pressure<br>
+    • Very low daily trading volume — illiquidity creates exit risk<br>
+    • Precious metal price dependency adds commodity risk hidden in financials<br><br>
+    <strong>The portfolio context — better conviction picks exist:</strong><br>
+    Like Emerald Finance, Ecoreco is a genuinely interesting micro-to-small cap with a real moat and real growth. But Garvit's portfolio still has severely underweighted high-conviction picks:<br>
+    • RPSG Ventures (7.5/10): ₹0 vs ₹35K recommended — completely absent<br>
+    • DEE Development (9.0/10): still ₹7–17K short of target<br>
+    • EFC (I) (8.5/10): still ₹16–26K short of target<br><br>
+    Fund those FIRST. Then if ₹15–25K remains for speculative micro-cap bets (after EFC I, RPSG Ventures, DEE Development are at target), Ecoreco deserves it more than most options — it's a cleaner story than RBM Infracon (single-client concentration) and cheaper than Valiant Communications (20x revenue).<br><br>
+    <strong>The single most important thing to watch:</strong><br>
+    FY27 Q1 results (August 2026). Does revenue sustain ₹15+ Cr (showing Q4 wasn't just year-end EPR compliance spike)? Does working capital improve from 321 days? These two data points determine whether to increase conviction from ₹20K to ₹50K+.</div>
+  </div>
+
+  <div class="sh">Allocation recommendation</div>
+  <table>
+    <tr><th>Action</th><th>Amount</th><th>Rationale</th></tr>
+    <tr><td><span class="badge bgrn">BUY small position ₹15,000–25,000</span></td><td>₹15,000–25,000</td><td>After funding RPSG Ventures + DEE Development + EFC I at target levels. Ecoreco is the best-quality micro-cap recycling bet available. India monopoly + 99% PAT CAGR + regulatory moat = genuinely compelling. Keep position small due to revenue lumpiness and WC concern.</td></tr>
+    <tr><td><span class="badge ba">Scale to ₹50,000 if Q1 FY27 confirms</span></td><td>+₹25,000 conditional</td><td>If FY27 Q1 shows: (a) revenue ₹15+ Cr, (b) working capital improving toward 250 days, (c) Li-ion battery first commercial revenues disclosed — increase to ₹50K. The conviction upgrade requires these validations.</td></tr>
+    <tr><td><span class="badge br">Exit if WC stays above 300 days in Q1 FY27</span></td><td>Exit ₹20K</td><td>If working capital stays above 300 days into Q1 FY27, the cash flow quality concern is structural and the company may need equity raises that dilute returns. Exit and redeploy.</td></tr>
+  </table>
+
+  <div class="sh">Six triggers to watch quarterly</div>
+  <table>
+    <tr><th>#</th><th>Trigger</th><th>Status</th><th>Impact</th></tr>
+    <tr><td>1</td><td>FY27 Q1 revenue (August 2026)</td><td class="a">Pending — most important near-term</td><td>🔥 ₹15+ Cr = revenue is sustainably higher. ₹8–10 Cr = Q4 was year-end spike only. Binary for conviction.</td></tr>
+    <tr><td>2</td><td>Working capital days (quarterly balance sheet)</td><td class="r">321 days — needs to fall below 250</td><td>🔴 Above 300 → exit or reduce. 🟢 Below 200 → major quality signal, scale up to ₹50K.</td></tr>
+    <tr><td>3</td><td>Li-ion battery first revenue disclosure</td><td class="a">6,000 MTPA facility live; orders building</td><td>🟢 Any quarterly disclosure of Li-ion revenue ₹5+ Cr = EV battery thesis confirmed → scale up.</td></tr>
+    <tr><td>4</td><td>EPR credit pricing</td><td class="g">Enforcement tightening = demand rising</td><td>🟢 Any government announcement on increased EPR penalties or expanded scope = Ecoreco's pricing power strengthens.</td></tr>
+    <tr><td>5</td><td>Data centre ITAD contract win</td><td class="a">India DC boom = massive opportunity</td><td>🟢 Any ITAD contract from a hyperscaler or large DC operator = new high-ASP revenue vertical confirmed.</td></tr>
+    <tr><td>6</td><td>Promoter buying vs selling</td><td class="g">73.4% — stable</td><td>🟢 Any open market buying by B K Soni = very strong signal. Warrants issue is already a mild positive (management investing at ₹408).</td></tr>
+  </table>
+
+  <div class="warn grn" style="margin-top:12px"><strong>One-line verdict:</strong> Eco Recycling (Ecoreco) is India's most unique listed recycling company — the ONLY BSE-listed e-waste management business, sitting at the intersection of EPR compliance mandate, Li-ion battery recycling (EV revolution), critical mineral recovery, and data centre ITAD. With a 99% 5-year PAT CAGR, 30% ROCE, 47% PAT margins, and near-zero debt, the business quality is exceptional. The working capital deterioration (207→321 days) and revenue lumpiness are genuine concerns that limit conviction to a small ₹15–25K speculative position. Fund RPSG Ventures, DEE Development, and EFC I at target levels first — then Ecoreco earns a small allocation as India's best-quality environmental compliance play.</div>
+</div>
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/4.4.1/chart.umd.js"></script>
+<script>
+function show(id,btn){
+  document.querySelectorAll('.tab').forEach(t=>t.classList.remove('active'));
+  document.querySelectorAll('.panel').forEach(p=>p.classList.remove('active'));
+  btn.classList.add('active');
+  document.getElementById(id).classList.add('active');
+}
+new Chart(document.getElementById('rc').getContext('2d'),{
+  type:'bar',
+  data:{
+    labels:['FY22E','FY23E','FY24E','FY25E','Q1FY26','Q2FY26','Q3FY26','Q4FY26','FY27E','FY28E'],
+    datasets:[
+      {label:'Revenue ₹ Cr',data:[16,24,32,38,13,14,5.9,19,75,130],backgroundColor:['#2E7D32','#2E7D32','#2E7D32','#2E7D32','#1D9E75','#1D9E75','#A32D2D','#1D9E75','#A5D6A7','#A5D6A7'],borderRadius:4,yAxisID:'y'},
+      {label:'PAT ₹ Cr',data:[5.5,9,13,16,7.5,8.5,2.05,7.14,33,55],type:'line',borderColor:'#1D9E75',backgroundColor:'transparent',pointBackgroundColor:'#1D9E75',tension:0.3,yAxisID:'y2'}
+    ]
+  },
+  options:{responsive:true,maintainAspectRatio:false,plugins:{legend:{display:false}},scales:{y:{ticks:{font:{size:10}}},y2:{position:'right',ticks:{font:{size:10}},grid:{drawOnChartArea:false}},x:{ticks:{font:{size:10}}}}}
+});
+</script>
+</body>
+</html>

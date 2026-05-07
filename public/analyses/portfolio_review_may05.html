@@ -1,0 +1,416 @@
+<!DOCTYPE html>
+<html><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<style>
+@import url('https://fonts.googleapis.com/css2?family=DM+Mono:wght@400;500&family=DM+Sans:wght@400;500;600;700&display=swap');
+*{box-sizing:border-box;margin:0;padding:0}
+body{font-family:'DM Sans',sans-serif;background:#0a0a0a;color:#e8e6e0;font-size:14px;padding:20px}
+h1{font-size:22px;font-weight:600;letter-spacing:-0.5px;color:#f0ece4;margin-bottom:3px}
+.sub{font-size:12px;color:#555;margin-bottom:18px;font-family:'DM Mono',monospace}
+.hero-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:10px;margin-bottom:18px}
+.hc{background:#111;border:1px solid #1a1a1a;border-radius:10px;padding:13px 15px}
+.hl{font-size:10px;color:#555;text-transform:uppercase;letter-spacing:.08em;margin-bottom:3px;font-family:'DM Mono',monospace}
+.hv{font-size:21px;font-weight:700;letter-spacing:-0.5px}
+.hs{font-size:10px;color:#555;margin-top:2px}
+.green{color:#4ade80}.red{color:#f87171}.amber{color:#fb923c}.blue{color:#60a5fa}.gold{color:#fbbf24}.teal{color:#2dd4bf}.white{color:#f0ece4}
+.tab-row{display:flex;gap:5px;flex-wrap:wrap;margin-bottom:14px}
+.tab{font-size:11px;padding:5px 13px;border-radius:16px;border:1px solid #222;background:transparent;cursor:pointer;color:#666;transition:all .15s}
+.tab:hover,.tab.active{background:#1a1a1a;color:#e8e6e0;border-color:#333}
+.panel{display:none}.panel.active{display:block}
+.sh{font-size:10px;font-weight:600;color:#555;text-transform:uppercase;letter-spacing:.1em;margin:18px 0 10px;display:flex;align-items:center;gap:8px;font-family:'DM Mono',monospace}
+.sh::after{content:'';flex:1;height:1px;background:#1a1a1a}
+.mono{font-family:'DM Mono',monospace}
+/* Holdings table */
+.ht{width:100%;border-collapse:collapse;font-size:12px;margin-bottom:18px}
+.ht th{font-size:9.5px;color:#555;text-transform:uppercase;letter-spacing:.08em;padding:5px 9px;border-bottom:1px solid #1a1a1a;text-align:left;font-family:'DM Mono',monospace}
+.ht td{padding:8px 9px;border-bottom:1px solid #111;vertical-align:middle}
+.ht tr:hover td{background:#0d0d0d}
+.sn{font-weight:500;font-size:12.5px;color:#f0ece4}
+.sm{font-size:10px;color:#555;margin-top:1px;font-family:'DM Mono',monospace}
+.pp{color:#4ade80;font-weight:500}.pn{color:#f87171;font-weight:500}.pa{color:#fb923c;font-weight:500}
+.cb{height:5px;background:#1a1a1a;border-radius:3px;overflow:hidden;width:55px}
+.cf{height:100%;border-radius:3px}
+.ab{font-size:9px;padding:2px 7px;border-radius:7px;font-weight:500;white-space:nowrap}
+.a-hold{background:#0d2e1a;color:#4ade80}.a-trim{background:#2e1d0d;color:#fb923c}.a-exit{background:#2e0d0d;color:#f87171}.a-add{background:#0d1a2e;color:#60a5fa}.a-watch{background:#1e1a0d;color:#fbbf24}.a-new{background:#1a0d2e;color:#c084fc}
+.tb{font-size:8.5px;padding:1px 6px;border-radius:5px;font-family:'DM Mono',monospace}
+.t-core{background:#0a1a0a;color:#4ade80;border:1px solid #0d2e1a}
+.t-spec{background:#1a0d0a;color:#fb923c;border:1px solid #2e1d0d}
+.t-exit{background:#1a0a0a;color:#f87171;border:1px solid #2e0d0d}
+.t-watch{background:#1a150a;color:#fbbf24;border:1px solid #2e240d}
+.t-new{background:#0d0a1a;color:#c084fc;border:1px solid #1d1a2e}
+.row-core{background:#0a1a0a}.row-exit td{opacity:0.5}
+.row-upgraded{background:#0a1a12}
+/* info cards */
+.ic-grid{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-bottom:14px}
+.ic{background:#111;border:1px solid #1a1a1a;border-radius:10px;padding:12px 14px}
+.ic.pos{border-left:2px solid #4ade80}.ic.neg{border-left:2px solid #f87171}.ic.neu{border-left:2px solid #fb923c}.ic.inf{border-left:2px solid #60a5fa}.ic.new{border-left:2px solid #c084fc}
+.ic h3{font-size:11px;font-weight:600;margin-bottom:5px}
+.ic p{font-size:11px;color:#888;line-height:1.55}
+.pill{display:inline-flex;align-items:center;font-size:10px;padding:2px 7px;border-radius:8px;margin-bottom:3px}
+.pg{background:#0d2e1a;color:#4ade80}.pr{background:#2e0d0d;color:#f87171}.pa2{background:#2e1d0d;color:#fb923c}.pb{background:#0d1a2e;color:#60a5fa}.pp2{background:#1a0d2e;color:#c084fc}
+/* action list */
+.al{background:#111;border:1px solid #1a1a1a;border-radius:10px;padding:13px;margin-bottom:14px}
+.ai{display:flex;gap:9px;align-items:flex-start;padding:8px 0;border-bottom:1px solid #141414;font-size:12px}
+.ai:last-child{border-bottom:none}
+.ai-ico{width:21px;height:21px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:10px;font-weight:600;flex-shrink:0;margin-top:1px}
+.ie{background:#2e0d0d;color:#f87171}.ia{background:#0d1a2e;color:#60a5fa}.it{background:#2e1d0d;color:#fb923c}.ih{background:#0d2e1a;color:#4ade80}
+.at strong{color:#e8e6e0;font-weight:500}
+.at .meta{color:#555;font-size:10.5px;margin-top:2px;font-family:'DM Mono',monospace}
+.pri{font-size:9px;padding:2px 7px;border-radius:6px;margin-left:5px}
+.p1{background:#2e0d0d;color:#f87171}.p2{background:#2e1d0d;color:#fb923c}.p3{background:#0d1a2e;color:#60a5fa}
+/* bar chart  */
+.wf{background:#111;border:1px solid #1a1a1a;border-radius:10px;padding:13px;margin-bottom:14px}
+.wr{display:flex;align-items:center;gap:9px;padding:5px 0;border-bottom:1px solid #141414}
+.wr:last-child{border-bottom:none}
+.wl{font-size:10.5px;color:#888;width:210px;flex-shrink:0}
+.wt{flex:1;background:#1a1a1a;border-radius:4px;height:13px;overflow:hidden}
+.wb{height:100%;border-radius:4px;display:flex;align-items:center;padding-left:5px;font-size:8.5px;font-weight:600;color:rgba(255,255,255,.7)}
+.wv{font-size:10.5px;font-weight:500;width:80px;text-align:right;font-family:'DM Mono',monospace}
+/* path cards */
+.path-grid{display:grid;grid-template-columns:1fr 1fr 1fr;gap:10px;margin-bottom:14px}
+.pc{background:#111;border:1px solid #1a1a1a;border-radius:10px;padding:12px 14px}
+.pc.bull{border-top:2px solid #4ade80}.pc.base{border-top:2px solid #60a5fa}.pc.bear{border-top:2px solid #f87171}
+.pt{font-size:11px;font-weight:600;margin-bottom:7px}
+.pv{font-size:20px;font-weight:700;margin-bottom:3px}
+.ps{font-size:10px;color:#555;line-height:1.5}
+/* Q4 results box */
+.q4box{background:#0a1a0a;border:1px solid #1a2e1a;border-radius:10px;padding:13px 15px;margin-bottom:12px}
+.q4h{font-size:12.5px;font-weight:600;color:#4ade80;margin-bottom:6px}
+.q4b{font-size:11.5px;color:#aaa;line-height:1.65}
+/* oriana special */
+.oriana-box{background:#0d1a12;border:2px solid #1D9E75;border-radius:10px;padding:13px;margin-bottom:12px}
+.oh{font-size:13px;font-weight:600;color:#1D9E75;margin-bottom:7px}
+.ob{font-size:12px;color:#c8e6c9;line-height:1.7}
+/* score */
+.score-row{display:flex;gap:10px;margin:10px 0}
+.sbox{background:#111;border:1px solid #1a1a1a;border-radius:10px;padding:13px;text-align:center;flex:1}
+.snum{font-size:34px;font-weight:700;margin-bottom:2px}
+.slbl{font-size:10px;color:#555;font-family:'DM Mono',monospace}
+/* sector grid */
+.sec-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:10px}
+.sec-card{background:#111;border:1px solid #1a1a1a;border-radius:10px;padding:12px 14px}
+.sc-nm{font-size:11px;font-weight:600;margin-bottom:5px}
+.sc-v{font-size:19px;font-weight:700;margin-bottom:2px}
+.sc-s{font-size:10px;color:#555;line-height:1.4}
+/* footer */
+.footer{border-top:1px solid #1a1a1a;margin-top:18px;padding-top:12px;font-size:10px;color:#333;font-family:'DM Mono',monospace}
+/* missing stocks */
+.miss-box{background:#2e1d0d;border:1px solid #3e2810;border-radius:10px;padding:12px 14px;margin-bottom:12px}
+.miss-h{font-size:12px;font-weight:600;color:#fb923c;margin-bottom:5px}
+.miss-b{font-size:11px;color:#aaa;line-height:1.6}
+</style>
+</head>
+<body>
+<h1>Portfolio Review — May 5, 2026</h1>
+<div class="sub">India equity · 22 holdings · ₹19,49,598 current · ₹18,67,217 invested · +₹82,381 (+4.41%) · Q4 FY26 results season · Operation Sindoor market impact absorbed</div>
+
+<div class="hero-grid">
+  <div class="hc"><div class="hl">Total Invested</div><div class="hv white">₹18.67L</div><div class="hs">22 India stocks</div></div>
+  <div class="hc"><div class="hl">Current Value</div><div class="hv green">₹19.50L</div><div class="hs">Market value today</div></div>
+  <div class="hc"><div class="hl">Net P&amp;L</div><div class="hv green">+₹82,381</div><div class="hs">+4.41% overall</div></div>
+  <div class="hc"><div class="hl">Goal: 3–4x</div><div class="hv gold">₹55–75L</div><div class="hs">Target in 3 years</div></div>
+</div>
+
+<div class="tab-row">
+  <button class="tab active" onclick="showTab('q4',this)">🔥 Q4 results update</button>
+  <button class="tab" onclick="showTab('changes',this)">What changed ✅</button>
+  <button class="tab" onclick="showTab('holdings',this)">All 22 holdings</button>
+  <button class="tab" onclick="showTab('oriana',this)">🌿 Oriana deep-dive</button>
+  <button class="tab" onclick="showTab('actions',this)">Priority actions</button>
+  <button class="tab" onclick="showTab('conviction',this)">Conviction map</button>
+  <button class="tab" onclick="showTab('path',this)">3x path</button>
+  <button class="tab" onclick="showTab('sector',this)">Sector balance</button>
+</div>
+
+<!-- Q4 RESULTS UPDATE -->
+<div id="q4" class="panel active">
+  <div class="sh">Q4 FY26 results — what just got confirmed this week</div>
+
+  <div class="q4box">
+    <div class="q4h">🏆 BONDADA ENGINEERING — FY26 THESIS CONFIRMED IN FULL. BEST RESULT IN PORTFOLIO.</div>
+    <div class="q4b">
+    <strong>FY26 Full Year:</strong> Revenue ₹2,843 Cr (+81% YoY) · PAT ₹211 Cr (+86.5%) · EBITDA ₹327 Cr (+91.3%) · EBITDA margin 11.5% · EPS ₹18.25<br>
+    <strong>Q4 FY26:</strong> Revenue ₹914 Cr (+28% QoQ, +28% YoY) · PAT ₹63 Cr · Cash flow positive (+₹125 Cr from -₹141 Cr — turned positive!)<br>
+    <strong>Order book as of March 31, 2026: ₹7,150 Cr</strong> (vs ₹7,385 Cr in Feb — slight reduction as existing orders executed, new orders arriving)<br>
+    <strong>FY27 Guidance (management on April 28 call): "60–70% revenue growth over FY26"</strong> = ₹4,550–4,830 Cr FY27 revenue! At 7.5% PAT margin = ₹341–362 Cr FY27 PAT<br>
+    <strong>April 29 fresh order: ₹125.30 Cr</strong> from Adani Green + Adani Ports + Ambuja Cements (75 MW Khavda solar, 3-month execution)<br>
+    <strong>Vision 2030 announced: 25 GW capacity + USD 1 Billion revenue + Mainboard migration confirmed<br></strong>
+    📊 At current mcap ₹3,828 Cr: FY26 PAT ₹211 Cr = 18.1x PE. FY27 PAT ₹350 Cr = 10.9x forward PE. This is the single most compelling result in the portfolio. Garvit's average cost ₹325 vs market ₹328 = near perfect entry on the largest position.</div>
+  </div>
+
+  <div class="q4box" style="background:#0a0d1a;border-color:#1a2a3e">
+    <div class="q4h" style="color:#60a5fa">📦 BONDADA — NEW ₹7,147 Cr ORDER BOOK BREAKDOWN (March 31, 2026)</div>
+    <div class="q4b" style="color:#90caf9">Solar EPC ~62% (≈₹4,431 Cr) · Telecom ~20% (≈₹1,429 Cr) · Railways ~11% (≈₹786 Cr) · Products ~7% (≈₹500 Cr) · Plus L1 orders of ₹26,000+ Cr awaiting LOA · Fresh orders still flowing: ₹125 Cr Khavda (April 29) · BESS 850 MWh being executed</div>
+  </div>
+
+  <div style="display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-bottom:14px">
+    <div class="ic pos">
+      <span class="pill pg">✅ CONFIRMED</span>
+      <h3>Oriana Power — GAPA Signed March 30, 2026</h3>
+      <p>₹3,135 Cr green ammonia contract with SECI. 60,000 MTPA supply at ₹52.25/kg over 10 years. Plus H1 FY26: Revenue ₹781 Cr (+117%), PAT ₹122 Cr (+165%). Full year FY26 PAT expected ₹350–400 Cr. Market cap only ₹4,294 Cr = 10–12x PE. <strong>Garvit's optimism is justified.</strong></p>
+    </div>
+    <div class="ic inf">
+      <span class="pill pb">📅 UPCOMING May 11</span>
+      <h3>Anant Raj — FY26 Results Critical Catalyst</h3>
+      <p>Data centre thesis: 28 MW live, 117 MW target FY28. May 11 board meeting for full FY26 results. DC revenue should have grown meaningfully in H2 FY26. Current position: +2.6% from ₹1,25,298 invested. Hold firmly through results.</p>
+    </div>
+    <div class="ic pos">
+      <span class="pill pg">📊 RESULTS IN</span>
+      <h3>Enviro Infra — Q4 FY26 Audit Watch</h3>
+      <p>₹4,600+ Cr order book (NTPC BESS ₹1,070 Cr + Maharashtra ₹972 Cr + Bihar ₹411 Cr). Q4 FY26 annual audit report is the binary gate — clean = add ₹20–30K. Any qualification = exit. Results expected May 2026.</p>
+    </div>
+    <div class="ic neu">
+      <span class="pill pa2">⚠️ Q4 CONTEXT</span>
+      <h3>Operation Sindoor — India-Pakistan Military Action</h3>
+      <p>India conducted precision strikes on terrorist infrastructure in Pakistan (early May 2026). Markets initially volatile, then recovered. Defence stocks benefitted: TARIL (defence transformers), DEE Development (industrial/defence piping). Long-term: defence capex acceleration positive for multiple holdings.</p>
+    </div>
+  </div>
+
+  <div class="sh">Portfolio return change: April 29 vs May 5</div>
+  <div class="wf">
+    <div class="wr"><div class="wl" style="color:#4ade80;font-weight:600">April 29 overall return</div><div class="wt"><div class="wb" style="width:72%;background:#4ade80">+8.55%</div></div><div class="wv green">+₹1,54,312</div></div>
+    <div class="wr"><div class="wl">New capital deployed (Websol+EFC+Zaggle+EMFL)</div><div class="wt"><div class="wb" style="width:40%;background:#60a5fa">~₹1.97L deployed</div></div><div class="wv blue">+₹1,97,744</div></div>
+    <div class="wr"><div class="wl">Capital freed (Taylormade + Waaree exits)</div><div class="wt"><div class="wb" style="width:28%;background:#4ade80">~₹78K freed</div></div><div class="wv green">+₹78,823</div></div>
+    <div class="wr"><div class="wl">Market moved down (geopolitical + correction)</div><div class="wt"><div class="wb" style="width:35%;background:#f87171">EFC -4.3% | Bondada -0.5% correction</div></div><div class="wv red">Dilution effect</div></div>
+    <div class="wr" style="background:#0a1a0a"><div class="wl" style="color:#4ade80;font-weight:600">May 5 overall return</div><div class="wt"><div class="wb" style="width:45%;background:#4ade80">+4.41% (more capital deployed dilutes %)</div></div><div class="wv green" style="font-size:12px">+₹82,381</div></div>
+    <div class="wr"><div class="wl" style="color:#555">Note: lower % is OK — absolute ₹ matters</div><div class="wt"><div class="wb" style="width:30%;background:#555">More capital in high-conviction picks</div></div><div class="wv" style="color:#555">Positive</div></div>
+  </div>
+</div>
+
+<!-- CHANGES TAB -->
+<div id="changes" class="panel">
+  <div class="sh">Portfolio changes since April 29 — the moves Garvit made</div>
+
+  <div class="ic-grid">
+    <div class="ic pos"><span class="pill pg">✅ EXCELLENT ADD</span><h3>Websol Energy: 800 → 1,300 shares (+500)</h3><p>Our 9.0/10 pick expanded from ₹90,064 to ₹1,48,785 invested. Added 500 shares at ~₹117 avg. Now +5.8% on ₹1,57,430 current value. ALMM moat intact. Solar cell manufacturing is the correct mega-theme to overweight. Correctly executed.</p></div>
+    <div class="ic pos"><span class="pill pg">✅ MAJOR ADD</span><h3>EFC (I): 320 → 675 shares (+355)</h3><p>Our 8.5/10 pick properly sized now. Added 355 shares at ~₹187 avg. Position: ₹1,31,625 invested, ₹1,26,009 current = -4.3%. The dip is noise — EFC FY26 revenue ₹674 Cr, PAT ₹141 Cr confirmed. At 14x PE + 52% revenue growth, this is the right conviction to double down.</p></div>
+    <div class="ic pos"><span class="pill pg">✅ ADDED</span><h3>Zaggle: 350 → 450 shares (+100)</h3><p>Good moderate add. Entry at ₹229 avg for additional 100 shares. B2B fintech platform growing FY27 40%+. Now ₹1,03,316 invested, ₹1,08,900 current = +5.4%.</p></div>
+    <div class="ic pos"><span class="pill pg">✅ NEW ENTRY</span><h3>Emerald Finance: New 750 shares</h3><p>Our recommended micro-cap NBFC speculative position. 750 shares at ₹63.69 avg = ₹47,768 invested. Currently ₹48,930 (+2.4%). 11 consecutive quarters of revenue growth. Q3 FY26 PAT +61% YoY. Board meeting May 6 for FY26 results — watch carefully.</p></div>
+    <div class="ic pos"><span class="pill pg">✅ EXITED</span><h3>Taylormade Renew — Correctly Removed</h3><p>Flagged for exit for 3 sessions. Finally exited. Recovered ~₹25,688 capital. This was the correct move — the stock had no thesis and was a -2.1% drag.</p></div>
+    <div class="ic pos"><span class="pill pg">✅ EXITED</span><h3>Waaree Renewables — Consolidated into Websol</h3><p>We recommended consolidating into Websol. Executed correctly. Recovered ₹53,135. Capital redeployed into Websol (+500 shares). The Websol-to-Waaree swap was exactly right — manufacturing moat vs pure IPP play.</p></div>
+    <div class="ic neg"><span class="pill pr">❌ STILL PENDING</span><h3>Delton Cables (61 shares, -10.5%) + RBZ Jewellers (200, -3.4%)</h3><p>Both flagged for exit in every session since April. Still in portfolio. Combined loss: ₹4,071. Combined recoverable: ₹54,110. These must be exited this week — no justification for holding either.</p></div>
+    <div class="ic neg"><span class="pill pr">❌ STILL MISSING</span><h3>RPSG Ventures — 7.5/10 conviction, ₹0 allocation</h3><p>Recommended for purchase at ₹35,000 in every session since April. FSL stake alone worth 2.7x current mcap. IPL franchise ₹10,000+ Cr. Still not in portfolio. Urgent to add from Delton+RBZ+Nurture trim proceeds.</p></div>
+  </div>
+
+  <div class="sh">Portfolio quality score trajectory</div>
+  <div class="wf">
+    <div class="wr"><div class="wl">Session 4 quality score</div><div class="wt"><div class="wb" style="width:52%;background:#fb923c">5.2/10</div></div><div class="wv amber">5.2/10</div></div>
+    <div class="wr"><div class="wl">April 29 quality score</div><div class="wt"><div class="wb" style="width:72%;background:#60a5fa">7.2/10</div></div><div class="wv blue">7.2/10</div></div>
+    <div class="wr"><div class="wl">May 5 quality score</div><div class="wt"><div class="wb" style="width:78%;background:#4ade80">7.8/10 (EFC+Websol+EMFL adds)</div></div><div class="wv green">7.8/10</div></div>
+    <div class="wr"><div class="wl">Target after remaining actions</div><div class="wt"><div class="wb" style="width:90%;background:#059669">Target 9.0/10</div></div><div class="wv green">9.0/10 target</div></div>
+  </div>
+</div>
+
+<!-- HOLDINGS TAB -->
+<div id="holdings" class="panel">
+  <div class="sh">Complete 22 holdings — updated May 5, 2026</div>
+  <table class="ht">
+    <tr><th>Stock</th><th>Shares</th><th>Invested</th><th>Current</th><th>P&L</th><th>%</th><th>Conv.</th><th>Type</th><th>Action</th></tr>
+
+    <tr class="row-core"><td><div class="sn">Bondada Engineering ⭐ Q4 BEAT</div><div class="sm">FY26 Rev ₹2,843 Cr (+81%) · PAT ₹211 Cr (+86%) · FY27 guide 60–70% growth</div></td><td class="mono">600</td><td class="mono">₹1,95,228</td><td class="mono green">₹1,97,280</td><td class="pp">+₹2,052</td><td class="pp">+1.1%</td><td><div style="display:flex;align-items:center;gap:4px"><div class="cb"><div class="cf" style="width:91%;background:#4ade80"></div></div><span style="font-size:9.5px;color:#4ade80">9.1</span></div></td><td><span class="tb t-core">CORE</span></td><td><span class="ab a-hold">HOLD ALL — FY27 guide ₹4,500+ Cr</span></td></tr>
+
+    <tr><td><div class="sn">RBM Infracon</div><div class="sm">ONGC 15yr contract + semiconductor LOI Jul '26</div></td><td class="mono">400</td><td class="mono">₹1,60,780</td><td class="mono green">₹1,59,600</td><td class="pn">-₹1,180</td><td class="pn">-0.7%</td><td><div style="display:flex;align-items:center;gap:4px"><div class="cb"><div class="cf" style="width:55%;background:#fb923c"></div></div><span style="font-size:9.5px;color:#fb923c">5.5</span></div></td><td><span class="tb t-spec">SPEC</span></td><td><span class="ab a-hold">HOLD — LOI outcome Jul '26</span></td></tr>
+
+    <tr class="row-core"><td><div class="sn">Websol Energy ⭐ CORRECTLY EXPANDED</div><div class="sm">Solar cell mfg · ALMM moat · 44% EBITDA · was 800→1,300</div></td><td class="mono">1,300</td><td class="mono">₹1,48,785</td><td class="mono green">₹1,57,430</td><td class="pp">+₹8,645</td><td class="pp">+5.8%</td><td><div style="display:flex;align-items:center;gap:4px"><div class="cb"><div class="cf" style="width:90%;background:#4ade80"></div></div><span style="font-size:9.5px;color:#4ade80">9.0</span></div></td><td><span class="tb t-core">CORE</span></td><td><span class="ab a-hold">HOLD — manufacturing moat intact</span></td></tr>
+
+    <tr class="row-upgraded"><td><div class="sn">Oriana Power 🌿 UPGRADED — GAPA SIGNED</div><div class="sm">₹3,135 Cr 10yr green ammonia deal · H1 FY26 PAT +165% · SME lot: hold or full exit</div></td><td class="mono">75</td><td class="mono">₹1,24,050</td><td class="mono green">₹1,53,000</td><td class="pp">+₹28,950</td><td class="pp">+23.3%</td><td><div style="display:flex;align-items:center;gap:4px"><div class="cb"><div class="cf" style="width:67%;background:#4ade80"></div></div><span style="font-size:9.5px;color:#4ade80">6.5↑</span></div></td><td><span class="tb t-spec">SPEC</span></td><td><span class="ab a-hold">HOLD (SME lot) — GAPA transforms thesis</span></td></tr>
+
+    <tr><td><div class="sn">Anant Raj</div><div class="sm">Data centres (28 MW live→117 MW FY28) · May 11 results</div></td><td class="mono">246</td><td class="mono">₹1,25,298</td><td class="mono green">₹1,28,498</td><td class="pp">+₹3,200</td><td class="pp">+2.6%</td><td><div style="display:flex;align-items:center;gap:4px"><div class="cb"><div class="cf" style="width:60%;background:#fb923c"></div></div><span style="font-size:9.5px;color:#fb923c">6.0</span></div></td><td><span class="tb t-spec">SPEC</span></td><td><span class="ab a-hold">HOLD — May 11 DC results catalyst</span></td></tr>
+
+    <tr class="row-core"><td><div class="sn">EFC (I) ⭐ PROPERLY SIZED NOW</div><div class="sm">Industrial workspace · FY26 rev ₹674 Cr PAT ₹141 Cr · 675 shares</div></td><td class="mono">675</td><td class="mono">₹1,31,625</td><td class="mono amber">₹1,26,009</td><td class="pn">-₹5,616</td><td class="pn">-4.3%</td><td><div style="display:flex;align-items:center;gap:4px"><div class="cb"><div class="cf" style="width:85%;background:#4ade80"></div></div><span style="font-size:9.5px;color:#4ade80">8.5</span></div></td><td><span class="tb t-core">CORE</span></td><td><span class="ab a-hold">HOLD — 14x PE on 52% growth is cheap</span></td></tr>
+
+    <tr><td><div class="sn">Zaggle Prepaid Ocean</div><div class="sm">B2B2C SaaS fintech · added 100 shares · entry ₹229 avg</div></td><td class="mono">450</td><td class="mono">₹1,03,316</td><td class="mono green">₹1,08,900</td><td class="pp">+₹5,584</td><td class="pp">+5.4%</td><td><div style="display:flex;align-items:center;gap:4px"><div class="cb"><div class="cf" style="width:60%;background:#fb923c"></div></div><span style="font-size:9.5px;color:#fb923c">6.0</span></div></td><td><span class="tb t-spec">SPEC</span></td><td><span class="ab a-hold">HOLD — good entry</span></td></tr>
+
+    <tr class="row-core"><td><div class="sn">Borana Weaves ⭐</div><div class="sm">Textile compounder · 20% EBITDA · 45% ROE · 17x PE</div></td><td class="mono">315</td><td class="mono">₹1,06,612</td><td class="mono amber">₹1,06,565</td><td class="pn">-₹47</td><td class="pn">-0.04%</td><td><div style="display:flex;align-items:center;gap:4px"><div class="cb"><div class="cf" style="width:80%;background:#4ade80"></div></div><span style="font-size:9.5px;color:#4ade80">8.0</span></div></td><td><span class="tb t-core">CORE</span></td><td><span class="ab a-hold">HOLD — PE re-rating path intact</span></td></tr>
+
+    <tr><td><div class="sn">Sky Gold &amp; Diamonds</div><div class="sm">Jewellery mfg · export growth · +20.6% gain</div></td><td class="mono">200</td><td class="mono">₹75,660</td><td class="mono green">₹91,250</td><td class="pp">+₹15,590</td><td class="pp">+20.6%</td><td><div style="display:flex;align-items:center;gap:4px"><div class="cb"><div class="cf" style="width:65%;background:#4ade80"></div></div><span style="font-size:9.5px;color:#4ade80">6.5</span></div></td><td><span class="tb t-spec">SPEC</span></td><td><span class="ab a-hold">HOLD — jewellery export thesis</span></td></tr>
+
+    <tr><td><div class="sn">Nurture Well Industries ⚠</div><div class="sm">Nutrition/FMCG — oversized vs conviction · -8% loss</div></td><td class="mono">2,600</td><td class="mono">₹93,652</td><td class="mono amber">₹86,190</td><td class="pn">-₹7,462</td><td class="pn">-8.0%</td><td><div style="display:flex;align-items:center;gap:4px"><div class="cb"><div class="cf" style="width:50%;background:#fb923c"></div></div><span style="font-size:9.5px;color:#fb923c">5.0</span></div></td><td><span class="tb t-spec">SPEC</span></td><td><span class="ab a-trim">TRIM to 1,500 shares — redeploy</span></td></tr>
+
+    <tr><td><div class="sn">Enviro Infra Engineers</div><div class="sm">Water EPC + BESS (NTPC ₹1,070 Cr) · Q4 audit is gate</div></td><td class="mono">400</td><td class="mono">₹84,372</td><td class="mono green">₹84,448</td><td class="pp">+₹76</td><td class="pp">+0.1%</td><td><div style="display:flex;align-items:center;gap:4px"><div class="cb"><div class="cf" style="width:65%;background:#4ade80"></div></div><span style="font-size:9.5px;color:#4ade80">6.5</span></div></td><td><span class="tb t-spec">SPEC</span></td><td><span class="ab a-hold">HOLD — Q4 audit binary decision gate</span></td></tr>
+
+    <tr><td><div class="sn">KPI Green Energy ⚠</div><div class="sm">Solar IPP · overlaps Websol thesis · +15.1% gain</div></td><td class="mono">150</td><td class="mono">₹59,400</td><td class="mono green">₹68,393</td><td class="pp">+₹8,993</td><td class="pp">+15.1%</td><td><div style="display:flex;align-items:center;gap:4px"><div class="cb"><div class="cf" style="width:45%;background:#fb923c"></div></div><span style="font-size:9.5px;color:#fb923c">4.5</span></div></td><td><span class="tb t-watch">WATCH</span></td><td><span class="ab a-trim">Lock +15% profit → redeploy to RPSG</span></td></tr>
+
+    <tr><td><div class="sn">EPACK Durable</div><div class="sm">Electronics mfg · white-label ACs · +9.6%</div></td><td class="mono">250</td><td class="mono">₹62,000</td><td class="mono green">₹67,938</td><td class="pp">+₹5,938</td><td class="pp">+9.6%</td><td><div style="display:flex;align-items:center;gap:4px"><div class="cb"><div class="cf" style="width:55%;background:#fb923c"></div></div><span style="font-size:9.5px;color:#fb923c">5.5</span></div></td><td><span class="tb t-watch">WATCH</span></td><td><span class="ab a-watch">WATCH Q4 FY26 — reassess</span></td></tr>
+
+    <tr><td><div class="sn">TARIL (Transformers India)</div><div class="sm">Transformer mfg · HVDC pioneer · 15x PE · +8%</div></td><td class="mono">200</td><td class="mono">₹60,600</td><td class="mono green">₹65,440</td><td class="pp">+₹4,840</td><td class="pp">+8.0%</td><td><div style="display:flex;align-items:center;gap:4px"><div class="cb"><div class="cf" style="width:55%;background:#fb923c"></div></div><span style="font-size:9.5px;color:#fb923c">5.5</span></div></td><td><span class="tb t-spec">SPEC</span></td><td><span class="ab a-hold">HOLD — Operation Sindoor boosts defence</span></td></tr>
+
+    <tr><td><div class="sn">Genus Power Infra</div><div class="sm">Smart meters · RDSS scheme beneficiary · +7.9%</div></td><td class="mono">200</td><td class="mono">₹58,652</td><td class="mono green">₹63,300</td><td class="pp">+₹4,648</td><td class="pp">+7.9%</td><td><div style="display:flex;align-items:center;gap:4px"><div class="cb"><div class="cf" style="width:55%;background:#fb923c"></div></div><span style="font-size:9.5px;color:#fb923c">5.5</span></div></td><td><span class="tb t-spec">SPEC</span></td><td><span class="ab a-hold">HOLD — smart meter thesis</span></td></tr>
+
+    <tr class="row-core"><td><div class="sn">DEE Development Eng. ⭐</div><div class="sm">Oil/gas piping + nuclear · 9.0/10 · still slightly under target</div></td><td class="mono">140</td><td class="mono">₹57,182</td><td class="mono green">₹62,902</td><td class="pp">+₹5,720</td><td class="pp">+10.0%</td><td><div style="display:flex;align-items:center;gap:4px"><div class="cb"><div class="cf" style="width:90%;background:#4ade80"></div></div><span style="font-size:9.5px;color:#4ade80">9.0</span></div></td><td><span class="tb t-core">CORE</span></td><td><span class="ab a-hold">HOLD — approaching ₹65K target</span></td></tr>
+
+    <tr class="row-core"><td><div class="sn">Vintage Coffee ⭐</div><div class="sm">Café chain compounder · 8.5/10 · correctly sized</div></td><td class="mono">400</td><td class="mono">₹53,056</td><td class="mono green">₹54,160</td><td class="pp">+₹1,104</td><td class="pp">+2.1%</td><td><div style="display:flex;align-items:center;gap:4px"><div class="cb"><div class="cf" style="width:85%;background:#4ade80"></div></div><span style="font-size:9.5px;color:#4ade80">8.5</span></div></td><td><span class="tb t-core">CORE</span></td><td><span class="ab a-hold">HOLD — India premium F&amp;B boom</span></td></tr>
+
+    <tr><td><div class="sn">Emerald Finance 🆕 NEW</div><div class="sm">NBFC micro-cap · 11 qtrs revenue growth · May 6 FY26 results</div></td><td class="mono">750</td><td class="mono">₹47,768</td><td class="mono green">₹48,930</td><td class="pp">+₹1,162</td><td class="pp">+2.4%</td><td><div style="display:flex;align-items:center;gap:4px"><div class="cb"><div class="cf" style="width:60%;background:#c084fc"></div></div><span style="font-size:9.5px;color:#c084fc">6.0</span></div></td><td><span class="tb t-new">NEW</span></td><td><span class="ab a-hold">HOLD — watch May 6 FY26 results</span></td></tr>
+
+    <tr><td><div class="sn">Northern Spirits</div><div class="sm">Alcobev · small position OK · +11%</div></td><td class="mono">300</td><td class="mono">₹36,300</td><td class="mono green">₹40,305</td><td class="pp">+₹4,005</td><td class="pp">+11.0%</td><td><div style="display:flex;align-items:center;gap:4px"><div class="cb"><div class="cf" style="width:50%;background:#fb923c"></div></div><span style="font-size:9.5px;color:#fb923c">5.0</span></div></td><td><span class="tb t-spec">SPEC</span></td><td><span class="ab a-hold">HOLD — small, fine</span></td></tr>
+
+    <tr class="row-exit"><td><div class="sn">RBZ Jewellers 🔴</div><div class="sm">Sky Gold is better play — exit duplicate jewellery</div></td><td class="mono">200</td><td class="mono">₹28,678</td><td class="mono red">₹27,700</td><td class="pn">-₹978</td><td class="pn">-3.4%</td><td><div style="display:flex;align-items:center;gap:4px"><div class="cb"><div class="cf" style="width:30%;background:#f87171"></div></div><span style="font-size:9.5px;color:#f87171">3.0</span></div></td><td><span class="tb t-exit">EXIT</span></td><td><span class="ab a-exit">EXIT NOW — 4 sessions pending</span></td></tr>
+
+    <tr class="row-exit"><td><div class="sn">Delton Cables 🔴</div><div class="sm">No thesis · -10.5% · flagged every session</div></td><td class="mono">61</td><td class="mono">₹29,503</td><td class="mono red">₹26,410</td><td class="pn">-₹3,093</td><td class="pn">-10.5%</td><td><div style="display:flex;align-items:center;gap:4px"><div class="cb"><div class="cf" style="width:10%;background:#f87171"></div></div><span style="font-size:9.5px;color:#f87171">1.0</span></div></td><td><span class="tb t-exit">EXIT</span></td><td><span class="ab a-exit">EXIT NOW — bleeding every week</span></td></tr>
+
+    <tr><td><div class="sn">Capacite Infra</div><div class="sm">Building EPC · Q4 audit gate · +1.0%</div></td><td class="mono">100</td><td class="mono">₹24,700</td><td class="mono green">₹24,950</td><td class="pp">+₹250</td><td class="pp">+1.0%</td><td><div style="display:flex;align-items:center;gap:4px"><div class="cb"><div class="cf" style="width:40%;background:#fb923c"></div></div><span style="font-size:9.5px;color:#fb923c">4.0</span></div></td><td><span class="tb t-watch">WATCH</span></td><td><span class="ab a-watch">HOLD — Q4 audit result = add or exit</span></td></tr>
+  </table>
+</div>
+
+<!-- ORIANA DEEP DIVE -->
+<div id="oriana" class="panel">
+  <div class="sh">Oriana Power — deep re-analysis (the conviction upgrade case)</div>
+
+  <div class="oriana-box">
+    <div class="oh">🌿 Re-assessment: Oriana Power is now a 6.5/10 conviction HOLD — Garvit's optimism is DATA-BACKED</div>
+    <div class="ob">
+    Previous assessment (April sessions): 4.5/10 conviction. Concern: rising debtor days (107→146), -overweight vs conviction. Action: "TRIM to 25 shares."<br><br>
+    <strong>What changed completely:</strong><br>
+    1. <strong>GAPA signed with SECI (March 30, 2026):</strong> ₹3,135 Cr over 10 YEARS. 60,000 MTPA green ammonia at ₹52.25/kg. ₹313.5 Cr ANNUAL revenue starting. This is the single most transformative event — a 10-year government-backed revenue stream is not something to dismiss. SECI (Solar Energy Corporation of India) is a AAA counterparty.<br>
+    2. <strong>H1 FY26 Financial Performance:</strong> Revenue ₹781 Cr (+117% YoY) · PAT ₹122 Cr (+165% YoY) · EBITDA ₹182 Cr · PAT margin 15.57% — This is extraordinary growth. NOT the 4.5/10 conviction stock we had in April.<br>
+    3. <strong>Full Year FY26 PAT Expected: ₹350–400 Cr</strong> — Market cap ₹4,294 Cr ÷ PAT ₹375 Cr = 11.5x PE on a company growing 100%+ with a 10-year government revenue contract. This is cheap.<br>
+    4. <strong>Additional developments:</strong> Actis JV (1 GW, ₹4,000+ Cr revenue), Asset recycling (₹957 Cr from 238 MW sale), Rajasthan MoU ₹10,000 Cr, BESS 800+ MWh orderbook<br>
+    5. <strong>SME status actually reduces exit urgency:</strong> Since Garvit can't trim (only full exit), and the fundamentals have dramatically improved, the correct action is HOLD — not exit.
+    </div>
+  </div>
+
+  <div style="display:grid;grid-template-columns:1fr 1fr 1fr;gap:10px;margin-bottom:14px">
+    <div class="ic pos"><h3>✅ Bull case: 3–4x in 3 years</h3><p>FY27E PAT ₹650–800 Cr (analyst estimate). At 15x PE = ₹9,750–12,000 Cr mcap vs current ₹4,294 Cr = 2.3–2.8x. Green ammonia annuity from FY28 = permanent earnings floor. BESS + solar EPC + IPP = multi-vertical compounding. If green hydrogen revenues materialise from FY28, PAT could exceed ₹1,000 Cr. 3x = ₹12,882 Cr = 25% probability from here.</p></div>
+    <div class="ic neu"><h3>⚠ Key concern: Debtor days 107 → 146</h3><p>This is still a real risk. Trade receivables at FY25 year-end were ₹400 Cr. Management says LC-backed billing. Q4 billing tends to be heavy (year-end government collections). The debtor days concern hasn't gone away — but the GAPA (SECI counterparty = guaranteed payment) will structurally improve the receivables quality over time. Watch FY26 year-end balance sheet for debtor days.</p></div>
+    <div class="ic inf"><h3>📊 Valuation at current price</h3><p>75 shares × ₹2,040 = ₹1,53,000 current. Cost: ₹1,24,050. Gain: +₹28,950 (+23.3%). MCap ₹4,294 Cr. FY26E PAT ₹350-400 Cr → PE 10.7–12.3x. FY27E PAT ₹650-800 Cr → forward PE 5.4–6.6x. This is strikingly cheap for a multi-vertical renewable energy company with 10-year SECI revenue contract. The SME premium discount is unwarranted given the fundamentals.</p></div>
+  </div>
+
+  <div class="sh">The SME lot structure — why "hold" is the right call</div>
+  <div class="al">
+    <div class="ai"><div class="ai-ico ih">✓</div><div class="at"><strong>Cannot trim = cannot lock partial profits, but also cannot over-size</strong><div class="meta">75 shares at ₹1,53,000 is already a good-sized position at 7.9% of portfolio. No partial exit pressure.</div></div></div>
+    <div class="ai"><div class="ai-ico ih">✓</div><div class="at"><strong>GAPA completely changes the thesis — don't exit a 10-year contract for a short-term gain lock</strong><div class="meta">The +23.3% gain is real but small compared to the long-term value the GAPA represents. ₹313 Cr/year annuity from FY28 onwards.</div></div></div>
+    <div class="ai"><div class="ai-ico ih">✓</div><div class="at"><strong>Forward PE of 5–7x with 100%+ growth = not a sell signal</strong><div class="meta">At FY27E PAT ₹700 Cr, current ₹4,294 Cr mcap = 6.1x PE. This is very cheap. The stock should re-rate as the market prices in the GAPA revenue.</div></div></div>
+    <div class="ai"><div class="ai-ico ie">!</div><div class="at"><strong>Only exit trigger: If debtor days exceed 200 OR auditor flags receivables as uncollectable</strong><div class="meta">Watch FY26 annual report for debtor days. Currently 146 — above 180 is concerning, above 200 = exit signal regardless of growth.</div></div></div>
+  </div>
+</div>
+
+<!-- ACTIONS TAB -->
+<div id="actions" class="panel">
+  <div class="sh">Priority action plan — ordered by urgency</div>
+
+  <div class="miss-box">
+    <div class="miss-h">🚨 RPSG Ventures — 7.5/10 conviction · ₹0 allocated · MISSING for 4 sessions straight</div>
+    <div class="miss-b">FSL stake alone = 2.7x current mcap. IPL franchise (LSG) worth ₹10,000+ Cr. 80% NAV discount. 35–40% 3x probability — one of the highest in the entire universe we've analyzed. Capital from Delton + RBZ + Nurture trim should go here FIRST.</div>
+  </div>
+
+  <div class="al">
+    <div class="ai"><div class="ai-ico ie">✕</div><div class="at"><strong>EXIT Delton Cables (61 shares) — recover ₹26,410</strong><span class="pri p1">SESSION 4 PRIORITY — STILL PENDING</span><div class="meta">-10.5% loss getting worse every week. No thesis. Flagged for exit in 4 consecutive sessions. This is capital destruction. Exit today → redeploy → RPSG Ventures.</div></div></div>
+    <div class="ai"><div class="ai-ico ie">✕</div><div class="at"><strong>EXIT RBZ Jewellers (200 shares) — recover ₹27,700</strong><span class="pri p1">SESSION 3 PRIORITY — STILL PENDING</span><div class="meta">-3.4% loss. Sky Gold is the better jewellery play (already +20.6%). Keeping both is redundant. Exit RBZ → add to conviction picks.</div></div></div>
+    <div class="ai"><div class="ai-ico it">↓</div><div class="at"><strong>TRIM Nurture Well: 2,600 → 1,500 shares (sell 1,100) — recover ₹36,388</strong><span class="pri p1">PRIORITY 1</span><div class="meta">5.0/10 conviction at ₹93,652 is massively oversized. -8% loss on 2,600 shares. Trim to ₹53K (1,500 shares). Free ₹36K → RPSG Ventures or Muthoot Microfin.</div></div></div>
+    <div class="ai"><div class="ai-ico ia">+</div><div class="at"><strong>BUY RPSG Ventures — ₹35,000 new position</strong><span class="pri p1">PRIORITY 1 — LONG OVERDUE</span><div class="meta">Fund from Delton + RBZ exits (₹54,110). 7.5/10 conviction. FSL stake alone is 2.7x mcap. IPL franchise. NAV discount. This is the single most certain improvement to the portfolio that hasn't happened yet.</div></div></div>
+    <div class="ai"><div class="ai-ico it">↓</div><div class="at"><strong>SELL KPI Green Energy (150 shares) — lock +15.1% profit → recover ₹68,393</strong><span class="pri p2">PRIORITY 2</span><div class="meta">4.5/10 conviction. We added heavily to Websol (now 1,300 shares). KPI is redundant solar IPP exposure. Sell and redirect to Muthoot Microfin (recommended ₹25-40K, still not in portfolio).</div></div></div>
+    <div class="ai"><div class="ai-ico ia">+</div><div class="at"><strong>BUY Muthoot Microfin — ₹25,000–40,000 new position</strong><span class="pri p2">PRIORITY 2</span><div class="meta">30–35% 3x probability. Credit cost recovery math is quantifiable: 3.3%→1.5% = ₹252 Cr additional PAT. FY26 board meeting May 6 for full year results. Fund from KPI Green exit proceeds. Best recovery-driven 3x in the analyzed universe.</div></div></div>
+    <div class="ai"><div class="ai-ico it">↓</div><div class="at"><strong>After Awfis Q4 results: sell 80–100 shares (if clean audit)</strong><span class="pri p3">PRIORITY 3 — WAIT FOR RESULTS</span><div class="meta">+23.5% gain at entry ₹289. Lock partial profit after Q4 clean audit. CFO changed Feb 2026. If audit is clean → sell 80-100 shares. If audit concern → sell all. Redirect to EFC (I) or RPSG Ventures.</div></div></div>
+    <div class="ai"><div class="ai-ico ia">+</div><div class="at"><strong>Watch Anant Raj May 11 FY26 results carefully</strong><span class="pri p3">PRIORITY 3 — UPCOMING CATALYST</span><div class="meta">DC revenue growth validation. Currently +2.6%. May 11 should confirm 28 MW live DC generating meaningful revenue in H2 FY26. If DC revenue shows strong growth → conviction upgrades to 7.5/10, add 50 more shares.</div></div></div>
+    <div class="ai"><div class="ai-ico ih">✓</div><div class="at"><strong>Watch Emerald Finance FY26 results (May 6)</strong><span class="pri p3">TOMORROW</span><div class="meta">750 shares new position. Board meeting May 6. Expect PAT ₹14-15 Cr for FY26 (9M was ₹10.8 Cr). If FY26 clean audit + PAT ₹14+ Cr → scale to ₹60-65K (add 200-250 more shares). If any NPA concern → exit.</div></div></div>
+  </div>
+
+  <div class="sh">Capital redeployment plan — post all actions</div>
+  <div class="wf">
+    <div class="wr"><div class="wl green" style="font-weight:600">Capital freed from all actions</div><div class="wt"><div class="wb" style="width:70%;background:#4ade80">Delton+RBZ+Nurture trim+KPI exit</div></div><div class="wv green">~₹1,68,091</div></div>
+    <div class="wr"><div class="wl">→ RPSG Ventures (new)</div><div class="wt"><div class="wb" style="width:21%;background:#60a5fa"></div></div><div class="wv blue">₹35,000</div></div>
+    <div class="wr"><div class="wl">→ Muthoot Microfin (new)</div><div class="wt"><div class="wb" style="width:19%;background:#60a5fa"></div></div><div class="wv blue">₹32,000</div></div>
+    <div class="wr"><div class="wl">→ DEE Development (add 20 shares)</div><div class="wt"><div class="wb" style="width:8%;background:#4ade80"></div></div><div class="wv green">₹13,000</div></div>
+    <div class="wr"><div class="wl">→ Bondada dip &lt;₹310 (opportunistic)</div><div class="wt"><div class="wb" style="width:20%;background:#4ade80"></div></div><div class="wv green">₹33,000</div></div>
+    <div class="wr"><div class="wl" style="color:#555">→ Cash buffer (results-driven)</div><div class="wt"><div class="wb" style="width:32%;background:#555"></div></div><div class="wv" style="color:#555">₹55,091</div></div>
+  </div>
+</div>
+
+<!-- CONVICTION MAP -->
+<div id="conviction" class="panel">
+  <div class="sh">Conviction vs allocation — gaps after all the excellent adds</div>
+
+  <table class="ht">
+    <tr><th>Stock</th><th>Conviction</th><th>Current</th><th>Target</th><th>Gap</th><th>Status</th></tr>
+    <tr class="row-core"><td><div class="sn">Bondada Engineering ⭐ FY26 BEAT</div></td><td><span class="green" style="font-weight:700">9.1/10</span></td><td class="mono green">₹1,97,280</td><td class="mono">₹2,00,000+</td><td class="green">✅ Near target</td><td><span class="ab a-hold">HOLD — FY27 guide 60–70% growth confirmed</span></td></tr>
+    <tr class="row-core"><td><div class="sn">Websol Energy ⭐ EXPANDED</div></td><td><span class="green" style="font-weight:700">9.0/10</span></td><td class="mono green">₹1,57,430</td><td class="mono">₹1,40,000–1,70,000</td><td class="green">✅ In range — correctly sized</td><td><span class="ab a-hold">HOLD</span></td></tr>
+    <tr class="row-core"><td><div class="sn">DEE Development ⭐</div></td><td><span class="green" style="font-weight:700">9.0/10</span></td><td class="mono amber">₹62,902</td><td class="mono">₹65,000–75,000</td><td class="amber">SHORT by ₹2–12K</td><td><span class="ab a-add">ADD 20 shares → reach ₹70K</span></td></tr>
+    <tr class="row-core"><td><div class="sn">EFC (I) ⭐ PROPERLY SIZED</div></td><td><span class="green" style="font-weight:700">8.5/10</span></td><td class="mono amber">₹1,26,009</td><td class="mono">₹1,25,000–1,40,000</td><td class="green">✅ Correctly sized now (675 shares)</td><td><span class="ab a-hold">HOLD — 14x PE on 52% growth</span></td></tr>
+    <tr class="row-core"><td><div class="sn">Vintage Coffee ⭐</div></td><td><span class="green" style="font-weight:700">8.5/10</span></td><td class="mono green">₹54,160</td><td class="mono">₹50,000–65,000</td><td class="green">✅ In range</td><td><span class="ab a-hold">HOLD</span></td></tr>
+    <tr class="row-core"><td><div class="sn">Borana Weaves ⭐</div></td><td><span class="green" style="font-weight:700">8.0/10</span></td><td class="mono green">₹1,06,565</td><td class="mono">₹90,000–1,10,000</td><td class="green">✅ In range</td><td><span class="ab a-hold">HOLD</span></td></tr>
+    <tr><td><div class="sn">RPSG Ventures 🚨 MISSING</div></td><td><span class="amber" style="font-weight:700">7.5/10</span></td><td class="mono red">₹0</td><td class="mono">₹35,000</td><td class="red">COMPLETELY ABSENT — 4 sessions</td><td><span class="ab a-add">BUY ₹35,000 — OVERDUE</span></td></tr>
+    <tr class="row-upgraded"><td><div class="sn">Oriana Power 🌿 UPGRADED</div></td><td><span class="green" style="font-weight:700">6.5↑/10</span></td><td class="mono green">₹1,53,000</td><td class="mono">Hold full position</td><td class="green">✅ GAPA signed — correctly held</td><td><span class="ab a-hold">HOLD (SME lot) — GAPA transforms thesis</span></td></tr>
+    <tr><td><div class="sn">Sky Gold &amp; Diamonds</div></td><td><span class="amber" style="font-weight:700">6.5/10</span></td><td class="mono green">₹91,250</td><td class="mono">₹75,000–90,000</td><td class="amber">Slightly above — OK with +20.6%</td><td><span class="ab a-hold">HOLD</span></td></tr>
+    <tr><td><div class="sn">Enviro Infra</div></td><td><span class="amber" style="font-weight:700">6.5/10</span></td><td class="mono green">₹84,448</td><td class="mono">₹80,000–100,000</td><td class="green">✅ In range pending Q4 audit</td><td><span class="ab a-hold">HOLD — Q4 audit binary gate</span></td></tr>
+    <tr><td><div class="sn">Zaggle Prepaid</div></td><td><span class="amber" style="font-weight:700">6.0/10</span></td><td class="mono green">₹1,08,900</td><td class="mono">₹90,000–1,10,000</td><td class="green">✅ Good entry ₹229 avg</td><td><span class="ab a-hold">HOLD</span></td></tr>
+    <tr><td><div class="sn">Anant Raj</div></td><td><span class="amber" style="font-weight:700">6.0/10</span></td><td class="mono green">₹1,28,498</td><td class="mono">₹90,000–1,10,000</td><td class="amber">Slightly above — May 11 decides</td><td><span class="ab a-hold">HOLD — May 11 DC results</span></td></tr>
+    <tr><td><div class="sn">Nurture Well ⚠</div></td><td><span class="red" style="font-weight:700">5.0/10</span></td><td class="mono red">₹86,190</td><td class="mono">₹50,000</td><td class="red">MASSIVELY OVERSIZED — -8% loss</td><td><span class="ab a-trim">TRIM to 1,500 shares NOW</span></td></tr>
+    <tr><td><div class="sn">Delton Cables 🔴</div></td><td><span class="red" style="font-weight:700">1.0/10</span></td><td class="mono red">₹26,410</td><td class="mono">₹0</td><td class="red">SHOULD BE ZERO</td><td><span class="ab a-exit">EXIT NOW</span></td></tr>
+  </table>
+</div>
+
+<!-- PATH TAB -->
+<div id="path" class="panel">
+  <div class="sh">3–4x path — updated with Q4 FY26 results incorporated</div>
+
+  <div class="path-grid">
+    <div class="pc bull">
+      <div class="pt green">Bull: 4x by FY28 = ₹75–80L</div>
+      <div class="pv green">₹75–80L</div>
+      <div class="ps">Bondada 3x (FY27 revenue ₹4,500 Cr confirmed). Websol 3x (ALMM + solar boom). EFC 3x (14x PE re-rates to 25x). Oriana 2.5x (GAPA annuity + BESS). DEE 2.5x. Borana 3x (PE re-rating). All exits done. RPSG + Muthoot added. Probability: 25–30%</div>
+    </div>
+    <div class="pc base">
+      <div class="pt blue">Base: 2.5x by FY27 = ₹47–55L</div>
+      <div class="pv blue">₹47–55L</div>
+      <div class="ps">Bondada 2x (FY27 PAT ₹350 Cr at 22x = ₹7,700 Cr = 2x). Websol 2x. EFC 2x. Borana 2x. Oriana 1.8x. All exits done. Most likely scenario given confirmed FY26 results. Probability: 45%</div>
+    </div>
+    <div class="pc bear">
+      <div class="pt red">Bear: 1.3–1.5x = ₹24–28L</div>
+      <div class="pv red">₹24–28L</div>
+      <div class="ps">Operation Sindoor escalates + global risk-off + small cap selloff. FY27 guidance misses. But: Bondada FY26 PAT ₹211 Cr confirmed = floor exists. EFC integrated model protects. Oriana GAPA = 10yr annuity floor. Probability: 25%</div>
+    </div>
+  </div>
+
+  <div class="sh">Top 10 holdings by 3x probability — UPDATED with Q4 results</div>
+  <div class="al">
+    <div class="ai"><div style="width:8px;height:8px;border-radius:50%;background:#4ade80;flex-shrink:0;margin-top:6px"></div><div class="at"><strong>1. Bondada Engineering (600 shares) — 40–45% 3x probability ⬆ UPGRADED</strong><div class="meta">FY26 PAT ₹211 Cr (+86%), FY27 guide 60–70% growth = ₹350+ Cr PAT. Order book ₹7,150 Cr. Main board migration planned. Vision 2030 ₹1B revenue. This is now the clearest 3x case in any Indian SME. The Q4 results PROVE the thesis.</div></div></div>
+    <div class="ai"><div style="width:8px;height:8px;border-radius:50%;background:#4ade80;flex-shrink:0;margin-top:6px"></div><div class="at"><strong>2. Websol Energy (1,300 shares) — 35–40% 3x probability</strong><div class="meta">ALMM manufacturing moat. Only Indian PERC solar cell maker with policy protection. 44% EBITDA. Correctly expanded to 1,300 shares. India's solar boom structural.</div></div></div>
+    <div class="ai"><div style="width:8px;height:8px;border-radius:50%;background:#4ade80;flex-shrink:0;margin-top:6px"></div><div class="at"><strong>3. RPSG Ventures (₹0 — MISSING) — 35–40% 3x probability</strong><div class="meta">80% NAV discount. FSL stake = 2.7x mcap. IPL franchise ₹10,000+ Cr. MUST BUY from Delton+RBZ exit proceeds. Every day this isn't in the portfolio is a missed opportunity.</div></div></div>
+    <div class="ai"><div style="width:8px;height:8px;border-radius:50%;background:#60a5fa;flex-shrink:0;margin-top:6px"></div><div class="at"><strong>4. DEE Development (140 shares) — 25–30% 3x probability</strong><div class="meta">Oil/gas piping + nuclear. 9.0/10. +10% already. Add 20 more to reach ₹70K target.</div></div></div>
+    <div class="ai"><div style="width:8px;height:8px;border-radius:50%;background:#60a5fa;flex-shrink:0;margin-top:6px"></div><div class="at"><strong>5. Borana Weaves (315 shares) — 30–35% 3x probability</strong><div class="meta">17x PE on 20% EBITDA + 45% ROE textile compounder. PE re-rating from 17x → 25x is primary lever. Near cost is an excellent entry point.</div></div></div>
+    <div class="ai"><div style="width:8px;height:8px;border-radius:50%;background:#60a5fa;flex-shrink:0;margin-top:6px"></div><div class="at"><strong>6. EFC (I) (675 shares) — 25–30% 3x probability</strong><div class="meta">Industrial flex workspace. FY26 PAT ₹141 Cr at ₹2,700 Cr mcap = 19x PE. 52% revenue growth. 90%+ occupancy. Properly sized now. At 14x current PE — cheap.</div></div></div>
+    <div class="ai"><div style="width:8px;height:8px;border-radius:50%;background:#60a5fa;flex-shrink:0;margin-top:6px"></div><div class="at"><strong>7. Vintage Coffee (400 shares) — 25–30% 3x probability</strong><div class="meta">Café chain compounder. India's premium F&amp;B boom structural. Correctly doubled to 400 shares.</div></div></div>
+    <div class="ai"><div style="width:8px;height:8px;border-radius:50%;background:#60a5fa;flex-shrink:0;margin-top:6px"></div><div class="at"><strong>8. Muthoot Microfin (₹0 — should add) — 30–35% 3x probability</strong><div class="meta">Credit cost recovery math: 3.3%→1.5% = ₹252 Cr additional PAT. FY26 results May 6. Best recovery-driven 3x case analyzed. Still missing from portfolio.</div></div></div>
+    <div class="ai"><div style="width:8px;height:8px;border-radius:50%;background:#fb923c;flex-shrink:0;margin-top:6px"></div><div class="at"><strong>9. Oriana Power (75 shares) — 25% 3x probability ⬆ UPGRADED</strong><div class="meta">GAPA ₹3,135 Cr over 10 years. H1 FY26 PAT +165%. FY26E PAT ₹350-400 Cr at ₹4,294 Cr mcap = 11x PE. Garvit's optimism is well-founded by data.</div></div></div>
+    <div class="ai"><div style="width:8px;height:8px;border-radius:50%;background:#fb923c;flex-shrink:0;margin-top:6px"></div><div class="at"><strong>10. Anant Raj (246 shares) — 20–25% 3x probability</strong><div class="meta">Data centre catalyst: May 11 results. 28 MW live DC → 117 MW FY28. If DC revenue shows strong H2 FY26 contribution → upgrade conviction to 7.5/10.</div></div></div>
+  </div>
+</div>
+
+<!-- SECTOR BALANCE -->
+<div id="sector" class="panel">
+  <div class="sh">Sector allocation — post all adds and the Websol/Waaree consolidation</div>
+
+  <div class="sec-grid">
+    <div class="sec-card"><div class="sc-nm green">⚡ Renewable Energy</div><div class="sc-v green">₹5,11,118</div><div class="sc-s">Bondada+Websol+Oriana+KPI = 26.2%. After KPI exit → 22.7%. Heavily weighted to solar — correct for India's energy transition. Bondada Q4 confirms thesis.</div></div>
+    <div class="sec-card"><div class="sc-nm blue">🏗️ Infrastructure / EPC</div><div class="sc-v blue">₹3,97,290</div><div class="sc-s">RBM Infra+DEE Dev+Enviro Infra+Capacite+TARIL = 20.4%. Well-diversified across oil/gas, water, transmission, defence. Core thesis plays.</div></div>
+    <div class="sec-card"><div class="sc-nm amber">🏢 Workspace / Real Estate</div><div class="sc-v amber">₹1,26,009</div><div class="sc-s">EFC (I) only = 6.5%. Awfis trimming pending. EFC properly sized at 675 shares. Industrial flex workspace is the right format.</div></div>
+    <div class="sec-card"><div class="sc-nm gold">☕ Consumer / F&B</div><div class="sc-v gold">₹1,40,655</div><div class="sc-s">Vintage Coffee+Northern Spirits+Nurture Well (trim pending) = 7.2%. Trim Nurture Well → consumer weight falls to 5%. Appropriate.</div></div>
+    <div class="sec-card"><div class="sc-nm" style="color:#fb923c">💰 Fintech / Finance</div><div class="sc-v amber">₹1,57,830</div><div class="sc-s">Zaggle+Emerald Finance = 8.1%. Good diversification. Both growing. May add Muthoot Microfin → financial services becomes 10%+.</div></div>
+    <div class="sec-card"><div class="sc-nm teal">💎 Other (Jewellery, Elec, Smart)</div><div class="sc-v teal">₹2,16,488</div><div class="sc-s">Sky Gold+EPACK+Genus Power+RBZ(exit) = 11.1%. After RBZ exit → 10.3%. Diversified small positions across consumer/industrial.</div></div>
+  </div>
+
+  <div class="sh">Target portfolio after all actions — the optimised state</div>
+  <div class="ic" style="background:#0a1a0a;border:1px solid #1a3a1a;border-radius:10px;padding:13px">
+    <h3 style="color:#4ade80;font-size:12.5px;margin-bottom:8px">🎯 Optimised portfolio structure post all recommended actions</h3>
+    <p style="color:#aaa;font-size:11.5px;line-height:1.7">
+    <strong style="color:#4ade80">TIER 1 — Core (9.0–9.1/10):</strong> Bondada ₹2.0L · Websol ₹1.57L · DEE Dev ₹70K<br>
+    <strong style="color:#60a5fa">TIER 2 — Strong (7.5–8.5/10):</strong> EFC (I) ₹1.26L · Borana Weaves ₹1.07L · Vintage Coffee ₹54K · RPSG Ventures ₹35K (NEW)<br>
+    <strong style="color:#fb923c">TIER 3 — Spec (6.0–7.0/10):</strong> Oriana Power ₹1.53L (GAPA upgraded) · Zaggle ₹1.09L · Sky Gold ₹91K · Anant Raj ₹1.28L · Enviro Infra ₹84K · Zaggle · Emerald Finance ₹49K<br>
+    <strong style="color:#c084fc">TIER 4 — Recovery bets:</strong> Muthoot Microfin ₹32K (NEW) · RBM Infra ₹1.6L (LOI thesis) · TARIL ₹65K · Genus Power ₹63K · EPACK ₹68K · Northern Spirits ₹40K · Capacite ₹25K<br>
+    <strong style="color:#f87171">EXITS PENDING:</strong> Delton Cables · RBZ Jewellers (both exit immediately)<br>
+    <strong style="color:#fbbf24">TRIMS PENDING:</strong> Nurture Well (2600→1500) · KPI Green (sell all) · Awfis (sell 80–100 after Q4 audit)
+    </p>
+  </div>
+</div>
+
+<div class="footer">India portfolio · May 5, 2026 · 22 holdings · ₹19,49,598 current · ₹18,67,217 invested · +₹82,381 (+4.41%) · Q4 FY26 results season in progress · Not investment advice · Verify independently · Consult SEBI-registered advisor</div>
+
+<script>
+function showTab(id,btn){
+  document.querySelectorAll('.tab').forEach(t=>t.classList.remove('active'));
+  document.querySelectorAll('.panel').forEach(p=>p.classList.remove('active'));
+  btn.classList.add('active');
+  document.getElementById(id).classList.add('active');
+}
+</script>
+</body></html>

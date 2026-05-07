@@ -1,0 +1,443 @@
+<!DOCTYPE html>
+<html><head><meta charset="utf-8">
+<style>
+*{box-sizing:border-box;margin:0;padding:0}
+body{font-family:system-ui,sans-serif;padding:16px;background:#fff;color:#1a1a1a;font-size:14px}
+h1{font-size:20px;font-weight:500;margin-bottom:3px}
+.sub{font-size:12px;color:#666;margin-bottom:14px}
+.sg{display:grid;grid-template-columns:repeat(auto-fill,minmax(110px,1fr));gap:8px;margin-bottom:16px}
+.sc{background:#f5f5f3;border-radius:8px;padding:10px 12px}
+.sl{font-size:10px;color:#666;margin-bottom:2px}
+.sv{font-size:17px;font-weight:500}
+.tab-row{display:flex;gap:5px;flex-wrap:wrap;margin-bottom:14px}
+.tab{font-size:11.5px;padding:5px 13px;border-radius:20px;border:1px solid #ddd;background:#fff;cursor:pointer;white-space:nowrap}
+.tab.active{background:#1a1a1a;color:#fff;border-color:#1a1a1a}
+.panel{display:none}.panel.active{display:block}
+.sh{font-size:10.5px;font-weight:500;color:#666;text-transform:uppercase;letter-spacing:.06em;margin:16px 0 7px;padding-bottom:5px;border-bottom:1px solid #eee}
+table{width:100%;border-collapse:collapse;font-size:12px;margin:8px 0}
+th{font-size:10.5px;font-weight:500;color:#666;padding:5px 7px;text-align:left;border-bottom:1px solid #eee;white-space:nowrap}
+td{padding:8px 7px;border-bottom:1px solid #eee;color:#1a1a1a;vertical-align:top}
+tr:last-child td{border-bottom:none}
+tr:hover td{background:#fafaf9}
+.g{color:#0F6E56;font-weight:500}.r{color:#A32D2D;font-weight:500}.a{color:#854F0B;font-weight:500}.b{color:#185FA5;font-weight:500}
+.badge{display:inline-block;font-size:10px;padding:2px 7px;border-radius:10px;white-space:nowrap}
+.bg{background:#E1F5EE;color:#0F6E56}.bb{background:#E6F1FB;color:#185FA5}.ba{background:#FAEEDA;color:#854F0B}.br{background:#FCEBEB;color:#A32D2D}.bgray{background:#f1f0e8;color:#5F5E5A}.bfib{background:#E8F5E9;color:#1B5E20}.btele{background:#E3F2FD;color:#0D47A1}
+.warn{padding:10px 13px;margin:8px 0;border-left:3px solid;font-size:12px;line-height:1.65}
+.warn.success{background:#E1F5EE;border-color:#1D9E75;color:#04342C}
+.warn.caution{background:#FAEEDA;border-color:#BA7517;color:#412402}
+.warn.danger{background:#FCEBEB;border-color:#A32D2D;color:#712B13}
+.warn.info{background:#E6F1FB;border-color:#185FA5;color:#042C53}
+.warn.fib{background:#E8F5E9;border-color:#2E7D32;color:#1B3A1E}
+.warn.tele{background:#E3F2FD;border-color:#1565C0;color:#0D2137}
+.warn strong{font-weight:500}
+.chart-wrap{position:relative;width:100%;height:240px;margin:8px 0}
+.kpi-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:10px;margin:10px 0}
+.kpi{background:#f5f5f3;border-radius:8px;padding:10px 12px;border-left:3px solid transparent}
+.kpi.green{border-left-color:#1D9E75}.kpi.amber{border-left-color:#EF9F27}.kpi.blue{border-left-color:#378ADD}.kpi.red{border-left-color:#A32D2D}.kpi.fib{border-left-color:#2E7D32}.kpi.tele{border-left-color:#1565C0}
+.kpi-l{font-size:10px;color:#666;margin-bottom:3px}
+.kpi-v{font-size:17px;font-weight:500}
+.kpi-s{font-size:10px;color:#888;margin-top:2px}
+.point{display:flex;gap:9px;align-items:flex-start;padding:9px 0;border-bottom:1px solid #eee;font-size:12px;line-height:1.6;color:#555}
+.point:last-child{border-bottom:none}
+.point strong{color:#1a1a1a;font-weight:500}
+.dot{width:19px;height:19px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:10px;font-weight:500;flex-shrink:0;margin-top:1px}
+.dg{background:#E1F5EE;color:#0F6E56}.dr{background:#FCEBEB;color:#A32D2D}.da{background:#FAEEDA;color:#854F0B}.db{background:#E6F1FB;color:#185FA5}.df{background:#E8F5E9;color:#1B5E20}.dt{background:#E3F2FD;color:#0D47A1}
+.two-col{display:grid;grid-template-columns:1fr 1fr;gap:12px}
+.pane{border:1px solid #ddd;border-radius:10px;padding:13px}
+.pane-h{font-size:13px;font-weight:500;margin-bottom:9px}
+.scenario{border:1px solid #ddd;border-radius:10px;padding:13px;margin-bottom:9px}
+.sc-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:7px;margin:9px 0}
+.sc-cell{background:#f5f5f3;border-radius:6px;padding:7px 9px}
+.sc-l{font-size:10px;color:#666}
+.sc-v{font-size:12px;font-weight:500;margin-top:2px}
+.comp-h{display:grid;grid-template-columns:160px repeat(3,1fr);background:#f5f5f3;border-radius:8px 8px 0 0;overflow:hidden}
+.comp-row{display:grid;grid-template-columns:160px repeat(3,1fr);border-bottom:1px solid #eee}
+.comp-row:last-child{border-bottom:none}
+.cc{padding:8px 10px;font-size:11px;border-right:1px solid #eee}
+.cc:last-child{border-right:none}
+.cc-h{font-size:10px;font-weight:500;color:#444;padding:8px 10px;border-right:1px solid #ddd}
+.cc-h:last-child{border-right:none}
+.cc-label{color:#666;font-size:11px}
+.winner-cell{background:#E1F5EE}.mid-cell{background:#FAEEDA}.loser-cell{background:#fff5f5}
+.verdict-card{border-radius:10px;padding:13px 15px;margin-bottom:10px}
+.vc-h{font-size:13px;font-weight:500;margin-bottom:6px}
+.vc-b{font-size:12px;line-height:1.65;color:#444}
+.sector-card{border:1px solid #ddd;border-radius:10px;overflow:hidden;margin-bottom:10px}
+.sc-hdr{padding:10px 13px;display:flex;justify-content:space-between;align-items:center;background:#fafaf9}
+.sc-nm{font-size:13px;font-weight:500}
+.sc-tg{font-size:11px;color:#666;margin-top:2px}
+.sc-bd{padding:10px 13px;font-size:12px;line-height:1.65;color:#555;border-top:1px solid #eee}
+.sc-bd strong{color:#1a1a1a}
+.guid-card{border-radius:10px;padding:12px 14px;margin-bottom:8px;border-left:3px solid #2E7D32;background:#E8F5E9}
+.guid-h{font-size:11.5px;font-weight:500;margin-bottom:4px;color:#1B5E20}
+.guid-b{font-size:11.5px;color:#333;line-height:1.6}
+.guid-s{font-size:10px;color:#888;margin-top:4px}
+.guid-card.miss{background:#FCEBEB;border-left-color:#A32D2D}.guid-card.miss .guid-h{color:#A32D2D}
+.guid-card.watch{background:#FAEEDA;border-left-color:#BA7517}.guid-card.watch .guid-h{color:#854F0B}
+.crisis-box{background:#FAEEDA;border:2px solid #BA7517;border-radius:10px;padding:13px;margin:10px 0}
+.cb-h{font-size:14px;font-weight:500;color:#854F0B;margin-bottom:6px}
+.cb-b{font-size:12px;color:#333;line-height:1.65}
+.recovery-box{background:#E8F5E9;border:2px solid #2E7D32;border-radius:10px;padding:13px;margin:10px 0}
+.rb-h{font-size:14px;font-weight:500;color:#1B5E20;margin-bottom:6px}
+.rb-b{font-size:12px;color:#1a1a1a;line-height:1.65}
+.margin-bar{display:flex;align-items:center;gap:8px;margin:5px 0}
+.mb-label{font-size:11px;color:#555;width:180px;flex-shrink:0}
+.mb-track{flex:1;background:#f5f5f3;border-radius:4px;height:15px;overflow:hidden}
+.mb-fill{height:100%;border-radius:4px;display:flex;align-items:center;padding-left:6px;font-size:9px;font-weight:600;color:#fff}
+.mb-val{font-size:11px;font-weight:500;width:80px;text-align:right}
+</style>
+</head>
+<body>
+
+<h1>Sterlite Technologies Ltd (STL) — Deep Investment Analysis</h1>
+<div class="sub">NSE: STLTECH · Optical fiber + Cable + Data centre connectivity + AI infrastructure · Founded 2000 · MD: Ankit Agarwal · Silvassa · 780 patents · 100+ countries · Market cap ~₹14,390 Cr · FY26 revenue ₹4,745 Cr · Stock +400% from April 2025 lows</div>
+
+<div class="sg">
+  <div class="sc"><div class="sl">Market cap</div><div class="sv" style="color:#854F0B">~₹14,390 Cr</div></div>
+  <div class="sc"><div class="sl">FY26 revenue</div><div class="sv" style="color:#1D9E75">₹4,745 Cr</div></div>
+  <div class="sc"><div class="sl">FY26 EBITDA</div><div class="sv" style="color:#1D9E75">₹628 Cr</div></div>
+  <div class="sc"><div class="sl">FY26 PAT</div><div class="sv" style="color:#854F0B">~₹56 Cr</div></div>
+  <div class="sc"><div class="sl">Q4 FY26 EBITDA%</div><div class="sv" style="color:#1D9E75">15.1%</div></div>
+  <div class="sc"><div class="sl">Order book</div><div class="sv" style="color:#185FA5">₹5,325 Cr</div></div>
+  <div class="sc"><div class="sl">North America %</div><div class="sv" style="color:#1D9E75">36%</div></div>
+  <div class="sc"><div class="sl">Data centre % rev</div><div class="sv" style="color:#1D9E75">20%</div></div>
+  <div class="sc"><div class="sl">⚠ Prysmian lawsuit</div><div class="sv" style="color:#A32D2D">$0.8B</div></div>
+  <div class="sc"><div class="sl">52-wk low→high</div><div class="sv" style="color:#1D9E75">₹41→₹295</div></div>
+  <div class="sc"><div class="sl">Promoter holding</div><div class="sv" style="color:#1D9E75">44.4%</div></div>
+  <div class="sc"><div class="sl">Market share (ex-China)</div><div class="sv" style="color:#A32D2D">8% ↓ (was 12%)</div></div>
+</div>
+
+<div class="tab-row">
+  <button class="tab active" onclick="show('turnaround',this)">Turnaround story</button>
+  <button class="tab" onclick="show('revenue',this)">Revenue history</button>
+  <button class="tab" onclick="show('sectorKPI',this)">Sector KPIs</button>
+  <button class="tab" onclick="show('business',this)">Business model</button>
+  <button class="tab" onclick="show('guidance',this)">Guidance</button>
+  <button class="tab" onclick="show('risks',this)">Risks</button>
+  <button class="tab" onclick="show('scenarios',this)">3x scenarios</button>
+  <button class="tab" onclick="show('compare',this)">Sector peers</button>
+  <button class="tab" onclick="show('verdict',this)">Verdict</button>
+</div>
+
+<!-- TURNAROUND STORY -->
+<div id="turnaround" class="panel active">
+  <div class="sh">The STL story in 2025–2026 — a dramatic fall and a dramatic recovery</div>
+
+  <div class="crisis-box">
+    <div class="cb-h">📉 The collapse (2021–2025): From ₹291 peak to ₹41 — a 94% fall in 4 years</div>
+    <div class="cb-b">Sterlite Technologies was a ₹15,000 Cr mcap company at its 2021 peak (₹291/share). Then a perfect storm hit:<br>
+    • <strong>Global optical fiber oversupply:</strong> China produced massive fiber volumes, flooding global markets and crashing fiber prices from ~$12/km to ~$7–8/km. STL's margins, which were built on ₹10–12/km economics, collapsed.<br>
+    • <strong>Market share decline:</strong> STL's global optical fiber market share (ex-China) fell from 12% to 8% as Chinese producers competed aggressively on price and quality.<br>
+    • <strong>Services business demerger:</strong> STL demerged its global services/IT business (STL Networks → renamed Invenia, effective March 31, 2025). This simplified the company but removed a services revenue stream.<br>
+    • <strong>High interest costs + debt:</strong> Aggressive capex for capacity expansion left STL with significant debt, and when margins collapsed, interest coverage fell dangerously.<br>
+    • <strong>Full year FY25 loss</strong> — the worst operational year in company history.<br>
+    Stock fell from ₹291 (Jan 2018 high, ₹200 in 2021) to ₹41.36 in April 2025 — a 94% fall from the all-time high.</div>
+  </div>
+
+  <div class="recovery-box">
+    <div class="rb-h">📈 The recovery (FY26): 6 consecutive quarters of EBITDA margin improvement · +400% stock rally</div>
+    <div class="rb-b">The stock rallied from ₹41 to ₹295 (April 2026) — +614% in 12 months. The fundamental recovery is real:<br>
+    • <strong>FY26 revenue ₹4,745 Cr (+18.8% YoY)</strong> — strongest annual growth in 3 years<br>
+    • <strong>Q4 FY26 EBITDA ₹218 Cr (15.1% margin)</strong> — 6th consecutive quarter of sequential improvement. EBITDA margins recovering from ~7–8% trough toward management target of 18–20%<br>
+    • <strong>Order book ₹5,325 Cr (1.1x annual revenue)</strong> — good near-term visibility<br>
+    • <strong>North America at 36% of revenue</strong> — highest-margin market growing fast (BEAD program + data centers)<br>
+    • <strong>AI data centre fiber demand</strong> — every GPU cluster requires massive fiber connectivity; STL is positioning as "AI-ready digital infrastructure"<br>
+    • <strong>India-US trade deal tariff reduction</strong> (50% → 18% on telecom exports) — major competitive advantage for STL's US exports<br>
+    • <strong>India's first hollow-core fiber (HCF) cable for data centres</strong> launched March 2026 — technology leadership signal<br>
+    • <strong>PAT turning positive: ~₹56 Cr FY26</strong> — first profitable year after FY25 losses<br><br>
+    <strong>The critical question for investors:</strong> Is this a genuine structural recovery or a cyclical bounce that will reverse when fiber prices normalise? And is it too late to enter at ₹295 after a 614% rally from ₹41?</div>
+  </div>
+
+  <div class="sh">The FY26 full year verdict: Genuine recovery, but market cap has already priced significant future recovery</div>
+  <div class="margin-bar"><div class="mb-label">Q4 FY25 EBITDA margin (trough)</div><div class="mb-track"><div class="mb-fill" style="width:8%;background:#A32D2D">~8%</div></div><div class="mb-val r">~8% (crisis)</div></div>
+  <div class="margin-bar"><div class="mb-label">Q1 FY26 EBITDA margin</div><div class="mb-track"><div class="mb-fill" style="width:10%;background:#EF9F27">~10%</div></div><div class="mb-val a">~10.3%</div></div>
+  <div class="margin-bar"><div class="mb-label">Q3 FY26 EBITDA margin</div><div class="mb-track"><div class="mb-fill" style="width:10.3%;background:#EF9F27">10.3%</div></div><div class="mb-val a">10.3%</div></div>
+  <div class="margin-bar"><div class="mb-label">Q4 FY26 EBITDA margin</div><div class="mb-track"><div class="mb-fill" style="width:15.1%;background:#1D9E75">15.1%</div></div><div class="mb-val g">15.1% ↑ 6th qtr up</div></div>
+  <div class="margin-bar"><div class="mb-label">Management target</div><div class="mb-track"><div class="mb-fill" style="width:19%;background:#059669">18–20%</div></div><div class="mb-val g">18–20% target</div></div>
+  <div class="warn fib" style="margin-top:8px"><strong>The Q4 FY26 margin of 15.1% is significant</strong> — it's the highest quarterly EBITDA margin since FY22. Six consecutive quarters of improvement from ~8% to 15.1% is a genuine operational recovery, driven by: better US market mix (higher ASP), higher utilisation (fixed cost absorption), improved product mix (data centre cables command premium), and India BharatNet project revenues (government contracts at better rates than commodity export).</div>
+</div>
+
+<!-- REVENUE -->
+<div id="revenue" class="panel">
+  <div class="sh">Revenue &amp; profit history — the optical fiber supercycle, collapse, and recovery</div>
+  <div class="chart-wrap"><canvas id="rc"></canvas></div>
+  <div style="display:flex;gap:14px;font-size:11.5px;color:#666;margin-bottom:10px">
+    <span><span style="display:inline-block;width:10px;height:10px;border-radius:2px;background:#2E7D32;margin-right:4px"></span>Revenue ₹ Cr</span>
+    <span><span style="display:inline-block;width:10px;height:10px;border-radius:2px;background:#1D9E75;margin-right:4px"></span>EBITDA ₹ Cr</span>
+    <span><span style="display:inline-block;width:10px;height:10px;border-radius:2px;background:#A5D6A7;margin-right:4px"></span>Projected</span>
+  </div>
+  <table>
+    <tr><th>Period</th><th>Revenue</th><th>Growth</th><th>EBITDA%</th><th>PAT</th><th>Key event</th></tr>
+    <tr><td>FY22</td><td>~₹3,900 Cr</td><td class="g">+15%</td><td>~17%</td><td>~₹80 Cr</td><td>COVID recovery. Fiber demand strong. US + India BharatNet phase 1 contributing. Stock at all-time highs.</td></tr>
+    <tr><td>FY23</td><td>~₹4,200 Cr</td><td class="g">+7%</td><td>~15%</td><td>~₹50 Cr</td><td>Chinese oversupply begins. Fiber prices start falling. Services demerger planned. Debt rising from capex cycle.</td></tr>
+    <tr><td>FY24</td><td>~₹3,500 Cr</td><td class="r">-17%</td><td>~10%</td><td class="r">-₹100 Cr (loss)</td><td>Demand slump + price collapse + Services business demerger costs. Stock falls to ₹80–100. Multiple quarters of losses.</td></tr>
+    <tr><td>FY25</td><td>~₹3,993 Cr</td><td class="a">+14%</td><td>~9%</td><td class="r">-₹196 Cr (loss)</td><td>Services demerger effective March 31, 2025. Revenue recovering but high interest costs + provisions = full year loss. Stock collapses to ₹41.</td></tr>
+    <tr><td>Q1 FY26</td><td>~₹1,020 Cr</td><td class="g">+14% YoY</td><td>~11.5%</td><td class="a">~₹5–10 Cr</td><td>Recovery beginning. US revenue increasing (32% of total). Data centre 20% of revenue. Margins improving sequentially.</td></tr>
+    <tr><td>Q2 FY26</td><td>~₹1,026 Cr</td><td class="g">+12% YoY</td><td>~12.5%</td><td class="a">~₹15–20 Cr</td><td>Tariff headwinds (India-US) hitting Q2. BEAD program beginning. North America share rising. Celesta IBR launched.</td></tr>
+    <tr><td>Q3 FY26</td><td>₹1,257 Cr</td><td class="g">+26% YoY</td><td>10.3%</td><td class="r">-₹17 Cr (loss)</td><td>Revenue +26% YoY but tariff headwinds reduced reported EBITDA by 760 bps. PAT loss despite EBITDA improvement. North America 36% of revenue.</td></tr>
+    <tr><td>Q4 FY26</td><td>₹1,441 Cr</td><td class="g">+15% QoQ</td><td>15.1%</td><td class="g">~₹68 Cr</td><td><strong>Record EBITDA margin in FY26.</strong> 6th consecutive sequential improvement. Highest quarterly EBITDA since FY22. BharatNet + US BEAD both contributing. India tariff barriers on Chinese cable helping domestic business.</td></tr>
+    <tr><td>FY26 Full Year</td><td>₹4,745 Cr</td><td class="g">+18.8%</td><td>13.2%</td><td class="g">~₹56 Cr</td><td>Back to profitability after FY24–FY25 losses. PwC unmodified audit opinion. 780 patents. MD Ankit Agarwal re-appointed for 5 years. Order book ₹5,325 Cr.</td></tr>
+    <tr><td>FY27E</td><td>~₹5,500–6,200 Cr</td><td class="g">+16–31%</td><td>~15–17%</td><td>~₹250–400 Cr</td><td>BEAD program US ramp (state-by-state execution beginning). BharatNet Phase 3 India orders. DC/AI fiber growing to 30% of revenue. Hollow-core fiber premium pricing. Margin recovery toward 18% target.</td></tr>
+    <tr><td>FY28E</td><td>~₹7,000–8,500 Cr</td><td class="g">~+27–37%</td><td>~17–19%</td><td>~₹500–800 Cr</td><td>Full BEAD + BharatNet + AI DC contribution. Margins reaching management target of 18–20%. Debt reduction as cash flows improve. Prysmian lawsuit resolution expected (positive or negative).</td></tr>
+  </table>
+  <div class="warn tele"><strong>The key revenue observation:</strong> STL's revenue is recovering strongly — ₹4,745 Cr FY26 (+18.8%). But PAT of ₹56 Cr on ₹4,745 Cr revenue = just 1.2% PAT margin. The issue: massive depreciation (from prior capex) + interest costs (from prior debt) consume most of the EBITDA. EBITDA ₹628 Cr at 13.2% margin is actually decent — but ₹400+ Cr of D&A and interest costs between EBITDA and PAT reflects the legacy of the FY22–24 capex cycle. As debt reduces and D&A normalises, PAT should expand dramatically in FY27–28.</div>
+</div>
+
+<!-- SECTOR KPIs -->
+<div id="sectorKPI" class="panel">
+  <div class="sh">Optical fiber + digital infrastructure sector KPIs</div>
+  <div class="warn fib"><strong>Three powerful multi-year investment cycles are creating structural demand for STL's products:</strong> (1) FTTx — global fiber broadband rollout (151M km → 170M km by 2030), (2) Data centres/AI — every AI GPU cluster requires massive fiber connectivity (DC-led demand at 76% CAGR), and (3) 5G backhaul/fronthaul requiring massive fiber densification. STL is at the intersection of all three, which is why the stock has rallied 400%+ even before full earnings recovery.</div>
+  <div class="kpi-grid">
+    <div class="kpi fib"><div class="kpi-l">FY26 revenue</div><div class="kpi-v">₹4,745 Cr</div><div class="kpi-s">+18.8% YoY — recovery confirmed</div></div>
+    <div class="kpi green"><div class="kpi-l">Q4 FY26 EBITDA margin</div><div class="kpi-v">15.1%</div><div class="kpi-s">6th consecutive quarterly improvement</div></div>
+    <div class="kpi tele"><div class="kpi-l">Order book</div><div class="kpi-v">₹5,325 Cr</div><div class="kpi-s">1.1x annual revenue — moderate visibility</div></div>
+    <div class="kpi green"><div class="kpi-l">North America revenue share</div><div class="kpi-v">36%</div><div class="kpi-s">Highest-margin market; BEAD + AI DC</div></div>
+    <div class="kpi amber"><div class="kpi-l">Patents portfolio</div><div class="kpi-v">780</div><div class="kpi-s">Hollow-core, multi-core, next-gen fiber</div></div>
+    <div class="kpi red"><div class="kpi-l">Global market share (ex-China)</div><div class="kpi-v" style="color:#A32D2D">8% ↓</div><div class="kpi-s">Was 12% — Chinese competition impact</div></div>
+  </div>
+
+  <div class="sh">The three demand cycles driving STL — scale and timeline</div>
+  <table>
+    <tr><th>Demand driver</th><th>Scale</th><th>Timeline</th><th>STL positioning</th></tr>
+    <tr><td><strong>BEAD Program (US fiber broadband)</strong></td><td>$42B US govt program; 100M homes by 2030</td><td>State-by-state from CY2026</td><td class="g">North America 36% of revenue; beneficiary of India-US trade deal (50%→18% tariff)</td></tr>
+    <tr><td><strong>AI Data Centre fiber</strong></td><td>76% CAGR from 2025; $600B global DC capex by 2027</td><td>Now — accelerating</td><td class="g">AI-DC portfolio; 20% of revenue → targeting 30%; hollow-core fiber for DC</td></tr>
+    <tr><td><strong>BharatNet Phase 3 (India)</strong></td><td>₹2,600 Cr+ of BharatNet orders; FTTx rollout nationwide</td><td>FY26–FY28</td><td class="g">Domestic market beneficiary; India tariff barriers on Chinese cable help</td></tr>
+    <tr><td><strong>5G fiber backhaul</strong></td><td>6.3B 5G subscriptions by 2030; massive fiber densification</td><td>FY26–FY28</td><td class="a">Growing contribution; telco clients globally</td></tr>
+    <tr><td><strong>Hollow-Core Fiber (HCF)</strong></td><td>20–30% faster than standard fiber; premium pricing</td><td>FY27+ commercial</td><td class="g">India's first HCF for DC launched March 2026; technology leadership</td></tr>
+  </table>
+</div>
+
+<!-- BUSINESS MODEL -->
+<div id="business" class="panel">
+  <div class="sh">What STL makes and does — the two-division structure</div>
+  <div class="warn fib"><strong>After the March 2025 demerger of STL Networks (now Invenia), STL is now a focused optical networking products and solutions company.</strong> The demerger simplified the company — no more loss-making services drag. The remaining business is genuinely high-quality: STL is one of only 4–5 companies globally that can manufacture ultra-low-loss, high-count optical fiber cables at scale. This manufacturing scale is a genuine competitive advantage.</div>
+
+  <div class="two-col" style="margin:10px 0">
+    <div class="pane">
+      <div class="pane-h">Optical Networking Business (ONB) — Core, ~95% of revenue</div>
+      <div class="point"><div class="dot df">1</div><div><strong>Optical fiber cable products (bulk):</strong> Standard single-mode fiber cables for telecom, FTTx, 5G networks. Sold by the kilometre to telcos, cable companies, government agencies worldwide. Revenue ₹1,174 Cr in Q3. This is the commodity base — high volume, margin sensitive to fiber pricing cycle. The China oversupply issue hit this hardest.</div></div>
+      <div class="point"><div class="dot df">2</div><div><strong>Optical connectivity products (Celesta IBR, patch cords):</strong> Higher-value, higher-margin products — pre-terminated assemblies, Celesta IBR enclosures (Industry's first high-density 1728F cabinet), patch cords for data centres. The "attach rate" (connectivity products as % of fiber revenue) = 17% currently vs 22% in FY25. Management target: 30%+. Each 1% improvement in attach rate = ~₹45 Cr additional revenue at current scale — at significantly higher margins.</div></div>
+      <div class="point"><div class="dot df">3</div><div><strong>Next-generation fiber (HCF, MCF, G.654.E):</strong> India's first hollow-core fiber cable for data centres launched March 2026. Multi-Core Fibre (MCF) successfully trialled with Colt Technology on London Metro. G.654.E ultra-low-loss fiber for long-haul. These premium products command 2–4x the price of standard fiber — and they're needed for AI data centres requiring sub-millisecond latency. This is where STL's 780-patent portfolio creates genuine IP differentiation.</div></div>
+      <div class="point"><div class="dot dg">+</div><div><strong>AI/Data Centre (AIDC) portfolio:</strong> End-to-end fiber connectivity for AI clusters — from GPU-to-GPU intra-cluster connections (short reach, ultra-high density) to inter-data-centre long-haul links. Growing from 20% of revenue → management target 30%. Data centre clients pay premium pricing for certified, tested, low-latency fiber — this is highest-margin segment within ONB.</div></div>
+    </div>
+    <div class="pane">
+      <div class="pane-h">STL Digital (small, strategic) — ~5% of revenue</div>
+      <div class="point"><div class="dot dt">D</div><div><strong>Enterprise IT services for communications/media:</strong> After demerger, STL Digital retained a smaller IT services practice (1,120 consultants) focused on BSS/OSS systems, SAP/Oracle ERP, cloud migration, and cybersecurity for telecom operators. Revenue contribution: small and stable (~₹50–70 Cr/year). March 2026: launched SecureNNov, an AI-driven cybersecurity portfolio — signals a move toward product-led offerings.</div></div>
+      <div class="point"><div class="dot dg">+</div><div><strong>Why this matters strategically:</strong> STL Digital gives STL access to CIO/CTO relationships at telecom operators — the same people who buy optical fiber cables. Cross-sell potential (fiber + IT services) is real. This niche (communications-specific IT) is different from generic IT services — and the connection to STL's optical infrastructure heritage creates authentic domain expertise.</div></div>
+    </div>
+  </div>
+
+  <div class="sh">India + US + Europe — the three geographic pillars</div>
+  <div class="point"><div class="dot df">US</div><div><strong>North America (36% of YTD FY26 revenue) — the highest-margin market:</strong> US customers pay premium pricing for certified, US-made (or trusted-partner-made) fiber cables. The BEAD program ($42B) will fund fiber to 100M+ underserved homes — each home needs 200–400 meters of fiber = 20–40 billion fiber metres. STL's India manufacturing + export to US benefits enormously from the India-US trade agreement reducing tariffs from 50% to 18%. North America revenue growing from 20% to 36% — this geographic mix shift is the primary EBITDA margin recovery driver.</div></div>
+  <div class="point"><div class="dot df">IN</div><div><strong>India (35% of revenue) — BharatNet + commercial DC boom:</strong> BharatNet Phase 3 (connectivity for rural India) + private commercial data centres (Hiranandani, Adani, ADIA, NTT) driving Indian demand. India also benefits from anti-dumping measures on Chinese optical cable — STL as domestic manufacturer gets pricing protection. FTTx growth as Jio + Airtel + BSNL roll out fiber-to-home.</div></div>
+  <div class="point"><div class="dot df">EU</div><div><strong>Europe (28% of revenue) — 5G + FTTx rollout:</strong> European telcos rolling out FTTP (fiber to the premises) nationally. STL's Italy and South Africa plants give manufacturing proximity for European supply. MCF London trial with Colt positions STL for next-gen European DC orders.</div></div>
+</div>
+
+<!-- GUIDANCE -->
+<div id="guidance" class="panel">
+  <div class="sh">Guidance analysis — management is cautiously optimistic on recovery timeline</div>
+  <div class="warn fib"><strong>STL management (Ankit Agarwal, MD) has been transparent about the recovery timeline and has maintained consistent guidance since Q2 FY26.</strong> The credibility of guidance improved significantly when Q4 FY26 EBITDA margins hit 15.1% — the first time since FY22 that margins exceeded the 15% threshold. The management re-appointment for 5 years signals board confidence in the recovery strategy.</div>
+
+  <div class="guid-card">
+    <div class="guid-h">✓ EBITDA margin recovery: 6 consecutive quarters of improvement — delivered</div>
+    <div class="guid-b">STL management guided "sequential EBITDA margin improvement" from Q2 FY25 onwards. Q4 FY26 EBITDA at 15.1% is the 6th consecutive sequential improvement — from ~8% trough to 15.1%. This is the single most important guidance delivery signal. Management target of 18–20% is now clearly in sight — the trajectory is confirmed. Revenue growth from BEAD (US) + BharatNet (India) + AI DC providing both volume and premium pricing that supports margin expansion.</div>
+    <div class="guid-s">Credibility: 9/10. Six consecutive quarters of improvement = track record, not just a promise.</div>
+  </div>
+
+  <div class="guid-card">
+    <div class="guid-h">✓ North America revenue growing: Guided to increase → delivered 36% of YTD FY26</div>
+    <div class="guid-b">Management guided increasing North America contribution (the highest-margin market) as BEAD demand materialises. YTD FY26 NA revenue at 36% confirms this — up from ~20% in prior year. Every percentage point shift toward North America is a margin improvement catalyst because US customers pay 30–50% premium over European/Asian customers for the same product.</div>
+    <div class="guid-s">Credibility: 9/10. North America ramp is real and quantified. BEAD execution from CY2026 will sustain this.</div>
+  </div>
+
+  <div class="guid-card watch">
+    <div class="guid-h">⚠ EBITDA target 18–20% — still 300–500 bps away as of Q4 FY26 (15.1%)</div>
+    <div class="guid-b">Management targets 18–20% EBITDA margins "in the medium term." Q4 FY26 at 15.1% is 290–490 bps below the target range. Achieving 18%+ requires: (1) Capacity utilisation above 70% (currently recovering from ~50–55%), (2) BEAD program scaling (lumpier than anticipated — state-by-state procurement), (3) AI DC connectivity products reaching 30% of revenue (from 20%), (4) Continued fiber price recovery (demand > supply rebalancing). Timeline: FY27–FY28 most likely for 18%+ margins.</div>
+    <div class="guid-s">Credibility: 7/10. Direction is right; the 18% target is achievable FY27–28 if demand catalysts execute as guided.</div>
+  </div>
+
+  <div class="guid-card miss">
+    <div class="guid-h">✗ Global market share (ex-China): 12% → 8% — significant competitive erosion</div>
+    <div class="guid-b">STL's global optical fiber market share (excluding Chinese producers) fell from 12% to 8% during the FY23–FY25 downturn. This was not fully telegraphed in advance and represents permanent competitive damage — customers who switched to other suppliers during STL's price/quality issues may not automatically return. Winning back market share requires sustained price competitiveness and product quality at scale. This is one metric where STL's guidance (of market share recovery) has not yet been validated.</div>
+    <div class="guid-s">Key metric to watch: Does STL market share stabilise at 8% or start recovering? FY27 order book composition will indicate.</div>
+  </div>
+
+  <div class="sh">Guidance scorecard</div>
+  <table>
+    <tr><th>Item</th><th>Credibility</th><th>Base case</th><th>Key risk</th></tr>
+    <tr><td>FY27 EBITDA margin 15–17%</td><td class="g">8/10 — trajectory supports</td><td>16–17%</td><td>BEAD delays; tariff changes; fiber price competition</td></tr>
+    <tr><td>FY27 revenue ₹5,500–6,000 Cr</td><td class="g">7/10 — order book + demand cycles</td><td>₹5,400–5,800 Cr</td><td>Lumpy BEAD execution; BharatNet project delays</td></tr>
+    <tr><td>AI DC to 30% of revenue</td><td class="a">7/10 — currently 20%, growing</td><td>25–28% by FY27</td><td>Data centre connectivity is competitive; HCF not yet at commercial scale</td></tr>
+    <tr><td>EBITDA 18–20% target (FY28)</td><td class="a">6/10 — achievable but multi-year</td><td>18% by Q4 FY28</td><td>Prysmian lawsuit resolution; fiber pricing environment</td></tr>
+    <tr><td>Prysmian lawsuit resolution</td><td class="r">Unknown — ongoing litigation</td><td>Settlement likely FY27–28</td><td>$0.8B exposure if adverse verdict — material risk</td></tr>
+  </table>
+</div>
+
+<!-- RISKS -->
+<div id="risks" class="panel">
+  <div class="sh">Risks — the comprehensive view on a recovering large-cap</div>
+
+  <div class="point"><div class="dot dr">1</div><div><strong>Prysmian $0.8 billion lawsuit — the most material risk.</strong><br>Prysmian (Italy's largest cable company) has filed a $0.8 billion lawsuit against STL's US subsidiary. The dispute relates to alleged patent infringement or trade secrets. $0.8B vs STL's current ₹14,390 Cr (~$1.7B) market cap = the lawsuit represents ~47% of market cap if fully adverse. Management has said they are contesting and expect resolution, but an adverse verdict would be catastrophic for the balance sheet. This risk alone should command a significant discount to fair value — and current prices don't seem to fully account for it.</div></div>
+
+  <div class="point"><div class="dot da">2</div><div><strong>Market cap ₹14,390 Cr — wrong size for Garvit's 3x-in-3-years goal.</strong><br>3x from ₹14,390 Cr = ₹43,170 Cr. At 25x PE, requires PAT of ₹1,727 Cr. FY26 PAT: ~₹56 Cr. Getting to ₹1,727 Cr requires 30x PAT growth in 3 years. Even optimistically: FY28 PAT ₹700 Cr at 25x PE = ₹17,500 Cr = 1.2x return. The math simply does not work for a 3-year 3x goal from current price at current market cap. This is the same problem we identified with PCBL and Skipper.</div></div>
+
+  <div class="point"><div class="dot da">3</div><div><strong>The stock has already rallied +400% from ₹41 — much of the recovery is priced in.</strong><br>Anyone who bought STL at ₹41 (April 2025) and held to ₹295 (April 2026) already made 614% returns. At ₹295, the market cap (₹14,390 Cr) prices in a very optimistic FY27–28 recovery. If FY27 EBITDA reaches ₹900 Cr (at 15% margin on ₹6,000 Cr revenue), at 20x EBITDA = ₹18,000 Cr = 25% upside from current. That's not a 3x return — it's moderate upside from a dramatically recovered price.</div></div>
+
+  <div class="point"><div class="dot da">4</div><div><strong>BEAD program execution risk — state-by-state procurement is slower than expected.</strong><br>The US BEAD program ($42B) has been slower to deploy than initially projected — NTIA (National Telecommunications and Information Administration) approval process, state matching requirements, and ISP participation requirements have delayed deployment from early-2025 expectations to late-2026. Each quarter of BEAD delay is a missed revenue quarter for STL's US operations. If BEAD takes until 2027–28 to show real volume, the FY27 revenue upside is deferred.</div></div>
+
+  <div class="point"><div class="dot dg">+</div><div><strong>Genuine strengths — why STL is a quality business worth watching:</strong><br>World-class optical fiber manufacturing (one of 4–5 global players at scale). 780 patents — real technology moat. Hollow-core fiber for AI DC = next-gen differentiation. North America ramp (highest-margin market). Three secular demand cycles (BEAD + AI DC + 5G) all operating simultaneously. MD Ankit Agarwal re-appointed for 5 years = leadership continuity. India tariff protection on Chinese cable = domestic pricing power. Services demerger complete = cleaner, focused company. PwC unmodified audit opinion = clean governance. Q4 FY26 EBITDA 15.1% = strongest quarterly performance since FY22.</div></div>
+</div>
+
+<!-- SCENARIOS -->
+<div id="scenarios" class="panel">
+  <div class="sh">Three scenarios — from current ~₹295 (~₹14,390 Cr mcap)</div>
+  <div class="warn caution"><strong>The fundamental 3x challenge:</strong> At ₹14,390 Cr, 3x = ₹43,170 Cr. This is a large-cap math problem — not a small-cap compounding story. Even the bull case (FY28 PAT ₹750 Cr at 25x PE = ₹18,750 Cr) only yields 1.3x from current levels. This is a quality recovery story that could deliver 50–100% return in 2–3 years — not 3x.</div>
+
+  <div class="scenario" style="border-left:3px solid #2E7D32">
+    <div style="font-size:13px;font-weight:500;color:#1B5E20;margin-bottom:8px">Bull case — 1.5–2x in 2–3 years: Margins reach 18%, BEAD/AI DC drive volume</div>
+    <div class="sc-grid">
+      <div class="sc-cell"><div class="sc-l">FY28 revenue</div><div class="sc-v">₹7,500–8,500 Cr</div></div>
+      <div class="sc-cell"><div class="sc-l">FY28 EBITDA%</div><div class="sc-v">18–20%</div></div>
+      <div class="sc-cell"><div class="sc-l">FY28 EBITDA</div><div class="sc-v">₹1,350–1,700 Cr</div></div>
+      <div class="sc-cell"><div class="sc-l">FY28 PAT</div><div class="sc-v">₹600–800 Cr</div></div>
+      <div class="sc-cell"><div class="sc-l">PE</div><div class="sc-v">22–28x</div></div>
+      <div class="sc-cell"><div class="sc-l">FY28 mcap</div><div class="sc-v">₹13,200–22,400 Cr</div></div>
+    </div>
+    <div style="font-size:11.5px;color:#333;margin-top:8px">At 25x PE on ₹700 Cr PAT = ₹17,500 Cr = <strong>1.2x from ₹14,390 Cr.</strong> Even in the most optimistic scenario, STL at current market cap delivers ~1.5–2x in 3 years — not 3x. The company is genuinely excellent but the entry price is too high for the 3x thesis.</div>
+  </div>
+
+  <div class="scenario" style="border-left:3px solid #378ADD">
+    <div style="font-size:13px;font-weight:500;color:#185FA5;margin-bottom:8px">Base case — flat to +50%: BEAD delayed, margins reach 15–16%, Prysmian settled</div>
+    <div class="sc-grid">
+      <div class="sc-cell"><div class="sc-l">FY27 revenue</div><div class="sc-v">₹5,500–6,000 Cr</div></div>
+      <div class="sc-cell"><div class="sc-l">FY27 PAT</div><div class="sc-v">₹250–350 Cr</div></div>
+      <div class="sc-cell"><div class="sc-l">PE</div><div class="sc-v">20–25x</div></div>
+      <div class="sc-cell"><div class="sc-l">FY27 mcap</div><div class="sc-v">₹5,000–8,750 Cr</div></div>
+      <div class="sc-cell"><div class="sc-l">Return</div><div class="sc-v">-39% to -39%</div></div>
+      <div class="sc-cell"><div class="sc-l">Note</div><div class="sc-v">Base case = LOSS from current!</div></div>
+    </div>
+    <div style="font-size:11.5px;color:#333;margin-top:8font-size:11.5px;color:#333;margin-top:8px">FY27 PAT ₹300 Cr at 22x PE = ₹6,600 Cr = <strong>-54% from current ₹14,390 Cr.</strong> The base case is a SIGNIFICANT LOSS from current price — because the current valuation embeds FY28–FY29 optimism already. This is the most important 3x-goal analysis finding for STL.</div>
+  </div>
+
+  <div class="scenario" style="border-left:3px solid #A32D2D">
+    <div style="font-size:13px;font-weight:500;color:#A32D2D;margin-bottom:8px">Bear case — -50% or worse: Prysmian adverse + BEAD delayed + fiber oversupply returns</div>
+    <div class="sc-grid">
+      <div class="sc-cell"><div class="sc-l">Trigger</div><div class="sc-v">Prysmian adverse verdict</div></div>
+      <div class="sc-cell"><div class="sc-l">Trigger</div><div class="sc-v">BEAD 2-year delay</div></div>
+      <div class="sc-cell"><div class="sc-l">Trigger</div><div class="sc-v">China floods fiber market again</div></div>
+      <div class="sc-cell"><div class="sc-l">FY27 PAT</div><div class="sc-v">₹50–100 Cr</div></div>
+      <div class="sc-cell"><div class="sc-l">PE at 15–18x</div><div class="sc-v">₹750–1,800 Cr</div></div>
+      <div class="sc-cell"><div class="sc-l">Stock</div><div class="sc-v">₹15–37/share (-87% to -95%)</div></div>
+    </div>
+    <div style="font-size:11.5px;color:#333;margin-top:8px"><strong>Bear probability: 20–25%.</strong> STL's bear case is catastrophic if Prysmian wins the $0.8B lawsuit. At current ₹14,390 Cr market cap, a $0.8B (~₹6,700 Cr) liability would wipe out ~47% of market cap. Combined with a return to fiber oversupply, the stock could revisit ₹50–60 range — similar to the April 2025 lows.</div>
+  </div>
+
+  <table style="margin-top:10px">
+    <tr><th>Target</th><th>Mcap needed</th><th>Driver</th><th>Probability</th></tr>
+    <tr><td>3x (₹43,170 Cr)</td><td>₹43,170 Cr</td><td>FY28 PAT ₹1,727 Cr at 25x PE — not realistic in 3 years</td><td class="r">3–5%</td></tr>
+    <tr><td>2x (₹28,780 Cr)</td><td>₹28,780 Cr</td><td>FY28 PAT ₹1,151 Cr at 25x PE — also extremely ambitious</td><td class="r">8–12%</td></tr>
+    <tr><td>1.5x (₹21,585 Cr)</td><td>₹21,585 Cr</td><td>FY28 PAT ₹800 Cr at 27x PE + market premium</td><td class="a">20–25%</td></tr>
+    <tr><td>Bear (-50%: ₹7,200 Cr)</td><td>₹7,200 Cr</td><td>Prysmian + BEAD delays + fiber oversupply</td><td class="a">20–25%</td></tr>
+  </table>
+</div>
+
+<!-- SECTOR PEERS -->
+<div id="compare" class="panel">
+  <div class="sh">Optical fiber + digital infrastructure peers</div>
+  <div style="border:1px solid #ddd;border-radius:10px;overflow:hidden;font-size:11px">
+    <div class="comp-h">
+      <div class="cc-h" style="background:#f5f5f3">Metric</div>
+      <div class="cc-h" style="background:#E8F5E9;color:#1B5E20">STL ← Your stock</div>
+      <div class="cc-h" style="background:#E6F1FB;color:#185FA5">Corning (US, global leader)</div>
+      <div class="cc-h" style="background:#f5f5f3">HFCL India</div>
+    </div>
+    <div class="comp-row"><div class="cc cc-label">Market cap</div><div class="cc mid-cell">₹14,390 Cr (wrong size for 3x)</div><div class="cc loser-cell">~$32B (₹2.7 lakh Cr)</div><div class="cc winner-cell">₹5,000–6,000 Cr</div></div>
+    <div class="comp-row"><div class="cc cc-label">Revenue (FY26)</div><div class="cc mid-cell">₹4,745 Cr (+18.8%)</div><div class="cc winner-cell">~₹1.25 lakh Cr (global #1)</div><div class="cc mid-cell">~₹4,000 Cr</div></div>
+    <div class="comp-row"><div class="cc cc-label">EBITDA margin</div><div class="cc mid-cell">13.2% FY26 (Q4: 15.1%)</div><div class="cc winner-cell">~35–40% (global quality)</div><div class="cc mid-cell">~10–12%</div></div>
+    <div class="comp-row"><div class="cc cc-label">Technology IP</div><div class="cc winner-cell">780 patents; HCF, MCF pioneer India</div><div class="cc winner-cell">Thousands; global IP leader</div><div class="cc mid-cell">Limited own IP</div></div>
+    <div class="comp-row"><div class="cc cc-label">BEAD/US exposure</div><div class="cc winner-cell">36% NA revenue — direct BEAD beneficiary</div><div class="cc winner-cell">US market leader</div><div class="cc loser-cell">Minimal</div></div>
+    <div class="comp-row"><div class="cc cc-label">AI DC positioning</div><div class="cc winner-cell">20% revenue; HCF launch</div><div class="cc winner-cell">Hyperscaler preferred vendor</div><div class="cc mid-cell">Growing</div></div>
+    <div class="comp-row"><div class="cc cc-label">Prysmian lawsuit</div><div class="cc loser-cell">$0.8B exposure — major risk</div><td class="cc winner-cell">None</td><td class="cc winner-cell">None</td></div>
+    <div class="comp-row"><div class="cc cc-label">Profitable?</div><div class="cc mid-cell">Just returning (₹56 Cr FY26)</div><td class="cc winner-cell">Consistently profitable</td><td class="cc mid-cell">Marginally profitable</td></div>
+    <div class="comp-row"><div class="cc cc-label">3x probability (3yr)</div><div class="cc loser-cell">3–5% (mcap too large)</div><td class="cc loser-cell">2–3% (much larger)</td><td class="cc mid-cell">20–25% (smaller base)</td></div>
+    <div class="comp-row"><div class="cc cc-label">Better for Garvit 3x</div><div class="cc">No — too large, 614% rally already done</div><td class="cc">No — wrong geography + size</td><td class="cc">More appropriate size; less IP moat</td></div>
+  </div>
+
+  <div class="sector-card" style="margin-top:12px">
+    <div class="sc-hdr"><div><div class="sc-nm">HFCL — India fiber + connectivity alternative</div><div class="sc-tg">₹5,000–6,000 Cr mcap · Fiber cable + Defense + 5G · Growing order book · Less IP than STL</div></div><span class="badge bb">Smaller comparable</span></div>
+    <div class="sc-bd">HFCL is India's second-largest fiber optic cable company — smaller than STL but at a more appropriate market cap for 3x math (₹5,000–6,000 Cr vs ₹14,390 Cr). No Prysmian-equivalent lawsuit risk. Growing defense electronics division. If India's fiber demand cycle (BharatNet, 5G, DC) is the thesis, HFCL at ₹5,500 Cr has better 3x math than STL at ₹14,390 Cr. However, HFCL lacks STL's IP moat (780 patents, HCF/MCF), US market exposure, and global scale. The right fiber play for India — just not as technologically differentiated.</div>
+  </div>
+</div>
+
+<!-- VERDICT -->
+<div id="verdict" class="panel">
+  <div class="sh">The definitive verdict for Garvit's 3x portfolio goal</div>
+
+  <div class="verdict-card" style="background:#E8F5E9;border:1px solid #81C784">
+    <div class="vc-h" style="color:#1B5E20">STL — Verdict: Excellent quality business at the wrong price for Garvit's 3x goal. The stock has already returned +614% from its April 2025 lows. At ₹14,390 Cr market cap, even the bull case delivers only 1.5–2x over 3 years — well below the 3x target. DO NOT BUY at current prices.</div>
+    <div class="vc-b">Here is the complete picture:<br><br>
+    <strong>The business is genuinely excellent:</strong><br>
+    • One of only 4–5 global-scale optical fiber manufacturers — India's largest<br>
+    • 780 patents: Hollow-core fiber, Multi-core fiber, G.654.E — genuine IP moat<br>
+    • Three secular demand cycles: BEAD ($42B US) + AI DC (76% CAGR) + BharatNet (India)<br>
+    • 6 consecutive quarterly EBITDA margin improvements: 8% → 15.1%<br>
+    • Q4 FY26 EBITDA ₹218 Cr (15.1%) — highest since FY22<br>
+    • North America 36% of revenue — India-US trade deal (50%→18% tariff) is a structural competitive advantage<br>
+    • MD Ankit Agarwal re-appointed 5 years — leadership continuity<br>
+    • India tariff barriers on Chinese cable — domestic pricing protection<br>
+    • FY26 revenue ₹4,745 Cr (+18.8%) with unmodified PwC audit<br><br>
+    <strong>Why the entry price at ₹295 kills the 3x thesis:</strong><br>
+    The stock was ₹41 in April 2025. Whoever bought at ₹41 was buying a quality business at a distressed price — a genuinely exceptional risk/reward. That entry point is gone. At ₹295 (₹14,390 Cr mcap), the market has already priced in most of the recovery. FY26 PAT ₹56 Cr at ₹14,390 Cr = 257x PE — an extreme multiple on a just-returning-to-profit company. 3x from here requires PAT of ₹1,727 Cr (at 25x PE) — 30x from ₹56 Cr — which requires near-perfect execution of every demand cycle simultaneously over 3 years. The expected return from ₹295 is 0–50% in 3 years, not 3x.<br><br>
+    <strong>Portfolio context:</strong><br>
+    Garvit's portfolio has much better 3x candidates with comparable or lower risk:<br>
+    • Bondada Engineering: ₹3,895 Cr mcap, 35–40% 3x probability — better T&D/clean energy play<br>
+    • TARIL: ₹3,500 Cr mcap, 20–25% 3x probability — HVDC transformer pioneer<br>
+    • Muthoot Microfin: ₹3,185 Cr mcap, 30–35% 3x probability — credit cost recovery math<br>
+    All three have better 3x probability at fractions of STL's market cap.<br><br>
+    <strong>The right way to think about STL:</strong> This is a 5–7 year compounding story for wealth preservation, not a 3-year 3x aggressive play. If Garvit achieves his 3x portfolio goal by FY28, STL would be an excellent re-entry at ₹200–250 (if it corrects) as a quality global-tech-infrastructure compounder for the next phase.</div>
+  </div>
+
+  <div class="sh">Allocation recommendation</div>
+  <table>
+    <tr><th>Action</th><th>Amount</th><th>Rationale</th></tr>
+    <tr><td><span class="badge br">DO NOT BUY at current ₹295 price</span></td><td>₹0</td><td>₹14,390 Cr mcap with ₹56 Cr PAT = 257x PE. 3x math requires 30x PAT growth. The stock already returned 614% from its lows. Prysmian $0.8B lawsuit is unresolved. Better 3x vehicles exist in the portfolio.</td></tr>
+    <tr><td><span class="badge ba">WATCHLIST — alert at ₹130–150</span></td><td>Watchlist</td><td>A 50% correction to ₹130–150 (₹6,300–7,300 Cr mcap) with FY27 revenue confirmation ₹5,500+ Cr would create an interesting entry point. At ₹7,000 Cr mcap on ₹400+ Cr PAT trajectory = 17x PE = decent risk/reward for a 2–3x in 3 years. But not from ₹295.</td></tr>
+    <tr><td><span class="badge bg">Better fiber/T&D alternative: TARIL (already held)</span></td><td>Already in portfolio</td><td>TARIL (transformers, HVDC — India's T&D infrastructure) is Garvit's current infrastructure pick at ₹3,500 Cr mcap. Better 3x math than STL. If adding T&D infrastructure exposure, add to TARIL before considering STL.</td></tr>
+  </table>
+
+  <div class="sh">Six triggers to watch from the watchlist</div>
+  <table>
+    <tr><th>#</th><th>Trigger</th><th>Status</th><th>Impact</th></tr>
+    <tr><td>1</td><td>Prysmian lawsuit resolution</td><td class="r">Ongoing — no update</td><td>🔥 Settlement at $200–300M = manageable. Adverse verdict at $0.8B = stock catastrophe. Most important risk to track.</td></tr>
+    <tr><td>2</td><td>BEAD program state procurement orders</td><td class="a">CY2026 start — lumpy state-by-state</td><td>🟢 Large BEAD orders = US revenue spike + margin expansion. Every state starting procurement = sustained North America demand for 3–4 years.</td></tr>
+    <tr><td>3</td><td>EBITDA margin reaching 17–18%</td><td class="g">Q4 FY26: 15.1% — 6th consecutive improvement</td><td>🟢 17%+ margin in FY27 = PAT ₹300+ Cr = PE at 25x = ₹7,500 Cr = -48% from current. Still not a re-entry from ₹295.</td></tr>
+    <tr><td>4</td><td>AI/DC revenue reaching 30% of total</td><td class="a">20% currently; target 30% in 12–18 months</td><td>🟢 30% DC = premium product mix = margin re-rating narrative. Watch quarterly disclosure of segment contribution.</td></tr>
+    <tr><td>5</td><td>India-US trade agreement formal signing</td><td class="g">Under advanced discussion</td><td>🟢 Formal 50%→18% tariff reduction = STL's US exports permanently more competitive. Big structural positive if signed.</td></tr>
+    <tr><td>6</td><td>Stock price correction to ₹130–150</td><td class="a">Currently ₹295 — watch for correction</td><td>🟢 Any 50%+ correction from here (fundamentals intact) = consider buying ₹25–40K as a quality infrastructure bet. Not at ₹295.</td></tr>
+  </table>
+
+  <div class="warn fib" style="margin-top:12px"><strong>One-line verdict:</strong> Sterlite Technologies is India's most technologically advanced optical fiber company — with 780 patents, hollow-core fiber technology leadership, BEAD/AI DC/BharatNet secular demand tailwinds, and a genuine EBITDA margin recovery (8% trough → 15.1% in Q4 FY26). The business is world-class. But at ₹14,390 Cr market cap after a +614% rally from ₹41 lows, the 3x-in-3-years math is essentially impossible — even the most optimistic FY28 PAT scenario at 25x PE gets to only 1.5–2x. The Prysmian $0.8B lawsuit adds further downside risk that current prices don't fully reflect. Do not buy at ₹295. Set a watchlist alert at ₹130–150 for a potential re-entry as a quality infrastructure compounder after the 3x portfolio goal is achieved.</div>
+</div>
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/4.4.1/chart.umd.js"></script>
+<script>
+function show(id,btn){
+  document.querySelectorAll('.tab').forEach(t=>t.classList.remove('active'));
+  document.querySelectorAll('.panel').forEach(p=>p.classList.remove('active'));
+  btn.classList.add('active');
+  document.getElementById(id).classList.add('active');
+}
+new Chart(document.getElementById('rc').getContext('2d'),{
+  type:'bar',
+  data:{
+    labels:['FY22','FY23','FY24','FY25','Q1FY26','Q2FY26','Q3FY26','Q4FY26','FY26','FY27E','FY28E'],
+    datasets:[
+      {label:'Revenue ₹ Cr',data:[3900,4200,3500,3993,1020,1026,1257,1441,4745,5800,7500],backgroundColor:['#2E7D32','#2E7D32','#A32D2D','#A32D2D','#EF9F27','#EF9F27','#1D9E75','#1D9E75','#1D9E75','#A5D6A7','#A5D6A7'],borderRadius:4,yAxisID:'y'},
+      {label:'EBITDA ₹ Cr',data:[660,630,350,359,117,128,129,218,628,928,1425],type:'line',borderColor:'#1D9E75',backgroundColor:'transparent',pointBackgroundColor:'#1D9E75',tension:0.3,yAxisID:'y2'}
+    ]
+  },
+  options:{responsive:true,maintainAspectRatio:false,plugins:{legend:{display:false}},scales:{y:{ticks:{font:{size:10}}},y2:{position:'right',ticks:{font:{size:10}},grid:{drawOnChartArea:false}},x:{ticks:{font:{size:10}}}}}
+});
+</script>
+</body>
+</html>

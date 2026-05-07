@@ -1,0 +1,467 @@
+<!DOCTYPE html>
+<html><head><meta charset="utf-8">
+<style>
+*{box-sizing:border-box;margin:0;padding:0}
+body{font-family:system-ui,sans-serif;padding:16px;background:#fff;color:#1a1a1a;font-size:14px}
+h1{font-size:20px;font-weight:500;margin-bottom:3px}
+.sub{font-size:12px;color:#666;margin-bottom:14px}
+.sg{display:grid;grid-template-columns:repeat(auto-fill,minmax(110px,1fr));gap:8px;margin-bottom:16px}
+.sc{background:#f5f5f3;border-radius:8px;padding:10px 12px}
+.sl{font-size:10px;color:#666;margin-bottom:2px}
+.sv{font-size:17px;font-weight:500}
+.tab-row{display:flex;gap:5px;flex-wrap:wrap;margin-bottom:14px}
+.tab{font-size:11.5px;padding:5px 13px;border-radius:20px;border:1px solid #ddd;background:#fff;cursor:pointer;white-space:nowrap}
+.tab.active{background:#1a1a1a;color:#fff;border-color:#1a1a1a}
+.panel{display:none}.panel.active{display:block}
+.sh{font-size:10.5px;font-weight:500;color:#666;text-transform:uppercase;letter-spacing:.06em;margin:16px 0 7px;padding-bottom:5px;border-bottom:1px solid #eee}
+table{width:100%;border-collapse:collapse;font-size:12px;margin:8px 0}
+th{font-size:10.5px;font-weight:500;color:#666;padding:5px 7px;text-align:left;border-bottom:1px solid #eee;white-space:nowrap}
+td{padding:8px 7px;border-bottom:1px solid #eee;color:#1a1a1a;vertical-align:top}
+tr:last-child td{border-bottom:none}
+tr:hover td{background:#fafaf9}
+.g{color:#0F6E56;font-weight:500}.r{color:#A32D2D;font-weight:500}.a{color:#854F0B;font-weight:500}.b{color:#185FA5;font-weight:500}
+.badge{display:inline-block;font-size:10px;padding:2px 7px;border-radius:10px;white-space:nowrap}
+.bg{background:#E1F5EE;color:#0F6E56}.bb{background:#E6F1FB;color:#185FA5}.ba{background:#FAEEDA;color:#854F0B}.br{background:#FCEBEB;color:#A32D2D}.bgray{background:#f1f0e8;color:#5F5E5A}.bdef{background:#E8EAF6;color:#283593}.bcyb{background:#E0F2F1;color:#004D40}
+.warn{padding:10px 13px;margin:8px 0;border-left:3px solid;font-size:12px;line-height:1.65}
+.warn.success{background:#E1F5EE;border-color:#1D9E75;color:#04342C}
+.warn.caution{background:#FAEEDA;border-color:#BA7517;color:#412402}
+.warn.danger{background:#FCEBEB;border-color:#A32D2D;color:#712B13}
+.warn.info{background:#E6F1FB;border-color:#185FA5;color:#042C53}
+.warn.def{background:#E8EAF6;border-color:#3949AB;color:#1A237E}
+.warn.cyb{background:#E0F2F1;border-color:#0097A7;color:#00363A}
+.warn strong{font-weight:500}
+.chart-wrap{position:relative;width:100%;height:240px;margin:8px 0}
+.kpi-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:10px;margin:10px 0}
+.kpi{background:#f5f5f3;border-radius:8px;padding:10px 12px;border-left:3px solid transparent}
+.kpi.green{border-left-color:#1D9E75}.kpi.amber{border-left-color:#EF9F27}.kpi.blue{border-left-color:#378ADD}.kpi.red{border-left-color:#A32D2D}.kpi.def{border-left-color:#3949AB}.kpi.cyb{border-left-color:#0097A7}
+.kpi-l{font-size:10px;color:#666;margin-bottom:3px}
+.kpi-v{font-size:17px;font-weight:500}
+.kpi-s{font-size:10px;color:#888;margin-top:2px}
+.point{display:flex;gap:9px;align-items:flex-start;padding:9px 0;border-bottom:1px solid #eee;font-size:12px;line-height:1.6;color:#555}
+.point:last-child{border-bottom:none}
+.point strong{color:#1a1a1a;font-weight:500}
+.dot{width:19px;height:19px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:10px;font-weight:500;flex-shrink:0;margin-top:1px}
+.dg{background:#E1F5EE;color:#0F6E56}.dr{background:#FCEBEB;color:#A32D2D}.da{background:#FAEEDA;color:#854F0B}.db{background:#E6F1FB;color:#185FA5}.dd{background:#E8EAF6;color:#283593}.dc{background:#E0F2F1;color:#004D40}
+.two-col{display:grid;grid-template-columns:1fr 1fr;gap:12px}
+.pane{border:1px solid #ddd;border-radius:10px;padding:13px}
+.pane-h{font-size:13px;font-weight:500;margin-bottom:9px}
+.scenario{border:1px solid #ddd;border-radius:10px;padding:13px;margin-bottom:9px}
+.sc-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:7px;margin:9px 0}
+.sc-cell{background:#f5f5f3;border-radius:6px;padding:7px 9px}
+.sc-l{font-size:10px;color:#666}
+.sc-v{font-size:12px;font-weight:500;margin-top:2px}
+.comp-h{display:grid;grid-template-columns:160px repeat(3,1fr);background:#f5f5f3;border-radius:8px 8px 0 0;overflow:hidden}
+.comp-row{display:grid;grid-template-columns:160px repeat(3,1fr);border-bottom:1px solid #eee}
+.comp-row:last-child{border-bottom:none}
+.cc{padding:8px 10px;font-size:11px;border-right:1px solid #eee}
+.cc:last-child{border-right:none}
+.cc-h{font-size:10px;font-weight:500;color:#444;padding:8px 10px;border-right:1px solid #ddd}
+.cc-h:last-child{border-right:none}
+.cc-label{color:#666;font-size:11px}
+.winner-cell{background:#E1F5EE}.mid-cell{background:#FAEEDA}.loser-cell{background:#fff5f5}
+.verdict-card{border-radius:10px;padding:13px 15px;margin-bottom:10px}
+.vc-h{font-size:13px;font-weight:500;margin-bottom:6px}
+.vc-b{font-size:12px;line-height:1.65;color:#444}
+.sector-card{border:1px solid #ddd;border-radius:10px;overflow:hidden;margin-bottom:10px}
+.sc-hdr{padding:10px 13px;display:flex;justify-content:space-between;align-items:center;background:#fafaf9}
+.sc-nm{font-size:13px;font-weight:500}
+.sc-tg{font-size:11px;color:#666;margin-top:2px}
+.sc-bd{padding:10px 13px;font-size:12px;line-height:1.65;color:#555;border-top:1px solid #eee}
+.sc-bd strong{color:#1a1a1a}
+.guid-card{border-radius:10px;padding:12px 14px;margin-bottom:8px;border-left:3px solid #3949AB;background:#E8EAF6}
+.guid-h{font-size:11.5px;font-weight:500;margin-bottom:4px;color:#1A237E}
+.guid-b{font-size:11.5px;color:#333;line-height:1.6}
+.guid-s{font-size:10px;color:#888;margin-top:4px}
+.guid-card.beat{background:#E1F5EE;border-left-color:#1D9E75}.guid-card.beat .guid-h{color:#0F6E56}
+.guid-card.miss{background:#FCEBEB;border-left-color:#A32D2D}.guid-card.miss .guid-h{color:#A32D2D}
+.guid-card.watch{background:#FAEEDA;border-left-color:#BA7517}.guid-card.watch .guid-h{color:#854F0B}
+.valuation-alert{background:#FCEBEB;border:2px solid #A32D2D;border-radius:10px;padding:13px;margin:10px 0}
+.va-h{font-size:14px;font-weight:500;color:#A32D2D;margin-bottom:6px}
+.va-b{font-size:12px;color:#333;line-height:1.65}
+.thesis-box{background:#E8EAF6;border:2px solid #3949AB;border-radius:10px;padding:13px;margin:10px 0}
+.tb-h{font-size:14px;font-weight:500;color:#1A237E;margin-bottom:6px}
+.tb-b{font-size:12px;color:#1a1a1a;line-height:1.65}
+.prod-grid{display:grid;grid-template-columns:1fr 1fr;gap:8px;margin:10px 0}
+.prod-card{border:1px solid #ddd;border-radius:8px;padding:10px}
+.prod-nm{font-weight:500;font-size:12px;margin-bottom:3px}
+.prod-tag{font-size:10px;color:#666;margin-bottom:5px}
+.prod-bd{font-size:11px;color:#555;line-height:1.5}
+.rev-bar{display:flex;align-items:center;gap:8px;margin:5px 0}
+.rb-label{font-size:11px;color:#555;width:130px;flex-shrink:0}
+.rb-track{flex:1;background:#f5f5f3;border-radius:4px;height:15px;overflow:hidden}
+.rb-fill{height:100%;border-radius:4px;display:flex;align-items:center;padding-left:6px;font-size:9px;font-weight:600;color:#fff}
+.rb-val{font-size:11px;font-weight:500;width:80px;text-align:right}
+</style>
+</head>
+<body>
+
+<h1>Valiant Communications Ltd — Deep Investment Analysis</h1>
+<div class="sub">BSE: 526775 · NSE: VALIANT · Telecom transmission + Cybersecurity + Defence · Founded 1993 · Chairman: Inder Mohan Sood · New Delhi · 110+ countries · FY26 revenue ₹52.66 Cr · Market cap ~₹1,050 Cr · Stock +160% in 1 year</div>
+
+<div class="sg">
+  <div class="sc"><div class="sl">Market cap</div><div class="sv" style="color:#854F0B">~₹1,050 Cr</div></div>
+  <div class="sc"><div class="sl">FY26 revenue</div><div class="sv" style="color:#1D9E75">₹52.66 Cr</div></div>
+  <div class="sc"><div class="sl">FY26 PAT</div><div class="sv" style="color:#1D9E75">₹9.61 Cr</div></div>
+  <div class="sc"><div class="sl">Q3 FY26 rev. growth</div><div class="sv" style="color:#1D9E75">+165% YoY</div></div>
+  <div class="sc"><div class="sl">Trailing PE</div><div class="sv" style="color:#A32D2D">~109x</div></div>
+  <div class="sc"><div class="sl">Price/Sales</div><div class="sv" style="color:#A32D2D">~20x (!)</div></div>
+  <div class="sc"><div class="sl">Countries served</div><div class="sv" style="color:#185FA5">110+</div></div>
+  <div class="sc"><div class="sl">Promoter holding</div><div class="sv" style="color:#A32D2D">40.62% ↓</div></div>
+  <div class="sc"><div class="sl">52-wk range</div><div class="sv" style="color:#A32D2D">₹253–₹1,160</div></div>
+  <div class="sc"><div class="sl">Rev. growth streak</div><div class="sv" style="color:#1D9E75">5 qtrs ↑</div></div>
+  <div class="sc"><div class="sl">Defence validation</div><div class="sv" style="color:#3949AB">NavIC/GPS</div></div>
+  <div class="sc"><div class="sl">Quantum partner</div><div class="sv" style="color:#0097A7">Fortytwo42</div></div>
+</div>
+
+<div class="tab-row">
+  <button class="tab active" onclick="show('context',this)">⚠️ Valuation alert first</button>
+  <button class="tab" onclick="show('revenue',this)">Revenue history</button>
+  <button class="tab" onclick="show('sectorKPI',this)">Sector KPIs</button>
+  <button class="tab" onclick="show('business',this)">Business model</button>
+  <button class="tab" onclick="show('guidance',this)">Guidance</button>
+  <button class="tab" onclick="show('risks',this)">Risks</button>
+  <button class="tab" onclick="show('scenarios',this)">3x scenarios</button>
+  <button class="tab" onclick="show('compare',this)">Sector peers</button>
+  <button class="tab" onclick="show('verdict',this)">Verdict</button>
+</div>
+
+<!-- VALUATION ALERT -->
+<div id="context" class="panel active">
+  <div class="sh">Start here — the valuation disconnect you must understand first</div>
+
+  <div class="valuation-alert">
+    <div class="va-h">🚨 The most important number: ₹1,050 Cr market cap on ₹52.66 Cr revenue = 20x Price/Sales</div>
+    <div class="va-b">Valiant Communications has a market cap of ~₹1,050 Cr and FY26 full-year revenue of ₹52.66 Cr. This implies a Price/Sales multiple of approximately <strong>20x</strong> — meaning the market is paying ₹20 for every ₹1 of Valiant's current annual revenue. For context: Bondada Engineering (our 9.1/10 pick) trades at 1.5x revenue. Zaggle (high-growth fintech) trades at 2x revenue. DEE Development (9.0/10) trades at 3x revenue.<br><br>
+    At ₹9.61 Cr FY26 PAT and ₹1,050 Cr market cap, the trailing PE is <strong>~109x</strong>. The stock has risen +160% in 1 year — from ₹253 to ₹982. The market has priced in 5–7 years of hypergrowth already. This is not a value stock or a growth-at-reasonable-price (GARP) play — it is a <strong>pure momentum/narrative/optionality bet</strong> on defence technology, cybersecurity, and quantum-safe communications in India.<br><br>
+    Everything else in this analysis must be understood in this context. The business story may be genuinely exciting — but the current valuation embeds near-perfection already.</div>
+  </div>
+
+  <div class="thesis-box">
+    <div class="tb-h">🛡️ What the market IS betting on — the bull narrative</div>
+    <div class="tb-b">1. <strong>India defence indigenisation (Make in India):</strong> India's ₹6 lakh Cr annual defence budget increasingly requires domestic procurement. Valiant's NavIC-validated GPS time servers, EMP-protected storage, and Data Diode devices directly serve Armed Forces. If Valiant secures even 1–2 large defence contracts (₹50–200 Cr), revenue 10x in 2–3 years.<br><br>
+    2. <strong>Critical infrastructure cybersecurity:</strong> India's power grid, oil & gas, railways, airports are mandated to deploy cybersecurity equipment. Valiant is already certified for critical national infrastructure. The addressable market is enormous.<br><br>
+    3. <strong>Quantum-safe communications:</strong> India's NCIIPC (National Critical Information Infrastructure Protection Centre) is pushing quantum-safe requirements. Valiant's partnership with Fortytwo42 Labs (March 2026) positions it as India's first hardware quantum-safe platform provider.<br><br>
+    4. <strong>Export momentum:</strong> 110+ countries served. If a global defence tender is won, revenue could multiply several times.</div>
+  </div>
+
+  <div class="sh">The uncomfortable math — what revenue must be to justify current price</div>
+  <table>
+    <tr><th>Scenario</th><th>PE assumption</th><th>PAT required</th><th>Revenue required (at 18% PAT)</th><th>Growth multiple</th></tr>
+    <tr><td>Justify current mcap (₹1,050 Cr) at fair value</td><td>25x (mature)</td><td>₹42 Cr</td><td>~₹233 Cr</td><td class="r">4.4x from FY26 ₹52.66 Cr</td></tr>
+    <tr><td>Justify current mcap at growth PE</td><td>40x</td><td>₹26 Cr</td><td>~₹145 Cr</td><td class="a">2.75x from FY26</td></tr>
+    <tr><td>For 3x from current (₹3,150 Cr mcap)</td><td>25x</td><td>₹126 Cr</td><td>~₹700 Cr</td><td class="r">13.3x revenue growth needed</td></tr>
+    <tr><td>For 3x at aggressive PE</td><td>50x</td><td>₹63 Cr</td><td>~₹350 Cr</td><td class="r">6.6x revenue growth from FY26</td></tr>
+  </table>
+  <div class="warn caution"><strong>Even at 50x PE (a very generous multiple), 3x from current price requires ₹350 Cr of revenue by FY28–FY29 — 6.6x growth from FY26's ₹52.66 Cr.</strong> That means growing revenue from ₹52.66 Cr to ₹350 Cr in 2–3 years. That is a transformative defence/government contract win, not organic growth. Not impossible — but it requires a very specific, very large contract to materialise.</div>
+</div>
+
+<!-- REVENUE -->
+<div id="revenue" class="panel">
+  <div class="sh">Revenue &amp; profit history — 5 consecutive quarters of growth, from a very small base</div>
+  <div class="chart-wrap"><canvas id="rc"></canvas></div>
+  <div style="display:flex;gap:14px;font-size:11.5px;color:#666;margin-bottom:10px">
+    <span><span style="display:inline-block;width:10px;height:10px;border-radius:2px;background:#3949AB;margin-right:4px"></span>Revenue ₹ Cr</span>
+    <span><span style="display:inline-block;width:10px;height:10px;border-radius:2px;background:#1D9E75;margin-right:4px"></span>PAT ₹ Cr</span>
+    <span><span style="display:inline-block;width:10px;height:10px;border-radius:2px;background:#9FA8DA;margin-right:4px"></span>Projected</span>
+  </div>
+
+  <div class="sh">Revenue growth trajectory — 5 consecutive quarters of improvement</div>
+  <div class="rev-bar"><div class="rb-label">Q3 FY25 Revenue</div><div class="rb-track"><div class="rb-fill" style="width:36%;background:#3949AB">Base</div></div><div class="rb-val">₹8.35 Cr</div></div>
+  <div class="rev-bar"><div class="rb-label">Q1 FY26 Revenue</div><div class="rb-track"><div class="rb-fill" style="width:43%;background:#1D9E75">+53% YoY</div></div><div class="rb-val g">₹10.36 Cr</div></div>
+  <div class="rev-bar"><div class="rb-label">Q2 FY26 Revenue</div><div class="rb-track"><div class="rb-fill" style="width:53%;background:#1D9E75">+58% YoY</div></div><div class="rb-val g">₹20.17 Cr</div></div>
+  <div class="rev-bar"><div class="rb-label">Q3 FY26 Revenue</div><div class="rb-track"><div class="rb-fill" style="width:73%;background:#1D9E75">+165% YoY</div></div><div class="rb-val g">₹22.14 Cr</div></div>
+  <div class="rev-bar"><div class="rb-label">FY26 Full Year</div><div class="rb-track"><div class="rb-fill" style="width:100%;background:#0097A7">₹52.66 Cr</div></div><div class="rb-val g">₹52.66 Cr</div></div>
+
+  <table style="margin-top:12px">
+    <tr><th>Period</th><th>Revenue</th><th>Growth</th><th>PAT</th><th>PAT%</th><th>Key development</th></tr>
+    <tr><td>FY23</td><td>~₹20–25 Cr</td><td>—</td><td>~₹2–3 Cr</td><td class="a">~10%</td><td>Base period. Traditional telecom transmission + synchronisation equipment for utilities, railways, defence. Slow but steady.</td></tr>
+    <tr><td>FY24</td><td>~₹25–32 Cr</td><td class="g">+15–25%</td><td>~₹3–5 Cr</td><td class="a">~12%</td><td>Cybersecurity product line expanding. Data Diode devices added. NAS/SAN storage products launched. International orders continuing.</td></tr>
+    <tr><td>FY25</td><td>~₹32–38 Cr</td><td class="g">~+15–25%</td><td>~₹6–8 Cr</td><td class="g">~18%</td><td>EMP-protected storage (VCL9000) launched. NavIC validation for Indian Armed Forces. Critical infrastructure approvals. Stock begins rally.</td></tr>
+    <tr><td>Q1 FY26</td><td>₹10.36 Cr</td><td class="g">~+30% YoY</td><td>~₹1.5 Cr</td><td class="a">~14%</td><td>Steady execution. GPS anti-jamming feature added. New Quantum-Safe product development in progress.</td></tr>
+    <tr><td>Q2 FY26</td><td>₹20.17 Cr</td><td class="g">+58% YoY</td><td>₹5.27 Cr</td><td class="g">26%</td><td>Significant revenue jump — likely large order execution. PAT +88% YoY. PAT margin 26% — very high, suggests mix shift to high-margin products.</td></tr>
+    <tr><td>Q3 FY26</td><td>₹22.14 Cr</td><td class="g">+165% YoY</td><td>₹6.05 Cr</td><td class="g">27%</td><td>+1,241% PAT YoY. Record quarter. Quantum-safe partnership (Fortytwo42) announced March 2026. GPS anti-jamming full portfolio rollout.</td></tr>
+    <tr><td>FY26 Full Year</td><td>₹52.66 Cr</td><td class="g">~+45–65%</td><td>₹9.61 Cr</td><td class="g">~18%</td><td>Full year confirmed. PAT margin 18%. Strong H2. Company crossing ₹50 Cr revenue for first time ever.</td></tr>
+    <tr><td>FY27E</td><td>~₹80–120 Cr</td><td class="g">~+52–128%</td><td>~₹15–25 Cr</td><td class="g">~18–22%</td><td>If current order momentum continues. Defence + critical infrastructure + quantum-safe pipeline. Key: does the company win a large government tender?</td></tr>
+    <tr><td>FY28E (bull)</td><td>~₹150–300 Cr</td><td>—</td><td>~₹30–60 Cr</td><td class="g">~20%</td><td>Only achievable with large defence order win (₹100-200 Cr). Otherwise organic path = ₹80-100 Cr.</td></tr>
+  </table>
+  <div class="warn def"><strong>The revenue trajectory in context:</strong> Q2 and Q3 FY26 revenue of ₹20–22 Cr quarterly is actually very strong for a company that was doing ₹8 Cr/quarter 1 year ago. The 165% Q3 growth is genuine. However, telecom/defence equipment revenue is inherently lumpy — large orders get shipped in one quarter, then there's a quiet period. The sustainability of ₹20+ Cr/quarter in FY27 depends heavily on new order wins. Q4 FY26 results will be critical to validate whether this is a trend or a one-off.</div>
+</div>
+
+<!-- SECTOR KPIs -->
+<div id="sectorKPI" class="panel">
+  <div class="sh">Defence electronics + cybersecurity sector KPIs</div>
+  <div class="warn def"><strong>Valiant is not a single-sector company — it sits at the intersection of four high-growth themes:</strong> (1) Defence indigenisation (Make in India/Atmanirbhar Bharat), (2) Critical infrastructure cybersecurity (NCIIPC mandates), (3) Quantum-safe communications (next generation encryption), and (4) Synchronisation & timing equipment (telecom, power grid, railways). This multi-theme positioning is exactly what creates the narrative premium — but also makes it hard to value using traditional metrics.</div>
+
+  <div class="kpi-grid">
+    <div class="kpi def"><div class="kpi-l">Revenue growth (Q3 FY26)</div><div class="kpi-v">+165% YoY</div><div class="kpi-s">From ₹8.35 Cr → ₹22.14 Cr</div></div>
+    <div class="kpi cyb"><div class="kpi-l">Countries with installations</div><div class="kpi-v">110+</div><div class="kpi-s">Defence, power, railways, airports</div></div>
+    <div class="kpi green"><div class="kpi-l">PAT margin (Q2–Q3 FY26)</div><div class="kpi-v">26–27%</div><div class="kpi-s">Exceptional — high-margin products</div></div>
+    <div class="kpi red"><div class="kpi-l">Trailing PE</div><div class="kpi-v" style="color:#A32D2D">~109x</div><div class="kpi-s">Pricing in perfection + future growth</div></div>
+    <div class="kpi red"><div class="kpi-l">Price/Sales</div><div class="kpi-v" style="color:#A32D2D">~20x</div><div class="kpi-s">Very expensive vs any comparable</div></div>
+    <div class="kpi amber"><div class="kpi-l">Promoter holding</div><div class="kpi-v" style="color:#A32D2D">40.62% ↓</div><div class="kpi-s">Declining — concern to monitor</div></div>
+  </div>
+
+  <div class="sh">India defence + cybersecurity market — the massive tailwind</div>
+  <table>
+    <tr><th>Market</th><th>India addressable size</th><th>Valiant's positioning</th><th>Probability of winning</th></tr>
+    <tr><td><strong>Defence telecom + synchronisation</strong></td><td>₹3,000–5,000 Cr/yr</td><td class="g">NavIC validated, Armed Forces approval, 30+ years heritage</td><td class="a">Medium — established incumbent</td></tr>
+    <tr><td><strong>Critical infra cybersecurity (power, oil, railways)</strong></td><td>₹1,500–2,500 Cr/yr</td><td class="g">Already approved by NCIIPC, live deployments</td><td class="g">Good — certified provider</td></tr>
+    <tr><td><strong>Quantum-safe communications</strong></td><td>Early stage — growing</td><td class="a">Fortytwo42 partnership (Mar 2026) — India's first hardware QSC</td><td class="a">Medium — first mover but market nascent</td></tr>
+    <tr><td><strong>Export (110+ countries)</strong></td><td>Global — multi-billion USD</td><td class="a">Existing relationships, growing but small</td><td class="a">Medium — dependent on tender wins</td></tr>
+    <tr><td><strong>Data storage (NAS/SAN + EMP)</strong></td><td>₹500–1,000 Cr/yr govt</td><td class="g">EMP-protected = unique India product</td><td class="g">Good — niche with few competitors</td></tr>
+  </table>
+</div>
+
+<!-- BUSINESS MODEL -->
+<div id="business" class="panel">
+  <div class="sh">What Valiant Communications makes — the full product portfolio</div>
+  <div class="warn def"><strong>Valiant is a niche hardware manufacturer</strong> — it designs, develops and manufactures specialised communication, synchronisation, protection, and cybersecurity equipment for critical infrastructure. This is NOT a services business or a software SaaS company. Revenue comes from selling specialised hardware (typically ₹5L–₹10 Cr per order). Each order can materially move quarterly revenue because the absolute base is small.</div>
+
+  <div class="prod-grid">
+    <div class="prod-card">
+      <div class="prod-nm" style="color:#3949AB">📡 Telecom Transmission Equipment</div>
+      <div class="prod-tag">Multiplexers · MPLS routers · TDM over Packet/Ethernet · Digital cross-connects</div>
+      <div class="prod-bd">The legacy business. Multiplexers and data transmission equipment for utilities, telecom operators, railways. Installed in 110+ countries. Reliable, slow-growth, recurring (spares + support). This is the foundation that funds everything else. Revenue: ~40–50% of total.</div>
+    </div>
+    <div class="prod-card">
+      <div class="prod-nm" style="color:#0097A7">🔒 Cybersecurity Products</div>
+      <div class="prod-tag">Data Diode · Network isolation · RTU firewall · Ransomware-resilient storage</div>
+      <div class="prod-bd">Hardware-based cybersecurity — data diode (one-way data transfer, unhackable by design), network isolation equipment, RTU firewalls for SCADA/ICS systems. Approved by India's NCIIPC for critical infrastructure. This is the high-margin, fastest-growing segment. Revenue: ~25–30% and growing.</div>
+    </div>
+    <div class="prod-card">
+      <div class="prod-nm" style="color:#3949AB">⏱️ Synchronisation &amp; Timing</div>
+      <div class="prod-tag">NTP servers · GPS/NavIC time servers · IEEE 1588 PTP · Anti-jamming</div>
+      <div class="prod-bd">GPS/NavIC-based timing servers for telecom networks, power grids, banking, defence. NavIC (India's indigenous GPS) time server validated for Indian Armed Forces in 2025. Anti-jamming and anti-spoofing features added to entire portfolio in 2025 — significant defence upgrade. This segment directly benefits from India's NavIC push.</div>
+    </div>
+    <div class="prod-card">
+      <div class="prod-nm" style="color:#0097A7">💾 NAS/SAN Data Storage</div>
+      <div class="prod-tag">EMP-protected storage · Quantum-safe encryption · Up to 1.2 petabytes</div>
+      <div class="prod-bd">Specialised data storage servers with layers of cybersecurity: EMP protection, quantum-safe encryption, ransomware resilience, Data Diode isolation. VCL-9000 (EMP-protected) and VCL-9090 (ransomware-resilient) are unique India-made products with no domestic competitors. Fortytwo42 partnership enhances quantum-safe capability — for defence, government, banks. Highest ASP product.</div>
+    </div>
+    <div class="prod-card">
+      <div class="prod-nm" style="color:#1D9E75">🛡️ Teleprotection Equipment</div>
+      <div class="prod-tag">Power grid protection · IEEE C37.94 · Critical relay communication</div>
+      <div class="prod-bd">Teleprotection equipment for power utilities — communicates fault information between substations to protect the grid. Every major transmission substation needs this equipment. With India's massive T&D expansion (PGCIL, State SEBs), demand is structural. Valiant is an established vendor in this niche.</div>
+    </div>
+    <div class="prod-card">
+      <div class="prod-nm" style="color:#854F0B">🌐 Quantum-Safe Platform (new)</div>
+      <div class="prod-tag">Post-quantum cryptography · Fortytwo42 partnership (Mar 2026) · First in India</div>
+      <div class="prod-bd">India's first hardware-based quantum-safe digital trust platform. Partnership with Fortytwo42 Labs (post-quantum cryptography experts). Target: defence, government, banks, critical infrastructure that need to prepare for quantum computing threats to current encryption. This is the segment with the highest long-term optionality — but currently zero revenue.</div>
+    </div>
+  </div>
+
+  <div class="sh">The reference customer quality — the most important validation</div>
+  <div class="point"><div class="dot dd">★</div><div><strong>Indian Armed Forces:</strong> NavIC/GPS-based NTP Time Server validated for Indian Armed Forces. Getting Armed Forces approval for communication equipment is an extraordinarily long and rigorous process — this is the most credible quality validation a defence electronics company can have. Once approved, the vendor typically receives recurring orders for years.</div></div>
+  <div class="point"><div class="dot dd">★</div><div><strong>NCIIPC certification for critical infrastructure:</strong> India's National Critical Information Infrastructure Protection Centre has approved Valiant's cybersecurity equipment for the power grid. This means Valiant is one of a very small number of vendors whose cybersecurity products are certified to protect India's most sensitive infrastructure.</div></div>
+  <div class="point"><div class="dot dc">+</div><div><strong>110+ countries with active installations:</strong> Over 30 years of export history across telecom, power, railways. Reference customers in Europe, Middle East, Africa, Southeast Asia. This global track record is a genuine barrier to new entrants who lack installation references.</div></div>
+</div>
+
+<!-- GUIDANCE -->
+<div id="guidance" class="panel">
+  <div class="sh">Guidance analysis — management doesn't give formal guidance (typical for defence companies)</div>
+  <div class="warn def"><strong>Valiant Communications is a defence/critical infrastructure hardware company — like most such companies, it does NOT give formal revenue or PAT guidance.</strong> Management does not hold quarterly earnings calls with analysts. The company communicates primarily through BSE/NSE filings, press releases, and annual reports. This is normal for defence electronics companies worldwide — order visibility is classified or commercially sensitive. Analysis must rely on product launches, partnership announcements, and quarterly result trends.</div>
+
+  <div class="guid-card beat">
+    <div class="guid-h">✓ Revenue trend: 5 consecutive quarters of growth — management executing</div>
+    <div class="guid-b">Net profit is up for the last 5 quarters: -₹0.53 Cr → ₹6.05 Cr. Revenue is up for the last 5 quarters: ₹8.35 Cr → ₹22.14 Cr, with an average quarterly increase of 20.4%. While not a formal guidance delivery, this consistent improvement suggests management is winning new orders and executing deliveries systematically, not just one-off spikes.</div>
+    <div class="guid-s">Operational credibility: 7/10. 5-quarter streak is meaningful for a company of this size.</div>
+  </div>
+
+  <div class="guid-card beat">
+    <div class="guid-h">✓ Product launches FY25–FY26: EMP storage, Anti-jamming GPS, Quantum-safe — executing roadmap</div>
+    <div class="guid-b">Over 2 years, Valiant has launched: VCL9000 EMP-protected storage (FY25), GPS anti-jamming across entire synchronisation portfolio (FY25), Data Diode devices (FY25–26), and Quantum-Safe NAS/SAN with Fortytwo42 Labs (March 2026). This product launch cadence demonstrates a genuine R&D organisation, not just a trading company. Each new product opens a new addressable market.</div>
+    <div class="guid-s">Product execution credibility: 8/10. Consistent new product launches expanding addressable market.</div>
+  </div>
+
+  <div class="guid-card watch">
+    <div class="guid-h">⚠ The critical unknown: What order is driving Q2/Q3 FY26 revenue surge?</div>
+    <div class="guid-b">Revenue jumped from ₹8.35 Cr (Q3 FY25) to ₹20.17 Cr (Q2 FY26) to ₹22.14 Cr (Q3 FY26). This 2.6x quarterly revenue jump in one year is unusual for an established niche equipment company. Three possibilities: (a) Large defence or government order being shipped — if so, revenues could moderate back after delivery, (b) Genuine expansion in order base — multiple new clients, (c) Export order execution — a large international tender won. The company has not disclosed what drove the surge. This ambiguity is the biggest near-term risk — if it's option (a), Q1 FY27 revenue could disappoint significantly.</div>
+    <div class="guid-s">Most important unknown: check Q4 FY26 and Q1 FY27 results carefully to see if ₹20+ Cr/quarter is sustainable or was a one-time delivery.</div>
+  </div>
+
+  <div class="guid-card">
+    <div class="guid-h">Quantum-safe partnership (Fortytwo42 Labs, March 2026) — the future narrative catalyst</div>
+    <div class="guid-b">The March 2026 partnership with Fortytwo42 Labs for quantum-safe cryptography is a significant strategic announcement. Post-quantum cryptography (PQC) will be mandatory for all government and defence communications within 3–5 years as quantum computers advance. Valiant's first-mover hardware advantage could capture significant government contracts. However: (1) The PQC market in India is still nascent, (2) Integration timelines are 12–24 months, (3) Government procurement cycles are slow. Revenue contribution: likely nil in FY27, meaningful in FY28+.</div>
+    <div class="guid-s">Strategic significance: Very high (10–15 year optionality). Revenue timeline: FY28 earliest. Don't pay today's premium for FY28+ revenue.</div>
+  </div>
+</div>
+
+<!-- RISKS -->
+<div id="risks" class="panel">
+  <div class="sh">Risks — the complete picture on a very expensive small-cap defence stock</div>
+
+  <div class="point"><div class="dot dr">1</div><div><strong>Valuation is the #1 risk — 109x PE, 20x revenue is pricing in perfection.</strong><br>Any disappointment — Q4 revenue below ₹20 Cr, a delayed defence order, a competitor win — could halve this stock. At 20x Price/Sales, there is essentially zero margin of safety. Stocks at this valuation require continuous positive catalysts to maintain the multiple. If growth normalises to 15–20% from the current 165%, the PE compresses rapidly and the stock rerates down sharply. This is not a "safe" small-cap — it is momentum at an extreme valuation.</div></div>
+
+  <div class="point"><div class="dot dr">2</div><div><strong>Revenue lumpiness — defence/government orders are lumpy by nature.</strong><br>The surge from ₹8 Cr to ₹22 Cr per quarter may reflect execution of one or two large orders. Once delivered, there can be a quiet period of 1–2 quarters before the next large order. This lumpiness is structural for defence hardware companies. If Q1 FY27 comes in at ₹10–12 Cr (possible), the narrative of "sustained hypergrowth" breaks and the premium multiple collapses. Monitor Q4 FY26 (expected May 2026) very carefully.</div></div>
+
+  <div class="point"><div class="dot da">3</div><div><strong>Promoter holding declining: 40.81% → 40.62% (Q3 FY26).</strong><br>At 40.62%, the promoter holding is already below 50% and declining. Founders selling shares while the stock is at an all-time high (₹1,160) is concerning — it may reflect wealth diversification, but it could also indicate the promoters believe the current valuation is unsustainable. For a defence technology company where founder expertise and relationships are critical, promoter skin-in-the-game matters greatly.</div></div>
+
+  <div class="point"><div class="dot da">4</div><div><strong>Very low daily trading volume (~5,000 shares/day = ₹50L daily liquidity).</strong><br>At ~₹982/share and 5,000 shares/day = ₹49.1 lakh daily trading volume. This is extremely illiquid. If Garvit buys ₹25,000 worth = ~25 shares = 0.5% of daily volume. In a falling market, any attempt to exit would move the price 2–5%. This illiquidity means the stock can fall 20–30% in a single day on negative news with no buyers. The same illiquidity that drove the stock up 160% in a year can drive it down 50% equally fast.</div></div>
+
+  <div class="point"><div class="dot da">5</div><div><strong>Competition from larger defence electronics players.</strong><br>Bharat Electronics Limited (BEL, government PSU), ECIL, Tata Power SED, L&T Defence, Honeywell India — all compete in similar segments. If the government awards a large cybersecurity or synchronisation contract to BEL (default PSU preference in many defence tenders), Valiant's growth narrative collapses. Valiant's advantage is in niche specialisation (EMP storage, quantum-safe NAS) where BEL is not present — but BEL can replicate any technology given enough time and government support.</div></div>
+
+  <div class="point"><div class="dot dg">+</div><div><strong>Genuine strengths that make this interesting despite the valuation:</strong><br>30-year heritage in specialised communication equipment. 110+ countries = impossible to fake. NavIC Armed Forces validation = real. NCIIPC critical infrastructure approval = real. EMP-protected storage = unique India product. Quantum-safe hardware partnership = first mover. 26–27% PAT margins in recent quarters = genuine pricing power on specialised products. Revenue growing consistently for 5 quarters. B2G (business to government) model = sticky, recurring, sticky relationships. Small base means large contracts have outsized impact.</div></div>
+</div>
+
+<!-- SCENARIOS -->
+<div id="scenarios" class="panel">
+  <div class="sh">Three scenarios — from current ~₹982 (~₹1,050 Cr mcap)</div>
+  <div class="warn caution"><strong>The 3x math at ₹1,050 Cr is very challenging.</strong> 3x = ₹3,150 Cr. Even at a very generous 50x PE (assuming strong growth continuation), ₹3,150 Cr mcap requires PAT of ₹63 Cr = Revenue of ~₹350 Cr (at 18% margins). That's 6.6x revenue growth from FY26's ₹52.66 Cr. Possible only if a major defence contract (₹200+ Cr) is won AND executed in 2–3 years. This is a very specific, very optimistic scenario.</div>
+
+  <div class="scenario" style="border-left:3px solid #3949AB">
+    <div style="font-size:13px;font-weight:500;color:#1A237E;margin-bottom:8px">Bull case — 3x in 3 years: Large defence/government contract win</div>
+    <div class="sc-grid">
+      <div class="sc-cell"><div class="sc-l">FY27 revenue</div><div class="sc-v">₹100–120 Cr</div></div>
+      <div class="sc-cell"><div class="sc-l">FY28 revenue</div><div class="sc-v">₹250–350 Cr</div></div>
+      <div class="sc-cell"><div class="sc-l">FY28 PAT</div><div class="sc-v">₹50–70 Cr</div></div>
+      <div class="sc-cell"><div class="sc-l">PE (defence narrative)</div><div class="sc-v">45–60x</div></div>
+      <div class="sc-cell"><div class="sc-l">FY28 mcap</div><div class="sc-v">₹2,250–4,200 Cr</div></div>
+      <div class="sc-cell"><div class="sc-l">Return from ₹1,050 Cr</div><div class="sc-v">2.1–4x</div></div>
+    </div>
+    <div style="font-size:11.5px;color:#333;margin-top:8px"><strong>What must happen:</strong> Armed Forces places a ₹150–200 Cr order for NavIC time servers, EMP storage, or cybersecurity equipment. Quantum-safe platform wins a government bank or railway contract (₹50–100 Cr). Export order from Middle East or Southeast Asia defence ministry. Critical infrastructure (NTPC/PGCIL) large cybersecurity deployment. At 50x PE on ₹60 Cr PAT = ₹3,000 Cr = 2.9x. <strong>Requires a single transformative contract win — possible but not probable within 3 years.</strong></div>
+  </div>
+
+  <div class="scenario" style="border-left:3px solid #378ADD">
+    <div style="font-size:13px;font-weight:500;color:#185FA5;margin-bottom:8px">Base case — 1x to 1.5x: Organic growth continues, no major contract</div>
+    <div class="sc-grid">
+      <div class="sc-cell"><div class="sc-l">FY27 revenue</div><div class="sc-v">₹70–90 Cr</div></div>
+      <div class="sc-cell"><div class="sc-l">FY27 PAT</div><div class="sc-v">₹14–18 Cr</div></div>
+      <div class="sc-cell"><div class="sc-l">PE (after growth slows)</div><div class="sc-v">35–50x</div></div>
+      <div class="sc-cell"><div class="sc-l">FY27 mcap</div><div class="sc-v">₹490–900 Cr</div></div>
+      <div class="sc-cell"><div class="sc-l">Return from ₹1,050 Cr</div><div class="sc-v">-14% to -57%</div></div>
+      <div class="sc-cell"><div class="sc-l">Note</div><div class="sc-v">BASE IS NEGATIVE RETURN!</div></div>
+    </div>
+    <div style="font-size:11.5px;color:#333;margin-top:8px">If organic growth continues (₹70–90 Cr revenue FY27 = 33–71% growth), PAT of ₹15–18 Cr. At 40x PE = ₹600–720 Cr mcap = <strong>-30% to -43% from current ₹1,050 Cr.</strong> This is the brutal reality of buying at 20x revenue — the base case is a meaningful loss even with strong growth, because the current price embeds 3–4 years of future growth already.</div>
+  </div>
+
+  <div class="scenario" style="border-left:3px solid #A32D2D">
+    <div style="font-size:13px;font-weight:500;color:#A32D2D;margin-bottom:8px">Bear case — -50 to -70%: Revenue normalises post large order + multiple compression</div>
+    <div class="sc-grid">
+      <div class="sc-cell"><div class="sc-l">Trigger</div><div class="sc-v">Q1 FY27 revenue &lt;₹12 Cr</div></div>
+      <div class="sc-cell"><div class="sc-l">Trigger</div><div class="sc-v">No new large order in H1 FY27</div></div>
+      <div class="sc-cell"><div class="sc-l">Trigger</div><div class="sc-v">Market momentum reverses</div></div>
+      <div class="sc-cell"><div class="sc-l">FY27 revenue</div><div class="sc-v">₹40–55 Cr (flat YoY)</div></div>
+      <div class="sc-cell"><div class="sc-l">PE at 20–25x</div><div class="sc-v">₹200–340 Cr mcap</div></div>
+      <div class="sc-cell"><div class="sc-l">Stock impact</div><div class="sc-v">₹190–320/share (-68% to -82%)</div></div>
+    </div>
+    <div style="font-size:11.5px;color:#333;margin-top:8px"><strong>Bear probability: 30–35%.</strong> If Q2 and Q3 FY26 revenue surge was driven by one large order now delivered, Q1 FY27 could show sharp sequential decline. At 25x PE on ₹10 Cr PAT = ₹250 Cr mcap — only 24% of current ₹1,050 Cr. Stock revisits ₹230–300 range — where it was just 12 months ago. The 52-week low of ₹253 would again be reachable in this scenario. This is the tail risk at current valuation.</div>
+  </div>
+
+  <table style="margin-top:10px">
+    <tr><th>Target</th><th>Mcap needed</th><th>Driver</th><th>Timeline</th><th>Probability</th></tr>
+    <tr><td>3x (₹3,150 Cr)</td><td>₹3,150 Cr</td><td>₹200+ Cr defence contract + FY28 PAT ₹60 Cr at 52x</td><td>FY28–FY29</td><td class="r">10–15%</td></tr>
+    <tr><td>Break-even (flat)</td><td>₹1,050 Cr</td><td>Revenue 2x + PE maintains at 109x</td><td>FY27</td><td class="a">20–25%</td></tr>
+    <tr><td>Base case loss (-35%)</td><td>₹682 Cr</td><td>Revenue +50%, PE compresses to 45x</td><td>FY27</td><td class="a">35–40%</td></tr>
+    <tr><td>Bear case (-60% to -70%)</td><td>₹300–420 Cr</td><td>Revenue stagnates, narrative fades</td><td>FY27</td><td class="a">30–35%</td></tr>
+  </table>
+</div>
+
+<!-- SECTOR PEERS -->
+<div id="compare" class="panel">
+  <div class="sh">Defence electronics + cybersecurity — India sector peers</div>
+  <div style="border:1px solid #ddd;border-radius:10px;overflow:hidden;font-size:11px">
+    <div class="comp-h">
+      <div class="cc-h" style="background:#f5f5f3">Metric</div>
+      <div class="cc-h" style="background:#E8EAF6;color:#1A237E">Valiant Communications</div>
+      <div class="cc-h" style="background:#E6F1FB;color:#185FA5">BEL (Bharat Electronics)</div>
+      <div class="cc-h" style="background:#f5f5f3">Tejas Networks</div>
+    </div>
+    <div class="comp-row"><div class="cc cc-label">Market cap</div><div class="cc mid-cell">₹1,050 Cr</div><div class="cc loser-cell">₹1.3 lakh Cr (PSU)</div><div class="cc loser-cell">₹14,000+ Cr</div></div>
+    <div class="comp-row"><div class="cc cc-label">FY26 Revenue</div><div class="cc loser-cell">₹52.66 Cr (tiny)</div><div class="cc winner-cell">~₹20,000 Cr</div><div class="cc winner-cell">~₹2,000+ Cr</div></div>
+    <div class="comp-row"><div class="cc cc-label">PAT margin</div><div class="cc winner-cell">18–27% (excellent)</div><div class="cc winner-cell">~22–24%</div><div class="cc mid-cell">~8–12%</div></div>
+    <div class="comp-row"><div class="cc cc-label">Revenue growth (FY26)</div><div class="cc winner-cell">+165% Q3 YoY (hypergrowth)</div><div class="cc mid-cell">~12–15%</div><div class="cc winner-cell">~25–35%</div></div>
+    <div class="comp-row"><div class="cc cc-label">PE ratio</div><div class="cc loser-cell">~109x (extreme)</div><div class="cc mid-cell">~35–40x</div><div class="cc loser-cell">~80–100x</div></div>
+    <div class="comp-row"><div class="cc cc-label">Price/Sales</div><div class="cc loser-cell">~20x (extreme)</div><td class="cc winner-cell">~3x</td><td class="cc mid-cell">~6–8x</td></div>
+    <div class="comp-row"><div class="cc cc-label">Defence electronics</div><div class="cc mid-cell">Niche — synchronisation, cybersecurity</div><div class="cc winner-cell">Comprehensive — India's largest</div><div class="cc mid-cell">Telecom networking</div></div>
+    <div class="comp-row"><div class="cc cc-label">Quantum-safe capability</div><div class="cc winner-cell">Yes — Fortytwo42 partnership (first in India)</div><td class="cc">In development</td><td class="cc">No</td></div>
+    <div class="comp-row"><div class="cc cc-label">Export countries</div><div class="cc winner-cell">110+ countries</div><td class="cc a">65+ countries</td><td class="cc a">25+ countries</td></div>
+    <div class="comp-row"><div class="cc cc-label">3x probability (3yr)</div><div class="cc loser-cell">10–15% (requires large contract)</div><td class="cc loser-cell">5–7% (mcap too large)</td><td class="cc mid-cell">15–20% (Tata group backing)</td></div>
+    <div class="comp-row"><div class="cc cc-label">Appropriate for Garvit</div><div class="cc">Very small speculative position only — if at all</div><div class="cc">Too large for 3x; quality defence exposure</div><div class="cc">Better quality at similar theme but expensive</div></div>
+  </div>
+
+  <div class="sector-card" style="margin-top:12px">
+    <div class="sc-hdr"><div><div class="sc-nm">Paras Defence and Space Technologies — better defence electronics comparable</div><div class="sc-tg">₹2,500 Cr mcap · Space optics + EMP shielding + defence electronics · Similar niche profile</div></div><span class="badge ba">More direct comparable</span></div>
+    <div class="sc-bd">Paras Defence (NSE: PARASDEFE) is a closer comparable to Valiant — both are specialised niche defence electronics companies with strong government credentials. Paras has a broader product portfolio (space optics, EMP shielding) and is growing faster. At ₹2,500 Cr mcap vs Valiant's ₹1,050 Cr, Paras is more expensive. Both trade at extreme valuations relative to current revenues. <strong>Neither is appropriate as a major portfolio position — both are speculative defence bets at best.</strong></div>
+  </div>
+
+  <div class="warn def" style="margin-top:10px"><strong>The most important sector insight for Garvit:</strong> Defence electronics stocks in India trade at 50–150x PE — the market is pricing in 5–10 years of Make in India defence indigenisation tailwinds. This sector-wide premium is real and structural. However, small companies like Valiant that are at ₹52 Cr revenue being valued at ₹1,050 Cr are pricing in not just the tailwind but very specific contract wins that haven't happened yet. The better risk/reward in defence exposure is through Bondada Engineering (defence entry via BEL order — already in portfolio) or a diversified defence ETF, not through concentrated bets on ₹50 Cr revenue companies at 20x Price/Sales.</div>
+</div>
+
+<!-- VERDICT -->
+<div id="verdict" class="panel">
+  <div class="sh">The definitive verdict for Garvit's 3x portfolio goal</div>
+
+  <div class="verdict-card" style="background:#E8EAF6;border:1px solid #9FA8DA">
+    <div class="vc-h" style="color:#1A237E">Valiant Communications — Verdict: Genuinely interesting technology company with a real defence moat. But at 20x Price/Sales and 109x PE, the current price embeds perfection that the ₹52 Cr revenue company hasn't delivered yet. NOT recommended for Garvit's 3x portfolio at current prices.</div>
+    <div class="vc-b">Here is the complete, honest picture:<br><br>
+    <strong>The bull case has substance:</strong><br>
+    • Genuine 30-year heritage in specialised telecom/defence equipment<br>
+    • NavIC Armed Forces validation — impossible to fake<br>
+    • NCIIPC critical infrastructure approval — very difficult to achieve<br>
+    • 110+ countries = real installed base<br>
+    • EMP-protected storage + Data Diode = unique India products<br>
+    • Quantum-safe partnership (March 2026) = first-mover in growing market<br>
+    • 5 consecutive quarters of growth<br>
+    • PAT margins of 26–27% in recent quarters = genuine pricing power<br><br>
+    <strong>But the valuation makes it uninvestable at current price:</strong><br>
+    • ₹1,050 Cr market cap on ₹52.66 Cr revenue = 20x Price/Sales<br>
+    • 109x trailing PE — you're paying for 7+ years of future growth today<br>
+    • Base case (strong 50% revenue growth) still results in a -35% stock decline due to PE compression<br>
+    • 3x from current requires revenue to grow 6.6x in 3 years = large defence contract mandatory<br>
+    • Probability of a single ₹200 Cr contract in 3 years: 10–15%<br>
+    • Bear case (-60%) probability: 30–35% — if the revenue surge was one large order now delivered<br><br>
+    <strong>The portfolio context — much better alternatives exist:</strong><br>
+    Garvit's current portfolio has severely underweighted positions in:<br>
+    • RPSG Ventures (7.5/10 conviction) — completely absent, 35–40% 3x probability<br>
+    • DEE Development (9.0/10) — still short of target allocation<br>
+    • EFC (I) (8.5/10) — still short of target allocation<br>
+    • ideaForge (potential add after Apr 30 results) — actual defence drone company with proven government orders<br><br>
+    Adding Valiant Communications at 20x Price/Sales when better-conviction underweights exist is a capital allocation error. The excitement around "defence + quantum + cybersecurity" is valid as a theme — but the vehicle (₹52 Cr revenue company at ₹1,050 Cr mcap) is inappropriate pricing for a 3x strategy.<br><br>
+    <strong>When would Valiant become interesting?</strong><br>
+    At ₹500–600 Cr market cap (stock ₹470–560/share) AND one confirmed large defence order (₹50+ Cr) in hand — the risk/reward would shift to 2–3x possible with 25–30% probability. That's a 40–50% correction from current levels. Add to watchlist; set a price alert at ₹550.</div>
+  </div>
+
+  <div class="sh">Allocation recommendation</div>
+  <table>
+    <tr><th>Action</th><th>Amount</th><th>Rationale</th></tr>
+    <tr><td><span class="badge br">DO NOT BUY at current ₹982 price</span></td><td>₹0</td><td>20x Price/Sales is extreme. Base case produces a loss even with 50% revenue growth. Better conviction picks (RPSG Ventures, DEE Development, EFC I) are underweighted and deserve this capital first.</td></tr>
+    <tr><td><span class="badge bgray">WATCHLIST — alert at ₹550</span></td><td>Watchlist only</td><td>If stock corrects -44% to ₹550 AND the company secures a ₹50+ Cr confirmed order disclosure, reconsider a small ₹15–20K speculative position. At ₹550, the Price/Sales falls to ~11x — still expensive but the risk/reward improves meaningfully.</td></tr>
+    <tr><td><span class="badge bg">Better defence exposure: ideaForge (check Apr 30)</span></td><td>₹20–25K (conditional)</td><td>ideaForge is an actual defence drone company with ₹440 Cr order book, Operation Sindoor deployment, and growing defence contracts. More direct defence exposure at a more reasonable entry if Q4 shows profitability.</td></tr>
+  </table>
+
+  <div class="sh">Six triggers to watch — from the watchlist</div>
+  <table>
+    <tr><th>#</th><th>Trigger</th><th>Impact on investment thesis</th></tr>
+    <tr><td>1</td><td>Q4 FY26 revenue (May 2026)</td><td>🔥 If ₹18+ Cr → streak continues → business is genuinely accelerating, not one-off. If ₹8–10 Cr → revenue was lumpy → bear case validates. Single most important data point.</td></tr>
+    <tr><td>2</td><td>Armed Forces contract announcement</td><td>🔥 Any public disclosure of a ₹50 Cr+ order from Indian Army/Navy/Air Force = re-rates stock dramatically. Currently only NavIC validation — contract award pending.</td></tr>
+    <tr><td>3</td><td>Quantum-safe first commercial order</td><td>🟢 Any Fortytwo42 partnership yielding first paying customer (defence/bank/railway) = commercial validation of new product line.</td></tr>
+    <tr><td>4</td><td>Stock correction to ₹500–600</td><td>🟢 Price correction of 40–45% from current levels makes the risk/reward more balanced. Set a price alert rather than chasing at current levels.</td></tr>
+    <tr><td>5</td><td>Promoter buying vs selling</td><td>🔴 Any further promoter selling (currently 40.62%) = negative signal. Promoter buying at current levels = very positive signal (insiders rarely buy at 20x revenue).</td></tr>
+    <tr><td>6</td><td>Revenue sustainability — 3 consecutive ₹20+ Cr quarters</td><td>🟢 If Q4 FY26 + Q1 FY27 + Q2 FY27 all show ₹20+ Cr revenue → business is genuinely at a new run rate → re-evaluate at lower valuation entry.</td></tr>
+  </table>
+
+  <div class="warn def" style="margin-top:12px"><strong>One-line verdict:</strong> Valiant Communications is India's most interesting niche defence + cybersecurity + quantum-safe equipment company — with genuine technological credentials (30-year heritage, NavIC Armed Forces validation, NCIIPC approval, 110+ countries, EMP-protected storage), accelerating revenue (5 consecutive growth quarters, +165% Q3 FY26), and transformative optionality (quantum-safe platform, defence contracts). But at ₹1,050 Cr market cap on ₹52.66 Cr revenue (20x Price/Sales, 109x PE), the current price embeds far more optimism than the ₹52 Cr revenue warrants. The base case with strong growth still produces a loss due to PE compression. For Garvit's 3x-in-3-years goal, this is not the right entry point — underweighted high-conviction positions (RPSG Ventures, DEE Development, EFC I) deserve priority. Add to watchlist; reconsider at ₹550 with a confirmed large order in hand.</div>
+</div>
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/4.4.1/chart.umd.js"></script>
+<script>
+function show(id,btn){
+  document.querySelectorAll('.tab').forEach(t=>t.classList.remove('active'));
+  document.querySelectorAll('.panel').forEach(p=>p.classList.remove('active'));
+  btn.classList.add('active');
+  document.getElementById(id).classList.add('active');
+}
+new Chart(document.getElementById('rc').getContext('2d'),{
+  type:'bar',
+  data:{
+    labels:['FY23E','FY24E','FY25E','Q1FY26','Q2FY26','Q3FY26','FY26','FY27E','FY28E(bull)'],
+    datasets:[
+      {label:'Revenue ₹ Cr',data:[22,28,35,10.36,20.17,22.14,52.66,90,250],backgroundColor:['#3949AB','#3949AB','#3949AB','#1D9E75','#1D9E75','#1D9E75','#1D9E75','#9FA8DA','#9FA8DA'],borderRadius:4,yAxisID:'y'},
+      {label:'PAT ₹ Cr',data:[2.5,4,7,1.5,5.27,6.05,9.61,18,50],type:'line',borderColor:'#1D9E75',backgroundColor:'transparent',pointBackgroundColor:'#1D9E75',tension:0.3,yAxisID:'y2'}
+    ]
+  },
+  options:{responsive:true,maintainAspectRatio:false,plugins:{legend:{display:false}},scales:{y:{ticks:{font:{size:10}}},y2:{position:'right',ticks:{font:{size:10}},grid:{drawOnChartArea:false}},x:{ticks:{font:{size:10}}}}}
+});
+</script>
+</body>
+</html>

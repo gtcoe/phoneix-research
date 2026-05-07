@@ -1,0 +1,437 @@
+<!DOCTYPE html>
+<html><head><meta charset="utf-8">
+<style>
+*{box-sizing:border-box;margin:0;padding:0}
+body{font-family:system-ui,sans-serif;padding:16px;background:#fff;color:#1a1a1a;font-size:14px}
+h1{font-size:20px;font-weight:500;margin-bottom:3px}
+.sub{font-size:12px;color:#666;margin-bottom:14px}
+.sg{display:grid;grid-template-columns:repeat(auto-fill,minmax(110px,1fr));gap:8px;margin-bottom:16px}
+.sc{background:#f5f5f3;border-radius:8px;padding:10px 12px}
+.sl{font-size:10px;color:#666;margin-bottom:2px}
+.sv{font-size:17px;font-weight:500}
+.tab-row{display:flex;gap:5px;flex-wrap:wrap;margin-bottom:14px}
+.tab{font-size:11.5px;padding:5px 13px;border-radius:20px;border:1px solid #ddd;background:#fff;cursor:pointer;white-space:nowrap}
+.tab.active{background:#1a1a1a;color:#fff;border-color:#1a1a1a}
+.panel{display:none}.panel.active{display:block}
+.sh{font-size:10.5px;font-weight:500;color:#666;text-transform:uppercase;letter-spacing:.06em;margin:16px 0 7px;padding-bottom:5px;border-bottom:1px solid #eee}
+table{width:100%;border-collapse:collapse;font-size:12px;margin:8px 0}
+th{font-size:10.5px;font-weight:500;color:#666;padding:5px 7px;text-align:left;border-bottom:1px solid #eee;white-space:nowrap}
+td{padding:8px 7px;border-bottom:1px solid #eee;color:#1a1a1a;vertical-align:top}
+tr:last-child td{border-bottom:none}
+tr:hover td{background:#fafaf9}
+.g{color:#0F6E56;font-weight:500}.r{color:#A32D2D;font-weight:500}.a{color:#854F0B;font-weight:500}.b{color:#185FA5;font-weight:500}
+.badge{display:inline-block;font-size:10px;padding:2px 7px;border-radius:10px;white-space:nowrap}
+.bg{background:#E1F5EE;color:#0F6E56}.bb{background:#E6F1FB;color:#185FA5}.ba{background:#FAEEDA;color:#854F0B}.br{background:#FCEBEB;color:#A32D2D}.bgray{background:#f1f0e8;color:#5F5E5A}.bmfi{background:#E8F5E9;color:#1B5E20}.bfin{background:#FFF3E0;color:#E65100}
+.warn{padding:10px 13px;margin:8px 0;border-left:3px solid;font-size:12px;line-height:1.65}
+.warn.success{background:#E1F5EE;border-color:#1D9E75;color:#04342C}
+.warn.caution{background:#FAEEDA;border-color:#BA7517;color:#412402}
+.warn.danger{background:#FCEBEB;border-color:#A32D2D;color:#712B13}
+.warn.info{background:#E6F1FB;border-color:#185FA5;color:#042C53}
+.warn.mfi{background:#E8F5E9;border-color:#2E7D32;color:#1B3A1E}
+.warn.rec{background:#FFF3E0;border-color:#F57C00;color:#3E2723}
+.warn strong{font-weight:500}
+.chart-wrap{position:relative;width:100%;height:240px;margin:8px 0}
+.kpi-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:10px;margin:10px 0}
+.kpi{background:#f5f5f3;border-radius:8px;padding:10px 12px;border-left:3px solid transparent}
+.kpi.green{border-left-color:#1D9E75}.kpi.amber{border-left-color:#EF9F27}.kpi.blue{border-left-color:#378ADD}.kpi.red{border-left-color:#A32D2D}.kpi.mfi{border-left-color:#2E7D32}.kpi.rec{border-left-color:#F57C00}
+.kpi-l{font-size:10px;color:#666;margin-bottom:3px}
+.kpi-v{font-size:17px;font-weight:500}
+.kpi-s{font-size:10px;color:#888;margin-top:2px}
+.point{display:flex;gap:9px;align-items:flex-start;padding:9px 0;border-bottom:1px solid #eee;font-size:12px;line-height:1.6;color:#555}
+.point:last-child{border-bottom:none}
+.point strong{color:#1a1a1a;font-weight:500}
+.dot{width:19px;height:19px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:10px;font-weight:500;flex-shrink:0;margin-top:1px}
+.dg{background:#E1F5EE;color:#0F6E56}.dr{background:#FCEBEB;color:#A32D2D}.da{background:#FAEEDA;color:#854F0B}.db{background:#E6F1FB;color:#185FA5}.dm{background:#E8F5E9;color:#1B5E20}.df{background:#FFF3E0;color:#E65100}
+.two-col{display:grid;grid-template-columns:1fr 1fr;gap:12px}
+.pane{border:1px solid #ddd;border-radius:10px;padding:13px}
+.pane-h{font-size:13px;font-weight:500;margin-bottom:9px}
+.scenario{border:1px solid #ddd;border-radius:10px;padding:13px;margin-bottom:9px}
+.sc-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:7px;margin:9px 0}
+.sc-cell{background:#f5f5f3;border-radius:6px;padding:7px 9px}
+.sc-l{font-size:10px;color:#666}
+.sc-v{font-size:12px;font-weight:500;margin-top:2px}
+.comp-h{display:grid;grid-template-columns:160px repeat(3,1fr);background:#f5f5f3;border-radius:8px 8px 0 0;overflow:hidden}
+.comp-row{display:grid;grid-template-columns:160px repeat(3,1fr);border-bottom:1px solid #eee}
+.comp-row:last-child{border-bottom:none}
+.cc{padding:8px 10px;font-size:11px;border-right:1px solid #eee}
+.cc:last-child{border-right:none}
+.cc-h{font-size:10px;font-weight:500;color:#444;padding:8px 10px;border-right:1px solid #ddd}
+.cc-h:last-child{border-right:none}
+.cc-label{color:#666;font-size:11px}
+.winner-cell{background:#E1F5EE}.mid-cell{background:#FAEEDA}.loser-cell{background:#fff5f5}
+.verdict-card{border-radius:10px;padding:13px 15px;margin-bottom:10px}
+.vc-h{font-size:13px;font-weight:500;margin-bottom:6px}
+.vc-b{font-size:12px;line-height:1.65;color:#444}
+.sector-card{border:1px solid #ddd;border-radius:10px;overflow:hidden;margin-bottom:10px}
+.sc-hdr{padding:10px 13px;display:flex;justify-content:space-between;align-items:center;background:#fafaf9}
+.sc-nm{font-size:13px;font-weight:500}
+.sc-tg{font-size:11px;color:#666;margin-top:2px}
+.sc-bd{padding:10px 13px;font-size:12px;line-height:1.65;color:#555;border-top:1px solid #eee}
+.sc-bd strong{color:#1a1a1a}
+.guid-card{border-radius:10px;padding:12px 14px;margin-bottom:8px;border-left:3px solid #2E7D32;background:#E8F5E9}
+.guid-h{font-size:11.5px;font-weight:500;margin-bottom:4px;color:#1B5E20}
+.guid-b{font-size:11.5px;color:#333;line-height:1.6}
+.guid-s{font-size:10px;color:#888;margin-top:4px}
+.guid-card.miss{background:#FCEBEB;border-left-color:#A32D2D}.guid-card.miss .guid-h{color:#A32D2D}
+.guid-card.watch{background:#FAEEDA;border-left-color:#BA7517}.guid-card.watch .guid-h{color:#854F0B}
+.recovery-box{background:#E8F5E9;border:2px solid #2E7D32;border-radius:10px;padding:13px;margin:10px 0}
+.rb-h{font-size:14px;font-weight:500;color:#1B5E20;margin-bottom:6px}
+.rb-b{font-size:12px;color:#1a1a1a;line-height:1.65}
+.crisis-box{background:#FCEBEB;border:2px solid #A32D2D;border-radius:10px;padding:13px;margin:10px 0}
+.cb-h{font-size:13px;font-weight:500;color:#A32D2D;margin-bottom:6px}
+.cb-b{font-size:12px;color:#333;line-height:1.65}
+.metric-row{display:flex;align-items:center;gap:8px;margin:5px 0}
+.mr-label{font-size:11px;color:#555;width:180px;flex-shrink:0}
+.mr-track{flex:1;background:#f5f5f3;border-radius:4px;height:15px;overflow:hidden}
+.mr-fill{height:100%;border-radius:4px;display:flex;align-items:center;padding-left:6px;font-size:9px;font-weight:600;color:#fff}
+.mr-val{font-size:11px;font-weight:500;width:100px;text-align:right}
+.timeline{background:#f5f5f3;border-radius:8px;padding:10px 13px;margin:5px 0;display:flex;align-items:flex-start;gap:10px;font-size:11.5px}
+.tl-dot{width:12px;height:12px;border-radius:50%;flex-shrink:0;margin-top:2px}
+.tl-text{color:#1a1a1a;line-height:1.4;flex:1}
+.tl-date{font-size:10px;color:#666;flex-shrink:0}
+</style>
+</head>
+<body>
+
+<h1>Muthoot Microfin Ltd — Deep Investment Analysis</h1>
+<div class="sub">NSE: MUTHOOTMF · NBFC-MFI · Part of Muthoot Pappachan Group (Muthoot Blue) · Listed Dec 2023 · HQ: Ernakulam, Kerala · AUM ₹14,006 Cr · 94.8% collection efficiency · CRISIL A+/Positive · Market cap ~₹3,185 Cr · Stock -30% from listing high</div>
+
+<div class="sg">
+  <div class="sc"><div class="sl">Market cap</div><div class="sv" style="color:#854F0B">~₹3,185 Cr</div></div>
+  <div class="sc"><div class="sl">FY26 AUM</div><div class="sv" style="color:#1D9E75">₹14,006 Cr</div></div>
+  <div class="sc"><div class="sl">AUM growth (FY26)</div><div class="sv" style="color:#1D9E75">+13% YoY</div></div>
+  <div class="sc"><div class="sl">Q3 FY26 PAT</div><div class="sv" style="color:#1D9E75">₹62 Cr</div></div>
+  <div class="sc"><div class="sl">9M FY26 PAT</div><div class="sv" style="color:#854F0B">₹99 Cr</div></div>
+  <div class="sc"><div class="sl">Collection eff.</div><div class="sv" style="color:#1D9E75">94.8% ↑</div></div>
+  <div class="sc"><div class="sl">GNPA (FY26 end)</div><div class="sv" style="color:#1D9E75">3.89% ↓</div></div>
+  <div class="sc"><div class="sl">NIM</div><div class="sv" style="color:#1D9E75">12%</div></div>
+  <div class="sc"><div class="sl">ROA (Q3)</div><div class="sv" style="color:#1D9E75">1.9%</div></div>
+  <div class="sc"><div class="sl">Credit cost (Q3)</div><div class="sv" style="color:#854F0B">3.3%</div></div>
+  <div class="sc"><div class="sl">CRISIL rating</div><div class="sv" style="color:#185FA5">A+/Positive</div></div>
+  <div class="sc"><div class="sl">52-wk performance</div><div class="sv" style="color:#A32D2D">-28%</div></div>
+</div>
+
+<div class="tab-row">
+  <button class="tab active" onclick="show('crisis',this)">MFI crisis explained</button>
+  <button class="tab" onclick="show('revenue',this)">AUM & financials</button>
+  <button class="tab" onclick="show('sectorKPI',this)">NBFC-MFI KPIs</button>
+  <button class="tab" onclick="show('business',this)">Business model</button>
+  <button class="tab" onclick="show('guidance',this)">Guidance</button>
+  <button class="tab" onclick="show('risks',this)">Risks</button>
+  <button class="tab" onclick="show('scenarios',this)">3x scenarios</button>
+  <button class="tab" onclick="show('compare',this)">MFI peers</button>
+  <button class="tab" onclick="show('verdict',this)">Verdict</button>
+</div>
+
+<!-- MFI CRISIS EXPLAINED -->
+<div id="crisis" class="panel active">
+  <div class="sh">Start here — the sector-wide MFI crisis of FY25 and why FY26 is the recovery year</div>
+
+  <div class="crisis-box">
+    <div class="cb-h">🚨 FY25: The worst year for Indian MFI sector in a decade — but Muthoot survived it</div>
+    <div class="cb-b">India's microfinance sector (NBFC-MFIs) went through a systemic crisis in FY25. The root cause: over-indebtedness. Average rural borrower was carrying loans from 4–6 MFIs simultaneously (allowed by earlier regulations). When inflation hit (post-COVID), many women borrowers defaulted simultaneously across multiple lenders.<br><br>
+    <strong>The sector-wide impact:</strong> Gross NPA rose from 2–3% to 7–12% across the sector. Collection efficiency fell from 98%+ to 88–92%. Credit costs surged to 5–8% of AUM (vs 1–2% in normal times). Multiple MFIs reported full-year losses. RBI tightened regulations (removed the ₹3 lakh household income limit, tightened loan cap, increased provisioning requirements).<br><br>
+    <strong>Muthoot Microfin's FY25:</strong> Full year PAT -₹222.52 Cr (loss). The company had to take heavy provisions (₹750+ Cr) during FY25 to clean up the book. However — unlike smaller MFIs that faced existential stress — Muthoot Microfin had three survival advantages: (1) Parent group (Muthoot Pappachan) backing, (2) CRISIL A+/Positive rating enabling continued institutional funding, (3) Geographic diversification (18+ states) reducing concentration risk.</div>
+  </div>
+
+  <div class="recovery-box">
+    <div class="rb-h">🟢 FY26: The recovery has begun — Q3 FY26 PAT ₹62 Cr (+1,543% YoY vs crisis Q3 FY25)</div>
+    <div class="rb-b">The Q3 FY26 data confirms the recovery is real and accelerating:<br>
+    • <strong>Collection efficiency: 94.8%</strong> — improved 150 bps quarter-on-quarter. Approaching pre-crisis levels of 97–98%<br>
+    • <strong>GNPA fell to 3.89% by FY26 year-end</strong> — down from much higher levels in FY25 (the heavy provisioning has cleaned the book)<br>
+    • <strong>PPOP grew 17.7% quarter-on-quarter to ₹175 Cr</strong> — pre-provision profitability is healthy and growing<br>
+    • <strong>AUM ₹14,006 Cr (+13% FY26)</strong> — disbursements recovering, book growing again<br>
+    • <strong>ROA 1.9% in Q3</strong> — approaching the 2.5–3% ROA that MFIs can achieve in a normal year<br>
+    • <strong>CRISIL A+/Positive</strong> — Positive outlook = rating upgrade expected, which means lower borrowing cost<br>
+    • <strong>Raised ₹2,700 Cr funding in Q3 at competitive rates</strong> — institutional trust is back<br>
+    <br>This is a classic "recovery from trough" story. The question for investors: how much of the recovery is already priced in the stock, and how much more earnings recovery lies ahead?</div>
+  </div>
+
+  <div class="sh">The recovery timeline — quarter by quarter</div>
+  <div class="timeline"><div class="tl-dot" style="background:#A32D2D"></div><div class="tl-text"><strong>FY25 (full year): -₹222.52 Cr PAT loss</strong> — peak provisioning. Collection efficiency 88–92%. GNPA peaked. Sector-wide crisis. Loan growth frozen. Disbursements pulled back to protect quality.</div><div class="tl-date">FY25</div></div>
+  <div class="timeline"><div class="tl-dot" style="background:#EF9F27"></div><div class="tl-text"><strong>Q1 FY26: Small loss or breakeven</strong> — provisioning still heavy. Credit cost 4%+. Collection efficiency starting to improve. AUM growth cautiously restarting.</div><div class="tl-date">Apr–Jun 2025</div></div>
+  <div class="timeline"><div class="tl-dot" style="background:#EF9F27"></div><div class="tl-text"><strong>Q2 FY26: PAT ₹30.52 Cr</strong> — back to profitability. Credit cost moderating. Collection efficiency recovering. NIM holding at 12%. Institutional confidence returning (CRISIL A+/Positive reaffirmed).</div><div class="tl-date">Jul–Sep 2025</div></div>
+  <div class="timeline"><div class="tl-dot" style="background:#1D9E75"></div><div class="tl-text"><strong>Q3 FY26: PAT ₹62 Cr (+1,543% YoY)</strong> — clear acceleration. Collection efficiency 94.8%. GNPA improving. Credit cost falling (3.3%). ROA 1.9%. PPOP +17.7% QoQ. AUM growing. All metrics moving in the right direction.</div><div class="tl-date">Oct–Dec 2025</div></div>
+  <div class="timeline"><div class="tl-dot" style="background:#1D9E75"></div><div class="tl-text"><strong>FY26 full year: GNPA 3.89% (improved), AUM ₹14,006 Cr (+13%)</strong> — FY26 marks the recovery year. Board meeting May 6, 2026 to approve full FY26 results. 9M PAT ₹99 Cr; full year likely ₹140–160 Cr.</div><div class="tl-date">FY26 full year</div></div>
+  <div class="timeline"><div class="tl-dot" style="background:#059669"></div><div class="tl-text"><strong>FY27E: Normalisation year</strong> — if collection efficiency reaches 97%+, credit cost falls to 1.5–2%, and AUM grows 20–25%, PAT could reach ₹280–350 Cr. ROA targeting 2.5–3%+. This is the key earnings inflection.</div><div class="tl-date">FY27E</div></div>
+</div>
+
+<!-- AUM & FINANCIALS -->
+<div id="revenue" class="panel">
+  <div class="sh">AUM growth &amp; financial history — the road to recovery</div>
+  <div class="chart-wrap"><canvas id="rc"></canvas></div>
+  <div style="display:flex;gap:14px;font-size:11.5px;color:#666;margin-bottom:10px">
+    <span><span style="display:inline-block;width:10px;height:10px;border-radius:2px;background:#2E7D32;margin-right:4px"></span>AUM ₹ Cr</span>
+    <span><span style="display:inline-block;width:10px;height:10px;border-radius:2px;background:#1D9E75;margin-right:4px"></span>PAT ₹ Cr</span>
+    <span><span style="display:inline-block;width:10px;height:10px;border-radius:2px;background:#A5D6A7;margin-right:4px"></span>Projected</span>
+  </div>
+  <table>
+    <tr><th>Period</th><th>AUM</th><th>AUM Growth</th><th>Revenue</th><th>Credit Cost</th><th>Collection Eff.</th><th>PAT</th><th>Key event</th></tr>
+    <tr><td>FY23</td><td>~₹9,500 Cr</td><td class="g">+35%</td><td>~₹1,850 Cr</td><td class="g">~1.5%</td><td class="g">~98%</td><td>~₹200 Cr</td><td>Peak year. Strong growth. Low NPAs. IPO filed. Investor confidence high.</td></tr>
+    <tr><td>FY24</td><td>~₹12,400 Cr</td><td class="g">+31%</td><td>~₹2,400 Cr</td><td class="a">~2.5%</td><td class="a">~95%</td><td>~₹155 Cr</td><td>Stress beginning. Over-indebtedness emerging. IPO Dec 2023. RBI monitoring MFI sector. Provisioning rising.</td></tr>
+    <tr><td>FY25</td><td>~₹12,376 Cr</td><td class="r">-0.2% (flat)</td><td>~₹2,600 Cr</td><td class="r">~6–7%</td><td class="r">~90–92%</td><td class="r">-₹222 Cr (loss)</td><td><strong>Crisis year.</strong> Book frozen. Heavy provisioning. Collection efficiency falls. RBI guidelines tightened. Full year loss. Stock -50%+ from IPO high.</td></tr>
+    <tr><td>Q1 FY26</td><td>~₹12,555 Cr</td><td class="a">Small recovery</td><td>~₹580 Cr</td><td class="r">~4.5%</td><td class="a">~92–93%</td><td class="a">~₹6 Cr (near BEP)</td><td>First signs of recovery. Disbursements restarting. Provisioning still elevated but normalising.</td></tr>
+    <tr><td>Q2 FY26</td><td>~₹12,560 Cr</td><td class="a">Flat QoQ</td><td>₹577 Cr</td><td class="a">~4.0%</td><td class="a">~93%</td><td>₹30.52 Cr</td><td>Back to profitability. Credit cost moderating. PPOP growing. Institutional confidence returning. CRISIL A+/Positive.</td></tr>
+    <tr><td>Q3 FY26</td><td>₹13,078 Cr</td><td class="g">+4.1% QoQ</td><td>₹602 Cr</td><td class="g">3.3%</td><td class="g">94.8%</td><td>₹62.44 Cr</td><td><strong>Clear recovery.</strong> PAT +1,543% YoY. Collection +150 bps QoQ. PPOP +17.7% QoQ. ROA 1.9%. Individual loan AUM ₹1,000 Cr milestone.</td></tr>
+    <tr><td>FY26 (full year)</td><td>₹14,006 Cr</td><td class="g">+13% YoY</td><td>~₹2,350 Cr</td><td class="a">~3.7%</td><td class="g">~95%+</td><td>~₹140–160 Cr</td><td>GNPA improved to 3.89%. Disbursements +6%. Board meeting May 6 (full results). NCD ₹4,000 Cr authorized. Recovery confirmed.</td></tr>
+    <tr><td>FY27E</td><td>~₹17,000–18,500 Cr</td><td class="g">+21–32%</td><td>~₹3,000–3,200 Cr</td><td class="g">~2.0–2.5%</td><td class="g">~96–97%</td><td>~₹280–380 Cr</td><td>Normalisation year. Credit cost falls to near-normal. Operating leverage on AUM. Individual loans scaling. ROA targeting 2.5%+.</td></tr>
+    <tr><td>FY28E</td><td>~₹22,000–25,000 Cr</td><td class="g">~30–35%</td><td>~₹4,000 Cr</td><td class="g">~1.5–2%</td><td class="g">~97–98%</td><td>~₹500–650 Cr</td><td>Full normalisation. AUM growing 25–30%. Credit cost pre-crisis levels. ROA 3%+. ROE improving toward 15–18%. 3x PAT growth from FY26.</td></tr>
+  </table>
+  <div class="warn mfi"><strong>Why PAT recovery is so dramatic — the operating leverage of NBFC-MFIs:</strong> Muthoot Microfin's cost structure is mostly fixed (branches, staff, tech). Revenue (NIM) is a function of AUM. When credit cost spikes (FY25: 6–7%), it consumes NIM and creates losses. When credit cost falls back to normal (1.5–2%), the same NIM flows to PAT — an enormous leveraged recovery. At ₹14,006 Cr AUM and 12% NIM: NIM income ~₹1,680 Cr. At 2% credit cost: credit provisions ~₹280 Cr. PPOP ~₹1,400 Cr. Operating expenses ~₹850 Cr. PBT ~₹550 Cr. PAT ~₹400–420 Cr. <strong>This is the FY27–FY28 earnings power at normalised credit cost — 3x FY26's ₹140–160 Cr.</strong></div>
+</div>
+
+<!-- NBFC-MFI KPIs -->
+<div id="sectorKPI" class="panel">
+  <div class="sh">NBFC-MFI specific KPIs — the right metrics for microfinance companies</div>
+  <div class="warn mfi"><strong>MFI companies cannot be valued on PE or P/Sales like manufacturing companies.</strong> The correct framework: (1) AUM size and growth rate, (2) Net Interest Margin (NIM) — lending rate minus cost of funds, (3) Collection efficiency — the most critical operational metric (97–98% = normal; below 93% = distress), (4) Credit cost (provisions as % of AUM), (5) ROA (Return on Assets) and ROE, and (6) Capital Adequacy Ratio (CAR). Each of these is currently improving at Muthoot Microfin — confirming the recovery thesis.</div>
+  <div class="kpi-grid">
+    <div class="kpi mfi"><div class="kpi-l">FY26 AUM</div><div class="kpi-v">₹14,006 Cr</div><div class="kpi-s">+13% YoY · Disbursements up 6%</div></div>
+    <div class="kpi green"><div class="kpi-l">Collection efficiency (Q3)</div><div class="kpi-v">94.8%</div><div class="kpi-s">+150 bps QoQ — recovering toward 97%</div></div>
+    <div class="kpi green"><div class="kpi-l">NIM</div><div class="kpi-v">12%</div><div class="kpi-s">Structural advantage — premium over cost of funds</div></div>
+    <div class="kpi amber"><div class="kpi-l">Credit cost (Q3)</div><div class="kpi-v">3.3%</div><div class="kpi-s">Falling — target 1.5–2% by FY27</div></div>
+    <div class="kpi green"><div class="kpi-l">GNPA (FY26 end)</div><div class="kpi-v">3.89%</div><div class="kpi-s">Improving — heavy FY25 provisioning cleaned book</div></div>
+    <div class="kpi green"><div class="kpi-l">CRISIL rating</div><div class="kpi-v">A+/Positive</div><div class="kpi-s">Upgrade expected — lowers cost of funds</div></div>
+  </div>
+
+  <div class="sh">Collection efficiency — the most critical MFI metric</div>
+  <div class="metric-row"><div class="mr-label">Pre-crisis peak (FY23)</div><div class="mr-track"><div class="mr-fill" style="width:98%;background:#059669">98%</div></div><div class="mr-val g">98%</div></div>
+  <div class="metric-row"><div class="mr-label">Crisis trough (FY25)</div><div class="mr-track"><div class="mr-fill" style="width:90%;background:#A32D2D">90%</div></div><div class="mr-val r">~90% (sector-wide crisis)</div></div>
+  <div class="metric-row"><div class="mr-label">Q1 FY26 recovery</div><div class="mr-track"><div class="mr-fill" style="width:92%;background:#EF9F27">92–93%</div></div><div class="mr-val a">~92–93%</div></div>
+  <div class="metric-row"><div class="mr-label">Q3 FY26 (current)</div><div class="mr-track"><div class="mr-fill" style="width:94.8%;background:#1D9E75">94.8%</div></div><div class="mr-val g">94.8% ↑ +150bps</div></div>
+  <div class="metric-row"><div class="mr-label">FY27 target (normalisation)</div><div class="mr-track"><div class="mr-fill" style="width:97%;background:#059669">97%</div></div><div class="mr-val g">97%+ target</div></div>
+
+  <div class="sh">Credit cost — the PAT recovery driver</div>
+  <div class="metric-row"><div class="mr-label">Normal year (FY23)</div><div class="mr-track"><div class="mr-fill" style="width:15%;background:#059669">~1.5%</div></div><div class="mr-val g">~1.5%</div></div>
+  <div class="metric-row"><div class="mr-label">Crisis peak (FY25)</div><div class="mr-track"><div class="mr-fill" style="width:70%;background:#A32D2D">~6–7%</div></div><div class="mr-val r">~6–7%</div></div>
+  <div class="metric-row"><div class="mr-label">Q3 FY26</div><div class="mr-track"><div class="mr-fill" style="width:33%;background:#EF9F27">3.3%</div></div><div class="mr-val a">3.3% — falling fast</div></div>
+  <div class="metric-row"><div class="mr-label">FY27 target</div><div class="mr-track"><div class="mr-fill" style="width:20%;background:#1D9E75">2.0%</div></div><div class="mr-val g">~2% target</div></div>
+  <div class="warn mfi" style="margin-top:10px"><strong>The credit cost math is the key to the 3x thesis:</strong> At ₹14,006 Cr AUM, every 1% reduction in credit cost = ₹140 Cr PAT benefit. Going from Q3 FY26 credit cost of 3.3% to normal 1.5% = 1.8% improvement = ~₹252 Cr additional PAT annually (on growing AUM). Combined with AUM growth of 20–25% in FY27, the PAT recovery is mechanically very powerful. This is the most quantifiable 3x path in the entire portfolio analyzed over all sessions.</div>
+</div>
+
+<!-- BUSINESS MODEL -->
+<div id="business" class="panel">
+  <div class="sh">What Muthoot Microfin does — micro-lending to India's women entrepreneurs</div>
+  <div class="warn mfi"><strong>Muthoot Microfin is a purpose-driven financial institution</strong> — not just a lender. Its mission is financial inclusion: providing formal credit to rural women who have never had access to banks. 100% of borrowers are women. Most are small business owners (grocery, tailoring, agri-produce, handicrafts). This social purpose is both a genuine mission AND a financial model — RBI provides a preferential regulatory framework for NBFC-MFIs because they serve the underserved.</div>
+
+  <div class="two-col" style="margin:10px 0">
+    <div class="pane">
+      <div class="pane-h">Core lending products</div>
+      <div class="point"><div class="dot dm">1</div><div><strong>Income Generating Loans (core, 85%+ of AUM):</strong> ₹15,000–₹1,50,000 per borrower. Joint Liability Group (JLG) model — groups of 5–10 women guarantee each other's loans. This peer pressure mechanism is why MFI collection efficiency is typically 97–98% (borrowers do not want to shame their neighbours). Duration: 12–24 months. Interest rate: 20–24% per year.</div></div>
+      <div class="point"><div class="dot dm">2</div><div><strong>Individual Loans (new, growing):</strong> Higher-ticket loans (₹2–10 lakh) for established repeat borrowers with good history. AUM crossed ₹1,000 Cr in FY26 — a significant milestone. Individual loans have higher ASP, potentially lower credit risk (proven borrower), and better margins. This is the strategic upgrade from group to individual lending.</div></div>
+      <div class="point"><div class="dot df">3</div><div><strong>Product loans (solar, appliances, education):</strong> Loans for specific purchases — solar lights, mobile phones, appliances, sanitation. These are typically small (₹5,000–₹30,000), short-tenure, and asset-backed. Government subsidy linkages reduce credit risk. Strategic importance: keeps borrowers within the Muthoot ecosystem for repeat cycles.</div></div>
+    </div>
+    <div class="pane">
+      <div class="pane-h">The Muthoot Pappachan Group advantage</div>
+      <div class="point"><div class="dot dm">+</div><div><strong>Parent group backing is a critical survival moat:</strong> Muthoot Pappachan Group (MPG), also known as Muthoot Blue, is a ₹90,000+ Cr Kerala-based financial services conglomerate. During the FY25 crisis, the group's backing enabled Muthoot Microfin to: (a) Access institutional funding when markets were nervous about MFIs, (b) Maintain CRISIL A+/Positive rating while smaller peers faced downgrades, (c) Continue operations without existential funding risk. Smaller unlisted MFIs without such backing faced far more severe stress.</div></div>
+      <div class="point"><div class="dot dg">+</div><div><strong>Pan-India geographic diversification — 18+ states:</strong> Unlike South India-concentrated MFIs (which faced the worst of the over-indebtedness crisis), Muthoot Microfin operates across 18 states. When Kerala/Tamil Nadu collections suffered, UP/Bihar/Odisha partly compensated. This geographic spread is a structural risk mitigant that smaller, concentrated MFIs lack.</div></div>
+      <div class="point"><div class="dot dg">+</div><div><strong>CRISIL A+/Positive = funding moat:</strong> A+ is the highest rating most institutional lenders (insurance companies, pension funds, large NBFCs) will lend to for 2–3 year paper. The /Positive outlook means CRISIL expects an upgrade to AA-. An upgrade to AA- would meaningfully reduce cost of funds (currently ~10–11%) and expand NIM/PAT further.</div></div>
+    </div>
+  </div>
+</div>
+
+<!-- GUIDANCE -->
+<div id="guidance" class="panel">
+  <div class="sh">Guidance analysis — management is cautiously optimistic about recovery timeline</div>
+  <div class="warn mfi"><strong>Muthoot Microfin management holds quarterly earnings calls with detailed guidance.</strong> The Q3 FY26 call (February 2026) was the most positive since the crisis began. Key management statements on recovery timeline, credit cost normalisation, and AUM growth targets.</div>
+
+  <div class="guid-card">
+    <div class="guid-h">✓ FY26 AUM guidance: ₹14,000 Cr target → delivered ₹14,006 Cr</div>
+    <div class="guid-b">Management guided AUM of approximately ₹14,000 Cr for FY26. Actual: ₹14,006 Cr — essentially on target despite the sector-wide headwinds. Disbursements +6% YoY even in a recovery year. This delivery against a target set during a crisis year is an important credibility signal. The AUM guidance was achieved without compromising on quality — GNPA actually improved to 3.89%.</div>
+    <div class="guid-s">Credibility: 9/10. AUM delivered exactly as guided while quality improved.</div>
+  </div>
+
+  <div class="guid-card">
+    <div class="guid-h">✓ Collection efficiency recovery trajectory — delivered as guided</div>
+    <div class="guid-b">Each quarter in FY26, management guided "continued improvement" in collection efficiency. Q1: ~92% → Q2: ~93% → Q3: 94.8% — a steady 150–200 bps quarterly improvement. The target of 97%+ by end-FY27 is consistent with the trajectory. Management stated clearly: "We expect collection efficiency to reach pre-crisis levels of 97–98% by FY27." Given the consistent quarterly improvement, this guidance is highly credible.</div>
+    <div class="guid-s">Credibility: 8/10. Consistent improvement matching guidance. 97% FY27 target is achievable.</div>
+  </div>
+
+  <div class="guid-card watch">
+    <div class="guid-h">⚠ Credit cost guidance: 3.3% Q3 → target ~2% by FY27 — the key unknown</div>
+    <div class="guid-b">Credit cost fell from ~6–7% (FY25) to 3.3% (Q3 FY26). Management targets 2% by FY27. The path: as GNPA of 3.89% is worked down through collections (94.8%) and write-offs, future provisioning need reduces. The 9M FY26 credit cost was 3.7% — Q3 was better at 3.3%. Each 0.5% reduction in credit cost = ~₹70 Cr PAT at current AUM. Achieving 2% by FY27 requires Q4 FY26 and H1 FY27 to continue the improvement trend. Realistic but requires sustained collection efficiency above 96% for 2–3 quarters.</div>
+    <div class="guid-s">Credibility: 7/10. Trajectory supports 2% target; dependent on collection efficiency reaching 96%+.</div>
+  </div>
+
+  <div class="guid-card">
+    <div class="guid-h">FY27 AUM target: ₹17,000–18,500 Cr (20–30% growth)</div>
+    <div class="guid-b">Management has guided resuming 20–25% AUM growth from FY27 as credit quality normalises. The FY26 AUM of ₹14,006 Cr × 25% growth = ₹17,508 Cr. This requires disbursements recovering from FY26's cautious pace. Given the Individual Loan portfolio (₹1,000 Cr) as a higher-ticket growth engine, plus resumption of group lending growth, 20–25% AUM growth in FY27 is achievable. NCD authorization of ₹4,000 Cr (May 6 board meeting) ensures funding availability for this growth.</div>
+    <div class="guid-s">Credibility: 8/10. Funding secured, quality improving, disbursements already +6% in FY26. 20–25% AUM growth is the base case.</div>
+  </div>
+
+  <div class="sh">Guidance scorecard</div>
+  <table>
+    <tr><th>Item</th><th>Credibility</th><th>Base case</th><th>Key risk</th></tr>
+    <tr><td>FY26 AUM ₹14,006 Cr</td><td class="g">9/10 — delivered</td><td>Confirmed ₹14,006 Cr</td><td>Already achieved</td></tr>
+    <tr><td>FY27 AUM ₹17,000–18,500 Cr</td><td class="g">8/10 — trajectory supports</td><td>₹17,000–17,500 Cr</td><td>Sector re-stress; over-indebtedness re-emerges</td></tr>
+    <tr><td>Credit cost 2% by FY27</td><td class="a">7/10 — improving fast</td><td>2–2.5% FY27</td><td>Collection efficiency stalls at 95%</td></tr>
+    <tr><td>Collection efficiency 97% FY27</td><td class="a">7/10 — steady quarterly gains</td><td>96–97%</td><td>Rural income shock (drought, inflation) re-stresses</td></tr>
+    <tr><td>FY27 PAT ₹280–380 Cr</td><td class="a">6/10 — depends on credit cost</td><td>₹250–350 Cr</td><td>If credit cost stays at 3%: PAT ~₹180 Cr, not ₹300+</td></tr>
+  </table>
+</div>
+
+<!-- RISKS -->
+<div id="risks" class="panel">
+  <div class="sh">Risks — structural and cyclical risks for MFI investing</div>
+
+  <div class="point"><div class="dot dr">1</div><div><strong>Re-stress risk: Over-indebtedness can return if RBI regulations are not strictly enforced.</strong><br>The FY25 crisis happened because borrowers had loans from 4–6 MFIs simultaneously. RBI tightened regulations — household income limits removed, maximum loan caps reduced, bureau checks strengthened. But enforcement depends on every MFI following the rules. If aggressive lenders resume over-disbursement in the recovery phase (as has happened in every previous MFI cycle), the crisis can repeat in 2–3 years. This is the most important structural risk — it's not Muthoot-specific, it's systemic. India's MFI sector has had 3 major crisis cycles (Andhra Pradesh 2010, demonetisation 2016, Covid 2020, and now 2024–25). Each cycle takes 2–3 years to fully recover. The next crisis, if it comes, would again impact all MFIs.</div></div>
+
+  <div class="point"><div class="dot da">2</div><div><strong>High leverage (D/E ~3x) amplifies both upside AND downside.</strong><br>NBFC-MFIs use significant leverage — borrowing from banks/institutions at 9–11% and lending to borrowers at 22–24%. At D/E of 3x, any NIM compression or credit cost spike has a leveraged negative impact on equity returns. During FY25, the combination of compressed NIM (higher provisioning) and high credit cost led to the -₹222 Cr loss. The same leverage works in reverse during recovery — which is why PAT can triple from ₹140 Cr to ₹420 Cr in 2 years. This is a high-operating-leverage business — volatility is structural.</div></div>
+
+  <div class="point"><div class="dot da">3</div><div><strong>Rural India income dependency — drought, inflation, policy changes can destabilize.</strong><br>Muthoot Microfin's 100% borrower base is rural women with informal income. Any rural income shock — drought, crop failure, NREGA fund freeze, inflation spike — directly hits collection efficiency. The 2024–25 crisis was partly driven by post-COVID inflation hitting rural household incomes. Climate change (more frequent droughts) is a long-term risk to the rural MFI model that cannot be eliminated — only managed through geographic diversification.</div></div>
+
+  <div class="point"><div class="dot da">4</div><div><strong>RBI regulatory risk — new guidelines could compress yields or increase capital requirements.</strong><br>RBI can introduce new guidelines for NBFC-MFIs at any time — interest rate caps, concentration limits, capital adequacy changes. In FY25, RBI removed the ₹3 lakh household income eligibility limit (reducing the addressable market), increased provisioning requirements (directly impacting earnings). Future regulatory changes (positive or negative) are inherently unpredictable for this regulated sector.</div></div>
+
+  <div class="point"><div class="dot dg">+</div><div><strong>Genuine strengths — why Muthoot Microfin will emerge stronger from the crisis:</strong><br>Parent group (Muthoot Pappachan) backing = survival moat competitors lacked. CRISIL A+/Positive = premium institutional funding access. 18-state geographic diversification. Individual Loan AUM ₹1,000 Cr+ = product diversification. ₹4,000 Cr NCD authorization = growth fuel. AUM growing (+13% FY26) while competitors froze lending. Heavy FY25 provisioning = clean book for FY27. Collection efficiency +150 bps QoQ = trend is the investor's friend. "Financial Inclusion Institute of the Year" award = sector credibility maintained. Management with deep MFI experience through multiple cycles. FY25 was the trough — the trajectory from here is sharply up.</div></div>
+</div>
+
+<!-- SCENARIOS -->
+<div id="scenarios" class="panel">
+  <div class="sh">Three scenarios — from current ~₹190 (~₹3,185 Cr mcap)</div>
+  <div class="warn rec"><strong>The 3x math at ₹3,185 Cr is highly achievable — this is one of the clearest 3x paths in the portfolio.</strong> 3x = ₹9,555 Cr. At 18x PE on ₹530 Cr PAT = ₹9,540 Cr. FY26 PAT ~₹150 Cr. Getting to ₹530 Cr requires 3.5x PAT growth in 2–3 years. At FY26 AUM of ₹14,006 Cr and NIM of 12%, the earnings power at normalised credit cost is ₹400–500 Cr. This is not speculative — it's the mathematical consequence of credit cost normalising from 3.3% to 1.5–2%. The question is timing and whether the sector re-stresses.</div>
+
+  <div class="scenario" style="border-left:3px solid #2E7D32">
+    <div style="font-size:13px;font-weight:500;color:#1B5E20;margin-bottom:8px">Bull case — 3–4x in 2 years: Full normalisation + AUM 30% growth + credit cost 1.5%</div>
+    <div class="sc-grid">
+      <div class="sc-cell"><div class="sc-l">FY27 AUM</div><div class="sc-v">₹18,000–20,000 Cr</div></div>
+      <div class="sc-cell"><div class="sc-l">Collection eff.</div><div class="sc-v">97%+</div></div>
+      <div class="sc-cell"><div class="sc-l">Credit cost</div><div class="sc-v">1.5–2%</div></div>
+      <div class="sc-cell"><div class="sc-l">FY27 PAT</div><div class="sc-v">₹350–450 Cr</div></div>
+      <div class="sc-cell"><div class="sc-l">PE (recovering MFI)</div><div class="sc-v">18–22x</div></div>
+      <div class="sc-cell"><div class="sc-l">FY27 mcap</div><div class="sc-v">₹6,300–9,900 Cr</div></div>
+    </div>
+    <div style="font-size:11.5px;color:#333;margin-top:8px"><strong>What must happen:</strong> Collection efficiency reaches 97%+ by H1 FY27. Credit cost falls to 1.5–2% (pre-crisis norm). AUM grows 25–30% on resumed disbursements. CRISIL upgrades to AA- (lower cost of funds, wider NIM). Individual loans scale to ₹2,000+ Cr (higher margin). At 20x PE on ₹400 Cr PAT = ₹8,000 Cr = <strong>2.5x from ₹3,185 Cr.</strong> For 3x: FY28 PAT ₹530 Cr at 18x = ₹9,540 Cr = 3x. Bull case is achievable in 2–3 years — <strong>one of the most credible 3x paths analyzed across all sessions.</strong></div>
+  </div>
+
+  <div class="scenario" style="border-left:3px solid #378ADD">
+    <div style="font-size:13px;font-weight:500;color:#185FA5;margin-bottom:8px">Base case — 1.8–2.5x in 2 years: Gradual recovery, credit cost ~2.5% FY27</div>
+    <div class="sc-grid">
+      <div class="sc-cell"><div class="sc-l">FY27 AUM</div><div class="sc-v">₹16,500–17,500 Cr</div></div>
+      <div class="sc-cell"><div class="sc-l">Collection eff.</div><div class="sc-v">96%</div></div>
+      <div class="sc-cell"><div class="sc-l">Credit cost</div><div class="sc-v">2.5–3%</div></div>
+      <div class="sc-cell"><div class="sc-l">FY27 PAT</div><div class="sc-v">₹220–280 Cr</div></div>
+      <div class="sc-cell"><div class="sc-l">PE (steady recovery)</div><div class="sc-v">15–18x</div></div>
+      <div class="sc-cell"><div class="sc-l">FY27 mcap</div><div class="sc-v">₹3,300–5,040 Cr</div></div>
+    </div>
+    <div style="font-size:11.5px;color:#333;margin-top:8px">Credit cost stays slightly elevated at 2.5% (slower-than-expected collection improvement). AUM grows 18–20%. PAT ₹250 Cr at 16x = ₹4,000 Cr = 1.26x in FY27. FY28 PAT ₹380 Cr at 18x = ₹6,840 Cr = 2.15x. <strong>Base case 2x in 2 years — solid absolute return on Garvit's 3-year goal.</strong></div>
+  </div>
+
+  <div class="scenario" style="border-left:3px solid #A32D2D">
+    <div style="font-size:13px;font-weight:500;color:#A32D2D;margin-bottom:8px">Bear case — flat to -30%: Sector re-stresses, collection efficiency stalls at 94–95%</div>
+    <div class="sc-grid">
+      <div class="sc-cell"><div class="sc-l">Trigger</div><div class="sc-v">Over-indebtedness returns</div></div>
+      <div class="sc-cell"><div class="sc-l">Trigger</div><div class="sc-v">Rural income shock (drought)</div></div>
+      <div class="sc-cell"><div class="sc-l">Trigger</div><div class="sc-v">RBI new adverse guidelines</div></div>
+      <div class="sc-cell"><div class="sc-l">FY27 credit cost</div><div class="sc-v">4%+ (stays elevated)</div></div>
+      <div class="sc-cell"><div class="sc-l">FY27 PAT</div><div class="sc-v">₹80–120 Cr</div></div>
+      <div class="sc-cell"><div class="sc-l">PE at 12–14x</div><div class="sc-v">₹960–1,680 Cr mcap</div></div>
+    </div>
+    <div style="font-size:11.5px;color:#333;margin-top:8px"><strong>Bear probability: 20–25%.</strong> If sector re-stresses (a new over-indebtedness wave), collection efficiency stalls at 94–95% and credit cost stays 4%+. PAT ₹100 Cr at 14x = ₹1,400 Cr = -56% from current ₹3,185 Cr. This is a real downside — MFI cycles are long. However, the bear case requires a NEW trigger, not a continuation of the existing crisis (which is clearly recovering).</div>
+  </div>
+
+  <table style="margin-top:10px">
+    <tr><th>Target</th><th>Mcap needed</th><th>Driver</th><th>Timeline</th><th>Probability</th></tr>
+    <tr><td>3x (₹9,555 Cr)</td><td>₹9,555 Cr</td><td>FY28 PAT ₹530 Cr at 18x PE</td><td>FY27–28</td><td class="g">30–35%</td></tr>
+    <tr><td>2.5x (₹7,963 Cr)</td><td>₹7,963 Cr</td><td>FY27 PAT ₹400 Cr at 20x PE</td><td>FY27</td><td class="a">25–30%</td></tr>
+    <tr><td>2x (₹6,370 Cr)</td><td>₹6,370 Cr</td><td>FY27 PAT ₹350 Cr at 18x PE</td><td>FY27</td><td class="g">40–45%</td></tr>
+    <tr><td>Bear (-40%: ₹1,911 Cr)</td><td>₹1,911 Cr</td><td>Sector re-stress + credit cost stays 4%+</td><td>—</td><td class="a">20–25%</td></tr>
+  </table>
+</div>
+
+<!-- MFI PEERS -->
+<div id="compare" class="panel">
+  <div class="sh">NBFC-MFI sector peers — comparison and best option for Garvit</div>
+  <div style="border:1px solid #ddd;border-radius:10px;overflow:hidden;font-size:11px">
+    <div class="comp-h">
+      <div class="cc-h" style="background:#f5f5f3">Metric</div>
+      <div class="cc-h" style="background:#E8F5E9;color:#1B5E20">Muthoot Microfin</div>
+      <div class="cc-h" style="background:#E6F1FB;color:#185FA5">CreditAccess Grameen</div>
+      <div class="cc-h" style="background:#f5f5f3">Spandana Sphoorty</div>
+    </div>
+    <div class="comp-row"><div class="cc cc-label">Market cap</div><div class="cc mid-cell">₹3,185 Cr</div><div class="cc loser-cell">₹8,500+ Cr</div><div class="cc mid-cell">₹5,000+ Cr</div></div>
+    <div class="comp-row"><div class="cc cc-label">AUM</div><div class="cc mid-cell">₹14,006 Cr (+13%)</div><div class="cc winner-cell">₹25,000+ Cr (larger)</div><div class="cc mid-cell">₹12,000+ Cr</div></div>
+    <div class="comp-row"><div class="cc cc-label">Collection efficiency</div><div class="cc winner-cell">94.8% (+150bps QoQ)</div><div class="cc winner-cell">~95–96%</div><div class="cc mid-cell">~93–94%</div></div>
+    <div class="comp-row"><div class="cc cc-label">NIM</div><div class="cc winner-cell">12%</div><div class="cc winner-cell">~13–14%</div><div class="cc mid-cell">~11%</div></div>
+    <div class="comp-row"><div class="cc cc-label">Parent group</div><div class="cc winner-cell">Muthoot Pappachan (₹90,000+ Cr)</div><div class="cc winner-cell">Developing World Markets (VC)</div><div class="cc mid-cell">Independent</div></div>
+    <div class="comp-row"><div class="cc cc-label">CRISIL rating</div><div class="cc winner-cell">A+/Positive (upgrade likely)</div><div class="cc winner-cell">AA- (higher)</div><div class="cc mid-cell">A/Stable</div></div>
+    <div class="comp-row"><div class="cc cc-label">Credit cost Q3 FY26</div><div class="cc mid-cell">3.3% (falling)</div><div class="cc winner-cell">~2.5–3% (recovering)</div><div class="cc loser-cell">~4%+</div></div>
+    <div class="comp-row"><div class="cc cc-label">GNPA</div><div class="cc winner-cell">3.89% (improving)</div><div class="cc winner-cell">~3–4%</div><div class="cc loser-cell">~5%+</div></div>
+    <div class="comp-row"><div class="cc cc-label">Geographic diversification</div><div class="cc winner-cell">18+ states (best in class)</div><div class="cc mid-cell">South India focused</div><div class="cc mid-cell">~12 states</div></div>
+    <div class="comp-row"><div class="cc cc-label">3x probability</div><div class="cc winner-cell">30–35% (strong recovery)</div><td class="cc a">15–20% (larger base, pricier)</td><td class="cc a">20–25% (good but less diversified)</td></div>
+    <div class="comp-row"><div class="cc cc-label">Best for Garvit 3x</div><div class="cc">Best risk/reward in MFI sector — smaller base, parent backing, diversified, recovering fast</div><div class="cc">Quality but too large for 3x</div><div class="cc">South-concentrated risk; less parent support</div></div>
+  </div>
+
+  <div class="sector-card" style="margin-top:12px">
+    <div class="sc-hdr"><div><div class="sc-nm">Why Muthoot Microfin is the BEST listed MFI for Garvit's 3x goal</div><div class="sc-tg">Right size + Parent backing + CRISIL A+ + Best geographic diversification + Fastest recovery trajectory</div></div><span class="badge bmfi">Recommended MFI pick</span></div>
+    <div class="sc-bd">Among all listed NBFC-MFIs: <strong>Muthoot Microfin has the best combination of factors for a 3x outcome.</strong> CreditAccess Grameen is higher quality (AA- rating, better margins) but at ₹8,500 Cr mcap, 3x = ₹25,500 Cr — much harder math. Spandana Sphoorty has higher credit cost and more South India concentration risk. Ujjivan SFB and Equitas SFB are Small Finance Banks (slightly different model). Of all listed MFI options, Muthoot Microfin at ₹3,185 Cr with CRISIL A+/Positive, Muthoot Group backing, 18-state diversification, and the fastest-improving collection efficiency is the most compelling 3x candidate. The 30–35% probability is the highest for any NBFC-MFI at this market cap.</div>
+  </div>
+</div>
+
+<!-- VERDICT -->
+<div id="verdict" class="panel">
+  <div class="sh">The definitive verdict for Garvit's 3x portfolio goal</div>
+
+  <div class="verdict-card" style="background:#E8F5E9;border:1px solid #81C784">
+    <div class="vc-h" style="color:#1B5E20">Muthoot Microfin — Verdict: The most compelling recovery + compounding story in the entire analysis series. The 3x PAT growth from ₹150 Cr (FY26) to ₹450–530 Cr (FY28) is mechanically driven by credit cost normalisation — arguably the most quantifiable 3x path analyzed. BUY ₹25,000–40,000 as a medium-conviction position, sized below Bondada/Websol but above pure speculative picks.</div>
+    <div class="vc-b">Here is the complete picture:<br><br>
+    <strong>Why Muthoot Microfin has one of the clearest 3x paths in the portfolio:</strong><br>
+    • <strong>The credit cost math is the entire thesis:</strong> At ₹14,006 Cr AUM and 12% NIM, with credit cost falling from 3.3% → 2% → 1.5%, each 1% reduction in credit cost = ~₹140 Cr additional PAT. Going from 3.3% to 1.5% = 1.8% improvement = ₹252 Cr additional PAT. Plus AUM growing 25%+ per year. FY26 PAT ₹150 Cr → FY27 PAT ₹300–380 Cr → FY28 PAT ₹450–530 Cr. <strong>This is 3x PAT in 2 years — driven by math, not narrative.</strong><br><br>
+    • FY26 AUM ₹14,006 Cr (+13%) delivered exactly as guided<br>
+    • Collection efficiency recovering each quarter: 92% → 93% → 94.8% → targeting 97%<br>
+    • GNPA improved to 3.89% — heavy FY25 provisioning cleaned the book<br>
+    • CRISIL A+/Positive — upgrade to AA- expected, reduces cost of funds<br>
+    • Parent group Muthoot Pappachan provides institutional credibility<br>
+    • 18+ states = best geographic diversification in listed MFI space<br>
+    • Individual loan AUM ₹1,000 Cr crossed — higher margin, diversification from group loans<br>
+    • Board meeting May 6: full FY26 results + ₹4,000 Cr NCD authorization (growth fuel)<br>
+    • Stock down -28% in 52 weeks despite consistent fundamental improvement<br><br>
+    <strong>Portfolio context — how this fits in Garvit's 3x portfolio:</strong><br>
+    This is NOT in Garvit's current portfolio — it would be a new position. The question: should capital go to Muthoot Microfin vs the existing underweights (RPSG Ventures ₹35K, DEE Development ₹15K add, EFC I ₹20K add)?<br><br>
+    <strong>The answer: Yes, add Muthoot Microfin — but only after fully addressing the underweights.</strong><br>
+    Priority order: (1) RPSG Ventures ₹35K → (2) DEE Development add ₹15K → (3) EFC I add ₹20K → (4) Muthoot Microfin ₹25–40K.<br><br>
+    If capital freed from the Oriana Power trim (₹1.07L+) is available after funding the above, Muthoot Microfin at ₹25–40K is an excellent deployment. The 3x probability (30–35%) is among the highest in the portfolio — better than most existing holdings that need trimming (Awfis 5.0/10, KPI Green 4.5/10, Waaree 4.0/10).</div>
+  </div>
+
+  <div class="sh">Allocation recommendation</div>
+  <table>
+    <tr><th>Action</th><th>Amount</th><th>Rationale</th></tr>
+    <tr><td><span class="badge bmfi">BUY ₹25,000–40,000 (after addressing underweights)</span></td><td>₹25,000–40,000</td><td>Fund RPSG Ventures + DEE Dev + EFC I first. Then deploy ₹25–40K in Muthoot Microfin as the portfolio's first MFI position. 30–35% 3x probability — among highest in portfolio. Credit cost math is quantifiable, not narrative.</td></tr>
+    <tr><td><span class="badge bg">Scale to ₹60–80K if Q4 FY26 confirms recovery</span></td><td>+₹25–40K conditional</td><td>May 6 board meeting: full FY26 results. If PAT ₹30+ Cr (Q4) and GNPA below 3.5%, recovery pace is accelerating → increase conviction to ₹60–80K total. This would represent a 6.5/10 conviction, properly sized.</td></tr>
+    <tr><td><span class="badge br">Exit if sector re-stresses (collection efficiency falls below 93%)</span></td><td>Full exit</td><td>If Q1 FY27 collection efficiency reverts to 92–93% or credit cost rises back to 4%+, the bear case activates. Exit immediately — don't hold through a second MFI cycle.</td></tr>
+  </table>
+
+  <div class="sh">Six triggers to watch every quarter</div>
+  <table>
+    <tr><th>#</th><th>Trigger</th><th>Status</th><th>Impact</th></tr>
+    <tr><td>1</td><td>Collection efficiency (quarterly)</td><td class="g">94.8% — improving each quarter</td><td>🔥 95%+ Q4 FY26 = acceleration. 🟢 97%+ FY27 Q1 = normalisation confirmed → increase position. 🔴 Below 93% = sector re-stress → exit.</td></tr>
+    <tr><td>2</td><td>Credit cost (quarterly)</td><td class="g">3.3% Q3 → targeting 2% FY27</td><td>🟢 Each 0.5% reduction = ~₹70–90 Cr PAT improvement. Track every quarter — this is the PAT recovery driver.</td></tr>
+    <tr><td>3</td><td>Full FY26 results (May 6, 2026)</td><td class="a">Board meeting scheduled May 6</td><td>🔥 Q4 FY26 PAT ₹30+ Cr? GNPA below 3.5%? AUM growth 13% confirmed? These determine if the recovery is fully on track.</td></tr>
+    <tr><td>4</td><td>CRISIL rating upgrade</td><td class="g">A+/Positive — upgrade likely to AA-</td><td>🟢 AA- upgrade = 50–100 bps lower cost of funds = ~₹70–140 Cr PAT improvement. Every CRISIL announcement matters.</td></tr>
+    <tr><td>5</td><td>Individual loan AUM (quarterly)</td><td class="g">₹1,000 Cr milestone crossed</td><td>🟢 Individual loans growing to ₹2,000+ Cr = product diversification + higher-margin lending. Watch quarterly milestone announcements.</td></tr>
+    <tr><td>6</td><td>Sector-wide disbursement trends</td><td class="g">FY26 disbursements +6%</td><td>🟢 If FY27 Q1 disbursements grow 15%+ YoY = full normalisation. If disbursements stall or decline = sector may be re-stressing.</td></tr>
+  </table>
+
+  <div class="warn mfi" style="margin-top:12px"><strong>One-line verdict:</strong> Muthoot Microfin is India's best risk/reward MFI recovery story — a Muthoot Pappachan Group-backed, CRISIL A+/Positive rated, 18-state diversified microfinance institution whose FY25 loss of -₹222 Cr has transformed into a FY26 profit recovery trajectory (Q3 FY26 PAT ₹62 Cr +1,543% YoY), driven by collection efficiency improving from 90% to 94.8% and credit cost falling from 7% to 3.3%, with a clear mechanical path to ₹400–530 Cr PAT by FY28 (3x growth) as credit normalises to 1.5–2%. At ₹3,185 Cr market cap with 30–35% 3x probability, this is the most quantifiable recovery-driven 3x case across all nine stocks analyzed in this session. Fund after addressing RPSG Ventures, DEE Development, and EFC I underweights — then deploy ₹25–40K in Muthoot Microfin and scale to ₹60–80K if May 6 FY26 results confirm the recovery acceleration.</div>
+</div>
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/4.4.1/chart.umd.js"></script>
+<script>
+function show(id,btn){
+  document.querySelectorAll('.tab').forEach(t=>t.classList.remove('active'));
+  document.querySelectorAll('.panel').forEach(p=>p.classList.remove('active'));
+  btn.classList.add('active');
+  document.getElementById(id).classList.add('active');
+}
+new Chart(document.getElementById('rc').getContext('2d'),{
+  type:'bar',
+  data:{
+    labels:['FY23','FY24','FY25','Q1FY26','Q2FY26','Q3FY26','FY26E','FY27E','FY28E'],
+    datasets:[
+      {label:'AUM ₹ Cr',data:[9500,12400,12376,12555,12560,13078,14006,17500,22000],backgroundColor:['#2E7D32','#2E7D32','#A32D2D','#EF9F27','#1D9E75','#1D9E75','#1D9E75','#A5D6A7','#A5D6A7'],borderRadius:4,yAxisID:'y'},
+      {label:'PAT ₹ Cr',data:[200,155,-222,6,30.52,62.44,150,330,500],type:'line',borderColor:'#1D9E75',backgroundColor:'transparent',pointBackgroundColor:['#1D9E75','#1D9E75','#A32D2D','#EF9F27','#EF9F27','#1D9E75','#1D9E75','#1D9E75','#1D9E75'],tension:0.3,yAxisID:'y2'}
+    ]
+  },
+  options:{responsive:true,maintainAspectRatio:false,plugins:{legend:{display:false}},scales:{y:{ticks:{font:{size:10}}},y2:{position:'right',ticks:{font:{size:10}},grid:{drawOnChartArea:false}},x:{ticks:{font:{size:10}}}}}
+});
+</script>
+</body>
+</html>

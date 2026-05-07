@@ -25,7 +25,7 @@ export default function RecentReports({ reports }: Props) {
           >
             <div className="flex justify-between mb-1">
               <span className="text-xs font-bold text-[var(--accent)] font-[var(--font-mono)]">
-                {r.ticker}
+                {r.ticker ?? r.name}
               </span>
               <Badge rec={r.rec} size="xs" />
             </div>

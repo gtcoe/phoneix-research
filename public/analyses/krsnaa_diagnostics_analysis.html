@@ -1,0 +1,442 @@
+<!DOCTYPE html>
+<html><head><meta charset="utf-8">
+<style>
+*{box-sizing:border-box;margin:0;padding:0}
+body{font-family:system-ui,sans-serif;padding:16px;background:#fff;color:#1a1a1a;font-size:14px}
+h1{font-size:20px;font-weight:500;margin-bottom:3px}
+.sub{font-size:12px;color:#666;margin-bottom:14px}
+.sg{display:grid;grid-template-columns:repeat(auto-fill,minmax(110px,1fr));gap:8px;margin-bottom:16px}
+.sc{background:#f5f5f3;border-radius:8px;padding:10px 12px}
+.sl{font-size:10px;color:#666;margin-bottom:2px}
+.sv{font-size:17px;font-weight:500}
+.tab-row{display:flex;gap:5px;flex-wrap:wrap;margin-bottom:14px}
+.tab{font-size:11.5px;padding:5px 13px;border-radius:20px;border:1px solid #ddd;background:#fff;cursor:pointer;white-space:nowrap}
+.tab.active{background:#1a1a1a;color:#fff;border-color:#1a1a1a}
+.panel{display:none}.panel.active{display:block}
+.sh{font-size:10.5px;font-weight:500;color:#666;text-transform:uppercase;letter-spacing:.06em;margin:16px 0 7px;padding-bottom:5px;border-bottom:1px solid #eee}
+table{width:100%;border-collapse:collapse;font-size:12px;margin:8px 0}
+th{font-size:10.5px;font-weight:500;color:#666;padding:5px 7px;text-align:left;border-bottom:1px solid #eee;white-space:nowrap}
+td{padding:8px 7px;border-bottom:1px solid #eee;color:#1a1a1a;vertical-align:top}
+tr:last-child td{border-bottom:none}
+tr:hover td{background:#fafaf9}
+.g{color:#0F6E56;font-weight:500}.r{color:#A32D2D;font-weight:500}.a{color:#854F0B;font-weight:500}.b{color:#185FA5;font-weight:500}
+.badge{display:inline-block;font-size:10px;padding:2px 7px;border-radius:10px;white-space:nowrap}
+.bg{background:#E1F5EE;color:#0F6E56}.bb{background:#E6F1FB;color:#185FA5}.ba{background:#FAEEDA;color:#854F0B}.br{background:#FCEBEB;color:#A32D2D}.bgray{background:#f1f0e8;color:#5F5E5A}.bmed{background:#E3F2FD;color:#0D47A1}.bppp{background:#E8EAF6;color:#283593}
+.warn{padding:10px 13px;margin:8px 0;border-left:3px solid;font-size:12px;line-height:1.65}
+.warn.success{background:#E1F5EE;border-color:#1D9E75;color:#04342C}
+.warn.caution{background:#FAEEDA;border-color:#BA7517;color:#412402}
+.warn.danger{background:#FCEBEB;border-color:#A32D2D;color:#712B13}
+.warn.info{background:#E6F1FB;border-color:#185FA5;color:#042C53}
+.warn.med{background:#E3F2FD;border-color:#1565C0;color:#0D2137}
+.warn.ppp{background:#E8EAF6;border-color:#3949AB;color:#1A237E}
+.warn strong{font-weight:500}
+.chart-wrap{position:relative;width:100%;height:240px;margin:8px 0}
+.kpi-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:10px;margin:10px 0}
+.kpi{background:#f5f5f3;border-radius:8px;padding:10px 12px;border-left:3px solid transparent}
+.kpi.green{border-left-color:#1D9E75}.kpi.amber{border-left-color:#EF9F27}.kpi.blue{border-left-color:#378ADD}.kpi.red{border-left-color:#A32D2D}.kpi.med{border-left-color:#1565C0}.kpi.ppp{border-left-color:#3949AB}
+.kpi-l{font-size:10px;color:#666;margin-bottom:3px}
+.kpi-v{font-size:17px;font-weight:500}
+.kpi-s{font-size:10px;color:#888;margin-top:2px}
+.point{display:flex;gap:9px;align-items:flex-start;padding:9px 0;border-bottom:1px solid #eee;font-size:12px;line-height:1.6;color:#555}
+.point:last-child{border-bottom:none}
+.point strong{color:#1a1a1a;font-weight:500}
+.dot{width:19px;height:19px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:10px;font-weight:500;flex-shrink:0;margin-top:1px}
+.dg{background:#E1F5EE;color:#0F6E56}.dr{background:#FCEBEB;color:#A32D2D}.da{background:#FAEEDA;color:#854F0B}.db{background:#E6F1FB;color:#185FA5}.dm{background:#E3F2FD;color:#0D47A1}.dp{background:#E8EAF6;color:#283593}
+.two-col{display:grid;grid-template-columns:1fr 1fr;gap:12px}
+.pane{border:1px solid #ddd;border-radius:10px;padding:13px}
+.pane-h{font-size:13px;font-weight:500;margin-bottom:9px}
+.scenario{border:1px solid #ddd;border-radius:10px;padding:13px;margin-bottom:9px}
+.sc-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:7px;margin:9px 0}
+.sc-cell{background:#f5f5f3;border-radius:6px;padding:7px 9px}
+.sc-l{font-size:10px;color:#666}
+.sc-v{font-size:12px;font-weight:500;margin-top:2px}
+.comp-h{display:grid;grid-template-columns:150px repeat(3,1fr);background:#f5f5f3;border-radius:8px 8px 0 0;overflow:hidden}
+.comp-row{display:grid;grid-template-columns:150px repeat(3,1fr);border-bottom:1px solid #eee}
+.comp-row:last-child{border-bottom:none}
+.cc{padding:8px 10px;font-size:11px;border-right:1px solid #eee}
+.cc:last-child{border-right:none}
+.cc-h{font-size:10px;font-weight:500;color:#444;padding:8px 10px;border-right:1px solid #ddd}
+.cc-h:last-child{border-right:none}
+.cc-label{color:#666;font-size:11px}
+.winner-cell{background:#E1F5EE}.mid-cell{background:#FAEEDA}.loser-cell{background:#fff5f5}
+.verdict-card{border-radius:10px;padding:13px 15px;margin-bottom:10px}
+.vc-h{font-size:13px;font-weight:500;margin-bottom:6px}
+.vc-b{font-size:12px;line-height:1.65;color:#444}
+.sector-card{border:1px solid #ddd;border-radius:10px;overflow:hidden;margin-bottom:10px}
+.sc-hdr{padding:10px 13px;display:flex;justify-content:space-between;align-items:center;background:#fafaf9}
+.sc-nm{font-size:13px;font-weight:500}
+.sc-tg{font-size:11px;color:#666;margin-top:2px}
+.sc-bd{padding:10px 13px;font-size:12px;line-height:1.65;color:#555;border-top:1px solid #eee}
+.sc-bd strong{color:#1a1a1a}
+.guid-card{border-radius:10px;padding:12px 14px;margin-bottom:8px;border-left:3px solid #1565C0;background:#E3F2FD}
+.guid-h{font-size:11.5px;font-weight:500;margin-bottom:4px;color:#0D47A1}
+.guid-b{font-size:11.5px;color:#333;line-height:1.6}
+.guid-s{font-size:10px;color:#888;margin-top:4px}
+.guid-card.beat{background:#E1F5EE;border-left-color:#1D9E75}.guid-card.beat .guid-h{color:#0F6E56}
+.guid-card.miss{background:#FCEBEB;border-left-color:#A32D2D}.guid-card.miss .guid-h{color:#A32D2D}
+.guid-card.watch{background:#FAEEDA;border-left-color:#BA7517}.guid-card.watch .guid-h{color:#854F0B}
+.gov-box{background:#E8EAF6;border:2px solid #3949AB;border-radius:10px;padding:13px;margin:10px 0}
+.gb-h{font-size:14px;font-weight:500;color:#1A237E;margin-bottom:6px}
+.gb-b{font-size:12px;color:#1a1a1a;line-height:1.65}
+.flag{background:#FCEBEB;border:1px solid #A32D2D;border-radius:8px;padding:10px 13px;margin:7px 0;font-size:12px;color:#712B13;line-height:1.6}
+.flag strong{color:#A32D2D}
+.network-bar{display:flex;align-items:center;gap:8px;margin:5px 0}
+.nb-label{font-size:11px;color:#555;width:200px;flex-shrink:0}
+.nb-track{flex:1;background:#f5f5f3;border-radius:4px;height:15px;overflow:hidden}
+.nb-fill{height:100%;border-radius:4px;display:flex;align-items:center;padding-left:6px;font-size:9px;font-weight:600;color:#fff}
+.nb-val{font-size:11px;font-weight:500;width:100px;text-align:right}
+</style>
+</head>
+<body>
+
+<h1>Krsnaa Diagnostics Ltd — Deep Investment Analysis</h1>
+<div class="sub">NSE: KRSNAA · Integrated diagnostics (PPP model) · Founded 2011 · Chairman: Rajendra Mutha · Pune, Maharashtra · 18 states · 190+ CT/MRI · 140 pathology labs · IPO Aug 2021 · Market cap ~₹1,900 Cr · Stock -38% from 52-week high</div>
+
+<div class="sg">
+  <div class="sc"><div class="sl">Market cap</div><div class="sv" style="color:#854F0B">~₹1,900 Cr</div></div>
+  <div class="sc"><div class="sl">FY25 revenue</div><div class="sv" style="color:#1D9E75">₹717 Cr</div></div>
+  <div class="sc"><div class="sl">9M FY26 revenue</div><div class="sv" style="color:#1D9E75">₹580 Cr</div></div>
+  <div class="sc"><div class="sl">Q3 FY26 growth</div><div class="sv" style="color:#A32D2D">+4% YoY</div></div>
+  <div class="sc"><div class="sl">EBITDA margin</div><div class="sv" style="color:#1D9E75">~29%</div></div>
+  <div class="sc"><div class="sl">PAT (TTM)</div><div class="sv" style="color:#854F0B">~₹80 Cr</div></div>
+  <div class="sc"><div class="sl">PPP revenue share</div><div class="sv" style="color:#3949AB">75%+</div></div>
+  <div class="sc"><div class="sl">⚠ Promoter holding</div><div class="sv" style="color:#A32D2D">27.1% (low!)</div></div>
+  <div class="sc"><div class="sl">ROE (3yr avg)</div><div class="sv" style="color:#A32D2D">8.57%</div></div>
+  <div class="sc"><div class="sl">Debtor days</div><div class="sv" style="color:#A32D2D">152 days ↑</div></div>
+  <div class="sc"><div class="sl">52-wk range</div><div class="sv" style="color:#A32D2D">₹515–₹894</div></div>
+  <div class="sc"><div class="sl">⚠ Multiple exits</div><div class="sv" style="color:#A32D2D">CFO + 3 directors</div></div>
+</div>
+
+<div class="tab-row">
+  <button class="tab active" onclick="show('revenue',this)">Revenue history</button>
+  <button class="tab" onclick="show('sectorKPI',this)">Sector KPIs</button>
+  <button class="tab" onclick="show('business',this)">PPP model</button>
+  <button class="tab" onclick="show('guidance',this)">Guidance</button>
+  <button class="tab" onclick="show('risks',this)">Risks & red flags</button>
+  <button class="tab" onclick="show('scenarios',this)">3x scenarios</button>
+  <button class="tab" onclick="show('sectormap',this)">Sector landscape</button>
+  <button class="tab" onclick="show('compare',this)">Full comparison</button>
+  <button class="tab" onclick="show('verdict',this)">Verdict</button>
+</div>
+
+<!-- REVENUE -->
+<div id="revenue" class="panel active">
+  <div class="sh">Revenue &amp; profit history — strong topline but governance concerns emerging</div>
+
+  <div class="gov-box">
+    <div class="gb-h">🏥 The PPP model — Asia's largest diagnostics network in government hospitals</div>
+    <div class="gb-b">Krsnaa operates India's (and one of Asia's) largest government PPP diagnostics network — 190 CT/MRI centers, 140 pathology labs, 1,501 tele-radiology centers, 4,000+ patient collection centers across 18 states. The model: Krsnaa installs equipment and operates diagnostics services inside government hospitals, government pays per-test rates, patients pay subsidised or near-free prices. This is structurally different from private labs — revenue is assured by government contracts (75%+ of revenue) rather than competitive patient acquisition. The PPP model gives Krsnaa access to government hospital patient volumes (millions per year) without marketing costs — but also exposes it to government payment delays (debtor days now 152 days).</div>
+  </div>
+
+  <div class="chart-wrap"><canvas id="rc"></canvas></div>
+  <div style="display:flex;gap:14px;font-size:11.5px;color:#666;margin-bottom:10px">
+    <span><span style="display:inline-block;width:10px;height:10px;border-radius:2px;background:#1565C0;margin-right:4px"></span>Revenue ₹ Cr</span>
+    <span><span style="display:inline-block;width:10px;height:10px;border-radius:2px;background:#1D9E75;margin-right:4px"></span>PAT ₹ Cr</span>
+    <span><span style="display:inline-block;width:10px;height:10px;border-radius:2px;background:#90CAF9;margin-right:4px"></span>Projected</span>
+  </div>
+
+  <table>
+    <tr><th>Period</th><th>Revenue</th><th>Growth</th><th>EBITDA%</th><th>PAT</th><th>PAT%</th><th>Network</th><th>Key event</th></tr>
+    <tr><td>FY22</td><td>~₹430 Cr</td><td>—</td><td>~32%</td><td>~₹60 Cr</td><td class="a">14%</td><td>~100 CT/MRI</td><td>Post-COVID recovery. PPP model gaining traction. IPO in Aug 2021 (₹1,213 Cr raised). Stock peaks ₹1,300+.</td></tr>
+    <tr><td>FY23</td><td>~₹560 Cr</td><td class="g">+30%</td><td>~30%</td><td>~₹58 Cr</td><td class="a">10.4%</td><td>~140 CT/MRI</td><td>Government receivables strain begins. Multiple new PPP contracts won. Rajasthan NHM LOA received. Retail diagnostics launch.</td></tr>
+    <tr><td>FY24</td><td>₹620 Cr</td><td class="g">+11%</td><td>~28%</td><td>~₹57 Cr</td><td class="a">9.2%</td><td>~160 CT/MRI</td><td>Revenue growth slows. High receivables from government (debtor days rising). PAT flat. Stock correction from ₹1,000+ to ₹600.</td></tr>
+    <tr><td>FY25</td><td>₹717 Cr</td><td class="g">+15.7%</td><td>~30%</td><td>₹77.6 Cr</td><td class="g">10.8%</td><td>175 CT/MRI</td><td>PAT +36.5% on strong H2. Maharashtra radiology expansion. Rajasthan pathology project awarded. BookMyJunk — wrong company; here it's the B2C retail launch.</td></tr>
+    <tr><td>Q1 FY26</td><td>₹193 Cr</td><td class="g">+19% YoY</td><td>~31%</td><td>₹24 Cr</td><td class="g">12.4%</td><td>185 CT/MRI</td><td>Strong Q1. Retail revenue 8x YoY. New projects commissioning. CFO later resigns Jan 2026.</td></tr>
+    <tr><td>Q2 FY26</td><td>₹206 Cr</td><td class="g">+11% YoY</td><td>29%</td><td>₹24 Cr</td><td class="g">11.6%</td><td>190 CT/MRI</td><td>Consistent growth. EBITDA ₹60 Cr at 29%. Rajasthan pathology project rolling out (300 collection centers + 20 labs). NCD issuance ₹430 Cr announced.</td></tr>
+    <tr><td>Q3 FY26</td><td>₹181 Cr</td><td class="a">+4% YoY</td><td>~25.6%</td><td>₹15.25 Cr</td><td class="r">8.4%</td><td>190+ CT/MRI</td><td>Weak quarter — seasonal softness + strategic pause to recover ₹130 Cr government receivables (+₹100 Cr more than Q3 FY25). EBITDA margin fell 340 bps. CFO resigned Jan 19, 2026. PAT -21% YoY.</td></tr>
+    <tr><td>9M FY26</td><td>₹580 Cr</td><td class="g">+9% YoY</td><td>~28%</td><td>~₹63 Cr</td><td class="a">10.9%</td><td>190+ CT/MRI</td><td>On track for ₹750+ Cr FY26. Governance deterioration: CFO + 3 directors resigned April 2026. Interim CFO appointed. Apulki Healthcare (cancer/cardiac PPP hospital, Pune) first hospital inaugurated.</td></tr>
+    <tr><td>FY26E</td><td>~₹750–780 Cr</td><td class="g">~5–9%</td><td>~28–29%</td><td>~₹80–90 Cr</td><td class="a">~10–12%</td><td>200+ CT/MRI</td><td>Rajasthan pathology full ramp Q4 FY26. Maharashtra +10 MRI centers. Retail growing (8% of revenue). Q4 FY26 results pending (May 2026).</td></tr>
+    <tr><td>FY27E</td><td>~₹900–1,050 Cr</td><td class="g">~20–35%</td><td>~29–31%</td><td>~₹110–150 Cr</td><td class="g">~12–14%</td><td>220+ CT/MRI</td><td>Full Rajasthan pathology + Maharashtra radiology contribution. Operating leverage kicks in. New PPP contracts (Jharkhand). Retail expanding. Hospital PPP revenue beginning.</td></tr>
+    <tr><td>FY28E</td><td>~₹1,200–1,500 Cr</td><td class="g">~30–40%</td><td>~31–33%</td><td>~₹180–260 Cr</td><td class="g">~15–17%</td><td>250+ CT/MRI</td><td>Operating leverage full benefit. Hospital PPP (4 more Apulki hospitals planned). Premium diagnostics growing. PAT margin expanding toward 15%. 3x PAT from FY26 base = achievable by FY28.</td></tr>
+  </table>
+  <div class="warn caution"><strong>Q3 FY26 context:</strong> The -4% YoY revenue decline masked a strategic decision — management deliberately paused some operations to collect ₹130 Cr in government receivables (₹100 Cr more than Q3 FY25). This was cash flow-positive (working capital improved) even though it hurt quarterly revenue. The trade-off: short-term revenue miss for long-term cash improvement. This is actually rational behaviour — the question is whether this becomes a habit or is a one-time clean-up.</div>
+</div>
+
+<!-- SECTOR KPIs -->
+<div id="sectorKPI" class="panel">
+  <div class="sh">Diagnostics sector KPIs — the right metrics for Krsnaa's PPP model</div>
+  <div class="warn med"><strong>Krsnaa is NOT comparable to Dr Lal PathLabs or Metropolis on standard diagnostics metrics</strong> — those are primarily private B2C labs. Krsnaa's PPP model means revenue visibility (contracted) is higher, but margins are lower (government rates), working capital is longer (government pays slowly), and growth depends on winning new PPP contracts rather than volume from walk-in patients. The correct KPIs: contract pipeline wins, receivables recovery rate, EBITDA per center, and operating leverage as fixed costs get absorbed by higher volumes.</div>
+  <div class="kpi-grid">
+    <div class="kpi ppp"><div class="kpi-l">CT/MRI centers (Q3 FY26)</div><div class="kpi-v">190+</div><div class="kpi-s">Target 200+ by FY26 end; Asia's largest</div></div>
+    <div class="kpi ppp"><div class="kpi-l">Pathology labs</div><div class="kpi-v">140</div><div class="kpi-s">+ 20 Rajasthan labs being added</div></div>
+    <div class="kpi green"><div class="kpi-l">FY25 revenue growth</div><div class="kpi-v">+15.7%</div><div class="kpi-s">On ₹620 Cr base → ₹717 Cr</div></div>
+    <div class="kpi amber"><div class="kpi-l">EBITDA margin</div><div class="kpi-v">~29%</div><div class="kpi-s">PPP model = lower than private; improving</div></div>
+    <div class="kpi red"><div class="kpi-l">Debtor days</div><div class="kpi-v" style="color:#A32D2D">152 days</div><div class="kpi-s">Government slow payers; Q3 FY26 recovery helps</div></div>
+    <div class="kpi red"><div class="kpi-l">Promoter holding</div><div class="kpi-v" style="color:#A32D2D">27.1%</div><div class="kpi-s">Very low; major structural concern</div></div>
+  </div>
+
+  <div class="sh">Network scale — Krsnaa vs peers</div>
+  <div class="network-bar"><div class="nb-label">Krsnaa CT/MRI centers</div><div class="nb-track"><div class="nb-fill" style="width:100%;background:#3949AB">190+ centers — Asia's largest PPP</div></div><div class="nb-val b">190+ (PPP)</div></div>
+  <div class="network-bar"><div class="nb-label">Dr Lal PathLabs (labs)</div><div class="nb-track"><div class="nb-fill" style="width:68%;background:#1565C0">700+ owned labs</div></div><div class="nb-val b">700+ (private)</div></div>
+  <div class="network-bar"><div class="nb-label">Metropolis (labs)</div><div class="nb-track"><div class="nb-fill" style="width:45%;background:#1565C0">200+ labs</div></div><div class="nb-val b">200+ (private)</div></div>
+  <div class="network-bar"><div class="nb-label">Krsnaa collection centers</div><div class="nb-track"><div class="nb-fill" style="width:87%;background:#3949AB">4,000+ nationwide</div></div><div class="nb-val b">4,000+</div></div>
+
+  <div class="sh">India diagnostics sector — the structural tailwind</div>
+  <table>
+    <tr><th>Driver</th><th>Scale</th><th>Krsnaa positioning</th></tr>
+    <tr><td><strong>India diagnostics market</strong></td><td>$14–18B growing at 12–18% CAGR</td><td class="g">PPP model captures government-funded share — fastest growing segment</td></tr>
+    <tr><td><strong>Budget 2026-27: ₹90,000 Cr health allocation</strong></td><td>₹90,000 Cr directly</td><td class="g">PPP diagnostic projects funded from health budget — direct contract pipeline</td></tr>
+    <tr><td><strong>Ayushman Bharat diagnostic empanelment</strong></td><td>₹5 lakh coverage per family</td><td class="g">Ayushman patients → government hospital → Krsnaa's diagnostics</td></tr>
+    <tr><td><strong>Tier 2/3 city diagnostic penetration</strong></td><td>Severely underpenetrated vs Tier 1</td><td class="g">Krsnaa's model specifically targets Tier 2/3 via government hospital partnerships</td></tr>
+    <tr><td><strong>Preventive health and wellness</strong></td><td>Growing 20%+ annually</td><td class="a">Retail segment now 8% of revenue — growing 8x YoY (small base but accelerating)</td></tr>
+  </table>
+</div>
+
+<!-- BUSINESS MODEL -->
+<div id="business" class="panel">
+  <div class="sh">The PPP model — how Krsnaa makes money in government hospitals</div>
+  <div class="warn ppp"><strong>Krsnaa's PPP model is fundamentally different from all private diagnostics companies.</strong> Understanding this is essential — it's why Krsnaa has lower margins than Dr Lal but much more revenue visibility, why it has government receivable problems (but these eventually get paid), and why its growth is driven by contract wins rather than marketing spend.</div>
+
+  <div class="two-col" style="margin:10px 0">
+    <div class="pane">
+      <div class="pane-h">The PPP contract mechanics</div>
+      <div class="point"><div class="dot dm">1</div><div><strong>Contract award:</strong> State government/NHM awards Krsnaa a contract to set up and operate diagnostics services in a government hospital or medical college. Krsnaa installs its equipment (CT scanner, MRI, pathology lab) in the government facility.</div></div>
+      <div class="point"><div class="dot dm">2</div><div><strong>Revenue model:</strong> Government pays Krsnaa a fixed rate per test/scan completed. Rate is pre-determined in the contract (typically discounted vs private market, but high volume compensates). Patients pay ₹0 to a nominal amount — government subsidizes the rest.</div></div>
+      <div class="point"><div class="dot dm">3</div><div><strong>Volume dynamics:</strong> Government hospitals serve millions of patients who previously had no access to diagnostics. Volume ramps as centers mature (12–18 months for new centers to reach mature throughput). At maturity, a single CT center generates ₹5–8 Cr/year revenue at 15–20% EBITDA margin.</div></div>
+      <div class="point"><div class="dot dp">4</div><div><strong>The receivable challenge:</strong> Government pays, but slowly — 90–180 days. This is structural across all government healthcare businesses. Krsnaa's Q3 FY26 strategic pause (recover ₹130 Cr) shows management actively managing this. With ₹430 Cr NCD raised, the company now has capital to bridge government payment gaps without distress.</div></div>
+    </div>
+    <div class="pane">
+      <div class="pane-h">Business segments — 2026 portfolio</div>
+      <div class="point"><div class="dot dp">R</div><div><strong>Radiology (CT/MRI) — core, ~60% of revenue:</strong> 190+ CT/MRI centers. Asia's largest CT/MRI PPP network. Revenue per center: ₹3–8 Cr/year. Q3 FY26 goal: 200+ centers. Maharashtra adding 10 MRI centers in H2 FY26. Operating leverage kicks in at scale — fixed equipment cost spreads over more scans.</div></div>
+      <div class="point"><div class="dot dm">P</div><div><strong>Pathology labs — growing, ~30% of revenue:</strong> 140 labs + 4,000+ collection centers. Rajasthan NHM project: 20 new labs + 300 collection centers (largely operational Q4 FY26). Higher margin than radiology at scale. Ayushman empanelment drives pathology volume.</div></div>
+      <div class="point"><div class="dot dg">B</div><div><strong>Retail/B2C — small but 8x growth:</strong> 3,000+ touch points in Maharashtra, Punjab, Assam, Odisha. Home collection service. Contributing 8% of 9M FY26 revenue. 8x year-on-year growth (very small base). This segment diversifies from government dependency — crucial for long-term margin improvement.</div></div>
+      <div class="point"><div class="dot dg">H</div><div><strong>Hospital PPP (new) — Apulki Healthcare:</strong> 24% stake in Apulki Healthcare. First cancer/cardiac PPP hospital in India (150 beds, Pune, CGHS rates, with Pune Municipal Corporation). Plans: 4 more hospitals, 600 total beds. This segment has the highest long-term potential — hospital PPP is where Krsnaa's model can scale from diagnostics to comprehensive healthcare delivery.</div></div>
+    </div>
+  </div>
+
+  <div class="sh">The operating leverage thesis — why FY27 margins should expand materially</div>
+  <div class="point"><div class="dot dg">+</div><div><strong>Fixed cost absorption as new centers mature:</strong> Every new CT/MRI center requires ₹3–5 Cr of capital investment and 3–5 people. In Year 1, revenue is low as patient volumes ramp. In Years 2–3, volumes ramp but costs stay fixed → margins expand dramatically. With 190 centers now operational (many commissioned in FY25–26), FY27 is the year the majority enter their mature phase. This is the most powerful near-term catalyst for Krsnaa — and it's not driven by winning new contracts but simply by time.</div></div>
+</div>
+
+<!-- GUIDANCE -->
+<div id="guidance" class="panel">
+  <div class="sh">Guidance analysis — management has been communicative but delivery has been inconsistent</div>
+  <div class="warn med"><strong>Krsnaa management holds quarterly earnings calls and provides qualitative guidance.</strong> The track record shows ambitious targets, with execution being lumpy due to government contract delays, site clearance issues, and receivable timing. FY25 delivered well (PAT +36.5% YoY). FY26 has been a mixed year due to strategic receivable recovery decisions impacting near-term revenue.</div>
+
+  <div class="guid-card beat">
+    <div class="guid-h">✓ FY25 delivery: Revenue +15.7%, PAT +36.5% — management delivered on guidance</div>
+    <div class="guid-b">FY25 guidance was strong revenue growth and meaningful PAT improvement. Actual: Revenue ₹717 Cr (+15.7% on ₹620 Cr), PAT ₹77.6 Cr (+36.5% on ₹57 Cr). Both metrics met or beat expectations. Operating leverage began flowing through as FY23–24 commissioned centers matured. This validates the underlying model — once centers are established, margin expansion follows mechanically.</div>
+    <div class="guid-s">Credibility: 8/10. FY25 was a genuine delivery year.</div>
+  </div>
+
+  <div class="guid-card watch">
+    <div class="guid-h">⚠ FY26 guidance: 20%+ revenue growth → tracking ~9% (9M). Q4 FY26 critical.</div>
+    <div class="guid-b">Management guided 20%+ revenue growth for FY26. 9M FY26 at ₹580 Cr is +9% YoY — well behind the 20% target. Q4 FY26 would need ~₹175 Cr+ to reach even modest full-year targets. The Q3 strategic pause (recovering ₹130 Cr receivables) explains some of this — but site clearance delays in Maharashtra MRI expansion and Rajasthan pathology ramp timing have also slipped. FY26 full year is likely ₹750–780 Cr (5–9% growth) — below the 20% guidance. This is a credibility miss that must be monitored.</div>
+    <div class="guid-s">Credibility: 5/10 on FY26 revenue. Structural reasons (government project delays) partially excuse the miss, but governance events add uncertainty.</div>
+  </div>
+
+  <div class="guid-card">
+    <div class="guid-h">FY27 guidance: Rajasthan + Maharashtra full year contribution + operating leverage</div>
+    <div class="guid-b">Management expects FY27 to be significantly stronger: (1) Rajasthan pathology project fully operational (20 labs + 300 collection centers from Q4 FY26/Q1 FY27), (2) Maharashtra radiology +10 MRI centers contributing from Q1 FY27, (3) Retail diagnostics scale to 15%+ of revenue, (4) Operating leverage on maturing centers. Analyst consensus: FY27 revenue ₹900–1,050 Cr (25–45% growth over FY26E), PAT ₹110–150 Cr (40–80% growth). This is the "inflection year" thesis — the new project investments of FY25–26 begin generating full-year revenues in FY27.</div>
+    <div class="guid-s">Credibility: 7/10 on FY27. Operating leverage is mechanical and credible; project execution timing remains uncertain.</div>
+  </div>
+
+  <div class="guid-card watch">
+    <div class="guid-h">⚠ NCD ₹430 Cr at 7-year tenure — debt signal requiring careful analysis</div>
+    <div class="guid-b">In Dec 2025, Krsnaa approved raising ₹430 Cr via unlisted NCDs (semi-annual fixed interest, 7-year tenure). For a company generating ₹80 Cr PAT on ₹717 Cr revenue, raising ₹430 Cr in debt is significant. The company says this is for working capital (bridging government receivables) and project expansion. The positive: it removes the cash flow squeeze from slow government payments. The concern: ₹430 Cr NCD at what interest rate? If 11–13%, annual interest ₹47–56 Cr would consume 50–70% of current PAT — material drag on future earnings.</div>
+    <div class="guid-s">Watch FY27 Q1 finance costs carefully — NCD interest will be visible in the P&L from Q4 FY26 onwards.</div>
+  </div>
+
+  <div class="sh">Guidance scorecard</div>
+  <table>
+    <tr><th>Item</th><th>Credibility</th><th>Base case</th><th>Key risk</th></tr>
+    <tr><td>FY26 revenue ₹750–780 Cr</td><td class="a">6/10 — below 20% target</td><td>₹750–775 Cr</td><td>Q4 seasonal strength; project delays</td></tr>
+    <tr><td>FY27 revenue ₹900–1,050 Cr</td><td class="g">7/10 — projects support</td><td>₹900–1,000 Cr</td><td>Maharashtra delays; Rajasthan ramp pace</td></tr>
+    <tr><td>FY27 PAT ₹110–150 Cr</td><td class="a">6/10 — NCD interest uncertain</td><td>₹95–130 Cr</td><td>NCD interest cost; governance uncertainty</td></tr>
+    <tr><td>Retail 15% of revenue by FY27</td><td class="a">6/10 — growing fast from small base</td><td>12–15%</td><td>B2C diagnostics is competitive</td></tr>
+    <tr><td>Operating leverage (margin to 31%+)</td><td class="g">8/10 — mechanical, center maturity</td><td>30–31% EBITDA FY27</td><td>New project costs delay the leverage</td></tr>
+  </table>
+</div>
+
+<!-- RISKS -->
+<div id="risks" class="panel">
+  <div class="sh">Risks — serious governance deterioration compounds business concerns</div>
+
+  <div class="flag"><strong>🚨 Major governance red flag: CFO + 3 independent directors resigned in 4 months (Jan–Apr 2026)</strong><br>CFO Pawan Daga resigned effective January 19, 2026 (cited "personal and professional priorities" after 5 years — unusual timing). Then in April 2026, the board approved three director cessations (multiple independent directors) and appointed an interim CFO from April 17, 2026. This is an extraordinary level of leadership churn in a short period. While each individual departure may have innocuous explanations, the cumulative pattern (CFO + independent directors leaving within months of each other) is a serious governance red flag. It demands scrutiny of: (a) accounting practices, (b) NCD terms and purpose, (c) related party transactions. This is the single most important risk to investigate before any investment.</div>
+
+  <div class="point"><div class="dot dr">1</div><div><strong>Promoter holding at 27.1% — one of the lowest in the analyzed portfolio.</strong><br>Promoter holding at 27.1% is dangerously low for a mid-cap healthcare company. At IPO (Aug 2021), promoters held a higher stake. Progressive dilution raises questions: are promoters building a business or exiting? At 27.1%, institutional selling pressure or any large block deal could severely impact the stock. Compare to Bondada Engineering (45.1% and buying more), Borana Weaves (65%), Vintage Coffee — all have strong promoter alignment. Krsnaa at 27.1% is the weakest promoter commitment in the entire analyzed universe.</div></div>
+
+  <div class="point"><div class="dot dr">2</div><div><strong>NCD ₹430 Cr — significant debt on a ₹80 Cr PAT business.</strong><br>₹430 Cr NCD at 7-year tenure. Interest rate unknown but for a mid-cap healthcare company with government receivable concentration, likely 11–13%. At 12% interest: annual interest = ₹51.6 Cr. FY26 PAT = ~₹80 Cr. Net PAT after NCD interest = ~₹28–30 Cr. This is a near-complete wipeout of current PAT. Management justifies this as bridging government receivables — but it also significantly increases financial risk. The leverage ratio will spike from comfortable to concerning.</div></div>
+
+  <div class="point"><div class="dot da">3</div><div><strong>ROE only 8.57% (3-year average) — capital is not being used efficiently.</strong><br>A healthcare company deploying significant capital into government hospitals and generating only 8.57% ROE is a serious concern. The cause: large capital invested in setting up centers (CT scanners, infrastructure) that take 2–3 years to generate adequate returns. Until the operating leverage thesis plays out, ROE stays low. If FY27 delivers PAT ₹130 Cr on ~₹500 Cr equity, ROE improves to 26% — the single biggest catalyst for rerating. But until then, the ROE is genuinely weak.</div></div>
+
+  <div class="point"><div class="dot da">4</div><div><strong>Government receivable dependency — 152-day debtor days is structural.</strong><br>Government hospital systems have notoriously slow payment processes. Debtor days of 152 (and rising before Q3 FY26 collection drive) is a structural feature of the PPP model, not a temporary anomaly. The Q3 FY26 collection of ₹130 Cr shows management capability — but also the scale of the problem. With FY27 revenue of ₹900+ Cr, 152 days debtors = ~₹375 Cr permanently locked in receivables. This working capital requirement is why the NCD was needed — but the NCD interest reduces PAT permanently.</div></div>
+
+  <div class="point"><div class="dot dg">+</div><div><strong>Genuine strengths despite the concerns:</strong><br>Asia's largest CT/MRI PPP network (190+ centers) — impossible to replicate quickly. 18-state presence gives geographic diversification against any single state's payment delays. Ayushman Bharat + ₹90,000 Cr health budget = guaranteed demand pipeline. Retail growing 8x YoY (brand awareness building). Hospital PPP (Apulki) = long-term hospital scale optionality. FY25 delivered PAT +36% showing the model CAN work when payments are timely. Operating leverage is real — maturing centers are high-margin. Rajasthan + Maharashtra projects are genuine capacity additions.</div></div>
+</div>
+
+<!-- SCENARIOS -->
+<div id="scenarios" class="panel">
+  <div class="sh">Three scenarios — from current ~₹560 (~₹1,900 Cr mcap)</div>
+  <div class="warn med"><strong>The 3x math at ₹1,900 Cr:</strong> 3x = ₹5,700 Cr. At 25x PE, requires PAT of ₹228 Cr. FY26E PAT ~₹80–85 Cr. Need 2.8x PAT growth in 3 years = ~41% annual growth. Achievable IF: (a) FY27 operating leverage delivers ₹130+ Cr PAT, (b) NCD interest doesn't crush net profit, (c) Governance concerns stabilise, (d) Rajasthan + Maharashtra projects ramp as guided. The bull case is plausible — the governance deterioration is the joker in the deck.</div>
+
+  <div class="scenario" style="border-left:3px solid #1565C0">
+    <div style="font-size:13px;font-weight:500;color:#0D47A1;margin-bottom:8px">Bull case — 2.5–3x in 3 years: Operating leverage + new projects + governance stabilises</div>
+    <div class="sc-grid">
+      <div class="sc-cell"><div class="sc-l">FY27 revenue</div><div class="sc-v">₹950–1,050 Cr</div></div>
+      <div class="sc-cell"><div class="sc-l">FY27 PAT</div><div class="sc-v">₹120–150 Cr</div></div>
+      <div class="sc-cell"><div class="sc-l">FY28 revenue</div><div class="sc-v">₹1,200–1,400 Cr</div></div>
+      <div class="sc-cell"><div class="sc-l">FY28 PAT</div><div class="sc-v">₹200–260 Cr</div></div>
+      <div class="sc-cell"><div class="sc-l">PE (healthcare infra)</div><div class="sc-v">22–28x</div></div>
+      <div class="sc-cell"><div class="sc-l">FY28 mcap</div><div class="sc-v">₹4,400–7,280 Cr</div></div>
+    </div>
+    <div style="font-size:11.5px;color:#333;margin-top:8px"><strong>What must happen:</strong> New CFO is credible (governance concern resolves). NCD interest lower than feared (9–10%). Rajasthan + Maharashtra projects deliver full year revenue in FY27. Operating leverage drives EBITDA margin 30%+. Retail becomes 15%+ of revenue at 35%+ EBITDA. At 25x PE on ₹220 Cr PAT = ₹5,500 Cr = <strong>2.9x from ₹1,900 Cr.</strong> 3x is achievable in the bull case.</div>
+  </div>
+
+  <div class="scenario" style="border-left:3px solid #378ADD">
+    <div style="font-size:13px;font-weight:500;color:#185FA5;margin-bottom:8px">Base case — 1.5–2x in 3 years: Moderate growth, NCD drags PAT growth</div>
+    <div class="sc-grid">
+      <div class="sc-cell"><div class="sc-l">FY27 revenue</div><div class="sc-v">₹850–950 Cr</div></div>
+      <div class="sc-cell"><div class="sc-l">FY27 PAT (post NCD)</div><div class="sc-v">₹85–110 Cr</div></div>
+      <div class="sc-cell"><div class="sc-l">FY28 PAT</div><div class="sc-v">₹130–180 Cr</div></div>
+      <div class="sc-cell"><div class="sc-l">PE (mixed signals)</div><div class="sc-v">18–22x</div></div>
+      <div class="sc-cell"><div class="sc-l">FY28 mcap</div><div class="sc-v">₹2,340–3,960 Cr</div></div>
+      <div class="sc-cell"><div class="sc-l">Return from ₹1,900 Cr</div><div class="sc-v">1.2–2.1x</div></div>
+    </div>
+    <div style="font-size:11.5px;color:#333;margin-top:8px">Revenue grows 20–25% in FY27 but NCD interest (₹50+ Cr/yr) significantly reduces net PAT growth. Governance concerns keep PE multiple depressed at 18–20x. Base case 1.5–2x by FY28 — moderate return, below 3x goal.</div>
+  </div>
+
+  <div class="scenario" style="border-left:3px solid #A32D2D">
+    <div style="font-size:13px;font-weight:500;color:#A32D2D;margin-bottom:8px">Bear case — -30 to -40%: Governance deteriorates further + NCD rate high + projects slip</div>
+    <div class="sc-grid">
+      <div class="sc-cell"><div class="sc-l">Trigger</div><div class="sc-v">More leadership exits</div></div>
+      <div class="sc-cell"><div class="sc-l">Trigger</div><div class="sc-v">NCD interest 13%+ crushes PAT</div></div>
+      <div class="sc-cell"><div class="sc-l">Trigger</div><div class="sc-v">Rajasthan/MH delays continue</div></div>
+      <div class="sc-cell"><div class="sc-l">FY27 PAT</div><div class="sc-v">₹50–70 Cr (NCD drag)</div></div>
+      <div class="sc-cell"><div class="sc-l">PE at 15x</div><div class="sc-v">₹750–1,050 Cr mcap</div></div>
+      <div class="sc-cell"><div class="sc-l">Stock</div><div class="sc-v">₹220–310/share (-45% to -60%)</div></div>
+    </div>
+    <div style="font-size:11.5px;color:#333;margin-top:8px"><strong>Bear probability: 30–35%.</strong> If governance deterioration signals deeper accounting/management issues, PE de-rates to 13–15x on lower-than-expected PAT. Stock revisits ₹220–310 — well below 52-week low of ₹515. This is a real risk given the CFO + 3 directors' departures in 4 months.</div>
+  </div>
+
+  <table style="margin-top:10px">
+    <tr><th>Target</th><th>Mcap needed</th><th>Driver</th><th>Timeline</th><th>Probability</th></tr>
+    <tr><td>3x (₹5,700 Cr)</td><td>₹5,700 Cr</td><td>FY28 PAT ₹230 Cr at 25x PE</td><td>FY28</td><td class="a">15–20%</td></tr>
+    <tr><td>2x (₹3,800 Cr)</td><td>₹3,800 Cr</td><td>FY27 PAT ₹170 Cr at 22x PE</td><td>FY27</td><td class="a">25–30%</td></tr>
+    <tr><td>1.5x (₹2,850 Cr)</td><td>₹2,850 Cr</td><td>FY27 PAT ₹130 Cr at 22x PE</td><td>FY27</td><td class="a">30–35%</td></tr>
+    <tr><td>Bear (-40%: ₹1,140 Cr)</td><td>₹1,140 Cr</td><td>Governance collapse + NCD drag</td><td>—</td><td class="a">30–35%</td></tr>
+  </table>
+</div>
+
+<!-- SECTOR MAP -->
+<div id="sectormap" class="panel">
+  <div class="sh">India diagnostics sector — where Krsnaa fits</div>
+  <div class="warn med"><strong>India diagnostics is a ₹14–18B (₹1.2–1.5 lakh Cr) market growing at 12–18% CAGR.</strong> The sector has two distinct models: (1) Private B2C labs (Dr Lal, Metropolis, SRL) serving paying patients through their own collection network, and (2) Government PPP (primarily Krsnaa) serving subsidised patients in government hospitals. Krsnaa dominates the PPP segment — but the private B2C segment trades at much higher multiples because margins are higher and working capital is better.</div>
+
+  <div class="sector-card">
+    <div class="sc-hdr"><div><div class="sc-nm">Dr Lal PathLabs — India's largest private pathology network</div><div class="sc-tg">₹14,000+ Cr mcap · 700+ labs · High margin (20%+ PAT) · Premium B2C brand</div></div><span class="badge bb">Premium private benchmark</span></div>
+    <div class="sc-bd">Dr Lal is the gold standard of India diagnostics — premium brand, high margin (20%+ PAT), no government receivable risk, excellent working capital. At ₹14,000+ Cr mcap vs Krsnaa's ₹1,900 Cr, Dr Lal is 7x larger. Dr Lal's PAT margin (20%) vs Krsnaa's (10–12%) explains the valuation gap. <strong>If Krsnaa successfully grows retail to 30%+ of revenue and improves PAT margins to 15%+, a rerating toward Dr Lal's multiples would be transformational.</strong></div>
+  </div>
+
+  <div class="sector-card">
+    <div class="sc-hdr"><div><div class="sc-nm">Metropolis Healthcare — premium B2C diagnostics</div><div class="sc-tg">₹8,000+ Cr mcap · 200+ labs · 18%+ PAT margins · Strong urban brand</div></div><span class="badge ba">B2C focus — different model</span></div>
+    <div class="sc-bd">Metropolis operates premium urban-focused diagnostics — lower volume than Dr Lal but higher ASP tests (genetics, specialised panels). Attractive margins but limited Tier 2/3 reach. <strong>Krsnaa's Tier 2/3 PPP network is exactly where Metropolis is absent — the two are complementary, not competitive.</strong></div>
+  </div>
+
+  <div class="sector-card">
+    <div class="sc-hdr"><div><div class="sc-nm">Vijaya Diagnostic Centre — South India PPP-adjacent</div><div class="sc-tg">₹4,500+ Cr mcap · South India focus · PPP + private hybrid · Better margins than Krsnaa</div></div><span class="badge ba">Partial comparable</span></div>
+    <div class="sc-bd">Vijaya has both PPP and private revenue (B2C/B2B). Better PAT margins than Krsnaa because it has more private (higher-margin) revenue. At ₹4,500 Cr mcap vs ₹1,900 Cr for Krsnaa — trades at a significant premium. <strong>If Krsnaa's retail grows to 25–30% of revenue (improving margin quality), the discount to Vijaya should narrow, giving PE rerating.</strong></div>
+  </div>
+</div>
+
+<!-- FULL COMPARISON -->
+<div id="compare" class="panel">
+  <div class="sh">Krsnaa vs diagnostics peers — comprehensive comparison</div>
+  <div style="border:1px solid #ddd;border-radius:10px;overflow:hidden;font-size:11px">
+    <div class="comp-h">
+      <div class="cc-h" style="background:#f5f5f3">Metric</div>
+      <div class="cc-h" style="background:#E3F2FD;color:#0D47A1">Krsnaa Diagnostics</div>
+      <div class="cc-h" style="background:#E6F1FB;color:#185FA5">Dr Lal PathLabs</div>
+      <div class="cc-h" style="background:#f5f5f3">Metropolis Healthcare</div>
+    </div>
+    <div class="comp-row"><div class="cc cc-label">Market cap</div><div class="cc winner-cell">₹1,900 Cr (right size for 3x)</div><div class="cc loser-cell">₹14,000+ Cr</div><div class="cc loser-cell">₹8,000+ Cr</div></div>
+    <div class="comp-row"><div class="cc cc-label">Revenue (FY25/FY26E)</div><div class="cc mid-cell">₹717 Cr/₹750 Cr</div><div class="cc winner-cell">~₹2,400+ Cr</div><div class="cc winner-cell">~₹1,200+ Cr</div></div>
+    <div class="comp-row"><div class="cc cc-label">PAT margin</div><div class="cc loser-cell">~10–12% (govt model)</div><div class="cc winner-cell">~20–22%</div><div class="cc winner-cell">~17–19%</div></div>
+    <div class="comp-row"><div class="cc cc-label">Revenue model</div><div class="cc mid-cell">75% PPP (govt) + 25% retail</div><div class="cc winner-cell">100% B2C private</div><div class="cc winner-cell">80% B2C + 20% B2B</div></div>
+    <div class="comp-row"><div class="cc cc-label">Working capital</div><div class="cc loser-cell">152-day debtors (govt slow pay)</div><div class="cc winner-cell">30–40 days (private)</div><div class="cc winner-cell">40–60 days</div></div>
+    <div class="comp-row"><div class="cc cc-label">Network reach</div><div class="cc winner-cell">18 states · Tier 2/3 dominant</div><div class="cc winner-cell">Pan-India · all tiers</div><div class="cc mid-cell">Tier 1 focus</div></div>
+    <div class="comp-row"><div class="cc cc-label">CT/MRI centers</div><div class="cc winner-cell">190+ (Asia's largest PPP)</div><td class="cc">Limited (pathology focus)</td><td class="cc">Limited</td></div>
+    <div class="comp-row"><div class="cc cc-label">Promoter holding</div><div class="cc loser-cell">27.1% (very low)</div><div class="cc winner-cell">~55%</div><div class="cc winner-cell">~50%</div></div>
+    <div class="comp-row"><div class="cc cc-label">Governance signal</div><div class="cc loser-cell">CFO + 3 directors resigned (4 months)</div><div class="cc winner-cell">Stable</div><div class="cc winner-cell">Stable</div></div>
+    <div class="comp-row"><div class="cc cc-label">ROE (3yr)</div><div class="cc loser-cell">8.57% (weak)</div><div class="cc winner-cell">~25%</div><div class="cc winner-cell">~20%</div></div>
+    <div class="comp-row"><div class="cc cc-label">NCD debt (new)</div><div class="cc loser-cell">₹430 Cr (significant vs PAT)</div><td class="cc winner-cell">Minimal debt</td><td class="cc winner-cell">Minimal debt</td></div>
+    <div class="comp-row"><div class="cc cc-label">3x probability (3yr)</div><div class="cc mid-cell">15–20% (governance is gating factor)</div><td class="cc loser-cell">5–8% (too large)</td><td class="cc loser-cell">7–10% (too large)</td></div>
+    <div class="comp-row"><div class="cc cc-label">Best for Garvit 3x</div><div class="cc">Possible — if governance resolves; otherwise wrong</div><div class="cc">Quality but wrong size for 3x</div><div class="cc">Premium brand, wrong size</div></div>
+  </div>
+  <div class="warn med" style="margin-top:12px"><strong>The key peer insight:</strong> Krsnaa trades at 23x PE vs Dr Lal at 55–60x and Metropolis at 40–45x. This 2–3x multiple discount exists because: (1) PPP model has lower margin (10–12% PAT vs 20%+), (2) Government receivable concentration, (3) Low promoter holding, (4) Governance concerns. If governance resolves and the retail segment grows to 30%+, Krsnaa could re-rate toward 35–40x PE — giving a 1.5–1.7x valuation re-rating even without earnings growth. Combined with earnings growth (FY27 operating leverage), total return of 2–3x is plausible in the bull case.</div>
+</div>
+
+<!-- VERDICT -->
+<div id="verdict" class="panel">
+  <div class="sh">The definitive verdict for Garvit's 3x portfolio goal</div>
+
+  <div class="verdict-card" style="background:#E3F2FD;border:1px solid #64B5F6">
+    <div class="vc-h" style="color:#0D47A1">Krsnaa Diagnostics — Verdict: NOT recommended at this stage due to serious governance deterioration (CFO + 3 directors in 4 months). The PPP model is genuinely interesting and the FY27 operating leverage thesis is credible — but governance concerns must resolve before capital deployment. Watchlist only until Q4 FY26 results + new management team proves stability.</div>
+    <div class="vc-b">Here is the complete picture:<br><br>
+    <strong>What makes Krsnaa genuinely interesting:</strong><br>
+    • Asia's largest CT/MRI PPP network — 190+ centers, 18 states, impossible to replicate<br>
+    • Government contracts provide 75%+ assured revenue — not competitive-marketing dependent<br>
+    • FY27 operating leverage: Rajasthan + Maharashtra projects delivering full-year revenues for the first time<br>
+    • Retail growing 8x YoY — brand building that improves long-term margin quality<br>
+    • Ayushman Bharat + ₹90,000 Cr health budget = structural captive demand<br>
+    • Q3 FY26 ₹130 Cr receivable collection = management CAN and DOES actively manage WC<br>
+    • Apulki Healthcare PPP hospital (cancer/cardiac) = first move into hospital + diagnostics integrated model<br>
+    • Stock down -38% from 52-week high — potential entry point if governance resolves<br><br>
+    <strong>Why Garvit should NOT buy right now:</strong><br>
+    1. <strong>CFO + 3 independent directors resigned in 4 months (Jan–Apr 2026)</strong> — this level of leadership churn is deeply concerning. Until the governance pattern is understood and stability demonstrated, no capital should be deployed<br>
+    2. <strong>₹430 Cr NCD interest could wipe out much of PAT growth</strong> — at 12%, annual interest ₹51.6 Cr vs FY26 PAT ₹80 Cr — net PAT improvement is severely limited<br>
+    3. <strong>Promoter holding 27.1%</strong> — lowest in the entire analyzed portfolio. No skin-in-the-game concern is real<br>
+    4. <strong>Better alternatives exist in portfolio with less governance risk:</strong> RPSG Ventures (₹0 vs ₹35K recommended), DEE Development (still underweight), EFC I (still underweight) — all have better risk/reward without the governance overhang<br><br>
+    <strong>When to reconsider:</strong><br>
+    • Q4 FY26 results (May 2026): If PAT ₹25+ Cr and clean governance disclosures → governance concern may be resolving<br>
+    • New permanent CFO appointment with credible background<br>
+    • FY27 Q1 revenue ₹220+ Cr (confirming Rajasthan/Maharashtra ramp) → operating leverage thesis validated<br>
+    • NCD interest rate disclosed (if below 10.5%, the drag is manageable)<br>
+    • Promoter buying open market shares (would be a very strong positive signal)<br><br>
+    If these 5 conditions are met by Q2 FY27 (October 2026), a ₹25–40K speculative position would be appropriate with a 2x target in 2 years based on operating leverage playing out.</div>
+  </div>
+
+  <div class="sh">Allocation recommendation</div>
+  <table>
+    <tr><th>Action</th><th>Amount</th><th>Rationale</th></tr>
+    <tr><td><span class="badge ba">WATCHLIST ONLY — do not buy now</span></td><td>₹0</td><td>Governance risk is unresolved. CFO + 3 directors resigned in 4 months. NCD interest unknown. Promoter at 27.1%. Better-conviction underweights (RPSG, DEE, EFC I) should be funded first.</td></tr>
+    <tr><td><span class="badge bb">Reconsider ₹25–40K after May 2026 Q4 results</span></td><td>₹25,000–40,000</td><td>If Q4 FY26 shows clean governance + PAT ₹25+ Cr + new permanent CFO credible → initiate a small speculative position. Monitor NCD interest rate once disclosed.</td></tr>
+    <tr><td><span class="badge bg">Better healthcare alternative: none in current portfolio</span></td><td>Consider sector exposure differently</td><td>If healthcare sector exposure is desired without the governance risk, consider a healthcare ETF (Nifty Healthcare Index Fund) rather than concentrated Krsnaa bet until governance resolves.</td></tr>
+  </table>
+
+  <div class="sh">Six triggers to watch</div>
+  <table>
+    <tr><th>#</th><th>Trigger</th><th>Status</th><th>Impact</th></tr>
+    <tr><td>1</td><td>Q4 FY26 + FY26 full year results (May 2026)</td><td class="a">Pending — most critical</td><td>🔥 PAT ₹25+ Cr + governance disclosures clean = first green light. Revenue ₹190+ Cr = Rajasthan/MH ramp beginning.</td></tr>
+    <tr><td>2</td><td>Permanent CFO appointment + background</td><td class="r">Interim CFO only (Apr 17, 2026)</td><td>🔴 Credible permanent CFO = governance stabilisation signal. Interim continuing beyond Q1 FY27 = red flag.</td></tr>
+    <tr><td>3</td><td>NCD interest rate disclosed</td><td class="a">Approved ₹430 Cr, rate not public</td><td>🔥 Below 10%: manageable. 11–12%: significant drag. Above 13%: severe PAT impact → do not invest.</td></tr>
+    <tr><td>4</td><td>FY27 Q1 revenue (August 2026)</td><td class="a">Rajasthan + Maharashtra full ramp expected</td><td>🟢 ₹220+ Cr = inflection year confirmed. ₹190 Cr or below = execution delay continues.</td></tr>
+    <tr><td>5</td><td>Promoter holding change (quarterly)</td><td class="r">27.1% — watch for any further decline</td><td>🔴 Any further decline below 25% = exit signal. Any open market buying = very strong positive. Currently concerning.</td></tr>
+    <tr><td>6</td><td>Government receivables (debtor days)</td><td class="a">152 days — Q3 FY26 collection ₹130 Cr helped</td><td>🟢 If FY27 Q1 debtor days fall below 120 → government is paying faster. 🔴 Above 160 → structural deterioration.</td></tr>
+  </table>
+
+  <div class="warn med" style="margin-top:12px"><strong>One-line verdict:</strong> Krsnaa Diagnostics operates Asia's largest CT/MRI PPP diagnostic network in a structurally growing sector (India diagnostics at 12–18% CAGR, ₹90,000 Cr health budget, Ayushman Bharat demand), with genuine operating leverage incoming from Rajasthan + Maharashtra projects that should drive 20–35% revenue growth in FY27. The business model is sound and the 3x path (FY28 PAT ₹220 Cr at 25x PE = ₹5,500 Cr = 2.9x) is mathematically plausible. But the simultaneous departure of CFO and 3 independent directors within 4 months is a serious governance red flag that cannot be ignored — capital should NOT be deployed until this pattern is understood and stability demonstrated. Watchlist carefully; revisit after Q4 FY26 clean results and permanent CFO appointment.</div>
+</div>
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/4.4.1/chart.umd.js"></script>
+<script>
+function show(id,btn){
+  document.querySelectorAll('.tab').forEach(t=>t.classList.remove('active'));
+  document.querySelectorAll('.panel').forEach(p=>p.classList.remove('active'));
+  btn.classList.add('active');
+  document.getElementById(id).classList.add('active');
+}
+new Chart(document.getElementById('rc').getContext('2d'),{
+  type:'bar',
+  data:{
+    labels:['FY22','FY23','FY24','FY25','Q1FY26','Q2FY26','Q3FY26','FY26E','FY27E','FY28E'],
+    datasets:[
+      {label:'Revenue ₹ Cr',data:[430,560,620,717,193,206,181,760,975,1300],backgroundColor:['#1565C0','#1565C0','#1565C0','#1565C0','#1D9E75','#1D9E75','#EF9F27','#90CAF9','#90CAF9','#90CAF9'],borderRadius:4,yAxisID:'y'},
+      {label:'PAT ₹ Cr',data:[60,58,57,77,24,24,15,85,130,210],type:'line',borderColor:'#1D9E75',backgroundColor:'transparent',pointBackgroundColor:'#1D9E75',tension:0.3,yAxisID:'y2'}
+    ]
+  },
+  options:{responsive:true,maintainAspectRatio:false,plugins:{legend:{display:false}},scales:{y:{ticks:{font:{size:10}}},y2:{position:'right',ticks:{font:{size:10}},grid:{drawOnChartArea:false}},x:{ticks:{font:{size:10}}}}}
+});
+</script>
+</body>
+</html>

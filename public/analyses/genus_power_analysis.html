@@ -1,0 +1,392 @@
+<!DOCTYPE html>
+<html><head><meta charset="utf-8">
+<style>
+*{box-sizing:border-box;margin:0;padding:0}
+body{font-family:system-ui,sans-serif;padding:16px;background:#fff;color:#1a1a1a;font-size:14px}
+h1{font-size:20px;font-weight:500;margin-bottom:3px}
+.sub{font-size:12px;color:#666;margin-bottom:14px}
+.sg{display:grid;grid-template-columns:repeat(auto-fill,minmax(115px,1fr));gap:8px;margin-bottom:16px}
+.sc{background:#f5f5f3;border-radius:8px;padding:10px 12px}
+.sl{font-size:10px;color:#666;margin-bottom:2px}
+.sv{font-size:15px;font-weight:600}
+.tab-row{display:flex;gap:5px;flex-wrap:wrap;margin-bottom:14px}
+.tab{font-size:11.5px;padding:5px 13px;border-radius:20px;border:1px solid #ddd;background:#fff;cursor:pointer;white-space:nowrap}
+.tab.active{background:#1a1a1a;color:#fff;border-color:#1a1a1a}
+.panel{display:none}.panel.active{display:block}
+.sh{font-size:10.5px;font-weight:500;color:#666;text-transform:uppercase;letter-spacing:.06em;margin:16px 0 7px;padding-bottom:5px;border-bottom:1px solid #eee}
+table{width:100%;border-collapse:collapse;font-size:12px;margin:8px 0}
+th{font-size:10.5px;font-weight:500;color:#666;padding:5px 7px;text-align:left;border-bottom:1px solid #eee;white-space:nowrap}
+td{padding:8px 7px;border-bottom:1px solid #eee;color:#1a1a1a;vertical-align:top}
+tr:last-child td{border-bottom:none}
+tr:hover td{background:#fafaf9}
+.g{color:#0F6E56;font-weight:500}.r{color:#A32D2D;font-weight:500}.a{color:#854F0B;font-weight:500}.b{color:#185FA5;font-weight:500}
+.badge{display:inline-block;font-size:10px;padding:2px 7px;border-radius:10px;white-space:nowrap}
+.bg{background:#E1F5EE;color:#0F6E56}.bb{background:#E6F1FB;color:#185FA5}.ba{background:#FAEEDA;color:#854F0B}.br{background:#FCEBEB;color:#A32D2D}.bgray{background:#f1f0e8;color:#5F5E5A}.bgp{background:#E3F2FD;color:#1565C0}
+.warn{padding:10px 13px;margin:8px 0;border-left:3px solid;font-size:12px;line-height:1.65}
+.warn.success{background:#E1F5EE;border-color:#1D9E75;color:#04342C}
+.warn.caution{background:#FAEEDA;border-color:#BA7517;color:#412402}
+.warn.danger{background:#FCEBEB;border-color:#A32D2D;color:#712B13}
+.warn.info{background:#E6F1FB;border-color:#185FA5;color:#042C53}
+.warn.genus{background:#E3F2FD;border-color:#1565C0;color:#0D2137}
+.warn.verdict{background:#E8F5E9;border-color:#2E7D32;color:#1B3A1E}
+.warn strong{font-weight:500}
+.chart-wrap{position:relative;width:100%;height:240px;margin:8px 0}
+.kpi-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:10px;margin:10px 0}
+.kpi{background:#f5f5f3;border-radius:8px;padding:10px 12px;border-left:3px solid transparent}
+.kpi.green{border-left-color:#1D9E75}.kpi.amber{border-left-color:#EF9F27}.kpi.blue{border-left-color:#378ADD}.kpi.red{border-left-color:#A32D2D}.kpi.genus{border-left-color:#1565C0}
+.kpi-l{font-size:10px;color:#666;margin-bottom:3px}
+.kpi-v{font-size:17px;font-weight:500}
+.kpi-s{font-size:10px;color:#888;margin-top:2px}
+.point{display:flex;gap:9px;align-items:flex-start;padding:9px 0;border-bottom:1px solid #eee;font-size:12px;line-height:1.6;color:#555}
+.point:last-child{border-bottom:none}
+.point strong{color:#1a1a1a;font-weight:500}
+.dot{width:19px;height:19px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:10px;font-weight:500;flex-shrink:0;margin-top:1px}
+.dg{background:#E1F5EE;color:#0F6E56}.dr{background:#FCEBEB;color:#A32D2D}.da{background:#FAEEDA;color:#854F0B}.db{background:#E6F1FB;color:#185FA5}.dgn{background:#E3F2FD;color:#1565C0}
+.two-col{display:grid;grid-template-columns:1fr 1fr;gap:12px}
+.pane{border:1px solid #ddd;border-radius:10px;padding:13px}
+.pane-h{font-size:13px;font-weight:500;margin-bottom:9px}
+.scenario{border:1px solid #ddd;border-radius:10px;padding:13px;margin-bottom:9px}
+.sc-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:7px;margin:9px 0}
+.sc-cell{background:#f5f5f3;border-radius:6px;padding:7px 9px}
+.sc-l{font-size:10px;color:#666}
+.sc-v{font-size:12px;font-weight:500;margin-top:2px}
+.comp-h{display:grid;grid-template-columns:155px repeat(4,1fr);background:#f5f5f3;border-radius:8px 8px 0 0;overflow:hidden}
+.comp-row{display:grid;grid-template-columns:155px repeat(4,1fr);border-bottom:1px solid #eee}
+.comp-row:last-child{border-bottom:none}
+.cc{padding:8px 10px;font-size:11px;border-right:1px solid #eee}
+.cc:last-child{border-right:none}
+.cc-h{font-size:10px;font-weight:500;color:#444;padding:8px 10px;border-right:1px solid #ddd}
+.cc-h:last-child{border-right:none}
+.cc-label{color:#666;font-size:11px}
+.winner-cell{background:#E1F5EE}.mid-cell{background:#FAEEDA}.loser-cell{background:#fff5f5}
+.guid-card{border-radius:10px;padding:12px 14px;margin-bottom:8px}
+.guid-card.beat{background:#E1F5EE;border-left:3px solid #1D9E75}.guid-card.beat .guid-h{color:#0F6E56}
+.guid-card.watch{background:#FAEEDA;border-left:3px solid #BA7517}.guid-card.watch .guid-h{color:#854F0B}
+.guid-card.miss{background:#FCEBEB;border-left:3px solid #A32D2D}.guid-card.miss .guid-h{color:#A32D2D}
+.guid-h{font-size:11.5px;font-weight:600;margin-bottom:4px}
+.guid-b{font-size:11.5px;color:#333;line-height:1.6}
+.guid-s{font-size:10px;color:#888;margin-top:4px}
+.bar-row{display:flex;align-items:center;gap:8px;margin:5px 0}
+.bl{font-size:11px;color:#555;width:190px;flex-shrink:0}
+.bt{flex:1;background:#f5f5f3;border-radius:4px;height:14px;overflow:hidden}
+.bf{height:100%;border-radius:4px;display:flex;align-items:center;padding-left:5px;font-size:9px;font-weight:600;color:#fff}
+.bv{font-size:11px;font-weight:500;width:90px;text-align:right}
+.rdss-box{background:#E3F2FD;border:2px solid #1565C0;border-radius:10px;padding:13px;margin:10px 0}
+.rb-h{font-size:14px;font-weight:600;color:#0D47A1;margin-bottom:7px}
+.rb-b{font-size:12px;color:#1a1a1a;line-height:1.65}
+.risk-flag{background:#FCEBEB;border:1px solid #A32D2D;border-radius:8px;padding:9px 12px;margin:6px 0;font-size:12px;color:#712B13;line-height:1.55}
+.risk-flag strong{color:#A32D2D}
+.garvit-box{background:#E1F5EE;border:2px solid #1D9E75;border-radius:10px;padding:13px;margin:10px 0}
+.gb-h{font-size:13px;font-weight:600;color:#0F6E56;margin-bottom:7px}
+.gb-b{font-size:12px;color:#1a1a1a;line-height:1.65}
+.verdict-card{background:#E8F5E9;border:2px solid #2E7D32;border-radius:12px;padding:15px;margin:10px 0}
+.vc-h{font-size:14px;font-weight:600;color:#1B5E20;margin-bottom:7px}
+.vc-b{font-size:12px;line-height:1.7;color:#333}
+</style>
+</head>
+<body>
+
+<h1>Genus Power Infrastructures Ltd (NSE: GENUSPOWER) — Deep Analysis</h1>
+<div class="sub">Smart metering + AMISP + RDSS · India's #1 smart meter company · 27% market share in meters · 70% in smart meters · ₹27,000 Cr order book · GIC USD 2B platform · CRISIL AA-/Stable · ₹8,300 Cr mcap · Garvit holds 200 shares · Q4 FY26 results expected May 2026</div>
+
+<div class="sg">
+  <div class="sc"><div class="sl">Market cap</div><div class="sv" style="color:#854F0B">₹8,300 Cr</div></div>
+  <div class="sc"><div class="sl">9M FY26 Revenue</div><div class="sv" style="color:#1D9E75">₹3,214 Cr</div></div>
+  <div class="sc"><div class="sl">9M FY26 PAT</div><div class="sv" style="color:#1D9E75">₹424 Cr</div></div>
+  <div class="sc"><div class="sl">9M EBITDA%</div><div class="sv" style="color:#1D9E75">21.0%</div></div>
+  <div class="sc"><div class="sl">Order book</div><div class="sv" style="color:#185FA5">₹27,000 Cr</div></div>
+  <div class="sc"><div class="sl">Smart meters installed</div><div class="sv">58L (9M)</div></div>
+  <div class="sc"><div class="sl">FY26 guidance</div><div class="sv">₹4,000+ Cr</div></div>
+  <div class="sc"><div class="sl">CRISIL rating</div><div class="sv" style="color:#1D9E75">AA-/Stable</div></div>
+  <div class="sc"><div class="sl">⚠ Promoter pledge</div><div class="sv" style="color:#A32D2D">68.75%!</div></div>
+  <div class="sc"><div class="sl">⚠ Gross debt</div><div class="sv" style="color:#A32D2D">₹1,975 Cr</div></div>
+  <div class="sc"><div class="sl">⚠ ED investigation</div><div class="sv" style="color:#A32D2D">Dec 2024</div></div>
+  <div class="sc"><div class="sl">Stock vs 52-wk high</div><div class="sv" style="color:#A32D2D">-22% below</div></div>
+</div>
+
+<div class="tab-row">
+  <button class="tab active" onclick="show('thesis',this)">RDSS thesis</button>
+  <button class="tab" onclick="show('revenue',this)">Revenue history</button>
+  <button class="tab" onclick="show('model',this)">AMISP model</button>
+  <button class="tab" onclick="show('guidance',this)">Guidance track</button>
+  <button class="tab" onclick="show('risks',this)">Risks ⚠️</button>
+  <button class="tab" onclick="show('sector',this)">Sector peers</button>
+  <button class="tab" onclick="show('scenarios',this)">3x scenarios</button>
+  <button class="tab" onclick="show('garvit',this)">Garvit context</button>
+  <button class="tab" onclick="show('verdict',this)">⭐ Verdict</button>
+</div>
+
+<!-- RDSS THESIS -->
+<div id="thesis" class="panel active">
+  <div class="sh">The RDSS macro tailwind — India's largest infrastructure program, hiding in plain sight</div>
+
+  <div class="rdss-box">
+    <div class="rb-h">🔌 India RDSS: ₹3.03 lakh Cr to modernise every electricity meter in India by 2032</div>
+    <div class="rb-b">
+    The Revamped Distribution Sector Scheme (RDSS) is India's ₹3.03 lakh crore programme to transform the electricity distribution network. The core mandate: install <strong>25–31 crore smart meters</strong> across India — every household, commercial establishment, and industrial connection. Current progress: ~6.1 crore installed. Target: 25 crore by 2032. Gap = 19 crore more meters = 7 more years of installation at accelerating pace.<br><br>
+    <strong>Why this is important:</strong> India's electricity distribution companies (DISCOMs) were losing ₹90,000 Cr annually to Aggregate Technical &amp; Commercial (AT&C) losses — electricity stolen, billed incorrectly, or lost. Smart meters eliminate this by: (1) Remote reading (no human meter reader = no manipulation), (2) Real-time consumption monitoring, (3) Prepaid billing capability, (4) Remote disconnection/reconnection. The government funds 60% of costs; DISCOMs pay the balance over 10 years. For Genus Power, every RDSS order = 8–10 year revenue visibility.<br><br>
+    <strong>The expanding opportunity:</strong> Post electricity smart meters, India is targeting 12 crore smart GAS meters and a similar scale in WATER meters. Genus is already preparing for both verticals. The total TAM could be 3x the current RDSS programme — a ₹9 lakh Cr infrastructure rollout over 15 years.
+    </div>
+  </div>
+
+  <div class="sh">Genus Power's competitive position — India's undisputed market leader</div>
+  <div class="bar-row"><div class="bl">Genus smart meter market share (India)</div><div class="bt"><div class="bf" style="width:70%;background:#1565C0">70% of all smart meters deployed</div></div><div class="bv b">70% ⭐</div></div>
+  <div class="bar-row"><div class="bl">Genus overall meter market share</div><div class="bt"><div class="bf" style="width:27%;background:#378ADD">27%</div></div><div class="bv b">27%</div></div>
+  <div class="bar-row"><div class="bl">Smart meters installed (cumulative)</div><div class="bt"><div class="bf" style="width:58%;background:#1D9E75">58L in 9M FY26</div></div><div class="bv g">58 lakh</div></div>
+  <div class="bar-row"><div class="bl">Smart meter capacity (annual)</div><div class="bt"><div class="bf" style="width:100%;background:#0F6E56">1.8 crore / year</div></div><div class="bv g">1.8 Cr/yr</div></div>
+  <div class="bar-row"><div class="bl">Order book vs annual revenue</div><div class="bt"><div class="bf" style="width:100%;background:#1565C0">₹27,000 Cr = 6x annual revenue</div></div><div class="bv b">6x coverage</div></div>
+
+  <div class="warn genus"><strong>Why Genus is the dominant RDSS beneficiary:</strong> Genus Power has a 70% market share in smart meters — not because of price alone, but because of the AMISP (Advanced Metering Infrastructure Service Provider) model. Genus doesn't just supply meters; it finances, installs, operates, and maintains the entire metering infrastructure for 8–10 years under long-term concession contracts. This integrated model (like a build-operate-transfer) is operationally complex to replicate — creating a genuine barrier to entry beyond just manufacturing capability.</div>
+
+  <div class="sh">The GIC strategic platform — $2 billion partnership that transforms the thesis</div>
+  <div class="point"><div class="dot dgn">$</div><div><strong>GIC (Singapore's sovereign wealth fund) has committed to a USD 2 billion platform with Genus for AMISP projects.</strong> GIC = one of the world's largest sovereign wealth funds (manages $770B+). This is the most important single strategic development in Genus Power's history. It means: (1) Genus can bid for much larger contracts (GIC funds the upfront capex), (2) The "high debt" concern is partially addressed (GIC's platform capital reduces Genus's own borrowing need), (3) About 80% of platform revenue accrues to Genus — GIC gets equity returns, Genus gets operational income. This USD 2B partnership alone is larger than Genus's current market cap. It signals global institutional validation of the India smart meter opportunity.</div></div>
+</div>
+
+<!-- REVENUE HISTORY -->
+<div id="revenue" class="panel">
+  <div class="sh">Revenue &amp; profit history — the compounding machine accelerating</div>
+  <div class="chart-wrap"><canvas id="rc"></canvas></div>
+  <div style="display:flex;gap:14px;font-size:11.5px;color:#666;margin-bottom:10px">
+    <span><span style="display:inline-block;width:10px;height:10px;border-radius:2px;background:#1565C0;margin-right:4px"></span>Revenue ₹ Cr</span>
+    <span><span style="display:inline-block;width:10px;height:10px;border-radius:2px;background:#1D9E75;margin-right:4px"></span>PAT ₹ Cr</span>
+    <span><span style="display:inline-block;width:10px;height:10px;border-radius:2px;background:#9FA8DA;margin-right:4px"></span>Projected</span>
+  </div>
+  <table>
+    <tr><th>Period</th><th>Revenue</th><th>Growth</th><th>EBITDA%</th><th>PAT</th><th>Key event</th></tr>
+    <tr><td>FY23</td><td>~₹900 Cr</td><td>—</td><td>~12%</td><td>~₹70 Cr</td><td>Pre-RDSS execution. Traditional meter supply. Conservative balance sheet. Debt-free.</td></tr>
+    <tr><td>FY24</td><td>~₹1,100 Cr</td><td class="g">+22%</td><td>~13%</td><td>~₹100 Cr</td><td>RDSS projects awarded. AMISP model beginning. Capex cycle starts. GIC partnership framework being established.</td></tr>
+    <tr><td>FY25</td><td>~₹2,200 Cr</td><td class="g">+100%</td><td>~15%</td><td>~₹195 Cr</td><td>Revenue doubled on AMISP ramp-up. ED raid December 2024. Promoter pledge 68.75%. Order book crosses ₹28,000 Cr. Stock peaks ₹498 then corrects.</td></tr>
+    <tr><td>Q1 FY26</td><td>₹942 Cr</td><td class="g">+128% YoY</td><td>21.2%</td><td>₹128.5 Cr</td><td>Exceptional quarter. EBITDA margin expansion 590 bps. Order book ₹29,321 Cr. 16L meters installed Q1. 45L cumulative.</td></tr>
+    <tr><td>Q2 FY26</td><td>₹1,149 Cr</td><td class="g">+136% YoY</td><td>21.3%</td><td>₹148.2 Cr</td><td>Best quarter ever. Revenue more than doubles. EBITDA ₹244 Cr (+200%). PAT +162% YoY. Order book ₹28,758 Cr.</td></tr>
+    <tr><td>Q3 FY26</td><td>₹1,122 Cr</td><td class="g">+86% YoY</td><td>20.7%</td><td>₹147.6 Cr</td><td>Festive season slowdown (Diwali/Dussehra temporarily slowed installation). Modest QoQ dip but strong YoY. 58L meters in 9M. OGL status for 16 AMISP projects.</td></tr>
+    <tr><td>9M FY26</td><td>₹3,214 Cr</td><td class="g">+114% YoY</td><td>21.0%</td><td>₹424 Cr</td><td>Revenue doubled again in 9 months. PAT +157% YoY. EBITDA ₹676 Cr (+159%). Gross debt ₹1,975 Cr. 16 AMISP projects at OGL status.</td></tr>
+    <tr><td>Q4 FY26E</td><td>~₹650–710 Cr</td><td class="g">~+42% YoY</td><td>~15%</td><td>~₹62–74 Cr</td><td>Seasonally strong. Analysts project Q4 acceleration. Metric to watch: execution pace after festive moderation. Q4 typically strong execution quarter.</td></tr>
+    <tr><td>FY26E (full)</td><td>~₹4,000–4,500 Cr</td><td class="g">~+82–105%</td><td>~18–21%</td><td>~₹480–570 Cr</td><td>Management guidance: ₹4,000 Cr revenue + 18% EBITDA margin. Tracking to achieve ₹4,500 Cr on 9M run rate. Potentially first year above ₹500 Cr PAT.</td></tr>
+    <tr><td>FY27E</td><td>~₹6,000 Cr</td><td class="g">~+33–50%</td><td>~18–20%</td><td>~₹750–1,000 Cr</td><td>Management guidance: ₹6,000 Cr. Cash flow positive by end FY27. 1.1–1.2 crore meters target. O&M annuity revenue growing. Debt peak ₹2,100–2,200 Cr then starts declining.</td></tr>
+    <tr><td>FY28E</td><td>~₹7,000–8,000 Cr</td><td class="g">~+17–33%</td><td>~20–22%</td><td>~₹1,100–1,600 Cr</td><td>Gas + water meters begin. O&M income becoming meaningful (long-term annuity). Debt declining rapidly as cash flows improve. Stock re-rating expected.</td></tr>
+  </table>
+
+  <div class="warn success"><strong>The 9M FY26 numbers are extraordinary:</strong> Revenue ₹3,214 Cr in just 9 months — vs full year FY25 of ₹2,200 Cr. The company is growing at 100%+ YoY on a large base. At 21% EBITDA margin, this is not low-quality revenue growth — the operating leverage is real. If Q4 delivers ₹650–710 Cr (analyst consensus), full-year FY26 revenue reaches ₹3,864–3,924 Cr — at the very top of the ₹4,000 Cr management guidance range.</div>
+</div>
+
+<!-- AMISP MODEL -->
+<div id="model" class="panel">
+  <div class="sh">The AMISP business model — why it's different from just meter manufacturing</div>
+
+  <div class="warn genus"><strong>The most important thing to understand about Genus Power:</strong> It is NOT a meter manufacturer. It is an AMISP — Advanced Metering Infrastructure Service Provider. This is the difference between selling a product (one-time) and running a long-term concession (8–10 year recurring revenue). The AMISP model is what makes Genus Power structurally different from HPL Electric (pure manufacturer) and why the ₹27,000 Cr order book is an 8–10 year revenue pipeline, not just next year's sales.</div>
+
+  <div class="point"><div class="dot dgn">1</div><div><strong>EPC Phase (Years 1–3, 55–58% of total contract value):</strong> Genus finances, procures, installs, and commissions the smart meters across the DISCOM's entire geography. This is the capital-intensive phase — Genus spends money upfront (hence the rising debt) and recognises revenue as milestones are achieved. Operational Go-Live (OGL) is the critical milestone — once achieved, invoicing begins. As of December 2025, 16 AMISP projects covering 2.5 crore smart meters have achieved OGL status. Each OGL project = revenue recognition begins = cash flow starts flowing.</div></div>
+
+  <div class="point"><div class="dot dgn">2</div><div><strong>O&M Phase (Years 4–10, 42–45% of total contract value):</strong> Once installed, Genus operates and maintains the meters for 7–8 more years. This is the annuity phase — recurring monthly payments from the DISCOM regardless of installation activity. As OGL projects scale from 16 to all 30+ AMISP projects, the O&M annuity stream builds to ₹800–1,000 Cr/year by FY28–29. This recurring O&M income is the long-term compounding element that most investors underappreciate. It makes Genus a hybrid manufacturer + infrastructure company.</div></div>
+
+  <div class="point"><div class="dot dgn">3</div><div><strong>Revenue split — EPC vs O&M today and tomorrow:</strong> Currently, 90%+ of revenue is from EPC installation (high-growth phase). As OGL projects scale, O&M becomes a growing share — targeting ₹500+ Cr/year by FY28. O&M revenue is higher-margin (no major additional capex), more predictable, and valued at higher multiples by the market. This shift is the next major re-rating catalyst — markets will value the O&M stream at 15–20x vs capital goods companies at 25–30x, driving a multiple expansion.</div></div>
+
+  <div class="point"><div class="dot dg">+</div><div><strong>Why 80% of GIC platform revenue goes to Genus:</strong> Genus contributed the AMISP contracts, execution capability, and local market knowledge. GIC contributed the capital. Under the platform structure, Genus retains 80% economic interest — GIC earns a fixed return on its capital. This is highly efficient for Genus: use GIC's $2B balance sheet to fund growth without proportional dilution of Genus's earnings share. As the GIC platform scales, each additional ₹100 of revenue = ₹80 to Genus without Genus bearing the full financing cost.</div></div>
+</div>
+
+<!-- GUIDANCE -->
+<div id="guidance" class="panel">
+  <div class="sh">Guidance track record — explicitly guided and explicitly beating</div>
+
+  <div class="guid-card beat">
+    <div class="guid-h">✓ FY26 guidance: ₹4,000 Cr revenue + 18% EBITDA — tracking at ₹3,864+ Cr (on track)</div>
+    <div class="guid-b">Management guided ₹4,000 Cr revenue for FY26 with 18% EBITDA margin from the very beginning of the year. 9M FY26 revenue: ₹3,214 Cr at 21.0% EBITDA margin — beating both metrics. Adding even the low end of Q4 estimates (₹650 Cr) gives FY26 = ₹3,864 Cr — within guidance range. The EBITDA margin at 21.0% (9M) is comfortably above the 18% guidance. Management's exact words in Q3 call: "We remain highly confident on execution visibility and expect Q4FY26 to be a strong execution quarter." The guidance has been delivered with consistent over-performance.</div>
+    <div class="guid-s">Credibility: 9/10. Three consecutive quarters of beats. EBITDA margin exceeded guidance by 300 bps.</div>
+  </div>
+
+  <div class="guid-card beat">
+    <div class="guid-h">✓ FY27 guidance: ₹6,000 Cr revenue — management explicit and confident</div>
+    <div class="guid-b">Management's forward guidance is unusually explicit: "Genus Power projects a total revenue of INR 4,500 crore for FY26 and INR 6,000 crore for FY27, followed by a steady growth of about 10% for the subsequent couple of years." At ₹6,000 Cr FY27 revenue and 18–20% EBITDA margins, EBITDA = ₹1,080–1,200 Cr. PAT after interest (₹250 Cr) and D&A = ₹700–900 Cr. At ₹8,300 Cr market cap, FY27 PE would be 9–12x — extraordinarily cheap for a company growing 30–50% annually. The installation target for FY27 is 1.1–1.2 crore meters (vs 80–90L in FY26) = 30–40% more meters = directly drives revenue.</div>
+    <div class="guid-s">Credibility: 8/10. FY26 execution track record supports FY27 guidance. Key risk: execution bottlenecks (state utility payment delays, worker mobilization challenges).</div>
+  </div>
+
+  <div class="guid-card beat">
+    <div class="guid-h">✓ Cash flow positive by end of FY27 — critical balance sheet inflection</div>
+    <div class="guid-b">Genus has been investing heavily (debt rising from near-zero to ₹1,975 Cr in 2 years). This investment phase ends in FY27 — management explicitly guides cash flow positive by end of FY27. Once cash flow turns positive, the entire debt reduction + re-rating story begins. Gross debt peak: ₹2,100–2,200 Cr in FY27 then declining. D/E ratio of 0.92x in H1 FY26 will start normalising to 0.5x by FY28. This is the event horizon — before it: high-growth, high-debt; after it: cash-generating, re-rating.</div>
+    <div class="guid-s">Credibility: 7/10. Depends on OGL projects continuing to scale on schedule. Any execution delay = cash flow positive date shifts right.</div>
+  </div>
+
+  <div class="guid-card watch">
+    <div class="guid-h">⚠ Gas + water meters expansion — medium-term optionality, not FY26/27</div>
+    <div class="guid-b">Management confirmed plans to enter gas meter and water meter markets. India target: 12 crore gas meters + similar water meters. At current RDSS meter pricing of ~₹2,000–2,500/meter, 24 crore meters = ₹48,000–60,000 Cr additional TAM. Genus's manufacturing capability and AMISP experience gives it natural advantage. But gas and water meters are at very early stages of tendering — this is FY28–FY32 optionality. Don't price this in for FY26–27 analysis but it's a significant long-term value creation lever.</div>
+    <div class="guid-s">Timeline: First gas meter contracts expected FY28. Water meters FY28-FY30. Currently optionality, not guidance.</div>
+  </div>
+</div>
+
+<!-- RISKS -->
+<div id="risks" class="panel">
+  <div class="sh">Risks — the three serious ones that explain the -22% from peak</div>
+
+  <div class="risk-flag"><strong>🚨 RISK 1 — PROMOTER PLEDGE 68.75%: THE MOST SERIOUS CONCERN</strong><br>
+  Genus Power promoters have pledged 68.75% of their shareholding. This means: if the stock falls below a certain threshold, the pledgee (bank/NBFC) can sell the pledged shares in the open market to recover their loan. This creates a self-fulfilling collapse — stock falls → pledge margin call → shares sold → stock falls more. At 68.75% pledge ratio, Genus Power's stock is particularly vulnerable to any negative trigger (ED investigation, execution miss, debt concern). This is NOT a reason to avoid the stock entirely, but it IS the reason the stock is -22% from peak despite exceptional results. The market applies a "pledge discount." Management has not provided a timeline for reducing pledge. Until pledge falls below 30%, this remains an overhang.</div>
+
+  <div class="risk-flag"><strong>⚠️ RISK 2 — ED INVESTIGATION (December 2024)</strong><br>
+  The Enforcement Directorate conducted searches at Genus Power in December 2024 relating to corruption charges involving a former Bihar IAS officer (Sanjeev Hans) in connection with a large smart meter contract. Genus cooperated and has not received any formal summons since. However: (1) ED investigations in India can be prolonged — if a formal charge sheet is filed, it could result in contract cancellations, blacklisting, or management distraction. (2) The Goa blacklisting rumor (later quashed by court order) shows how vulnerable the stock is to governance-related news. (3) If the Bihar smart meter contracts are impacted, ₹3,000–5,000 Cr of order book could be at risk. The ED investigation is the single biggest binary risk in the entire investment case.</div>
+
+  <div class="risk-flag"><strong>⚠️ RISK 3 — HIGH DEBT + NEGATIVE CASH FLOW (currently)</strong><br>
+  Gross debt ₹1,975 Cr as of December 2025. Peak expected: ₹2,100–2,200 Cr in FY27. Cash flow from operations was negative in FY25. Interest costs surged 54% YoY in Q3 FY26. Debt-to-EBITDA ratio of 3.64x (5-year average). While management guides cash flow positive by end-FY27, any execution delay or DISCOM payment slowdown could extend this. The RDSS scheme deadline has already been pushed once (from March 2026 to March 2028) — execution delays are the rule, not the exception in Indian infrastructure.</div>
+
+  <div class="point"><div class="dot dg">+</div><div><strong>What makes the risks manageable:</strong> CRISIL AA-/Stable rating (banks trust Genus's creditworthiness). 16 AMISP projects at OGL = invoicing begun = cash flow improving. GIC USD 2B platform reduces Genus's own capex burden. Revenue doubled year-on-year (execution is clearly happening). Smart meter policy is irreversible — 9 years of RDSS remaining means the order book is essentially guaranteed unless governance collapses. Genus is "too important to fail" for India's smart grid ambition.</div></div>
+</div>
+
+<!-- SECTOR PEERS -->
+<div id="sector" class="panel">
+  <div class="sh">Smart metering + power infrastructure sector peers — who is the best bet?</div>
+  <div style="border:1px solid #ddd;border-radius:10px;overflow:hidden;font-size:11px;margin-bottom:12px">
+    <div class="comp-h">
+      <div class="cc-h" style="background:#f5f5f3">Metric</div>
+      <div class="cc-h" style="background:#E3F2FD;color:#1565C0">Genus Power ← Garvit holds</div>
+      <div class="cc-h" style="background:#f5f5f3">HPL Electric &amp; Power</div>
+      <div class="cc-h" style="background:#f5f5f3">Adani Energy Solutions</div>
+      <div class="cc-h" style="background:#f5f5f3">Secure Meters (unlisted)</div>
+    </div>
+    <div class="comp-row"><div class="cc cc-label">Market cap</div><div class="cc mid-cell">₹8,300 Cr</div><div class="cc winner-cell">₹2,500 Cr (right size for 3x)</div><div class="cc loser-cell">₹35,000+ Cr (too large)</div><td class="cc">Unlisted</td></div>
+    <div class="comp-row"><div class="cc cc-label">Revenue FY26E</div><div class="cc winner-cell">₹4,000–4,500 Cr</div><div class="cc mid-cell">~₹1,500–1,800 Cr</div><div class="cc winner-cell">₹20,000+ Cr</div><td class="cc">~₹1,200 Cr</td></div>
+    <div class="comp-row"><div class="cc cc-label">Revenue growth</div><div class="cc winner-cell">+114% 9M FY26</div><div class="cc mid-cell">+25–30%</div><div class="cc mid-cell">+27.8% (Q3 FY25)</div><td class="cc">~+20%</td></div>
+    <div class="comp-row"><div class="cc cc-label">EBITDA margin</div><div class="cc winner-cell">21.0% (9M FY26)</div><div class="cc mid-cell">~12–15%</div><div class="cc mid-cell">~18–22%</div><td class="cc">~14–16%</td></div>
+    <div class="comp-row"><div class="cc cc-label">Order book / revenue</div><div class="cc winner-cell">₹27,000 Cr = 6x revenue</div><div class="cc mid-cell">~2–3x revenue</div><div class="cc mid-cell">Very large (transmission)</div><td class="cc">~3–4x</td></div>
+    <div class="comp-row"><div class="cc cc-label">Business model</div><div class="cc winner-cell">AMISP (EPC + O&M concession)</div><div class="cc mid-cell">Pure manufacturer</div><div class="cc mid-cell">DISCOM + smart meter</div><td class="cc">Manufacturer + AMISP</td></div>
+    <div class="comp-row"><div class="cc cc-label">Smart meter market share</div><div class="cc winner-cell">70% (India)</div><div class="cc mid-cell">~10–12%</div><div class="cc mid-cell">Growing fast</div><td class="cc">~8–10%</td></div>
+    <div class="comp-row"><div class="cc cc-label">Promoter pledge</div><div class="cc loser-cell">68.75% ⚠️</div><div class="cc winner-cell">Low / nil</div><div class="cc mid-cell">Adani — complex structure</div><td class="cc">N/A (unlisted)</td></div>
+    <div class="comp-row"><div class="cc cc-label">ED investigation</div><div class="cc loser-cell">Yes (Dec 2024)</div><div class="cc winner-cell">No</div><div class="cc mid-cell">No</div><td class="cc">No</td></div>
+    <div class="comp-row"><div class="cc cc-label">3x probability</div><div class="cc mid-cell">20–25% (from ₹8,300 Cr)</div><div class="cc winner-cell">30–35% (from ₹2,500 Cr)</div><div class="cc loser-cell">8–10% (too large)</div><td class="cc">Unlisted</td></div>
+    <div class="comp-row"><div class="cc cc-label">Best for Garvit</div><div class="cc">Hold current 200 shares. Don't add significantly.</div><td class="cc winner-cell">Better 3x candidate!</td><td class="cc">Skip — too large</td><td class="cc">Unlisted</td></div>
+  </div>
+
+  <div class="warn caution"><strong>HPL Electric &amp; Power — the better-valued smart meter play for 3x:</strong> HPL Electric manufactures smart meters + switchgear + LED + wires/cables. Market cap ₹2,500 Cr (vs Genus ₹8,300 Cr). Growing at 25–30% annually. No ED investigation. No promoter pledge concern. If smart metering is the thesis, HPL offers a better 3x entry point at ₹2,500 Cr than Genus at ₹8,300 Cr. The risk: HPL doesn't have the AMISP model (long-term concession) — it's a pure manufacturer. Revenues are more transactional. But for Garvit's 3-year horizon, HPL's cleaner balance sheet and lower market cap make it the superior risk-adjusted smart meter bet.</div>
+</div>
+
+<!-- SCENARIOS -->
+<div id="scenarios" class="panel">
+  <div class="sh">3x scenario analysis — from current ~₹8,300 Cr market cap</div>
+  <div class="warn caution"><strong>The market cap challenge for Garvit's 3x goal:</strong> 3x from ₹8,300 Cr = ₹24,900 Cr. At 25x PE: requires PAT of ₹996 Cr. FY26E PAT: ~₹500–570 Cr. Getting to ₹996 Cr = 1.75–2x PAT growth. At 50% annual PAT growth = achievable in 1.5 years. At 30% annual = 2 years. THIS ACTUALLY WORKS — unlike STL or Yatharth where the market cap makes the math impossible. Genus at ₹8,300 Cr with FY27E PAT ₹800+ Cr at reasonable multiple could 2.5–3x in 2 years. The real question: do the governance risks (ED + pledge) prevent the re-rating?</div>
+
+  <div class="scenario" style="border-left:3px solid #1D9E75">
+    <div style="font-size:12px;font-weight:500;color:#0F6E56;margin-bottom:7px">Bull: 2.5–3x by FY27 — ED resolved, pledge reduced, FY27 revenue ₹6,000 Cr delivered</div>
+    <div class="sc-grid">
+      <div class="sc-cell"><div class="sc-l">FY27 Revenue</div><div class="sc-v">₹6,000 Cr</div></div>
+      <div class="sc-cell"><div class="sc-l">FY27 PAT</div><div class="sc-v">₹800–1,000 Cr</div></div>
+      <div class="sc-cell"><div class="sc-l">PE (re-rating)</div><div class="sc-v">22–28x</div></div>
+      <div class="sc-cell"><div class="sc-l">FY27 mcap</div><div class="sc-v">₹17,600–28,000 Cr</div></div>
+      <div class="sc-cell"><div class="sc-l">Return</div><div class="sc-v">2.1–3.4x</div></div>
+      <div class="sc-cell"><div class="sc-l">Probability</div><div class="sc-v">20–25%</div></div>
+    </div>
+    <div style="font-size:11px;color:#555;margin-top:8px">Requires: ED case resolved with no major consequences + promoter pledge reduced below 40% + FY27 revenue guidance delivered. At 25x PE on ₹900 Cr PAT = ₹22,500 Cr = 2.7x. This IS achievable if governance clears up.</div>
+  </div>
+
+  <div class="scenario" style="border-left:3px solid #378ADD">
+    <div style="font-size:12px;font-weight:500;color:#185FA5;margin-bottom:7px">Base: 1.5–2x by FY27 — guidance delivered, governance overhang continues</div>
+    <div class="sc-grid">
+      <div class="sc-cell"><div class="sc-l">FY27 PAT</div><div class="sc-v">₹700–800 Cr</div></div>
+      <div class="sc-cell"><div class="sc-l">PE (governance discount)</div><div class="sc-v">15–18x</div></div>
+      <div class="sc-cell"><div class="sc-l">FY27 mcap</div><div class="sc-v">₹10,500–14,400 Cr</div></div>
+      <div class="sc-cell"><div class="sc-l">Return</div><div class="sc-v">1.3–1.7x</div></div>
+      <div class="sc-cell"><div class="sc-l">Driver</div><div class="sc-v">Earnings growth, PE flat</div></div>
+      <div class="sc-cell"><div class="sc-l">Probability</div><div class="sc-v">45%</div></div>
+    </div>
+    <div style="font-size:11px;color:#555;margin-top:8px">If governance concern persists (ED investigation ongoing, pledge still high), the market applies 15–18x vs 25x+ for clean peers. PAT ₹750 Cr at 17x = ₹12,750 Cr = 1.5x. Decent but not 3x. The earnings are there — the PE re-rating doesn't happen until governance clears.</div>
+  </div>
+
+  <div class="scenario" style="border-left:3px solid #A32D2D">
+    <div style="font-size:12px;font-weight:500;color:#A32D2D;margin-bottom:7px">Bear: -30 to -50% — ED charge sheet filed, contracts cancelled</div>
+    <div class="sc-grid">
+      <div class="sc-cell"><div class="sc-l">Trigger 1</div><div class="sc-v">ED formal charges</div></div>
+      <div class="sc-cell"><div class="sc-l">Trigger 2</div><div class="sc-v">Bihar contracts cancelled</div></div>
+      <div class="sc-cell"><div class="sc-l">Trigger 3</div><div class="sc-v">Pledge forced selling</div></div>
+      <div class="sc-cell"><div class="sc-l">Order book at risk</div><div class="sc-v">₹3,000–5,000 Cr</div></div>
+      <div class="sc-cell"><div class="sc-l">Stock impact</div><div class="sc-v">₹150–220/share (-40%)</div></div>
+      <div class="sc-cell"><div class="sc-l">Probability</div><div class="sc-v">20–25%</div></div>
+    </div>
+  </div>
+</div>
+
+<!-- GARVIT CONTEXT -->
+<div id="garvit" class="panel">
+  <div class="sh">Garvit's specific situation — 200 shares at ₹293.26 avg, currently +7.9%</div>
+
+  <div class="warn info"><strong>Garvit's Genus Power position:</strong> 200 shares at ₹293.26 avg = ₹58,652 invested. Current: ~₹315–320 = ~₹63,000 = +₹4,348 (+7.4%). This is a medium-sized position at 3.2% of portfolio. Conviction in our previous analysis: 5.5/10. The question: should Garvit add significantly, hold, or start trimming?</div>
+
+  <div class="sh">The honest assessment of Genus Power for Garvit's specific 3x portfolio</div>
+
+  <div class="two-col">
+    <div class="pane">
+      <div class="pane-h" style="color:#0F6E56">✅ Why HOLD (and possibly small add)</div>
+      <div class="point"><div class="dot dg">1</div><div><strong>India's largest smart meter company at below-peer valuation:</strong> Genus has 70% smart meter market share, ₹27,000 Cr order book (6x revenue), and FY27 guidance of ₹6,000 Cr. At 17.85x PE vs sector average 37x — it's significantly discounted to peers. The discount exists for reasons (ED + pledge) but if those clear, the re-rating alone is 2x.</div></div>
+      <div class="point"><div class="dot dg">2</div><div><strong>GIC platform is the most underpriced asset:</strong> Singapore's sovereign wealth fund committed USD 2 billion to partner with Genus. This institutional validation, and the financial firepower it provides, is extraordinary for a company Garvit bought at ₹293. GIC doesn't invest USD 2B with undiscriminatingly — their diligence is world-class.</div></div>
+      <div class="point"><div class="dot dg">3</div><div><strong>RDSS is irreversible — 19 crore more meters to go:</strong> India cannot abandon RDSS. The ₹3.03 lakh Cr programme is constitutionally mandated. Even if execution slows, the eventual revenue opportunity is enormous and Genus has 70% market share in the programme today.</div></div>
+    </div>
+    <div class="pane">
+      <div class="pane-h" style="color:#A32D2D">⚠️ Why NOT to add significantly</div>
+      <div class="point"><div class="dot dr">1</div><div><strong>ED investigation is a binary risk that Garvit's portfolio cannot afford:</strong> With a personal loan deployed in the market, Garvit cannot afford a 40–50% stock collapse from an adverse ED outcome. 200 shares at -40% = -₹23,461 loss. Acceptable. 400 shares at -40% = -₹46,922 loss. Too large for a governance risk event.</div></div>
+      <div class="point"><div class="dot dr">2</div><div><strong>68.75% promoter pledge = permanent volatility risk:</strong> This is not going away quickly. Any negative headline = forced selling pressure. Until the pledge falls below 30%, Genus will continue to trade at a discount to its fundamental value. Garvit's portfolio already has enough high-quality compounders — adding more to a pledged stock is concentration risk in governance.</div></div>
+      <div class="point"><div class="dot da">3</div><div><strong>Better alternatives exist in the portfolio:</strong> Bondada Engineering (+81% FY26 revenue, no ED, no pledge, FY27 guide 60–70% growth) is a superior infrastructure bet. RPSG Ventures has cleaner governance. DEE Development has nuclear optionality with zero governance concerns. Capital deployed in higher-conviction picks at lower governance risk is better portfolio construction.</div></div>
+    </div>
+  </div>
+</div>
+
+<!-- VERDICT -->
+<div id="verdict" class="panel">
+  <div class="sh">The complete verdict — Genus Power for Garvit's 3x goal</div>
+
+  <div class="verdict-card">
+    <div class="vc-h">⚖️ Final Verdict: HOLD current 200 shares firmly. No significant addition until ED clears and pledge reduces. The business is world-class; the governance is the only concern.</div>
+    <div class="vc-b">
+    <strong>The business case is genuinely compelling:</strong><br>
+    Genus Power has built something extraordinary — India's dominant AMISP with 70% smart meter market share, a ₹27,000 Cr order book providing 6x revenue visibility, a USD 2 billion partnership with GIC (Singapore's sovereign wealth fund), revenue growing at 100%+ YoY with EBITDA margins at 21%, and a credible path to ₹6,000 Cr revenue in FY27 and cash flow positive by end-FY27. The RDSS programme is India's largest infrastructure initiative — and Genus owns the largest share. At 17.85x PE vs sector average of 37x, Genus is the cheapest quality smart meter company in India by a wide margin.<br><br>
+    <strong>The governance concern keeps conviction at 5.5/10:</strong><br>
+    Two overlapping risks: (1) 68.75% promoter pledge — if the stock corrects 15–20%, forced selling creates a cascade. The pledge has not been reduced despite improving fundamentals. (2) ED investigation — Genus cooperated and hasn't received formal summons, but any charge sheet would be catastrophic for contracts in Bihar and potentially trigger a broader review of all RDSS contracts. Until BOTH these risks reduce, adding significantly to Genus Power is not appropriate given Garvit has a personal loan deployed and cannot absorb large binary losses.<br><br>
+    <strong>The right portfolio action:</strong><br>
+    HOLD current 200 shares (₹58,652). The position is already +7.4% and correctly sized at 3.2% of portfolio. If Genus delivers ₹6,000 Cr FY27 revenue AND the ED investigation closes without charge sheet AND promoter pledge falls below 40% — that would be the signal to double the position. Until all three of these happen, 200 shares is sufficient exposure to one of India's best infrastructure growth stories while limiting downside from governance events.<br><br>
+    <strong>The comparison that matters most:</strong><br>
+    Bondada Engineering: 9.1/10 conviction, ₹1,95,000 in portfolio, PAT +86%, no pledge, no ED.<br>
+    Genus Power: 5.5/10 conviction, ₹58,652 in portfolio, PAT +157% but 68.75% pledge + ED investigation.<br>
+    If Garvit has capital to deploy, adding to Bondada (on any dip below ₹310) is better portfolio construction than adding to Genus Power at current governance risk levels.
+    </div>
+  </div>
+
+  <div class="sh">Action plan and trigger watchlist</div>
+  <table>
+    <tr><th>Action</th><th>Amount</th><th>Trigger</th><th>Priority</th></tr>
+    <tr><td><span class="badge bgp">HOLD current 200 shares</span></td><td>Hold ₹58,652</td><td>Already in portfolio — +7.4% gain</td><td class="g">Maintain</td></tr>
+    <tr><td><span class="badge ba">WATCH Q4 FY26 results (May 2026)</span></td><td>Monitor</td><td>Revenue ₹650+ Cr + EBITDA 15%+ = FY26 guidance delivered = conviction upgrade to 6.5/10</td><td class="a">Watch</td></tr>
+    <tr><td><span class="badge ba">PARTIAL ADD (₹20–30K) if all 3 triggers hit</span></td><td>+₹20,000–30,000</td><td>All three: (1) ED formally closed, (2) Pledge below 40%, (3) FY27 Q1 revenue tracking ₹1,500+ Cr</td><td class="a">Conditional</td></tr>
+    <tr><td><span class="badge br">REDUCE to 100 shares if ED worsens</span></td><td>Sell 100 shares</td><td>If ED files formal charge sheet → immediately reduce to 100 shares and reassess</td><td class="r">Risk management</td></tr>
+    <tr><td><span class="badge br">Full EXIT if Bihar contracts cancelled</span></td><td>Sell all 200</td><td>Bihar smart meter contracts cancelled / blacklisting confirmed → exit and redeploy to Bondada or DEE</td><td class="r">Emergency exit</td></tr>
+  </table>
+
+  <div class="sh">6 triggers to watch quarterly</div>
+  <table>
+    <tr><th>#</th><th>Trigger</th><th>Current status</th><th>Impact</th></tr>
+    <tr><td>1</td><td>ED investigation — any formal notice/summons</td><td class="r">No update since Dec 2024 — ongoing</td><td>🔥 Most critical. Formal charge sheet = sell all. Closure = massive re-rating catalyst.</td></tr>
+    <tr><td>2</td><td>Promoter pledge reduction (from 68.75%)</td><td class="r">Still 68.75% — not improving</td><td>🟢 Every 10% reduction in pledge = +5–8% stock premium as forced selling risk falls.</td></tr>
+    <tr><td>3</td><td>OGL (Operational Go-Live) projects count</td><td class="g">16 projects as of Dec 2025 — growing</td><td>🟢 Each new OGL = invoicing begins = cash flow improves = debt starts falling. Target: 25+ projects by Q4 FY26.</td></tr>
+    <tr><td>4</td><td>FY27 Q1 revenue tracking (Jul 2026)</td><td class="a">FY27 starts April 2026 — watch Q1 FY27</td><td>🟢 Q1 FY27 revenue ₹1,500+ Cr would confirm ₹6,000 Cr FY27 guidance is achievable.</td></tr>
+    <tr><td>5</td><td>Gas/water meter tender wins</td><td class="a">Policy framework developing — FY28 realistic</td><td>🟢 First gas meter AMISP contract win = massive TAM expansion narrative = re-rating to 30x+ PE.</td></tr>
+    <tr><td>6</td><td>Gross debt trajectory</td><td class="a">₹1,975 Cr — should peak ₹2,200 Cr FY27</td><td>🟢 Debt peaking and declining = cash flow positive = return to dividend = institutional buying returns.</td></tr>
+  </table>
+
+  <div class="warn verdict" style="margin-top:12px"><strong>One-line verdict:</strong> Genus Power Infrastructures is India's dominant smart meter company — 70% market share, ₹27,000 Cr order book (6x revenue), GIC USD 2B sovereign fund partnership, revenue growing at 100%+ YoY, and a credible path to ₹6,000 Cr revenue by FY27. The business deserves a 9/10 quality score. The governance — 68.75% promoter pledge and unresolved ED investigation — keeps conviction at 5.5/10. Hold current 200 shares (₹58,652, +7.4%), don't add significantly until the pledge falls below 40% and ED investigation formally concludes, but never exit entirely — this is India's infrastructure backbone in electricity metering, and Garvit is already in at a reasonable cost.</div>
+</div>
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/4.4.1/chart.umd.js"></script>
+<script>
+function show(id,btn){
+  document.querySelectorAll('.tab').forEach(t=>t.classList.remove('active'));
+  document.querySelectorAll('.panel').forEach(p=>p.classList.remove('active'));
+  btn.classList.add('active');
+  document.getElementById(id).classList.add('active');
+}
+new Chart(document.getElementById('rc').getContext('2d'),{
+  type:'bar',
+  data:{
+    labels:['FY23','FY24','FY25','Q1FY26','Q2FY26','Q3FY26','9M FY26','FY26E','FY27E','FY28E'],
+    datasets:[
+      {label:'Revenue ₹ Cr',data:[900,1100,2200,942,1149,1122,3214,4200,6000,7500],backgroundColor:['#1565C0','#1565C0','#1565C0','#1D9E75','#1D9E75','#1D9E75','#1D9E75','#42A5F5','#9FA8DA','#9FA8DA'],borderRadius:4,yAxisID:'y'},
+      {label:'PAT ₹ Cr',data:[70,100,195,128.5,148.2,147.6,424,530,850,1200],type:'line',borderColor:'#1D9E75',backgroundColor:'transparent',pointBackgroundColor:'#1D9E75',tension:0.3,yAxisID:'y2'}
+    ]
+  },
+  options:{responsive:true,maintainAspectRatio:false,plugins:{legend:{position:'top',labels:{font:{size:10},boxWidth:10}}},scales:{y:{ticks:{font:{size:10}}},y2:{position:'right',ticks:{font:{size:10}},grid:{drawOnChartArea:false}},x:{ticks:{font:{size:10}}}}}
+});
+</script>
+</body>
+</html>

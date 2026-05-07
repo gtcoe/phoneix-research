@@ -1,0 +1,461 @@
+<!DOCTYPE html>
+<html><head><meta charset="utf-8">
+<style>
+*{box-sizing:border-box;margin:0;padding:0}
+body{font-family:system-ui,sans-serif;padding:16px;background:#fff;color:#1a1a1a;font-size:14px}
+h1{font-size:20px;font-weight:500;margin-bottom:3px}
+.sub{font-size:12px;color:#666;margin-bottom:14px}
+.hero-strip{display:grid;grid-template-columns:repeat(5,1fr);gap:8px;margin-bottom:14px}
+.hs{background:#f5f5f3;border-radius:8px;padding:10px 12px;border-left:3px solid transparent}
+.hs.win{border-left-color:#1D9E75}
+.hs.watch{border-left-color:#EF9F27}
+.hs.avoid{border-left-color:#A32D2D}
+.hs-l{font-size:9.5px;color:#666;margin-bottom:2px}
+.hs-v{font-size:15px;font-weight:600}
+.tab-row{display:flex;gap:5px;flex-wrap:wrap;margin-bottom:14px}
+.tab{font-size:11.5px;padding:5px 13px;border-radius:20px;border:1px solid #ddd;background:#fff;cursor:pointer;white-space:nowrap}
+.tab.active{background:#1a1a1a;color:#fff;border-color:#1a1a1a}
+.panel{display:none}.panel.active{display:block}
+.sh{font-size:10.5px;font-weight:500;color:#666;text-transform:uppercase;letter-spacing:.06em;margin:16px 0 7px;padding-bottom:5px;border-bottom:1px solid #eee}
+table{width:100%;border-collapse:collapse;font-size:12px;margin:8px 0}
+th{font-size:10.5px;font-weight:500;color:#666;padding:5px 7px;text-align:left;border-bottom:1px solid #eee;white-space:nowrap}
+td{padding:8px 7px;border-bottom:1px solid #eee;color:#1a1a1a;vertical-align:top}
+tr:last-child td{border-bottom:none}
+tr:hover td{background:#fafaf9}
+.g{color:#0F6E56;font-weight:500}.r{color:#A32D2D;font-weight:500}.a{color:#854F0B;font-weight:500}.b{color:#185FA5;font-weight:500}
+.badge{display:inline-block;font-size:10px;padding:2px 7px;border-radius:10px;white-space:nowrap}
+.bg{background:#E1F5EE;color:#0F6E56}.bb{background:#E6F1FB;color:#185FA5}.ba{background:#FAEEDA;color:#854F0B}.br{background:#FCEBEB;color:#A32D2D}.bgray{background:#f1f0e8;color:#5F5E5A}.bpurp{background:#EDE7F6;color:#4527A0}.bdef{background:#E8EAF6;color:#1A237E}
+.warn{padding:10px 13px;margin:8px 0;border-left:3px solid;font-size:12px;line-height:1.65}
+.warn.success{background:#E1F5EE;border-color:#1D9E75;color:#04342C}
+.warn.caution{background:#FAEEDA;border-color:#BA7517;color:#412402}
+.warn.danger{background:#FCEBEB;border-color:#A32D2D;color:#712B13}
+.warn.info{background:#E6F1FB;border-color:#185FA5;color:#042C53}
+.warn.def{background:#E8EAF6;border-color:#3949AB;color:#1A237E}
+.warn.gem{background:#FFF9E6;border-color:#F9A825;color:#3E2723}
+.warn strong{font-weight:500}
+.stock-card{border:1px solid #ddd;border-radius:12px;overflow:hidden;margin-bottom:16px}
+.sc-hdr{padding:12px 14px;display:flex;justify-content:space-between;align-items:flex-start;background:#fafaf9}
+.sc-nm{font-size:14px;font-weight:600}
+.sc-sub{font-size:11px;color:#666;margin-top:2px}
+.sc-meta{display:grid;grid-template-columns:repeat(5,1fr);gap:6px;padding:10px 14px;border-top:1px solid #eee;border-bottom:1px solid #eee;background:#fdfdfd}
+.sm-v{font-size:13px;font-weight:600;margin-bottom:1px}
+.sm-l{font-size:9.5px;color:#888}
+.sc-body{padding:12px 14px;font-size:12px;line-height:1.7;color:#555}
+.sc-body strong{color:#1a1a1a;font-weight:500}
+.sc-verdict{padding:10px 14px;border-top:1px solid #eee;font-size:12px;font-weight:500;display:flex;align-items:center;gap:8px}
+.kpi-row{display:grid;grid-template-columns:repeat(3,1fr);gap:8px;margin:8px 0}
+.kr{background:#f5f5f3;border-radius:7px;padding:9px 11px}
+.kr-v{font-size:15px;font-weight:600;margin-bottom:1px}
+.kr-l{font-size:9.5px;color:#888}
+.point{display:flex;gap:8px;align-items:flex-start;padding:7px 0;border-bottom:1px solid #f0f0f0;font-size:12px;line-height:1.55;color:#555}
+.point:last-child{border-bottom:none}
+.point strong{color:#1a1a1a;font-weight:500}
+.dot{width:18px;height:18px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:10px;font-weight:600;flex-shrink:0;margin-top:1px}
+.dg{background:#E1F5EE;color:#0F6E56}.dr{background:#FCEBEB;color:#A32D2D}.da{background:#FAEEDA;color:#854F0B}.db{background:#E6F1FB;color:#185FA5}.dd{background:#E8EAF6;color:#1A237E}.dy{background:#FFF9E6;color:#B45309}
+.two-col{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin:8px 0}
+.mini-card{background:#f5f5f3;border-radius:8px;padding:10px 12px;font-size:12px}
+.mini-h{font-size:11px;font-weight:500;margin-bottom:5px}
+.scenario-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:8px;margin:8px 0}
+.sg2{background:#f5f5f3;border-radius:8px;padding:9px 11px}
+.sg2-h{font-size:10px;font-weight:500;margin-bottom:5px}
+.sg2-v{font-size:13px;font-weight:600;margin-bottom:2px}
+.sg2-s{font-size:9.5px;color:#888}
+.heat-box{border-radius:10px;padding:13px;margin-bottom:10px;border:1px solid}
+.heat-green{background:#E1F5EE;border-color:#81C784}
+.heat-amber{background:#FAEEDA;border-color:#FFCC80}
+.heat-red{background:#FFF5F5;border-color:#EF9A9A}
+.heat-h{font-size:12.5px;font-weight:600;margin-bottom:6px}
+.heat-b{font-size:12px;line-height:1.65;color:#333}
+.ranking-row{display:flex;align-items:center;gap:10px;padding:8px 10px;border-bottom:1px solid #eee;font-size:12px}
+.rank-num{font-size:16px;font-weight:700;width:28px;text-align:center;flex-shrink:0}
+.rank-info{flex:1}
+.rank-nm{font-weight:500;color:#1a1a1a}
+.rank-desc{font-size:10.5px;color:#666;margin-top:1px}
+.rank-score{font-size:12px;font-weight:600;width:60px;text-align:right}
+.sindoor-box{background:#E8EAF6;border:2px solid #3949AB;border-radius:10px;padding:13px;margin:10px 0}
+.sb-h{font-size:14px;font-weight:600;color:#1A237E;margin-bottom:6px}
+.sb-b{font-size:12px;color:#1a1a1a;line-height:1.65}
+</style>
+</head>
+<body>
+
+<h1>Ashish Kacholia's Hidden Micro-Cap Gems — Sub ₹500 Cr Holdings</h1>
+<div class="sub">Analysing all sub-₹500 Cr market cap holdings · Applying Garvit's 3x filter · Finding the actual hidden multibaggers before the market discovers them · Operation Sindoor context included</div>
+
+<div class="hero-strip">
+  <div class="hs win"><div class="hs-l">🏆 Top hidden gem</div><div class="hs-v" style="color:#1D9E75">C2C Advanced</div></div>
+  <div class="hs win"><div class="hs-l">⭐ 2nd best pick</div><div class="hs-v" style="color:#185FA5">TechEra Eng.</div></div>
+  <div class="hs watch"><div class="hs-l">👀 Watchlist</div><div class="hs-v" style="color:#854F0B">Naman Industries</div></div>
+  <div class="hs watch"><div class="hs-l">👀 Monitor</div><div class="hs-v" style="color:#854F0B">Megatherm</div></div>
+  <div class="hs avoid"><div class="hs-l">❌ Kacholia exiting</div><div class="hs-v" style="color:#A32D2D">BEW Engineering</div></div>
+</div>
+
+<div class="tab-row">
+  <button class="tab active" onclick="show('context',this)">🛡️ Operation Sindoor context</button>
+  <button class="tab" onclick="show('overview',this)">All micro-cap holdings</button>
+  <button class="tab" onclick="show('c2c',this)">⭐⭐ C2C Advanced — #1 gem</button>
+  <button class="tab" onclick="show('techera',this)">⭐ TechEra — #2 gem</button>
+  <button class="tab" onclick="show('others',this)">Others analyzed</button>
+  <button class="tab" onclick="show('ranking',this)">Final ranking</button>
+  <button class="tab" onclick="show('action',this)">Garvit's action plan</button>
+</div>
+
+<!-- CONTEXT -->
+<div id="context" class="panel active">
+  <div class="sh">The single most important context: Operation Sindoor changes the defence investment thesis dramatically</div>
+  <div class="sindoor-box">
+    <div class="sb-h">🛡️ Operation Sindoor (May 2026) — Why Kacholia's defence micro-caps just became 10x more relevant</div>
+    <div class="sb-b">
+    India conducted precision military strikes against terrorist infrastructure in Pakistan in early May 2026. This was not just a military event — it is a fundamental shift in India's defence procurement priorities that will affect capital allocation for the next 5–10 years.<br><br>
+    <strong>What changes for Indian defence companies post-Operation Sindoor:</strong><br>
+    1. <strong>Anti-drone / Counter-UAS systems:</strong> The conflict exposed India's vulnerability to drone-based threats. C-UAS (Counter-Unmanned Aircraft Systems) will receive emergency procurement funding — exactly what C2C Advanced Systems builds. The global C-UAS market was $6.64B in 2025, projected to hit $20.31B by 2030 at 25.1% CAGR. India's spending will accelerate significantly post this event.<br>
+    2. <strong>Precision aerospace tooling:</strong> India is fast-tracking LCA Tejas Mk2, AMCA fighter programmes, and helicopter production. TechEra Engineering — which manufactures precision tooling (jigs, fixtures) for these aircraft — sits directly in this path. Every additional aircraft ordered = direct TechEra revenue.<br>
+    3. <strong>Ammunition indigenisation:</strong> India's dependence on imported artillery shells was exposed. Balu Forge's 155mm shell line (already analyzed) is directly relevant.<br>
+    4. <strong>C4ISR systems:</strong> Command, Control, Communications, Computers, Intelligence, Surveillance, Reconnaissance — the "digital backbone" of modern warfare. C2C Advanced Systems is India's emerging player here.<br><br>
+    <strong>The thesis:</strong> Kacholia entered C2C Advanced and TechEra Engineering when they were tiny, unknown SME stocks. Post-Operation Sindoor, these are no longer obscure — they are strategically critical. But Kacholia is already in. The question for Garvit: is there still enough upside left?
+    </div>
+  </div>
+
+  <div class="sh">Why micro-cap defence stocks can still 5–10x from here despite the rally</div>
+  <div class="two-col">
+    <div class="mini-card">
+      <div class="mini-h" style="color:#1D9E75">The tailwind argument — why they can still run</div>
+      <div style="font-size:11.5px;color:#444;line-height:1.6">India's defence budget in FY27 is ₹7.41 lakh Cr. The "Atmanirbhar Bharat" defence indigenisation target means 75% of procurement must be from Indian vendors by FY28. For a company doing ₹100 Cr revenue — winning ONE government order of ₹50 Cr is a 50% revenue jump. These companies are so small that a single contract can re-rate them. Post-Sindoor, the urgency of indigenous procurement has increased dramatically. Small-cap defence stocks at ₹300–800 Cr mcap still have massive room to run if execution happens.</div>
+    </div>
+    <div class="mini-card">
+      <div class="mini-h" style="color:#A32D2D">The risk argument — why they can also collapse</div>
+      <div style="font-size:11.5px;color:#444;line-height:1.6">Defence micro-caps are the most dangerous type of investment. (1) Government procurement is notoriously slow and lumpy — a company can wait 3 years for a tender result. (2) Payment cycles are very long (180–365 day debtors). (3) Any quality/delivery issue = permanent contract loss. (4) At ₹300–500 Cr mcap with ₹30–100 Cr revenue, these stocks are technically illiquid. (5) Kacholia himself is reducing some positions (BEW Engineering, Radiowalla) — his exits can trigger 30–40% declines in illiquid stocks. Position size MUST be very small — treat as lottery tickets, not core positions.</div>
+    </div>
+  </div>
+</div>
+
+<!-- ALL HOLDINGS OVERVIEW -->
+<div id="overview" class="panel">
+  <div class="sh">Complete sub-₹800 Cr market cap Kacholia holdings — full map</div>
+  <div class="warn gem"><strong>Important nuance:</strong> "Sub-₹500 Cr" is approximate — stock prices move daily. Some are now slightly above ₹500 Cr. The key filter is: small enough that institutional discovery hasn't happened yet = maximum re-rating potential when fundamentals prove out.</div>
+
+  <table>
+    <tr><th>Stock</th><th>Sector</th><th>Mcap</th><th>Revenue (TTM)</th><th>PAT</th><th>Kacholia %</th><th>Kacholia action</th><th>Garvit rating</th></tr>
+    <tr style="background:#E1F5EE"><td><strong>C2C Advanced Systems ⭐⭐</strong></td><td>Defence electronics + AI + C4ISR</td><td class="g">₹768 Cr</td><td class="g">₹138 Cr</td><td class="g">₹42.8 Cr</td><td class="g">3.9% ↑ (buying)</td><td><span class="badge bg">Increasing stake</span></td><td><span class="badge bg">⭐⭐ BUY SMALL</span></td></tr>
+    <tr style="background:#E1F5EE"><td><strong>TechEra Engineering ⭐</strong></td><td>Aerospace precision tooling + defence</td><td class="a">₹341 Cr</td><td class="a">~₹55 Cr</td><td class="g">~₹8 Cr</td><td class="g">6.23%→ now higher ↑</td><td><span class="badge bg">Increasing stake</span></td><td><span class="badge bg">⭐ BUY TINY</span></td></tr>
+    <tr><td><strong>Infinium Pharmachem</strong></td><td>Iodine derivatives + specialty chem</td><td class="a">₹326 Cr</td><td>~₹80–100 Cr</td><td>~₹12–15 Cr</td><td class="g">4.62% (new)</td><td><span class="badge bb">New position</span></td><td><span class="badge ba">WATCHLIST</span></td></tr>
+    <tr><td><strong>Megatherm Induction</strong></td><td>Induction furnaces for steel/forging</td><td class="a">₹402 Cr</td><td>~₹80–100 Cr</td><td>~₹10–12 Cr</td><td class="a">1.7% (small)</td><td><span class="badge bb">Small position</span></td><td><span class="badge ba">WATCHLIST</span></td></tr>
+    <tr><td><strong>Vasa Denticity</strong></td><td>Dental products distribution</td><td class="a">₹480 Cr</td><td>~₹120 Cr</td><td>~₹15 Cr</td><td class="a">3.5% (trimming)</td><td><span class="badge ba">Reducing</span></td><td><span class="badge bgray">SKIP — distribution biz</span></td></tr>
+    <tr><td><strong>Naman Industries Proxima</strong></td><td>ZLD / effluent treatment EPC</td><td class="g">₹65 Cr</td><td class="g">₹158 Cr</td><td class="r">₹1.8 Cr</td><td class="g">8.3% (high!)</td><td><span class="badge bb">High stake</span></td><td><span class="badge ba">HIGH RISK watchlist</span></td></tr>
+    <tr><td><strong>TBI Corn</strong></td><td>Corn milling / agri processing</td><td class="g">₹131 Cr</td><td>~₹80 Cr</td><td>~₹5 Cr</td><td class="a">4.2%</td><td><span class="badge bb">Small position</span></td><td><span class="badge br">SKIP — commodity</span></td></tr>
+    <tr><td><strong>Adcounty Media</strong></td><td>Outdoor/transit advertising</td><td class="a">~₹200 Cr</td><td>~₹50 Cr</td><td>~₹5 Cr</td><td class="g">2.89% (new)</td><td><span class="badge bb">Fresh entry</span></td><td><span class="badge bgray">SKIP — ad-cyclical</span></td></tr>
+    <tr><td><strong>SG Finserve</strong></td><td>Supply chain NBFC financing</td><td class="a">~₹300 Cr</td><td>~₹60 Cr</td><td>~₹12 Cr</td><td class="g">2.37% ↑ (increasing)</td><td><span class="badge bg">Increasing stake</span></td><td><span class="badge ba">Similar to EMFL — monitor</span></td></tr>
+    <tr><td><strong>Radiowalla Network</strong></td><td>Digital audio advertising</td><td class="a">~₹150 Cr</td><td>~₹20–30 Cr</td><td>Marginal</td><td class="r">3.24% ↓ (exiting!)</td><td><span class="badge br">Reducing fast (-4.54%)</span></td><td><span class="badge br">DO NOT BUY — he's selling</span></td></tr>
+    <tr style="background:#fff5f5"><td><strong>BEW Engineering 🔴</strong></td><td>Filtration/drying equipment pharma</td><td class="g">₹98 Cr</td><td class="g">₹170 Cr</td><td class="a">₹12.4 Cr</td><td class="r">Exiting! -52% 1yr</td><td><span class="badge br">Near full exit</span></td><td><span class="badge br">DO NOT BUY — he's leaving</span></td></tr>
+    <tr><td><strong>DU Digital Global</strong></td><td>Digital services / visa solutions</td><td>~₹250 Cr</td><td>~₹100 Cr</td><td>~₹15 Cr</td><td>~2%</td><td><span class="badge bb">Small</span></td><td><span class="badge bgray">SKIP — cyclical services</span></td></tr>
+    <tr><td><strong>Shree OSFM E-Mobility</strong></td><td>EV charging infrastructure</td><td>~₹200 Cr</td><td>~₹30–50 Cr</td><td>Marginal</td><td>~2%</td><td><span class="badge bb">Small</span></td><td><span class="badge bgray">SKIP — EV infra very early</span></td></tr>
+    <tr><td><strong>Z-Tech India</strong></td><td>Precision engineering / industrial</td><td>~₹150 Cr</td><td>~₹40 Cr</td><td>~₹5 Cr</td><td>~3.7%</td><td><span class="badge bb">Small</span></td><td><span class="badge bgray">SKIP — insufficient data</span></td></tr>
+  </table>
+</div>
+
+<!-- C2C ADVANCED DEEP DIVE -->
+<div id="c2c" class="panel">
+  <div class="sh">C2C Advanced Systems — India's emerging defence AI + C4ISR + anti-drone company</div>
+
+  <div class="stock-card">
+    <div class="sc-hdr">
+      <div>
+        <div class="sc-nm">C2C Advanced Systems Ltd (NSE: C2C)</div>
+        <div class="sc-sub">Defence C4ISR + Anti-drone + AI analytics + Industry 4.0 · Founded 2018 · Pune · Kacholia 3.9% stake (₹43.9 Cr) · NSE main board</div>
+      </div>
+      <span class="badge bg">⭐⭐ HIDDEN GEM — Best sub-₹800 Cr Kacholia pick for Garvit</span>
+    </div>
+    <div class="sc-meta">
+      <div><div class="sm-v" style="color:#854F0B">₹768 Cr</div><div class="sm-l">Market cap</div></div>
+      <div><div class="sm-v" style="color:#1D9E75">₹138 Cr</div><div class="sm-l">Revenue TTM</div></div>
+      <div><div class="sm-v" style="color:#1D9E75">₹42.8 Cr</div><div class="sm-l">PAT TTM</div></div>
+      <div><div class="sm-v" style="color:#1D9E75">31.0%</div><div class="sm-l">PAT margin</div></div>
+      <div><div class="sm-v" style="color:#1D9E75">+279%</div><div class="sm-l">Revenue CAGR (2yr!)</div></div>
+    </div>
+    <div class="sc-meta" style="border-top:none">
+      <div><div class="sm-v" style="color:#1D9E75">+140%</div><div class="sm-l">H1 FY26 PAT growth</div></div>
+      <div><div class="sm-v">26.2%</div><div class="sm-l">ROCE</div></div>
+      <div><div class="sm-v">21.0%</div><div class="sm-l">ROE</div></div>
+      <div><div class="sm-v" style="color:#A32D2D">0.22x</div><div class="sm-l">D/E (low)</div></div>
+      <div><div class="sm-v" style="color:#A32D2D">37%</div><div class="sm-l">Promoter (declining ⚠)</div></div>
+    </div>
+    <div class="sc-body">
+    <strong>What C2C Advanced Systems does — India's "digital brain" for defence and industry:</strong><br>
+    Two core business lines: (1) <strong>Defence C4ISR (Command, Control, Communications, Computers, Intelligence, Surveillance, Reconnaissance):</strong> Builds the digital backbone of modern warfare — MAGI C4ISR architecture, naval C4I mission systems, UAV/drone control platforms, AI-driven battlefield analytics, anti-drone (C-UAS) systems, and multi-sensor data fusion. Key clients: Tata Advanced Systems, Indian Navy, defence PSUs. (2) <strong>Industry 4.0 / IoT analytics:</strong> Factory automation, predictive maintenance, smart city sensor networks in Malaysia, UAE, Canada. Industrial digitization that cross-subsidizes defence R&D.<br><br>
+    <strong>The numbers that matter most:</strong><br>
+    • Revenue CAGR of 279% over 2 years — from near-zero to ₹138 Cr. This is extraordinary.<br>
+    • H1 FY26: Revenue +53% YoY (₹66 Cr vs ₹43 Cr H1 FY25), PAT +140% YoY (₹24 Cr vs ₹10 Cr) — ACCELERATING not decelerating<br>
+    • PAT margin 31% — at ₹768 Cr mcap this is genuinely excellent<br>
+    • Won ₹41.7 Cr Canadian naval frigate modernisation contract (C2C's proprietary MAGI system compatible with NATO sensor networks — extraordinary validation)<br>
+    • Anti-drone purchase order from Indian Armed Forces (C-UAS systems, Ethernet switches, GPS modules)<br>
+    • Kacholia raised stake from 2.59% → 3.90% — he's BUYING MORE even as it's already run up<br><br>
+    <strong>The Operation Sindoor direct link:</strong> India's experience with drone threats during Operation Sindoor has created emergency urgency for C-UAS systems. India's military now understands the existential threat of low-cost drone swarms — exactly what C2C's counter-drone platform addresses. With the C-UAS global market growing at 25.1% CAGR ($6.64B → $20.31B by 2030), and India's emergency procurement mode, C2C's order pipeline should see significant acceleration in FY27.
+    </div>
+    <div class="sc-verdict" style="background:#E1F5EE">
+      <span class="badge bg">⭐⭐ RECOMMENDED — ₹15,000–20,000 speculative position</span>
+      <span style="font-size:12px;color:#0F6E56">After funding all priority positions (RPSG, Muthoot, DEE Dev). Post-Sindoor defence acceleration makes this the single most relevant Kacholia micro-cap for FY27.</span>
+    </div>
+  </div>
+
+  <div class="sh">Revenue trajectory — the 279% CAGR is real</div>
+  <table>
+    <tr><th>Period</th><th>Revenue</th><th>Growth</th><th>PAT</th><th>PAT%</th><th>Key milestone</th></tr>
+    <tr><td>FY23</td><td>~₹20 Cr</td><td>—</td><td>~₹2 Cr</td><td class="a">~10%</td><td>Early stage. Defence C4ISR projects beginning with Tata Advanced Systems.</td></tr>
+    <tr><td>FY24</td><td>~₹55–60 Cr</td><td class="g">+175–200%</td><td>~₹12 Cr</td><td class="g">~20%</td><td>Revenue acceleration. Naval contracts growing. Industry 4.0 Malaysia expanding. IPO preparation.</td></tr>
+    <tr><td>FY25</td><td>~₹90–100 Cr</td><td class="g">~+65%</td><td>~₹25–30 Cr</td><td class="g">~28%</td><td>NSE main board listing. Anti-drone order from Armed Forces. PAT margins expanding. Kacholia enters at 2.59%.</td></tr>
+    <tr><td>H1 FY26</td><td>₹66 Cr</td><td class="g">+53% YoY</td><td>₹24 Cr</td><td class="g">36.4%</td><td>Canadian naval contract ₹41.7 Cr. PAT +140% YoY. MAGI C4ISR validated on NATO systems.</td></tr>
+    <tr><td>FY26E</td><td>~₹125–145 Cr</td><td class="g">~+35–55%</td><td>~₹40–48 Cr</td><td class="g">~32%</td><td>Full year FY26. Kacholia raised to 3.90%. Anti-drone pipeline growing. Operating leverage on fixed cost base.</td></tr>
+    <tr><td>FY27E</td><td>~₹180–250 Cr</td><td class="g">~+40–70%</td><td>~₹60–90 Cr</td><td class="g">~35%</td><td>Operation Sindoor procurement acceleration. Canadian contract execution. Navy C4ISR scaling. Industry 4.0 international expansion.</td></tr>
+    <tr><td>FY28E</td><td>~₹300–450 Cr</td><td class="g">~+50–80%</td><td>~₹100–160 Cr</td><td class="g">~35%</td><td>3x from ₹138 Cr is achievable. If PAT ₹130 Cr at 18x PE = ₹2,340 Cr mcap = 3x from ₹768 Cr!</td></tr>
+  </table>
+
+  <div class="sh">The 3x scenario from ₹768 Cr — realistic in 3 years?</div>
+  <div class="warn success"><strong>The 3x math here actually WORKS:</strong> 3x from ₹768 Cr = ₹2,304 Cr. At 18x PE (conservative for defence tech): needs PAT of ₹128 Cr. FY26E PAT: ~₹44 Cr. Needs 2.9x PAT growth. Given 140% H1 PAT growth, 36% PAT margin, and post-Sindoor acceleration — getting from ₹44 Cr to ₹128 Cr in 2–3 years is genuinely achievable. That's 43% annual PAT growth for 3 years — below the current trajectory. This is the most credible sub-₹800 Cr 3x case in Kacholia's entire portfolio.</div>
+
+  <div class="scenario-grid">
+    <div class="sg2" style="border-left:3px solid #1D9E75">
+      <div class="sg2-h" style="color:#0F6E56">Bull: 4–5x in 3 years</div>
+      <div class="sg2-v">₹3,072–3,840 Cr</div>
+      <div class="sg2-s">FY28 PAT ₹160 Cr at 20x PE = ₹3,200 Cr. Defence procurement surge. MAGI export wins. Anti-drone scaling. Probability: 20–25%</div>
+    </div>
+    <div class="sg2" style="border-left:3px solid #378ADD">
+      <div class="sg2-h" style="color:#185FA5">Base: 2.5–3x in 3 years</div>
+      <div class="sg2-v">₹1,920–2,304 Cr</div>
+      <div class="sg2-s">FY28 PAT ₹110 Cr at 18x PE = ₹1,980 Cr = 2.6x. Organic execution. Canadian + Navy contracts. Probability: 35–40%</div>
+    </div>
+    <div class="sg2" style="border-left:3px solid #A32D2D">
+      <div class="sg2-h" style="color:#A32D2D">Bear: -30 to -50%</div>
+      <div class="sg2-v">₹384–538 Cr</div>
+      <div class="sg2-s">Government delays. Promoter continues declining (from 37%). Lumpiness in defence orders. PAT stagnates. Probability: 30–35%</div>
+    </div>
+  </div>
+
+  <div class="sh">The one serious risk — promoter declining stake</div>
+  <div class="warn danger"><strong>🚨 Promoter holding DECLINED -4.31% in the last quarter (from ~41% to 37%).</strong> This is a yellow flag. The promoter selling while Kacholia is buying could mean: (a) Promoter is diversifying personal wealth (common after rapid stock appreciation), or (b) Promoter is losing conviction in the business. At 37%, if promoter falls below 35%, it becomes a significant governance concern. This needs to be monitored every quarter. If promoter crosses back above 40% (buying), it's a strong positive signal. Keep position small (₹15–20K max) specifically because of this risk.</div>
+</div>
+
+<!-- TECHERA -->
+<div id="techera" class="panel">
+  <div class="sh">TechEra Engineering (India) — precision tooling for India's aerospace &amp; defence</div>
+
+  <div class="stock-card">
+    <div class="sc-hdr">
+      <div>
+        <div class="sc-nm">TechEra Engineering (India) Ltd (NSE SME: TECHERA)</div>
+        <div class="sc-sub">Aerospace precision tooling · Wing/fuselage jigs · MRO equipment · LCA Tejas + HAL supplier · Founded 2018 · Pune · Listed Oct 2024 · Kacholia 6.23%+ and increasing</div>
+      </div>
+      <span class="badge bb">⭐ GEM #2 — Tiny position only ₹10,000 max</span>
+    </div>
+    <div class="sc-meta">
+      <div><div class="sm-v" style="color:#854F0B">₹341 Cr</div><div class="sm-l">Market cap</div></div>
+      <div><div class="sm-v" style="color:#1D9E75">~₹55 Cr</div><div class="sm-l">FY26E Revenue</div></div>
+      <div><div class="sm-v" style="color:#1D9E75">~₹8–10 Cr</div><div class="sm-l">FY26E PAT</div></div>
+      <div><div class="sm-v">18–23%</div><div class="sm-l">EBITDA margin</div></div>
+      <div><div class="sm-v" style="color:#1D9E75">+36.85%</div><div class="sm-l">Revenue CAGR (2yr)</div></div>
+    </div>
+    <div class="sc-meta" style="border-top:none">
+      <div><div class="sm-v">+30–40%</div><div class="sm-l">FY26 guidance</div></div>
+      <div><div class="sm-v" style="color:#1D9E75">13%</div><div class="sm-l">ROCE</div></div>
+      <div><div class="sm-v" style="color:#A32D2D">36.89%</div><div class="sm-l">Promoter holding (low)</div></div>
+      <div><div class="sm-v" style="color:#A32D2D">₹40 Cr</div><div class="sm-l">Order book only</div></div>
+      <div><div class="sm-v" style="color:#1D9E75">88.77x</div><div class="sm-l">PE (very expensive)</div></div>
+    </div>
+    <div class="sc-body">
+    <strong>What TechEra does:</strong> India's niche precision tooling specialist for aerospace and defence. Manufactures: assembly toolings, jigs, fixtures (wing layup tools, fuselage jig systems for LCA Tejas, fighter jets, helicopters), MRO (Maintenance, Repair, Overhaul) equipment for airports and air force bases, ground support equipment for aircraft, and precision machined "flying parts" (structural components that actually go on the aircraft). Certified to ISO 9001:2015 and AS9100D:2018 (the aerospace quality gold standard).<br><br>
+    <strong>Why it's a niche no one has entered:</strong> Aerospace tooling is NOT normal manufacturing. A wing skin layup tool for a fighter jet requires micron-level tolerance, aerospace-grade materials, and years-long certification relationships with the OEM (HAL, Safran, Boeing). TechEra took 6 years to get to AS9100D certification. Competitors cannot enter overnight — this is a genuine barrier that makes TechEra's niche much more defensible than it appears.<br><br>
+    <strong>Post-Sindoor specific catalyst:</strong> India is accelerating Tejas Mk2, AMCA, ALH helicopter production. Each additional aircraft requires tooling — assembly jigs, fixtures, test equipment. TechEra is already qualified as a supplier for these programmes. If production rates accelerate (which they will post-Sindoor), TechEra's revenue scales automatically without needing new customer wins.<br><br>
+    <strong>The honest concern:</strong> At ₹341 Cr mcap and ~₹55 Cr revenue, the PE is ~88x. This is very expensive for a company growing at 30–40% annually. Kacholia's cost was ₹82 (IPO price) → now ₹189. He's already 2.3x from his entry. For Garvit entering at ₹189, the re-rating multiple compression risk is real. And the order book of ₹40 Cr is barely 3/4 of one year's revenue — not the reassuring multi-year visibility of Bondada Engineering.
+    </div>
+    <div class="sc-verdict" style="background:#E3F2FD">
+      <span class="badge bb">⭐ BUY TINY — ₹10,000 maximum</span>
+      <span style="font-size:12px;color:#185FA5">Speculative lottery ticket on India's defence aerospace tooling. High PE, small order book, low promoter (36%). Keep position tiny — it's about optionality on aerospace acceleration, not a core conviction bet.</span>
+    </div>
+  </div>
+
+  <div class="sh">Scenario analysis — from ₹341 Cr</div>
+  <div class="scenario-grid">
+    <div class="sg2" style="border-left:3px solid #1D9E75">
+      <div class="sg2-h" style="color:#0F6E56">Bull: 4–6x in 3 years</div>
+      <div class="sg2-v">₹1,364–2,046 Cr</div>
+      <div class="sg2-s">FY28 Revenue ₹200 Cr, PAT ₹45 Cr at 40x PE = ₹1,800 Cr = 5.3x. Tejas MK2 contract + export tooling + GE Aerospace MRO. Probability: 15–20%</div>
+    </div>
+    <div class="sg2" style="border-left:3px solid #378ADD">
+      <div class="sg2-h" style="color:#185FA5">Base: 2–3x in 3 years</div>
+      <div class="sg2-v">₹682–1,023 Cr</div>
+      <div class="sg2-s">FY28 PAT ₹25 Cr at 35x PE = ₹875 Cr = 2.6x. Steady 30% growth, PE moderates. Probability: 30–35%</div>
+    </div>
+    <div class="sg2" style="border-left:3px solid #A32D2D">
+      <div class="sg2-h" style="color:#A32D2D">Bear: -40% to -60%</div>
+      <div class="sg2-v">₹136–205 Cr</div>
+      <div class="sg2-s">Order growth slows. Defence procurement delayed. 88x PE collapses to 25x. Probability: 35–40% (real risk at this valuation)</div>
+    </div>
+  </div>
+</div>
+
+<!-- OTHERS -->
+<div id="others" class="panel">
+  <div class="sh">All remaining sub-₹500 Cr holdings — analyzed and rated</div>
+
+  <div class="heat-box heat-amber">
+    <div class="heat-h" style="color:#854F0B">Infinium Pharmachem (₹326 Cr mcap) — WATCHLIST</div>
+    <div class="heat-b">
+    <strong>What it does:</strong> Manufactures high-purity iodine derivatives (potassium iodide, sodium iodate), specialty APIs, and specialty chemicals for pharma, nutrition, and agrochemicals. Exports to global markets from Gujarat. Very niche — iodine chemistry is specialized. Kacholia took a fresh 4.62% stake (new entry = fresh conviction).<br><br>
+    <strong>Why interesting:</strong> India is the world's 2nd largest iodine consumer and a growing iodine derivative producer. Global pharma supply chains are diversifying from China (China+1). Iodine derivatives have pharmaceutical, nutritional (salt iodization), and industrial applications — multi-vertical demand growth. IPO listing came with Kacholia as an anchor investor (rare — he usually buys post-IPO in secondary market). ₹326 Cr mcap with growing specialty chemical revenue = room for 3–4x if earnings compound at 25%+ for 3 years.<br><br>
+    <strong>Why watchlist not buy:</strong> Revenue of ~₹80–100 Cr at ₹326 Cr mcap = 3–4x P/S, which is reasonable but not cheap. PAT margins for specialty chemicals companies are 12–18% — so PAT might be ₹12–18 Cr. At ₹326 Cr mcap and ₹15 Cr PAT = 22x PE. That's fair, not a bargain. Wait for FY26 full year results to validate revenue and margin trajectory before committing ₹10–15K.
+    </div>
+  </div>
+
+  <div class="heat-box heat-amber">
+    <div class="heat-h" style="color:#854F0B">Megatherm Induction (₹402 Cr mcap) — WATCHLIST</div>
+    <div class="heat-b">
+    <strong>What it does:</strong> Manufactures induction melting furnaces, induction heating systems, hardening machines, and turnkey heat treatment solutions for steel foundries, forging companies, and heat treatment industries globally. Exports to 40+ countries.<br><br>
+    <strong>Why it fits Kacholia's thesis:</strong> India's forging and foundry sector is booming (defence, auto, railways). Megatherm's furnaces are the essential equipment that Balu Forge-type companies use. Every new forging capacity addition = Megatherm order. The Make-in-India/PLI manufacturing wave creates structural demand for the equipment that enables manufacturing. Global footprint (40+ countries) + emerging domestic demand = dual-engine growth story.<br><br>
+    <strong>Why watchlist not buy for Garvit:</strong> Kacholia only holds 1.7% — his lowest conviction stake. At ₹402 Cr mcap with limited information on revenue and margin trajectory, and given Garvit's portfolio already has sufficient capital goods exposure (Bondada, TARIL, DEE Dev, Enviro Infra), adding another capital equipment manufacturer doesn't improve sector diversity.
+    </div>
+  </div>
+
+  <div class="heat-box heat-amber">
+    <div class="heat-h" style="color:#854F0B">Naman Industries Proxima (₹65 Cr mcap) — HIGH-RISK WATCHLIST</div>
+    <div class="heat-b">
+    <strong>What it does:</strong> EPC solutions for Zero Liquid Discharge (ZLD), multi-effect evaporators, effluent treatment, and crystallization systems for chemical, pharma, textile, and food processing industries. Also makes bulk drug equipment (ANFD, roto cone vacuum dryers).<br><br>
+    <strong>Why Kacholia holds 8.3% (very high!):</strong> ZLD is becoming mandatory across Indian industries under the National Green Tribunal (NGT) and CPCB guidelines. Every chemical plant, pharmaceutical plant, and textile plant must implement ZLD by regulatory deadline — creating captive demand. Naman Industries is an EPC company for ZLD systems — essentially building the "wastewater treatment plants" that factories MUST install. Demand is regulatory, not discretionary.<br><br>
+    <strong>The brutal problem:</strong> Revenue ₹158 Cr but PAT only ₹1.8 Cr = PAT margin 1.1%. This is an EPC business with terrible margins. The company has low interest coverage ratio (per screener.in). At ₹65 Cr mcap = 0.4x P/S (extremely cheap) — but ₹1.8 Cr PAT at ₹65 Cr mcap = 36x PE on tiny earnings. Something is wrong with the economics. The 8.3% Kacholia stake suggests he believes the margin problem is temporary (perhaps a large EPC project with upfront costs depressing current margins). If margins improve to 5–8%, PAT could jump to ₹8–12 Cr → 5–8x earnings growth from base. But this is extremely speculative.
+    </div>
+  </div>
+
+  <div class="heat-box heat-red">
+    <div class="heat-h" style="color:#A32D2D">BEW Engineering (₹98 Cr mcap) — DO NOT BUY — Kacholia exiting</div>
+    <div class="heat-b">
+    <strong>The signal is clear:</strong> BEW Engineering manufactures filtration, mixing, and drying equipment for pharmaceutical and chemical industries. Kacholia held 4.85% in Sep 2025, now reportedly near exit (per March 2026 disclosures). Stock is down 52% in 1 year. The core problem: Revenue grew +70% in H1 FY26 (to ₹87 Cr) BUT PAT only grew 3% (₹6.2 Cr vs ₹6 Cr). Revenue growing but profit not = margin collapse. When Kacholia exits a position, the stock often falls 30–40% as his block sale creates selling pressure. This is the exact opposite of "buying before Kacholia enters" — here he's leaving.
+    </div>
+  </div>
+
+  <div class="heat-box heat-red">
+    <div class="heat-h" style="color:#A32D2D">Radiowalla Network — DO NOT BUY — Kacholia reducing from 7.78% to 3.24%</div>
+    <div class="heat-b">
+    Kacholia reduced stake by 4.54% in one quarter — one of his largest stake reductions. Digital audio advertising is a niche market with limited scale. The reduction is a clear exit signal. Never buy into a stock where a major shareholder (Kacholia) is reducing rapidly — the selling pressure alone can crater an illiquid micro-cap.
+    </div>
+  </div>
+
+  <div class="heat-box heat-amber">
+    <div class="heat-h" style="color:#854F0B">SG Finserve (₹300 Cr mcap) — SIMILAR TO EMERALD FINANCE, WATCHLIST</div>
+    <div class="heat-b">
+    SG Finserve is an NBFC specializing in supply-chain financing for distributors and dealers of large Indian conglomerates. Kacholia increased stake from 1.14% to 2.37% in Q4 FY26 — meaningful conviction increase. The supply-chain financing space (also called "channel finance") is growing rapidly as large companies prefer their dealers to use specialized NBFCs. Garvit already holds Emerald Finance (similar NBFC micro-cap concept). SG Finserve is similar in concept but with a supply-chain angle. If Emerald Finance's May 6 results disappoint, SG Finserve could be the alternative NBFC micro-cap position to consider.
+    </div>
+  </div>
+</div>
+
+<!-- RANKING -->
+<div id="ranking" class="panel">
+  <div class="sh">Final ranking of all Kacholia sub-₹800 Cr holdings — for Garvit's 3x filter</div>
+
+  <div class="ranking-row" style="background:#E1F5EE">
+    <div class="rank-num" style="color:#1D9E75">1</div>
+    <div class="rank-info">
+      <div class="rank-nm">C2C Advanced Systems (₹768 Cr) ⭐⭐</div>
+      <div class="rank-desc">Defence AI + C4ISR + Anti-drone · 279% CAGR · PAT ₹42.8 Cr growing fast · Kacholia buying more · Canadian naval contract · Post-Sindoor emergency procurement direct beneficiary</div>
+    </div>
+    <div class="rank-score g">8.2/10</div>
+  </div>
+  <div class="ranking-row">
+    <div class="rank-num" style="color:#185FA5">2</div>
+    <div class="rank-info">
+      <div class="rank-nm">TechEra Engineering (₹341 Cr) ⭐</div>
+      <div class="rank-desc">Aerospace precision tooling · Tejas MK2 + HAL supplier · 30–40% guidance · Kacholia 6.23%+ increasing · AS9100D certified · Very expensive at 88x PE</div>
+    </div>
+    <div class="rank-score b">6.8/10</div>
+  </div>
+  <div class="ranking-row">
+    <div class="rank-num" style="color:#854F0B">3</div>
+    <div class="rank-info">
+      <div class="rank-nm">Infinium Pharmachem (₹326 Cr)</div>
+      <div class="rank-desc">Iodine derivatives + specialty APIs · China+1 beneficiary · Kacholia fresh 4.62% entry · Reasonable valuation · Need FY26 results for confidence</div>
+    </div>
+    <div class="rank-score a">6.0/10</div>
+  </div>
+  <div class="ranking-row">
+    <div class="rank-num" style="color:#854F0B">4</div>
+    <div class="rank-info">
+      <div class="rank-nm">Megatherm Induction (₹402 Cr)</div>
+      <div class="rank-desc">Induction furnaces for forging/steel · Make-in-India enabler · 40+ country exports · Only 1.7% Kacholia (low conviction)</div>
+    </div>
+    <div class="rank-score a">5.5/10</div>
+  </div>
+  <div class="ranking-row">
+    <div class="rank-num" style="color:#854F0B">5</div>
+    <div class="rank-info">
+      <div class="rank-nm">Naman Industries Proxima (₹65 Cr)</div>
+      <div class="rank-desc">ZLD/effluent treatment EPC · Regulatory mandate driver · Kacholia 8.3% (very high) · Revenue ₹158 Cr but PAT only ₹1.8 Cr · Ultra-thin margins are the key risk</div>
+    </div>
+    <div class="rank-score a">5.0/10</div>
+  </div>
+  <div class="ranking-row">
+    <div class="rank-num" style="color:#854F0B">6</div>
+    <div class="rank-info">
+      <div class="rank-nm">SG Finserve (₹300 Cr)</div>
+      <div class="rank-desc">Supply chain NBFC · Kacholia increasing stake · Similar to Emerald Finance · Only consider if EMFL May 6 results disappoint</div>
+    </div>
+    <div class="rank-score a">5.0/10</div>
+  </div>
+  <div class="ranking-row" style="background:#FFF5F5">
+    <div class="rank-num" style="color:#A32D2D">7</div>
+    <div class="rank-info">
+      <div class="rank-nm">BEW Engineering (₹98 Cr) ❌</div>
+      <div class="rank-desc">Kacholia EXITING · Stock -52% in 1yr · Revenue growing but profits stagnant · This is a trap</div>
+    </div>
+    <div class="rank-score r">2.0/10</div>
+  </div>
+  <div class="ranking-row" style="background:#FFF5F5">
+    <div class="rank-num" style="color:#A32D2D">8</div>
+    <div class="rank-info">
+      <div class="rank-nm">Radiowalla Network ❌</div>
+      <div class="rank-desc">Kacholia reducing stake massively (7.78%→3.24%) · Digital audio niche · No clear moat · He's leaving</div>
+    </div>
+    <div class="rank-score r">1.5/10</div>
+  </div>
+
+  <div class="sh">Garvit's priority filter applied — final answer</div>
+  <div class="warn def"><strong>The definitive lesson from scanning ALL Kacholia sub-₹800 Cr holdings:</strong><br>
+  There are exactly TWO stocks worth Garvit's attention: C2C Advanced Systems (#1) and TechEra Engineering (#2). Both are defence/aerospace technology companies. Both are directly catalysed by Operation Sindoor. Both have Kacholia INCREASING his stake (the most powerful signal). All other micro-caps either have Kacholia exiting/reducing (BEW, Radiowalla = clear avoids), or are in sectors Garvit is already exposed to (Naman = similar to Enviro Infra, SG Finserve = similar to EMFL), or don't have enough revenue traction yet (Adcounty, Shree OSFM, Z-Tech). The two defence-tech gems are real. They are small. They are risky. But they are genuinely Kacholia-validated, post-Sindoor catalysed, and appropriately small for 3–5x potential.</div>
+</div>
+
+<!-- ACTION PLAN -->
+<div id="action" class="panel">
+  <div class="sh">Garvit's specific micro-cap action plan — the final word</div>
+
+  <div class="warn gem"><strong>IMPORTANT CONTEXT:</strong> These are speculative micro/small cap positions. They should collectively represent no more than 5–8% of Garvit's total portfolio (₹15,000–40,000 combined). Core positions (Bondada, Websol, EFC, DEE, Borana) remain the 3x portfolio spine. C2C and TechEra are optional "lottery tickets" on India's defence tech acceleration — high upside, real downside, small sizing is mandatory.</div>
+
+  <table>
+    <tr><th>Action</th><th>Stock</th><th>Amount</th><th>When</th><th>Rationale</th></tr>
+    <tr><td><span class="badge bg">BUY — small speculative</span></td><td>C2C Advanced Systems (C2C)</td><td>₹15,000–20,000</td><td>This week — don't wait (post-Sindoor urgency)</td><td>✅ 8.2/10 quality. 279% revenue CAGR. PAT ₹42.8 Cr at ₹768 Cr mcap = 18x PE (reasonable!). Defence C4ISR + anti-drone = DIRECT Operation Sindoor beneficiary. Kacholia increasing stake. Canadian naval contract validated globally. 3x possible by FY28 if growth continues. Fund from Nurture Well trim proceeds (partially).</td></tr>
+    <tr><td><span class="badge bb">BUY — tiny lottery ticket</span></td><td>TechEra Engineering (TECHERA)</td><td>₹8,000–10,000</td><td>After Balu Forge May 12 results confirmation</td><td>⭐ 6.8/10. Aerospace precision tooling for Tejas MK2. Kacholia increasing stake. Post-Sindoor aerospace acceleration. Very expensive (88x PE) but the market may re-rate higher. Keep tiny — if it works, the small position can still double. If it doesn't, loss is limited.</td></tr>
+    <tr><td><span class="badge bgray">WATCHLIST</span></td><td>Infinium Pharmachem</td><td>₹0 now → ₹10K if FY26 confirms</td><td>Post FY26 full year results</td><td>Kacholia's fresh 4.62% entry is a conviction signal. Iodine derivatives + China+1 = relevant thesis. But need revenue and margin visibility before committing. Set FY26 results as trigger.</td></tr>
+    <tr><td><span class="badge bgray">WATCHLIST — conditional</span></td><td>SG Finserve</td><td>₹0 now → only if EMFL disappoints</td><td>Post Emerald Finance May 6 results</td><td>If Emerald Finance FY26 results disappoint → consider SG Finserve as the NBFC micro-cap replacement. Kacholia increasing stake here is similar conviction level to what drove EMFL interest.</td></tr>
+    <tr><td><span class="badge br">DO NOT BUY</span></td><td>BEW Engineering + Radiowalla</td><td>₹0</td><td>Forever</td><td>Kacholia is EXITING both. When he sells illiquid micro-caps, the price can fall 30–40% in days. Being on the wrong side of a Kacholia exit in micro-caps is dangerous.</td></tr>
+    <tr><td><span class="badge br">SKIP</span></td><td>TBI Corn, Adcounty, Shree OSFM, Z-Tech</td><td>₹0</td><td>—</td><td>Commodity agriculture (TBI Corn), advertising cyclical (Adcounty), EV infrastructure very early (OSFM), insufficient data (Z-Tech). None pass the 3x filter at current information levels.</td></tr>
+  </table>
+
+  <div class="sh">How these micro-caps fit in Garvit's complete portfolio structure</div>
+  <table>
+    <tr><th>Tier</th><th>Holdings</th><th>Total allocation</th><th>Conviction</th><th>Role</th></tr>
+    <tr style="background:#E1F5EE"><td>TIER 1 — Core</td><td>Bondada + Websol + DEE Dev</td><td>~₹4.25L</td><td>9.0–9.1/10</td><td>Primary 3x engines. Maximum allocation. Never reduce unless thesis breaks.</td></tr>
+    <tr><td>TIER 2 — Strong</td><td>EFC (I) + Borana + Vintage Coffee + RPSG (add)</td><td>~₹3.4L</td><td>7.5–8.5/10</td><td>Compounders at reasonable valuation. Hold firmly.</td></tr>
+    <tr><td>TIER 3 — Spec</td><td>Oriana + Zaggle + Sky Gold + Anant Raj + Enviro + TARIL + Genus</td><td>~₹5.2L</td><td>5.5–6.5/10</td><td>Thesis-driven speculative positions. Monitor quarterly.</td></tr>
+    <tr><td>TIER 4 — Recovery</td><td>Muthoot Microfin (add) + RBM Infra + EPACK + Emerald Finance + Northern Spirits</td><td>~₹2.9L</td><td>5.0–6.0/10</td><td>Recovery plays or small satellites. Keep small.</td></tr>
+    <tr style="background:#E8EAF6"><td>TIER 5 — Micro-cap lottery</td><td>C2C Advanced (₹18K) + TechEra (₹9K) + Balu Forge (₹22K)</td><td>~₹49K</td><td>6.5–8.2/10</td><td>Small speculative bets on Kacholia-validated hidden gems. Post-Sindoor defence acceleration upside. 2.5% of portfolio max.</td></tr>
+    <tr style="background:#FFF5F5"><td>EXIT PENDING</td><td>Delton + RBZ + Nurture (trim) + KPI Green</td><td>Free ₹1.7L</td><td>1.0–5.0/10</td><td>Exit these to fund Tier 1–5. Every day in Delton is lost compounding.</td></tr>
+  </table>
+
+  <div class="warn success" style="margin-top:12px"><strong>The one-paragraph summary of Kacholia's micro-cap universe for Garvit:</strong> After analyzing all 14+ of Ashish Kacholia's sub-₹800 Cr holdings, two clear hidden gems emerge for Garvit's 3x strategy: C2C Advanced Systems (defence AI + anti-drone, 279% revenue CAGR, post-Sindoor direct beneficiary, Kacholia buying more, 3x possible by FY28) and TechEra Engineering (aerospace precision tooling for Tejas MK2, Kacholia increasing to 6.23%+, expensive but defensible niche). Together they deserve ₹23,000–30,000 in speculative allocation — funded from the long-overdue exit of Delton Cables and RBZ Jewellers. The rest of Kacholia's micro-cap positions are either ones he's exiting (avoid), too early-stage (skip), or duplicative of existing Garvit holdings. Quality over quantity — two gems, not twelve.</div>
+</div>
+
+<script>
+function show(id,btn){
+  document.querySelectorAll('.tab').forEach(t=>t.classList.remove('active'));
+  document.querySelectorAll('.panel').forEach(p=>p.classList.remove('active'));
+  btn.classList.add('active');
+  document.getElementById(id).classList.add('active');
+}
+</script>
+</body>
+</html>

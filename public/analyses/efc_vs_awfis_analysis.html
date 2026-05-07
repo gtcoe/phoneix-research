@@ -1,0 +1,570 @@
+<!DOCTYPE html>
+<html><head><meta charset="utf-8">
+<style>
+*{box-sizing:border-box;margin:0;padding:0}
+body{font-family:system-ui,sans-serif;padding:16px;background:#fff;color:#1a1a1a;font-size:14px}
+h1{font-size:20px;font-weight:500;margin-bottom:3px}
+.sub{font-size:12px;color:#666;margin-bottom:14px}
+.duel{display:grid;grid-template-columns:1fr 1fr;gap:12px;margin-bottom:16px}
+.duel-card{border-radius:10px;padding:14px 16px;border:2px solid}
+.efc-card{border-color:#0F6E56;background:#F0FAF5}
+.awfis-card{border-color:#5E35B1;background:#F5F0FF}
+.duel-label{font-size:10px;font-weight:600;text-transform:uppercase;letter-spacing:.08em;margin-bottom:6px}
+.efc-label{color:#0F6E56}
+.awfis-label{color:#5E35B1}
+.duel-name{font-size:16px;font-weight:600;margin-bottom:4px}
+.duel-sub{font-size:11px;color:#666;line-height:1.5}
+.sg{display:grid;grid-template-columns:repeat(auto-fill,minmax(110px,1fr));gap:8px;margin-bottom:16px}
+.sc{background:#f5f5f3;border-radius:8px;padding:10px 12px}
+.sl{font-size:10px;color:#666;margin-bottom:2px}
+.sv{font-size:17px;font-weight:500}
+.tab-row{display:flex;gap:5px;flex-wrap:wrap;margin-bottom:14px}
+.tab{font-size:11.5px;padding:5px 13px;border-radius:20px;border:1px solid #ddd;background:#fff;cursor:pointer;white-space:nowrap}
+.tab.active{background:#1a1a1a;color:#fff;border-color:#1a1a1a}
+.panel{display:none}.panel.active{display:block}
+.sh{font-size:10.5px;font-weight:500;color:#666;text-transform:uppercase;letter-spacing:.06em;margin:16px 0 7px;padding-bottom:5px;border-bottom:1px solid #eee}
+table{width:100%;border-collapse:collapse;font-size:12px;margin:8px 0}
+th{font-size:10.5px;font-weight:500;color:#666;padding:5px 7px;text-align:left;border-bottom:1px solid #eee;white-space:nowrap}
+td{padding:8px 7px;border-bottom:1px solid #eee;color:#1a1a1a;vertical-align:top}
+tr:last-child td{border-bottom:none}
+tr:hover td{background:#fafaf9}
+.g{color:#0F6E56;font-weight:500}.r{color:#A32D2D;font-weight:500}.a{color:#854F0B;font-weight:500}.b{color:#185FA5;font-weight:500}
+.badge{display:inline-block;font-size:10px;padding:2px 7px;border-radius:10px;white-space:nowrap}
+.bg{background:#E1F5EE;color:#0F6E56}.bb{background:#E6F1FB;color:#185FA5}.ba{background:#FAEEDA;color:#854F0B}.br{background:#FCEBEB;color:#A32D2D}.bgray{background:#f1f0e8;color:#5F5E5A}.befc{background:#E1F5EE;color:#0F6E56}.bawfis{background:#EDE7F6;color:#4527A0}
+.warn{padding:10px 13px;margin:8px 0;border-left:3px solid;font-size:12px;line-height:1.65}
+.warn.efc{background:#E1F5EE;border-color:#0F6E56;color:#04342C}
+.warn.awfis{background:#EDE7F6;border-color:#5E35B1;color:#1A0035}
+.warn.caution{background:#FAEEDA;border-color:#BA7517;color:#412402}
+.warn.danger{background:#FCEBEB;border-color:#A32D2D;color:#712B13}
+.warn.info{background:#E6F1FB;border-color:#185FA5;color:#042C53}
+.warn.verdict{background:#E8F5E9;border-color:#2E7D32;color:#1B3A1E}
+.warn strong{font-weight:500}
+.chart-wrap{position:relative;width:100%;height:240px;margin:8px 0}
+.kpi-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:10px;margin:10px 0}
+.kpi{background:#f5f5f3;border-radius:8px;padding:10px 12px;border-left:3px solid transparent}
+.kpi.efc{border-left-color:#0F6E56}.kpi.awfis{border-left-color:#5E35B1}.kpi.green{border-left-color:#1D9E75}.kpi.amber{border-left-color:#EF9F27}.kpi.red{border-left-color:#A32D2D}
+.kpi-l{font-size:10px;color:#666;margin-bottom:3px}
+.kpi-v{font-size:17px;font-weight:500}
+.kpi-s{font-size:10px;color:#888;margin-top:2px}
+.point{display:flex;gap:9px;align-items:flex-start;padding:9px 0;border-bottom:1px solid #eee;font-size:12px;line-height:1.6;color:#555}
+.point:last-child{border-bottom:none}
+.point strong{color:#1a1a1a;font-weight:500}
+.dot{width:19px;height:19px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:10px;font-weight:500;flex-shrink:0;margin-top:1px}
+.dg{background:#E1F5EE;color:#0F6E56}.dr{background:#FCEBEB;color:#A32D2D}.da{background:#FAEEDA;color:#854F0B}.db{background:#E6F1FB;color:#185FA5}.de{background:#E8F5E9;color:#1B5E20}.dp{background:#EDE7F6;color:#4527A0}
+.two-col{display:grid;grid-template-columns:1fr 1fr;gap:12px}
+.pane{border-radius:10px;padding:13px;border:1.5px solid}
+.pane.efc{border-color:#0F6E56;background:#FAFFF9}
+.pane.awfis{border-color:#7C4DFF;background:#FDFAFF}
+.pane-h{font-size:13px;font-weight:600;margin-bottom:9px}
+.scenario{border:1px solid #ddd;border-radius:10px;padding:13px;margin-bottom:9px}
+.sc-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:7px;margin:9px 0}
+.sc-cell{background:#f5f5f3;border-radius:6px;padding:7px 9px}
+.sc-l{font-size:10px;color:#666}
+.sc-v{font-size:12px;font-weight:500;margin-top:2px}
+.verdict-table{width:100%;border-collapse:collapse;font-size:12px}
+.verdict-table th{font-size:11px;font-weight:600;padding:10px 12px;text-align:left}
+.verdict-table td{padding:10px 12px;border-bottom:1px solid #eee;font-size:12px;vertical-align:top;line-height:1.5}
+.efc-th{background:#E1F5EE;color:#0F6E56}
+.awfis-th{background:#EDE7F6;color:#5E35B1}
+.metric-th{background:#f5f5f3;color:#444}
+.winner-efc{background:#F0FAF5}.winner-awfis{background:#F5F0FF}.draw-cell{background:#FFFDE7}
+.win-badge{font-size:9px;padding:1px 6px;border-radius:8px;margin-left:4px;vertical-align:middle}
+.wb-efc{background:#0F6E56;color:#fff}
+.wb-awfis{background:#5E35B1;color:#fff}
+.wb-draw{background:#F57F17;color:#fff}
+.score-box{border-radius:10px;padding:16px;text-align:center;flex:1}
+.score-num{font-size:36px;font-weight:700;margin-bottom:2px}
+.score-label{font-size:11px;color:#888}
+.score-row{display:flex;gap:10px;margin:10px 0}
+.verdict-final{background:#E8F5E9;border:2px solid #2E7D32;border-radius:12px;padding:16px;margin:10px 0}
+.vf-h{font-size:15px;font-weight:600;color:#1B5E20;margin-bottom:8px}
+.vf-b{font-size:12px;color:#1a1a1a;line-height:1.7}
+.vs-strip{display:flex;align-items:center;gap:0;margin:12px 0;border-radius:8px;overflow:hidden}
+.vs-efc{background:#E1F5EE;padding:10px 16px;font-size:11px;font-weight:600;color:#0F6E56;flex:1;text-align:center}
+.vs-mid{background:#1a1a1a;padding:10px 14px;font-size:12px;font-weight:700;color:#fff;white-space:nowrap}
+.vs-awfis{background:#EDE7F6;padding:10px 16px;font-size:11px;font-weight:600;color:#5E35B1;flex:1;text-align:center}
+.comp-h{display:grid;grid-template-columns:155px repeat(3,1fr);background:#f5f5f3;border-radius:8px 8px 0 0;overflow:hidden}
+.comp-row{display:grid;grid-template-columns:155px repeat(3,1fr);border-bottom:1px solid #eee}
+.comp-row:last-child{border-bottom:none}
+.cc{padding:8px 10px;font-size:11px;border-right:1px solid #eee}
+.cc:last-child{border-right:none}
+.cc-h{font-size:10px;font-weight:500;color:#444;padding:8px 10px;border-right:1px solid #ddd}
+.cc-h:last-child{border-right:none}
+.cc-label{color:#666;font-size:11px}
+.winner-cell{background:#E1F5EE}.mid-cell{background:#FAEEDA}.loser-cell{background:#fff5f5}
+.guid-card{border-radius:10px;padding:12px 14px;margin-bottom:8px}
+.guid-card.efc{background:#E1F5EE;border-left:3px solid #0F6E56}
+.guid-card.awfis{background:#EDE7F6;border-left:3px solid #5E35B1}
+.guid-card.miss{background:#FCEBEB;border-left:3px solid #A32D2D}
+.guid-card.watch{background:#FAEEDA;border-left:3px solid #BA7517}
+.guid-h{font-size:11.5px;font-weight:600;margin-bottom:4px}
+.guid-b{font-size:11.5px;color:#333;line-height:1.6}
+.guid-s{font-size:10px;color:#888;margin-top:4px}
+.occ-row{display:flex;align-items:center;gap:8px;margin:5px 0}
+.or-label{font-size:11px;color:#555;width:200px;flex-shrink:0}
+.or-track{flex:1;background:#f5f5f3;border-radius:4px;height:15px;overflow:hidden}
+.or-fill{height:100%;border-radius:4px;display:flex;align-items:center;padding-left:6px;font-size:9px;font-weight:600;color:#fff}
+.or-val{font-size:11px;font-weight:500;width:100px;text-align:right}
+.portfolio-box{background:#FFFDE7;border:2px solid #F9A825;border-radius:10px;padding:13px;margin:10px 0}
+.pb-h{font-size:13px;font-weight:600;color:#E65100;margin-bottom:6px}
+.pb-b{font-size:12px;color:#333;line-height:1.65}
+</style>
+</head>
+<body>
+
+<h1>EFC (I) Ltd vs Awfis Space Solutions — The Definitive Head-to-Head</h1>
+<div class="sub">Deep-dive analysis for Garvit's portfolio decision · Both are Indian flex-workspace companies · Both are in Garvit's portfolio · Which deserves more capital?</div>
+
+<!-- DUEL INTRO -->
+<div class="duel">
+  <div class="duel-card efc-card">
+    <div class="duel-label efc-label">⭐ EFC (I) Ltd</div>
+    <div class="duel-name">Real Estate-as-a-Service</div>
+    <div class="duel-sub">Leasing + D&B + Furniture · 73K seats · 90 centers · 90%+ occupancy · 11 cities · ₹2,700 Cr mcap · 8.5/10 conviction · Garvit holds 320 shares (₹64,320)</div>
+  </div>
+  <div class="duel-card awfis-card">
+    <div class="duel-label awfis-label">Awfis Space Solutions</div>
+    <div class="duel-name">Flexible Workspace Platform</div>
+    <div class="duel-sub">Co-working + D&B (separating) · 177K seats · 257 centers · 75% occupancy · 80 cities · ₹2,500 Cr mcap · 5.0/10 conviction · Garvit holds 200 shares (₹57,800)</div>
+  </div>
+</div>
+
+<div class="tab-row">
+  <button class="tab active" onclick="show('quick',this)">Quick verdict</button>
+  <button class="tab" onclick="show('revenue',this)">Revenue comparison</button>
+  <button class="tab" onclick="show('kpis',this)">10 KPI showdown</button>
+  <button class="tab" onclick="show('business',this)">Business models</button>
+  <button class="tab" onclick="show('guidance',this)">Guidance track record</button>
+  <button class="tab" onclick="show('risks',this)">Risks side-by-side</button>
+  <button class="tab" onclick="show('scenarios',this)">3x scenarios</button>
+  <button class="tab" onclick="show('sector',this)">Sector peers</button>
+  <button class="tab" onclick="show('portfolio',this)">Portfolio action</button>
+  <button class="tab" onclick="show('verdict',this)">⭐ Final verdict</button>
+</div>
+
+<!-- QUICK VERDICT -->
+<div id="quick" class="panel active">
+  <div class="sh">The one-page answer — read this first</div>
+
+  <div class="vs-strip">
+    <div class="vs-efc">EFC (I) — 8.5/10 conviction<br>PAT margin 23% · Occupancy 90%+ · Promoter buying</div>
+    <div class="vs-mid">VS</div>
+    <div class="vs-awfis">Awfis — 5.0/10 conviction<br>PAT margin 4–6% · Occupancy 75% · CFO resigned</div>
+  </div>
+
+  <div class="score-row">
+    <div class="score-box" style="background:#E1F5EE;border:2px solid #0F6E56">
+      <div class="score-num" style="color:#0F6E56">EFC (I)</div>
+      <div class="score-label">Wins 8 of 10 categories</div>
+      <div style="font-size:11px;color:#0F6E56;margin-top:4px;font-weight:600">CLEAR WINNER FOR GARVIT</div>
+    </div>
+    <div class="score-box" style="background:#EDE7F6;border:2px solid #5E35B1">
+      <div class="score-num" style="color:#5E35B1">Awfis</div>
+      <div class="score-label">Wins 2 of 10 categories</div>
+      <div style="font-size:11px;color:#5E35B1;margin-top:4px">Network scale + national reach</div>
+    </div>
+  </div>
+
+  <div class="warn verdict"><strong>Why EFC (I) wins comprehensively for Garvit's 3x goal:</strong><br>
+  EFC generates 23% PAT margins vs Awfis's 4–6%. EFC has 90%+ occupancy vs Awfis's 75%. EFC's promoter went from 45% → 60% (buying aggressively). Awfis's promoter is at 17% and CFO just resigned. EFC's PAT grew +79% in 9M FY26; Awfis is doing +61% but on a tiny PAT base with structural lease accounting distortion. EFC has an integrated D&B + Furniture ecosystem that creates real competitive differentiation and higher barriers to entry. Awfis is a pure-play co-working company at a higher valuation with a governance overhang. This is not a close call — it's a decisive win for EFC (I).</div>
+
+  <div class="sh">The 10 categories — at a glance</div>
+  <table>
+    <tr><th>Category</th><th style="color:#0F6E56">EFC (I)</th><th style="color:#5E35B1">Awfis</th><th>Winner</th></tr>
+    <tr><td>Revenue growth (FY26)</td><td class="g">+52% YoY Q3</td><td class="a">+20% YoY Q3</td><td><span class="win-badge wb-efc">EFC</span></td></tr>
+    <tr><td>PAT margin</td><td class="g">23.15% (real cash margin)</td><td class="r">4–6% (lease accounting)</td><td><span class="win-badge wb-efc">EFC</span></td></tr>
+    <tr><td>Occupancy rate</td><td class="g">90%+ (mature centers)</td><td class="a">75% blended (84% mature)</td><td><span class="win-badge wb-efc">EFC</span></td></tr>
+    <tr><td>Promoter conviction</td><td class="g">60.45% (up from 45%)</td><td class="r">17.0% (diluted by VC)</td><td><span class="win-badge wb-efc">EFC</span></td></tr>
+    <tr><td>Business model quality</td><td class="g">Integrated ecosystem (lease+D&B+furniture)</td><td class="a">Co-working (D&B being separated)</td><td><span class="win-badge wb-efc">EFC</span></td></tr>
+    <tr><td>Trailing PE</td><td class="g">~12–15x (cheap for growth)</td><td class="a">~40x (expensive for thin margins)</td><td><span class="win-badge wb-efc">EFC</span></td></tr>
+    <tr><td>Enterprise client stickiness</td><td class="g">48-month avg tenure, 90% enterprise</td><td class="a">65% enterprise, 12–18 month contracts</td><td><span class="win-badge wb-efc">EFC</span></td></tr>
+    <tr><td>Governance signals</td><td class="g">Promoter buying; zero pledge</td><td class="r">CFO resigned Feb 2026</td><td><span class="win-badge wb-efc">EFC</span></td></tr>
+    <tr><td>Network scale</td><td class="a">73K seats, 11 cities</td><td class="g">177K seats, 80 cities</td><td><span class="win-badge wb-awfis">Awfis</span></td></tr>
+    <tr><td>National reach</td><td class="a">West India concentrated (~70%)</td><td class="g">Pan-India, Tier 2/3</td><td><span class="win-badge wb-awfis">Awfis</span></td></tr>
+  </table>
+</div>
+
+<!-- REVENUE COMPARISON -->
+<div id="revenue" class="panel">
+  <div class="sh">Revenue &amp; profit history — the EFC acceleration vs Awfis steadiness</div>
+  <div class="chart-wrap"><canvas id="rc"></canvas></div>
+  <div style="display:flex;gap:16px;font-size:11.5px;color:#666;margin-bottom:12px">
+    <span><span style="display:inline-block;width:10px;height:10px;border-radius:2px;background:#0F6E56;margin-right:4px"></span>EFC Revenue</span>
+    <span><span style="display:inline-block;width:10px;height:10px;border-radius:2px;background:#5E35B1;margin-right:4px"></span>Awfis Revenue</span>
+    <span><span style="display:inline-block;width:10px;height:10px;border-radius:2px;background:#1D9E75;margin-right:4px"></span>EFC PAT</span>
+    <span><span style="display:inline-block;width:10px;height:10px;border-radius:2px;background:#9575CD;margin-right:4px"></span>Awfis PAT</span>
+  </div>
+
+  <div class="two-col" style="margin:10px 0">
+    <div>
+      <div class="sh" style="color:#0F6E56">EFC (I) Quarterly progression</div>
+      <table>
+        <tr><th>Quarter</th><th>Revenue</th><th>Growth</th><th>PAT</th><th>PAT%</th></tr>
+        <tr><td>Q1 FY26</td><td>₹219.62 Cr</td><td class="g">+115% YoY</td><td>₹34.41 Cr</td><td class="g">15.7%</td></tr>
+        <tr><td>Q2 FY26</td><td>₹254.59 Cr</td><td class="g">+53% YoY</td><td>₹44.63 Cr</td><td class="g">17.5%</td></tr>
+        <tr><td>Q3 FY26</td><td>₹269.59 Cr</td><td class="g">+52% YoY</td><td>₹63.24 Cr</td><td class="g">23.2%</td></tr>
+        <tr><td>9M FY26</td><td>₹743.80 Cr</td><td class="g">+67% YoY</td><td>₹153.15 Cr</td><td class="g">20.6%</td></tr>
+        <tr><td>FY26E</td><td>~₹970–1,030 Cr</td><td class="g">~+50–60%</td><td>~₹210–230 Cr</td><td class="g">~22%</td></tr>
+        <tr><td>FY27E</td><td>~₹1,350–1,600 Cr</td><td class="g">~+40–60%</td><td>~₹300–380 Cr</td><td class="g">~22–24%</td></tr>
+      </table>
+    </div>
+    <div>
+      <div class="sh" style="color:#5E35B1">Awfis Quarterly progression</div>
+      <table>
+        <tr><th>Quarter</th><th>Revenue</th><th>Growth</th><th>PAT</th><th>PAT%</th></tr>
+        <tr><td>Q1 FY26</td><td>₹336 Cr</td><td class="g">+34% YoY</td><td>₹9.6 Cr</td><td class="a">2.9%</td></tr>
+        <tr><td>Q2 FY26</td><td>₹367 Cr</td><td class="g">+25.5% YoY</td><td>₹15.97 Cr</td><td class="a">4.3%</td></tr>
+        <tr><td>Q3 FY26</td><td>₹382 Cr</td><td class="g">+20.2% YoY</td><td>₹22 Cr</td><td class="a">5.8%</td></tr>
+        <tr><td>9M FY26</td><td>₹1,085 Cr</td><td class="g">+26% YoY</td><td>₹47.6 Cr</td><td class="a">4.4%</td></tr>
+        <tr><td>FY26E</td><td>~₹1,440 Cr</td><td class="g">+26%</td><td>~₹65–75 Cr</td><td class="a">~4.7%</td></tr>
+        <tr><td>FY27E</td><td>~₹1,750 Cr</td><td class="g">+22%</td><td>~₹100–130 Cr</td><td class="a">~6–7%</td></tr>
+      </table>
+    </div>
+  </div>
+
+  <div class="warn efc"><strong>The PAT margin story is the most critical difference:</strong> EFC generated ₹153 Cr PAT on ₹743 Cr revenue (9M FY26) = 20.6% margin. Awfis generated ₹47.6 Cr PAT on ₹1,085 Cr revenue (9M FY26) = 4.4% margin. Awfis has 46% more revenue than EFC — but EFC has 3.2x more PAT. EFC is already the more profitable company in absolute rupee terms, despite being smaller on revenue. This reversal (smaller revenue but larger profit) is the single most powerful data point in this entire comparison.</div>
+</div>
+
+<!-- KPI SHOWDOWN -->
+<div id="kpis" class="panel">
+  <div class="sh">10-metric showdown — the complete head-to-head scorecard</div>
+  <table class="verdict-table">
+    <tr>
+      <th class="metric-th">Metric</th>
+      <th class="efc-th">EFC (I) Ltd</th>
+      <th class="awfis-th">Awfis</th>
+      <th class="metric-th">Winner &amp; why it matters</th>
+    </tr>
+    <tr>
+      <td><strong>Revenue growth (FY26)</strong></td>
+      <td class="winner-efc"><span class="g">+52–67% YoY</span><br><small>9M: ₹743 Cr (+67%)</small></td>
+      <td><span class="a">+20–26% YoY</span><br><small>9M: ₹1,085 Cr (+26%)</small></td>
+      <td><span class="win-badge wb-efc">EFC</span> — 2.5x faster revenue growth despite similar market cap</td>
+    </tr>
+    <tr>
+      <td><strong>PAT margin</strong></td>
+      <td class="winner-efc"><span class="g">23.15% (Q3 FY26)</span><br><small>Real cash margin, not lease accounting</small></td>
+      <td class="loser-cell"><span class="r">4–6% PAT</span><br><small>Ind AS 116 lease accounting distorts downward</small></td>
+      <td><span class="win-badge wb-efc">EFC</span> — 4–5x higher real margin. The most decisive single metric.</td>
+    </tr>
+    <tr>
+      <td><strong>PAT (absolute, 9M FY26)</strong></td>
+      <td class="winner-efc"><span class="g">₹153 Cr</span><br><small>On smaller revenue base</small></td>
+      <td><span class="a">₹47.6 Cr</span><br><small>On 46% higher revenue</small></td>
+      <td><span class="win-badge wb-efc">EFC</span> — 3.2x more profit on less revenue. Fundamentally better unit economics.</td>
+    </tr>
+    <tr>
+      <td><strong>Occupancy rate</strong></td>
+      <td class="winner-efc"><span class="g">90%+</span><br><small>Enterprise-focused; 65% enterprise clients</small></td>
+      <td><span class="a">75% blended</span><br><small>84% mature centers; new centers drag blended</small></td>
+      <td><span class="win-badge wb-efc">EFC</span> — 90%+ occupancy means near-full utilisation vs Awfis still ramp-up phase</td>
+    </tr>
+    <tr>
+      <td><strong>Promoter holding</strong></td>
+      <td class="winner-efc"><span class="g">60.45% ↑</span><br><small>UP from 45.46% — buying aggressively</small></td>
+      <td class="loser-cell"><span class="r">17.0%</span><br><small>VC-diluted; CFO resigned Feb 2026</small></td>
+      <td><span class="win-badge wb-efc">EFC</span> — highest quality governance signal vs Awfis's most concerning.</td>
+    </tr>
+    <tr>
+      <td><strong>Trailing PE</strong></td>
+      <td class="winner-efc"><span class="g">~12–15x</span><br><small>On real PAT of ₹210 Cr FY26E</small></td>
+      <td class="loser-cell"><span class="r">~40x</span><br><small>On thin PAT of ₹65–75 Cr FY26E</small></td>
+      <td><span class="win-badge wb-efc">EFC</span> — 3x cheaper PE for faster growing, higher margin business</td>
+    </tr>
+    <tr>
+      <td><strong>ROE</strong></td>
+      <td class="winner-efc"><span class="g">19.26%</span><br><small>Efficient capital utilisation</small></td>
+      <td><span class="a">~8–10%</span><br><small>Lease accounting distorts</small></td>
+      <td><span class="win-badge wb-efc">EFC</span> — Better capital efficiency on a comparable basis</td>
+    </tr>
+    <tr>
+      <td><strong>Average client tenure</strong></td>
+      <td class="winner-efc"><span class="g">48 months</span><br><small>Enterprise clients locked in long-term</small></td>
+      <td><span class="a">12–18 months</span><br><small>Standard co-working contract duration</small></td>
+      <td><span class="win-badge wb-efc">EFC</span> — 4x longer client tenure = far higher revenue predictability</td>
+    </tr>
+    <tr>
+      <td><strong>Network scale (seats)</strong></td>
+      <td><span class="a">73,000 seats</span><br><small>11 cities; primarily West India</small></td>
+      <td class="winner-efc"><span class="g">177,000 seats</span><br><small>80 cities; national coverage</small></td>
+      <td><span class="win-badge wb-awfis">Awfis</span> — 2.4x more seats, national coverage; pan-India enterprise clients prefer Awfis</td>
+    </tr>
+    <tr>
+      <td><strong>Governance/management</strong></td>
+      <td class="winner-efc"><span class="g">Promoter buying; zero pledge; all positions filled</span></td>
+      <td class="loser-cell"><span class="r">CFO resigned Feb 2026; promoter 17%</span></td>
+      <td><span class="win-badge wb-efc">EFC</span> — Clean governance vs active concerns at Awfis</td>
+    </tr>
+  </table>
+
+  <div class="sh">The occupancy comparison — why EFC's 90%+ changes everything</div>
+  <div class="occ-row"><div class="or-label">EFC — blended occupancy</div><div class="or-track"><div class="or-fill" style="width:90%;background:#0F6E56">90%+</div></div><div class="or-val g">90%+ ✅</div></div>
+  <div class="occ-row"><div class="or-label">Awfis — mature centers</div><div class="or-track"><div class="or-fill" style="width:84%;background:#5E35B1">84%</div></div><div class="or-val" style="color:#5E35B1">84% (mature only)</div></div>
+  <div class="occ-row"><div class="or-label">Awfis — blended (all seats)</div><div class="or-track"><div class="or-fill" style="width:75%;background:#9575CD">75%</div></div><div class="or-val" style="color:#5E35B1">75% ⚠️</div></div>
+  <div class="warn efc" style="margin-top:8px"><strong>Why 90%+ occupancy matters:</strong> At 90%+, EFC is essentially running at full utilisation. Every incremental seat added goes to revenue almost immediately. Awfis at 75% has 25,000 unfilled seats at current network size — those are seats the company is paying rent on but earning nothing from. EFC's higher occupancy directly explains its 23% PAT margin vs Awfis's 4–6%: there is simply less wasted capacity in EFC's centers.</div>
+</div>
+
+<!-- BUSINESS MODELS -->
+<div id="business" class="panel">
+  <div class="sh">Business models — fundamentally different animals wearing the same "workspace" label</div>
+  <div class="two-col" style="margin:10px 0">
+    <div class="pane efc">
+      <div class="pane-h" style="color:#0F6E56">EFC (I) — Real Estate-as-a-Service (REaaS)</div>
+      <div class="point"><div class="dot de">1</div><div><strong>Leasing (50% of revenue, annuity):</strong> Manages 3.69 million sq ft across 90 centers. Revenue: monthly rent from enterprise clients. Average client tenure 48 months. 65% of leasing revenue from enterprise clients. 18 owned + 72 leased centers — the 18 owned properties are a genuine real estate asset that Awfis doesn't have (Awfis is 100% leased). 90%+ occupancy = near full utilisation. This is the foundation — predictable, recurring, growing.</div></div>
+      <div class="point"><div class="dot de">2</div><div><strong>Design & Build (30% of revenue, ₹450+ Cr order book):</strong> Unlike Awfis which is SEPARATING its D&B (because it's a drag), EFC's D&B is a CORE strategic asset. When EFC wins a new enterprise client, EFC's D&B team designs and builds the office — then EFC leases it to them. D&B is the cross-sell flywheel: every ₹100 of D&B becomes ₹400–600 of lease annuity over 4 years. This integrated model has no equivalent at Awfis.</div></div>
+      <div class="point"><div class="dot de">3</div><div><strong>Furniture (15%, Ek Design brand — backward integrated):</strong> EFC manufactures its own office furniture through Ek Design Industries. This is a backward integration that: (a) reduces furniture procurement costs for D&B projects by 20–30%, (b) creates a standalone B2B furniture revenue stream (1,200+ SKUs, sold to real estate, hospitality, IT/ITES), (c) eliminates dependence on third-party furniture suppliers. Awfis has no furniture manufacturing — this is a pure EFC moat.</div></div>
+      <div class="point"><div class="dot dg">+</div><div><strong>Property ownership — real estate appreciation:</strong> EFC owns 18 centers outright (vs 72 leased). Owned properties generate: zero lease cost (full margin), capital appreciation over time, and REIT-eligibility optionality. This is the aspect most overlooked by investors comparing EFC to Awfis — EFC has real estate assets on its balance sheet, Awfis has only lease liabilities.</div></div>
+    </div>
+    <div class="pane awfis">
+      <div class="pane-h" style="color:#5E35B1">Awfis — Flexible Workspace Platform (LITE)</div>
+      <div class="point"><div class="dot dp">1</div><div><strong>Co-working (84% of revenue):</strong> Awfis operates co-working spaces — clients pay monthly per-seat. Two models: (a) Lease: Awfis takes master lease from building owner, sub-leases to clients — 33% of portfolio. (b) MA (Managed Aggregation): building owner runs the space, Awfis earns management fee — 67% of portfolio. The MA model is capital-light and protects balance sheet (no lease liability on Awfis's books). But it also means lower control, lower margin per seat, and the revenue sharing reduces net take.</div></div>
+      <div class="point"><div class="dot da">!</div><div><strong>Design & Build — being SEPARATED (negative signal):</strong> Awfis is divesting its D&B business (Awfis Transform) via slump sale to a subsidiary by end-2026. This is explicitly because D&B was a drag on margins and created volatility. EFC does the opposite — D&B is an integrated part of the flywheel. Awfis separating D&B is an admission that the integrated model doesn't work for them, while EFC's integrated model is delivering 23% PAT margins.</div></div>
+      <div class="point"><div class="dot dp">+</div><div><strong>National scale is genuinely valuable (80 cities, 177K seats):</strong> Awfis is India's only national flex workspace operator at this scale. Pan-India enterprises (consulting firms, IT companies with multiple city offices) can standardise on one vendor only if that vendor is in 50+ cities. Awfis can serve TCS, Infosys, Wipro nationally. EFC at 11 cities cannot yet. This is Awfis's real, lasting competitive advantage.</div></div>
+      <div class="point"><div class="dot dp">+</div><div><strong>No furniture manufacturing overhead:</strong> MA model means building owners often provide furniture. Awfis avoids furniture capex entirely in most cases. This is the capital-light advantage — less fixed asset investment means better cash conversion. However, EFC's furniture integration improves margins on owned centers enough to offset.</div></div>
+    </div>
+  </div>
+
+  <div class="warn verdict"><strong>The fundamental business model verdict:</strong> EFC's integrated model (lease + D&B + furniture + owned properties) creates multiple revenue streams, multiple margin improvement levers, and genuine barriers to entry (you can't replicate 18 owned properties and a furniture manufacturer easily). Awfis's platform model (large network, capital-light, MA-driven) prioritises scale over margin. For Garvit's 3x goal, EFC's margin quality makes the PAT growth math dramatically easier — 50% revenue growth + 23% margin = strong PAT. Awfis needs 50% revenue growth AND margin expansion from 4–6% to reach the same PAT. EFC's model is the higher quality compounding machine.</div>
+</div>
+
+<!-- GUIDANCE -->
+<div id="guidance" class="panel">
+  <div class="sh">Guidance track record — EFC is consistent; Awfis has cut guidance</div>
+
+  <div class="two-col" style="margin:10px 0">
+    <div>
+      <div class="sh" style="color:#0F6E56">EFC (I) guidance</div>
+      <div class="guid-card efc">
+        <div class="guid-h" style="color:#0F6E56">✓ 50–60% revenue CAGR target — tracking at 67% (beating!)</div>
+        <div class="guid-b">Management guided 50–60% revenue growth over next 2 years. 9M FY26 revenue +67% YoY — actually exceeding the high end of guidance. This is a management that guided conservatively and delivered better. Quarterly PAT has grown sequentially every quarter: ₹34 Cr → ₹44 Cr → ₹63 Cr. Management's confidence reflects in the promoter going from 45% to 60% stake — you don't buy 15% of your own company unless you believe in the guidance you're giving.</div>
+        <div class="guid-s">Credibility: 9/10. Beating own guidance + promoter buying = the strongest possible commitment signal.</div>
+      </div>
+      <div class="guid-card efc">
+        <div class="guid-h" style="color:#0F6E56">✓ D&B margins stabilising — delivered improvement from Q1 to Q3</div>
+        <div class="guid-b">D&B was the weakest segment in Q1 FY26 (margins below leasing). Management guided "stabilisation and improvement" — Q2 and Q3 showed progressive improvement. EBITDA ₹111.6 Cr in Q3 at 41.4% margin. While Q3 margin (41.4%) is below the 52.3% seen in Q3 FY25, management has guided that EBITDA margins in the 40–45% range are sustainable as D&B scales. The margin compression was expected (growth requires expansion capex) — but the floor at 40%+ EBITDA is healthy.</div>
+        <div class="guid-s">Credibility: 8/10. Trend is directionally right; one more quarter needed to confirm stabilisation.</div>
+      </div>
+      <div class="guid-card efc">
+        <div class="guid-h" style="color:#0F6E56">✓ Furniture utilisation to 75–80% by mid-FY27</div>
+        <div class="guid-b">Furniture (Ek Design) currently utilised at 35–40% capacity. Management guided scaling to 75–80% by mid-FY27. If achieved: same fixed manufacturing cost generates 2x revenue from furniture → direct PAT boost. Furniture becoming a meaningful standalone revenue contributor (not just internal use) would be a re-rating catalyst.</div>
+        <div class="guid-s">Credibility: 7/10. Capacity ramping in phases as D&B projects increase. Achievable if order book continues.</div>
+      </div>
+    </div>
+    <div>
+      <div class="sh" style="color:#5E35B1">Awfis guidance</div>
+      <div class="guid-card miss">
+        <div class="guid-h">✗ Seat additions cut: 40,000 → 32,000 (20% reduction)</div>
+        <div class="guid-b">Awfis guided adding 40,000 seats in FY26 at the start of the year. This was reduced to 32,000 — a 20% cut. Reason: management is being disciplined about not signing at peak commercial real estate prices. This is rational behavior — but the market read it as a growth deceleration signal, which contributed to the -52% stock correction from ₹719 to ₹251 lows. Awfis's seat guidance has been revised downward; EFC's revenue guidance has been exceeded.</div>
+        <div class="guid-s">Credibility: 6/10 on seat guidance. Rational decision but still a miss relative to earlier commitment.</div>
+      </div>
+      <div class="guid-card watch">
+        <div class="guid-h">⚠ D&B slump sale extended to end-2026 — delayed once already</div>
+        <div class="guid-b">The D&B business sale was supposed to complete earlier but has been extended to end-2026. Valuation negotiations are ongoing. The delay removes a near-term cash catalyst and keeps a lower-margin business weighing on the consolidated numbers longer. EFC, by contrast, is growing D&B as a core segment.</div>
+        <div class="guid-s">Credibility: 6/10. Extended once already — further delays possible.</div>
+      </div>
+      <div class="guid-card miss">
+        <div class="guid-h">✗ CFO resigned Feb 2, 2026 — governance signal to watch</div>
+        <div class="guid-b">CFO Ravi Dugar resigned after 5 years. New CFO Sumit Rochlani appointed. For a recently-listed (May 2024) company, losing the CFO 20 months after IPO is a yellow flag. While EFC's chairman Umesh Sahay remains consistently engaged and promoter stake keeps increasing — the stability at EFC vs the churn at Awfis is a meaningful qualitative difference.</div>
+        <div class="guid-s">Watch: Q4 FY26 annual results for any accounting changes post-CFO transition.</div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- RISKS -->
+<div id="risks" class="panel">
+  <div class="sh">Risks — side by side, with honest assessment</div>
+  <div class="two-col" style="margin:10px 0">
+    <div>
+      <div class="sh" style="color:#0F6E56">EFC (I) risks</div>
+      <div class="point"><div class="dot da">1</div><div><strong>West India concentration (~70% of seats):</strong> EFC's footprint is primarily Pune, Mumbai, Bengaluru, Hyderabad — Western/Southern India. A regional economic slowdown (e.g., Maharashtra manufacturing/IT slowdown) would disproportionately impact EFC. Awfis is more diversified nationally, which reduces this geographic risk. EFC needs to expand to Delhi NCR, Chennai, and Tier 2 cities to reduce this concentration.</div></div>
+      <div class="point"><div class="dot da">2</div><div><strong>Higher leverage (D/E ~1.72x) from property ownership and D&B growth:</strong> EFC's property ownership strategy requires capital. D/E 1.72x is not dangerously high but it's much higher than Awfis (net cash). Interest costs jumped 62% QoQ in Q3. If commercial real estate demand softens and lease renewals slow down, debt servicing on owned properties could pressure margins. However, owned properties are also appreciating assets — the debt is backed by hard assets, unlike Awfis's lease liabilities which have no asset backing.</div></div>
+      <div class="point"><div class="dot dg">+</div><div><strong>EFC risks are manageable and structural improvement is clear:</strong> The promoter's decision to increase stake from 45% to 60% is the clearest possible signal that insiders believe in the risk management. EBIT/interest coverage at 4x is adequate. Revenue growing faster than interest costs. Furniture utilisation ramping reduces per-unit fixed cost. These risks are growth-phase risks, not structural/existential ones.</div></div>
+    </div>
+    <div>
+      <div class="sh" style="color:#5E35B1">Awfis risks</div>
+      <div class="point"><div class="dot dr">1</div><div><strong>17% promoter holding — no skin in the game at scale:</strong> This is the most structural concern. Awfis has multiple VC investors (Sequoia, Nexus) who have finite holding periods and need exits. Any large block sale by these institutional holders would put severe downward pressure on the stock. There is no "floor buyer" for Awfis's stock (as EFC's promoter provides). Institutional overhang could keep the stock subdued for 2–3 years.</div></div>
+      <div class="point"><div class="dot da">2</div><div><strong>Structural PAT margin cap from Ind AS 116 lease accounting:</strong> Under Ind AS 116, every lease Awfis takes generates: depreciation (hits PBT) + interest (hits PBT). A company growing its lease portfolio aggressively (Awfis's growth strategy) will always show PAT margin compression under this accounting standard. Awfis's PAT margins will likely stay at 6–10% even at full maturity — vs EFC's 20–25%. This is not fixable operationally; it's an accounting standard constraint.</div></div>
+      <div class="point"><div class="dot da">3</div><div><strong>CFO resignation Feb 2026 + NSE/BSE sought clarification twice (April 2026):</strong> Awfis saw unusual stock movement in April 2026, with NSE/BSE seeking clarification. Combined with CFO departure — these are governance micro-signals that individually are not definitive but collectively are concerning in the context of an already-low 17% promoter stake.</div></div>
+    </div>
+  </div>
+</div>
+
+<!-- SCENARIOS -->
+<div id="scenarios" class="panel">
+  <div class="sh">3x scenario analysis — where each stock goes from current prices</div>
+
+  <div class="two-col" style="margin:10px 0">
+    <div>
+      <div class="sh" style="color:#0F6E56">EFC (I) 3x scenarios</div>
+      <div class="scenario" style="border-left:3px solid #0F6E56">
+        <div style="font-size:12px;font-weight:500;color:#0F6E56;margin-bottom:7px">Bull: 3–4x in 2 years</div>
+        <div class="sc-grid">
+          <div class="sc-cell"><div class="sc-l">FY27 revenue</div><div class="sc-v">₹1,500 Cr</div></div>
+          <div class="sc-cell"><div class="sc-l">FY27 PAT</div><div class="sc-v">₹330–380 Cr</div></div>
+          <div class="sc-cell"><div class="sc-l">PE (integrated)</div><div class="sc-v">20–25x</div></div>
+          <div class="sc-cell"><div class="sc-l">FY27 mcap</div><div class="sc-v">₹6,600–9,500 Cr</div></div>
+          <div class="sc-cell"><div class="sc-l">Return</div><div class="sc-v">2.4–3.5x</div></div>
+          <div class="sc-cell"><div class="sc-l">Probability</div><div class="sc-v">35–40%</div></div>
+        </div>
+        <div style="font-size:11px;color:#555">FY26 PAT ₹220 Cr → FY27 PAT ₹350 Cr at 22x PE = ₹7,700 Cr = 2.9x from ₹2,700 Cr. 3x probability: <strong>35–40%</strong></div>
+      </div>
+      <div class="scenario" style="border-left:3px solid #1D9E75">
+        <div style="font-size:12px;font-weight:500;color:#185FA5;margin-bottom:7px">Base: 2–2.5x</div>
+        <div style="font-size:11px;color:#555">FY27 PAT ₹270 Cr at 20x PE = ₹5,400 Cr = 2x. Very achievable given 67% 9M revenue growth tracking well above guidance.</div>
+      </div>
+      <div class="scenario" style="border-left:3px solid #A32D2D">
+        <div style="font-size:12px;font-weight:500;color:#A32D2D;margin-bottom:7px">Bear: -15 to -25% (20% probability)</div>
+        <div style="font-size:11px;color:#555">Commercial real estate demand slows + D&B margin stays below 35%. PAT ₹150 Cr FY27 at 18x = ₹2,700 Cr = flat. Bear case is limited because EFC has real assets (18 owned centers).</div>
+      </div>
+    </div>
+    <div>
+      <div class="sh" style="color:#5E35B1">Awfis 3x scenarios</div>
+      <div class="scenario" style="border-left:3px solid #5E35B1">
+        <div style="font-size:12px;font-weight:500;color:#5E35B1;margin-bottom:7px">Bull: 2.5–3x in 3 years</div>
+        <div class="sc-grid">
+          <div class="sc-cell"><div class="sc-l">FY28 revenue</div><div class="sc-v">₹2,300 Cr</div></div>
+          <div class="sc-cell"><div class="sc-l">FY28 PAT</div><div class="sc-v">₹200 Cr</div></div>
+          <div class="sc-cell"><div class="sc-l">PE (national scale)</div><div class="sc-v">35–40x</div></div>
+          <div class="sc-cell"><div class="sc-l">FY28 mcap</div><div class="sc-v">₹7,000–8,000 Cr</div></div>
+          <div class="sc-cell"><div class="sc-l">Return</div><div class="sc-v">2.8–3.2x</div></div>
+          <div class="sc-cell"><div class="sc-l">Probability</div><div class="sc-v">15–20%</div></div>
+        </div>
+        <div style="font-size:11px;color:#555">Needs FY28 PAT ₹200 Cr at 35–40x PE = ₹7,000–8,000 Cr = 3x. Requires occupancy 85%+, D&B sold, EPS ₹26+ achieved. 3x probability: <strong>15–20%</strong></div>
+      </div>
+      <div class="scenario" style="border-left:3px solid #7C4DFF">
+        <div style="font-size:12px;font-weight:500;color:#7C4DFF;margin-bottom:7px">Base: 1.3–1.8x</div>
+        <div style="font-size:11px;color:#555">FY27 EPS ₹16.9 at 28x PE = ₹473/share = 1.6x from Garvit's ₹289 cost. Moderate — 60% gain in 2 years.</div>
+      </div>
+      <div class="scenario" style="border-left:3px solid #A32D2D">
+        <div style="font-size:12px;font-weight:500;color:#A32D2D;margin-bottom:7px">Bear: -20 to -35% (25–30% probability)</div>
+        <div style="font-size:11px;color:#555">Growth slows to 12–15%, VC overhang creates selling, governance concerns deepen. Stock tests ₹230 lows again. Garvit's cost ₹289 = -20% in bear. This bear is not trivial.</div>
+      </div>
+    </div>
+  </div>
+
+  <div class="warn verdict"><strong>The 3x probability comparison:</strong> EFC has a 35–40% probability of 3x in 2–3 years. Awfis has a 15–20% probability of 3x in 3 years. At ₹2,700 Cr market cap (EFC) vs ₹2,500 Cr (Awfis), comparable market caps — but EFC has 2x the 3x probability. This is not close.</div>
+</div>
+
+<!-- SECTOR PEERS -->
+<div id="sector" class="panel">
+  <div class="sh">Flex workspace sector — India landscape and global comparison</div>
+  <div style="border:1px solid #ddd;border-radius:10px;overflow:hidden;font-size:11px">
+    <div class="comp-h">
+      <div class="cc-h" style="background:#f5f5f3">Metric</div>
+      <div class="cc-h" style="background:#E1F5EE;color:#0F6E56">EFC (I) ← Garvit's Best</div>
+      <div class="cc-h" style="background:#EDE7F6;color:#4527A0">Awfis ← Garvit's Hold</div>
+      <div class="cc-h" style="background:#f5f5f3">IndiQube Spaces</div>
+    </div>
+    <div class="comp-row"><div class="cc cc-label">Market cap</div><div class="cc winner-cell">₹2,700 Cr</div><div class="cc mid-cell">₹2,500 Cr</div><div class="cc loser-cell">₹4,500+ Cr</div></div>
+    <div class="comp-row"><div class="cc cc-label">Revenue growth</div><div class="cc winner-cell">+52–67% YoY</div><div class="cc mid-cell">+20–26% YoY</div><div class="cc winner-cell">+35–40%</div></div>
+    <div class="comp-row"><div class="cc cc-label">PAT margin</div><div class="cc winner-cell">23% (real)</div><div class="cc loser-cell">4–6% (lease accounting)</div><div class="cc mid-cell">~5–8%</div></div>
+    <div class="comp-row"><div class="cc cc-label">Occupancy</div><div class="cc winner-cell">90%+</div><div class="cc mid-cell">75% blended</div><div class="cc mid-cell">~78%</div></div>
+    <div class="comp-row"><div class="cc cc-label">Promoter holding</div><div class="cc winner-cell">60.45% ↑ (buying)</div><div class="cc loser-cell">17% (VC-diluted)</div><div class="cc winner-cell">~55%+</div></div>
+    <div class="comp-row"><div class="cc cc-label">Integrated model</div><div class="cc winner-cell">Yes (lease+D&B+furniture)</div><div class="cc mid-cell">Partial (D&B being sold)</div><div class="cc mid-cell">Partial</div></div>
+    <div class="comp-row"><div class="cc cc-label">Average client tenure</div><div class="cc winner-cell">48 months</div><div class="cc mid-cell">12–18 months</div><div class="cc mid-cell">18–24 months</div></div>
+    <div class="comp-row"><div class="cc cc-label">National reach</div><div class="cc mid-cell">11 cities (West concentrated)</div><div class="cc winner-cell">80 cities (national)</div><div class="cc mid-cell">South India focus</div></div>
+    <div class="comp-row"><div class="cc cc-label">PE ratio</div><div class="cc winner-cell">~12–15x</div><div class="cc loser-cell">~40x</div><div class="cc loser-cell">~45x</div></div>
+    <div class="comp-row"><div class="cc cc-label">3x probability</div><div class="cc winner-cell">35–40%</div><div class="cc mid-cell">15–20%</div><div class="cc mid-cell">20–25%</div></div>
+    <div class="comp-row"><div class="cc cc-label">Best for Garvit</div><div class="cc">YES — primary flex workspace bet</div><div class="cc">Hold partial; not primary</div><div class="cc">Too expensive; smaller base but wrong size</div></div>
+  </div>
+
+  <div class="warn efc" style="margin-top:12px"><strong>The key sector insight:</strong> EFC (I) is categorically the best-valued flex workspace company in India at current prices. At 12–15x PE on 23% PAT margins with 52%+ revenue growth, EFC is cheap by any measure — even comparing it to global flex workspace companies. IWG (Regus parent) trades at 30–40x EBITDA. EFC's 41% EBITDA margin at 14x EBITDA is a remarkable bargain for the growth it's delivering. The market hasn't re-rated EFC appropriately because it's still relatively new to institutional coverage (only listed on NSE/BSE in late 2024 after restructuring). As institutional awareness grows, the PE re-rating from 14x to 20–25x alone would deliver 1.5x — without any earnings growth.</div>
+</div>
+
+<!-- PORTFOLIO ACTION -->
+<div id="portfolio" class="panel">
+  <div class="sh">Garvit's specific portfolio situation — the decision matrix</div>
+
+  <div class="portfolio-box">
+    <div class="pb-h">📊 Garvit's current positions: EFC (I) 320 shares (₹64,320) | Awfis 200 shares (₹57,800)</div>
+    <div class="pb-b">EFC (I): 320 shares at avg ~₹202 cost = ₹64,809 invested. Current ₹64,320 = -0.8% (near cost — bought near the bottom). Our 8.5/10 conviction. Still underweight vs ₹80–90K recommendation.<br><br>Awfis: 200 shares at avg ₹289 cost = ₹57,800 invested. Current ₹70,380 = +21.7% gain. Our 5.0/10 conviction. We recommended selling 80–100 shares after Q4 FY26 clean audit. CFO resigned since that analysis.<br><br><strong>The key question this tab answers:</strong> Capital from Awfis partial sale (₹28–35K) — should it go to EFC (I)? And should Garvit add more to EFC (I) from other capital freed (Oriana trim etc.)?</div>
+  </div>
+
+  <div class="sh">The optimal capital reallocation</div>
+  <table>
+    <tr><th>Action</th><th>Amount</th><th>Rationale</th><th>Priority</th></tr>
+    <tr><td><span class="badge bg">ADD EFC (I) — buy 150–200 more shares (₹32–43K)</span></td><td>+₹32,000–43,000</td><td>8.5/10 conviction. Still ₹16–26K short of ₹80–90K target. EFC at ₹200–210 range is excellent entry — 35–40% 3x probability at 12–14x PE. Fund from Awfis partial exit + Oriana trim proceeds.</td><td class="g">Priority 1</td></tr>
+    <tr><td><span class="badge bawfis">SELL 80–100 Awfis shares after Q4 FY26 clean audit</span></td><td>Recover ₹28–35K</td><td>Lock in +21.7% gain on partial position. Reduce conviction-5 stock. Redirect to conviction-8.5 stock (EFC). Keep 100 shares as national flex workspace long-term satellite.</td><td class="g">Priority 2</td></tr>
+    <tr><td><span class="badge bg">HOLD EFC remaining 320 shares firmly</span></td><td>Hold ₹64,320</td><td>Near cost basis. Every ₹200 price = ₹64,000 investment. If EFC delivers FY27 guidance (₹1,300–1,500 Cr revenue), stock should re-rate significantly. Do not sell on any volatility.</td><td class="g">Hold</td></tr>
+    <tr><td><span class="badge ba">Keep 100–120 Awfis shares as national workspace bet</span></td><td>Keep ₹35–42K</td><td>Awfis is India's only listed national scale flex workspace company. Even with conviction at 5.0/10, the thesis (hybrid work, India enterprise demand) is real. Keep a satellite position.</td><td class="a">Satellite</td></tr>
+  </table>
+
+  <div class="sh">Target portfolio state after actions</div>
+  <table>
+    <tr><th>Stock</th><th>Current</th><th>Target (post-actions)</th><th>Change</th><th>Conviction</th></tr>
+    <tr><td>EFC (I)</td><td>320 shares = ₹64,320</td><td class="g">470–520 shares = ₹96,000–1,09,000</td><td class="g">+150–200 shares</td><td class="g">8.5/10</td></tr>
+    <tr><td>Awfis</td><td>200 shares = ₹70,380</td><td class="a">100–120 shares = ₹35,000–42,000</td><td class="r">-80 to -100 shares</td><td class="a">5.0/10</td></tr>
+    <tr><td>Net capital shift</td><td>₹1,22,120 combined</td><td class="g">₹1,31,000–1,51,000 (EFC dominant)</td><td class="g">EFC becomes 3x the Awfis position</td><td></td></tr>
+  </table>
+</div>
+
+<!-- FINAL VERDICT -->
+<div id="verdict" class="panel">
+  <div class="sh">The complete final verdict — head-to-head winner declared</div>
+
+  <div class="verdict-final">
+    <div class="vf-h">🏆 FINAL VERDICT: EFC (I) Ltd wins decisively. It deserves to be Garvit's primary flex workspace investment at ₹90–1,10,000 total allocation. Awfis should be trimmed to ₹35–42K satellite. Here's the complete case.</div>
+    <div class="vf-b">
+    <strong>The 5 reasons EFC (I) is categorically the better stock for Garvit's 3x goal:</strong><br><br>
+    <strong>1. EFC has 4–5x better PAT margins (23% vs 4–6%)</strong><br>
+    This is not lease accounting difference — this is real business model quality. EFC's integrated ecosystem (own properties + D&B + furniture) generates genuine economic surplus at every stage. Awfis's Ind AS 116 lease accounting structurally suppresses PAT margins to single digits — permanently, not cyclically. For a 3x return targeting investor, you want a company where PAT grows proportionally with revenue. At Awfis, PAT is structurally disconnected from EBITDA by the lease accounting. At EFC, 22–23% PAT margins mean every ₹100 of additional revenue adds ₹22–23 to PAT — clean, predictable compounding.<br><br>
+    <strong>2. EFC's promoter conviction dwarfs Awfis (60% up from 45% vs 17%)</strong><br>
+    When Umesh Sahay took EFC (I) (formerly Amani Trading) and restructured it into a flex workspace company, he then increased his personal stake from 45% to 60% — putting ₹400+ Cr of personal wealth into this stock at current prices. That is the ultimate skin-in-the-game signal. Awfis's founder holds 17% in a VC-diluted structure, with the CFO having just left the company. These two insider signals are as different as they can be.<br><br>
+    <strong>3. EFC has better occupancy NOW (90%+) vs Awfis still climbing (75%)</strong><br>
+    Awfis's occupancy improvement story ("from 75% to 85%+ will unlock massive PAT") is real — but EFC has already arrived at that destination. EFC's 90%+ occupancy means near-full utilisation of every center, which is why it can generate 23% PAT margins. Awfis needs 2+ more years of maturing to reach what EFC has today.<br><br>
+    <strong>4. EFC trades at 12–14x PE on real earnings vs Awfis at 40x on thin earnings</strong><br>
+    EFC: ~₹2,700 Cr mcap / ~₹210 Cr FY26E PAT = 12.9x PE. Awfis: ~₹2,500 Cr mcap / ~₹68 Cr FY26E PAT = 36.8x PE. For faster revenue growth AND higher margins AND better governance, EFC trades at 3x cheaper PE. This is a market mispricing that will correct as institutional coverage expands.<br><br>
+    <strong>5. EFC's 3x probability (35–40%) is 2x that of Awfis (15–20%)</strong><br>
+    At nearly identical market caps — same starting point — EFC has 2x the probability of delivering Garvit's 3x goal. This is the definitive decision metric.<br><br>
+    <strong>Awfis's case for keeping a satellite position (100 shares):</strong><br>
+    National scale (80 cities, 177K seats) cannot be replicated quickly. Pan-India enterprise clients (TCS, Infosys, HCL) need a national vendor — Awfis is uniquely positioned. The MA model (67% of portfolio) is capital-light and proven resilient. If Awfis reaches 85%+ occupancy with D&B separated, the PAT improvement from occupancy alone is ₹50+ Cr annually. Keep 100 shares for this long-term optionality — but this should be 1/3 the allocation of EFC, not equal allocation.</div>
+  </div>
+
+  <div class="sh">Garvit's specific action plan</div>
+  <table>
+    <tr><th>Action</th><th>When</th><th>Expected result</th></tr>
+    <tr><td><span class="badge bg">ADD EFC (I) — 150–200 more shares at ₹200–215</span></td><td>This week</td><td>Total EFC position reaches ₹96–1,09K at 8.5/10 conviction. Stock at ₹200 is near 52-week low of ₹191 — excellent risk/reward entry.</td></tr>
+    <tr><td><span class="badge ba">Wait for Awfis Q4 FY26 audit (May 2026)</span></td><td>Post Q4 results</td><td>If clean audit: sell 80–100 shares at ~₹350+ = ₹28–35K profit booking. If audit concern: sell all 200 shares immediately.</td></tr>
+    <tr><td><span class="badge bg">After Awfis partial exit: add another 50–100 EFC shares</span></td><td>May/June 2026</td><td>Bring EFC to ₹1,05,000–1,20,000 total = properly sized for 8.5/10 conviction. This is the 3x position in the portfolio.</td></tr>
+    <tr><td><span class="badge ba">Keep 100–120 Awfis as satellite</span></td><td>Long-term hold</td><td>National scale workspace exposure at ₹35–42K. If occupancy reaches 85%+ and D&B separation completes cleanly → Awfis conviction upgrades to 6.5/10 → hold at ₹50K.</td></tr>
+  </table>
+
+  <div class="sh">Trigger watchlist</div>
+  <table>
+    <tr><th>#</th><th>Trigger</th><th>Stock</th><th>Impact</th></tr>
+    <tr><td>1</td><td>EFC Q4 FY26 results (PAT vs ₹70+ Cr)</td><td class="g">EFC — watch for</td><td>🟢 FY26 full year PAT ₹220+ Cr confirms 3x path → buy more aggressively</td></tr>
+    <tr><td>2</td><td>Awfis Q4 FY26 clean audit</td><td class="a">Awfis — decision gate</td><td>🟢 Clean = sell 80–100 shares. 🔴 Any audit concern = sell all 200 shares immediately</td></tr>
+    <tr><td>3</td><td>EFC furniture utilisation (Ek Design) reaching 60%+</td><td class="g">EFC — monitor quarterly</td><td>🟢 Furniture becoming standalone P&L contributor = PAT surprise upside</td></tr>
+    <tr><td>4</td><td>EFC promoter holding stable or increasing</td><td class="g">EFC — track quarterly</td><td>🟢 Any further buying above 60% = strongest conviction signal</td></tr>
+    <tr><td>5</td><td>Awfis NSE/BSE clarification outcome (April 2026 volumes)</td><td class="a">Awfis — watch</td><td>🔴 Any undisclosed corporate action that triggered the volume = Awfis exit</td></tr>
+    <tr><td>6</td><td>EFC new city expansion (Delhi NCR / Chennai)</td><td class="g">EFC — growth catalyst</td><td>🟢 Each new major city entered = TAM expansion + reduces West concentration risk</td></tr>
+  </table>
+
+  <div class="warn verdict" style="margin-top:12px"><strong>One-line final verdict:</strong> Between EFC (I) and Awfis — two flex workspace companies at nearly identical market caps — EFC wins on every metric that matters for Garvit's 3x goal: faster revenue growth (+52% vs +20%), higher PAT margins (23% vs 4–6%), better occupancy (90% vs 75%), stronger promoter (60% buying vs 17%), cheaper valuation (14x vs 40x PE), and 2x the 3x probability. Add to EFC aggressively at current ₹200–215 levels. Trim Awfis after Q4 audit. This is one of the clearest portfolio reallocation decisions in the entire analysis series.</div>
+</div>
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/4.4.1/chart.umd.js"></script>
+<script>
+function show(id,btn){
+  document.querySelectorAll('.tab').forEach(t=>t.classList.remove('active'));
+  document.querySelectorAll('.panel').forEach(p=>p.classList.remove('active'));
+  btn.classList.add('active');
+  document.getElementById(id).classList.add('active');
+}
+new Chart(document.getElementById('rc').getContext('2d'),{
+  type:'bar',
+  data:{
+    labels:['FY24','FY25','Q1FY26','Q2FY26','Q3FY26','FY26E','FY27E'],
+    datasets:[
+      {label:'EFC Revenue',data:[300,550,219.62,254.59,269.59,1000,1450],backgroundColor:['#0F6E56','#0F6E56','#1D9E75','#1D9E75','#1D9E75','#A5D6A7','#A5D6A7'],borderRadius:4,yAxisID:'y'},
+      {label:'Awfis Revenue',data:[890,1144,336,367,382,1460,1850],type:'line',borderColor:'#5E35B1',backgroundColor:'transparent',pointBackgroundColor:'#5E35B1',tension:0.3,yAxisID:'y'},
+      {label:'EFC PAT',data:[45,85,34.41,44.63,63.24,215,340],type:'line',borderColor:'#059669',backgroundColor:'transparent',pointBackgroundColor:'#059669',tension:0.3,borderDash:[4,2],yAxisID:'y2'},
+      {label:'Awfis PAT',data:[null,64,9.6,15.97,22,70,125],type:'line',borderColor:'#9575CD',backgroundColor:'transparent',pointBackgroundColor:'#9575CD',tension:0.3,borderDash:[4,2],yAxisID:'y2'}
+    ]
+  },
+  options:{responsive:true,maintainAspectRatio:false,plugins:{legend:{position:'top',labels:{font:{size:10},boxWidth:10}}},scales:{y:{ticks:{font:{size:10}}},y2:{position:'right',ticks:{font:{size:10}},grid:{drawOnChartArea:false}},x:{ticks:{font:{size:10}}}}}
+});
+</script>
+</body>
+</html>

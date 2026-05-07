@@ -276,6 +276,99 @@ export const stocks: Stock[] = [
     mcap: "₹448 Cr",
     convictionScore: 5,
   },
+
+  // ── May 2026 additions ───────────────────────────────────────────────────
+  {
+    slug: "eco-recycling",
+    name: "Eco Recycling Ltd (Ecoreco)",
+    ticker: "ECORECO",
+    exchange: "BSE",
+    sector: "e-Waste Management",
+    dateAnalyzed: "May 2026",
+    recommendation: "watch",
+    thesis:
+      "India's only BSE-listed e-waste player with a 99% PAT CAGR over 5 years and a regulatory moat that strengthens over time. Working capital deterioration and revenue lumpiness limit conviction to a small speculative allocation until FY27 Q1 validates sustainability.",
+    mcap: "₹830 Cr",
+    convictionScore: 5,
+  },
+  {
+    slug: "genus-power",
+    name: "Genus Power Infrastructures",
+    ticker: "GENUSPOWER",
+    exchange: "NSE",
+    sector: "Capital Goods / Smart Metering",
+    dateAnalyzed: "May 2026",
+    recommendation: "hold",
+    thesis:
+      "India's #1 smart meter company with 27% market share and ₹27,000 Cr order book. AMISP + RDSS tailwinds. GIC USD 2B platform partnership. Hold and possibly add small on dips.",
+    mcap: "₹8,300 Cr",
+    convictionScore: 6,
+  },
+  {
+    slug: "krsnaa-diagnostics",
+    name: "Krsnaa Diagnostics",
+    ticker: "KRSNAA",
+    exchange: "NSE",
+    sector: "Healthcare / Diagnostics",
+    dateAnalyzed: "May 2026",
+    recommendation: "watch",
+    thesis:
+      "PPP diagnostics model across 18 states with government-contracted revenue. CFO and 3 directors resigned in 4 months, promoter holding at 27.1%. Governance risk unresolved — watchlist only until clarity emerges.",
+    mcap: "₹1,900 Cr",
+    convictionScore: 3,
+  },
+  {
+    slug: "meta-infotech",
+    name: "Meta Infotech Ltd",
+    ticker: "METAINF",
+    exchange: "BSE",
+    sector: "Cybersecurity",
+    dateAnalyzed: "May 2026",
+    recommendation: "watch",
+    thesis:
+      "BSE SME cybersecurity (SASE, Cloud Security). Promoters sold 26% of stake within 2 months of IPO — used IPO as liquidity exit. On ASM list. Stock -48% from IPO price. Governance disqualifies as a serious holding.",
+    mcap: "₹158 Cr",
+    convictionScore: 2,
+  },
+  {
+    slug: "muthoot-microfin",
+    name: "Muthoot Microfin",
+    ticker: "MUTHOOTMF",
+    exchange: "NSE",
+    sector: "NBFC / Microfinance",
+    dateAnalyzed: "May 2026",
+    recommendation: "buy",
+    thesis:
+      "Most compelling recovery + compounding story in the MFI sector. 3x PAT growth from ₹150 Cr (FY26) to ₹450–530 Cr (FY28) mechanically driven by credit cost normalisation. Part of Muthoot Pappachan Group. Buy ₹25–40K as a medium-conviction position.",
+    mcap: "₹3,185 Cr",
+    convictionScore: 7,
+  },
+  {
+    slug: "sterlite-tech",
+    name: "Sterlite Technologies (STL)",
+    ticker: "STLTECH",
+    exchange: "NSE",
+    sector: "Technology / Optical Fibre",
+    dateAnalyzed: "May 2026",
+    recommendation: "watch",
+    thesis:
+      "Excellent quality optical fibre + AI infrastructure business, but stock already returned +614% from April 2025 lows. At ₹14,390 Cr mcap with ₹56 Cr PAT = 257x PE, 3x math requires 30% PAT growth. Do not buy at current prices.",
+    mcap: "₹14,390 Cr",
+    convictionScore: 3,
+  },
+  {
+    slug: "valiant-communications",
+    name: "Valiant Communications",
+    ticker: "VALIANT",
+    exchange: "NSE",
+    sector: "Defence / Telecom",
+    dateAnalyzed: "May 2026",
+    recommendation: "watch",
+    thesis:
+      "Telecom transmission + cybersecurity + defence company. ₹52 Cr revenue at ₹1,050 Cr mcap = 20x Price/Sales. Theme (defence + quantum) is valid but the vehicle is mispriced for a 3x strategy. Better-conviction names exist in the portfolio.",
+    mcap: "₹1,050 Cr",
+    convictionScore: 2,
+  },
 ];
 
 export function getStockBySlug(slug: string): Stock | undefined {

@@ -1,0 +1,499 @@
+<!DOCTYPE html>
+<html><head><meta charset="utf-8">
+<style>
+*{box-sizing:border-box;margin:0;padding:0}
+body{font-family:system-ui,sans-serif;padding:16px;background:#fff;color:#1a1a1a;font-size:14px}
+h1{font-size:20px;font-weight:500;margin-bottom:3px}
+.sub{font-size:12px;color:#666;margin-bottom:14px}
+.sg{display:grid;grid-template-columns:repeat(auto-fill,minmax(120px,1fr));gap:8px;margin-bottom:16px}
+.sc{background:#f5f5f3;border-radius:8px;padding:10px 12px}
+.sl{font-size:10px;color:#666;margin-bottom:2px}
+.sv{font-size:16px;font-weight:500}
+.tab-row{display:flex;gap:5px;flex-wrap:wrap;margin-bottom:14px}
+.tab{font-size:11.5px;padding:5px 13px;border-radius:20px;border:1px solid #ddd;background:#fff;cursor:pointer;white-space:nowrap}
+.tab.active{background:#1a1a1a;color:#fff;border-color:#1a1a1a}
+.panel{display:none}.panel.active{display:block}
+.sh{font-size:10.5px;font-weight:500;color:#666;text-transform:uppercase;letter-spacing:.06em;margin:16px 0 7px;padding-bottom:5px;border-bottom:1px solid #eee}
+table{width:100%;border-collapse:collapse;font-size:12px;margin:8px 0}
+th{font-size:10.5px;font-weight:500;color:#666;padding:5px 7px;text-align:left;border-bottom:1px solid #eee;white-space:nowrap}
+td{padding:8px 7px;border-bottom:1px solid #eee;color:#1a1a1a;vertical-align:top}
+tr:last-child td{border-bottom:none}
+tr:hover td{background:#fafaf9}
+.g{color:#0F6E56;font-weight:500}.r{color:#A32D2D;font-weight:500}.a{color:#854F0B;font-weight:500}.b{color:#185FA5;font-weight:500}
+.badge{display:inline-block;font-size:10px;padding:2px 7px;border-radius:10px;white-space:nowrap}
+.bg{background:#E1F5EE;color:#0F6E56}.bb{background:#E6F1FB;color:#185FA5}.ba{background:#FAEEDA;color:#854F0B}.br{background:#FCEBEB;color:#A32D2D}.bgray{background:#f1f0e8;color:#5F5E5A}.bpurp{background:#EDE7F6;color:#4527A0}
+.warn{padding:10px 13px;margin:8px 0;border-left:3px solid;font-size:12px;line-height:1.65}
+.warn.success{background:#E1F5EE;border-color:#1D9E75;color:#04342C}
+.warn.caution{background:#FAEEDA;border-color:#BA7517;color:#412402}
+.warn.danger{background:#FCEBEB;border-color:#A32D2D;color:#712B13}
+.warn.info{background:#E6F1FB;border-color:#185FA5;color:#042C53}
+.warn.whale{background:#EDE7F6;border-color:#4527A0;color:#1A0044}
+.warn strong{font-weight:500}
+.chart-wrap{position:relative;width:100%;height:240px;margin:8px 0}
+.kpi-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:10px;margin:10px 0}
+.kpi{background:#f5f5f3;border-radius:8px;padding:10px 12px;border-left:3px solid transparent}
+.kpi.green{border-left-color:#1D9E75}.kpi.amber{border-left-color:#EF9F27}.kpi.blue{border-left-color:#378ADD}.kpi.red{border-left-color:#A32D2D}.kpi.purple{border-left-color:#7C4DFF}.kpi.navy{border-left-color:#1A237E}
+.kpi-l{font-size:10px;color:#666;margin-bottom:3px}
+.kpi-v{font-size:17px;font-weight:500}
+.kpi-s{font-size:10px;color:#888;margin-top:2px}
+.point{display:flex;gap:9px;align-items:flex-start;padding:9px 0;border-bottom:1px solid #eee;font-size:12px;line-height:1.6;color:#555}
+.point:last-child{border-bottom:none}
+.point strong{color:#1a1a1a;font-weight:500}
+.dot{width:19px;height:19px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:10px;font-weight:500;flex-shrink:0;margin-top:1px}
+.dg{background:#E1F5EE;color:#0F6E56}.dr{background:#FCEBEB;color:#A32D2D}.da{background:#FAEEDA;color:#854F0B}.db{background:#E6F1FB;color:#185FA5}.dp{background:#EDE7F6;color:#4527A0}.dn{background:#E8EAF6;color:#1A237E}
+.two-col{display:grid;grid-template-columns:1fr 1fr;gap:12px}
+.pane{border:1px solid #ddd;border-radius:10px;padding:13px}
+.pane-h{font-size:13px;font-weight:500;margin-bottom:9px}
+.scenario{border:1px solid #ddd;border-radius:10px;padding:13px;margin-bottom:9px}
+.sc-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:7px;margin:9px 0}
+.sc-cell{background:#f5f5f3;border-radius:6px;padding:7px 9px}
+.sc-l{font-size:10px;color:#666}
+.sc-v{font-size:12px;font-weight:500;margin-top:2px}
+.comp-h{display:grid;grid-template-columns:160px repeat(3,1fr);background:#f5f5f3;border-radius:8px 8px 0 0;overflow:hidden}
+.comp-row{display:grid;grid-template-columns:160px repeat(3,1fr);border-bottom:1px solid #eee}
+.comp-row:last-child{border-bottom:none}
+.cc{padding:8px 10px;font-size:11px;border-right:1px solid #eee}
+.cc:last-child{border-right:none}
+.cc-h{font-size:10px;font-weight:500;color:#444;padding:8px 10px;border-right:1px solid #ddd}
+.cc-h:last-child{border-right:none}
+.cc-label{color:#666;font-size:11px}
+.winner-cell{background:#E1F5EE}.mid-cell{background:#FAEEDA}.loser-cell{background:#fff5f5}
+.stock-card{border:1px solid #ddd;border-radius:10px;overflow:hidden;margin-bottom:14px}
+.sc-hdr{padding:11px 13px;display:flex;justify-content:space-between;align-items:flex-start;background:#fafaf9}
+.sc-nm{font-size:13px;font-weight:500}
+.sc-tg{font-size:11px;color:#666;margin-top:2px}
+.sc-bd{padding:11px 13px;font-size:12px;line-height:1.65;color:#555;border-top:1px solid #eee}
+.sc-bd strong{color:#1a1a1a}
+.sc-grid2{display:grid;grid-template-columns:repeat(4,1fr);gap:7px;padding:9px 13px;background:#fafaf9;border-top:1px solid #eee}
+.sc2-v{font-size:13px;font-weight:600}
+.sc2-l{font-size:9.5px;color:#888;margin-top:2px}
+.verdict-card{border-radius:10px;padding:13px 15px;margin-bottom:12px}
+.vc-h{font-size:13px;font-weight:500;margin-bottom:6px}
+.vc-b{font-size:12px;line-height:1.65;color:#444}
+.guid-card{border-radius:10px;padding:12px 14px;margin-bottom:8px}
+.guid-card.beat{background:#E1F5EE;border-left:3px solid #1D9E75}.guid-card.beat .guid-h{color:#0F6E56}
+.guid-card.watch{background:#FAEEDA;border-left:3px solid #BA7517}.guid-card.watch .guid-h{color:#854F0B}
+.guid-card.miss{background:#FCEBEB;border-left:3px solid #A32D2D}.guid-card.miss .guid-h{color:#A32D2D}
+.guid-h{font-size:11.5px;font-weight:600;margin-bottom:4px}
+.guid-b{font-size:11.5px;color:#333;line-height:1.6}
+.phi-card{background:#EDE7F6;border:1px solid #CE93D8;border-radius:10px;padding:13px;margin-bottom:10px}
+.phi-h{font-size:13px;font-weight:600;color:#4527A0;margin-bottom:7px}
+.phi-b{font-size:12px;color:#333;line-height:1.65}
+.garvit-action{background:#E1F5EE;border:2px solid #1D9E75;border-radius:10px;padding:13px;margin-top:10px}
+.ga-h{font-size:13px;font-weight:600;color:#0F6E56;margin-bottom:7px}
+.ga-b{font-size:12px;color:#1a1a1a;line-height:1.65}
+.flow-row{display:flex;align-items:center;gap:8px;margin:5px 0}
+.fl{font-size:11px;color:#555;width:180px;flex-shrink:0}
+.ft{flex:1;background:#f5f5f3;border-radius:4px;height:14px;overflow:hidden}
+.fb{height:100%;border-radius:4px;display:flex;align-items:center;padding-left:6px;font-size:9px;font-weight:600;color:#fff}
+.fv{font-size:11px;font-weight:500;width:80px;text-align:right}
+.sector-alloc{display:grid;grid-template-columns:repeat(3,1fr);gap:8px;margin:10px 0}
+.sa-card{background:#f5f5f3;border-radius:8px;padding:10px 12px}
+.sa-h{font-size:11px;font-weight:500;margin-bottom:4px}
+.sa-v{font-size:18px;font-weight:600}
+.sa-s{font-size:10px;color:#666;margin-top:2px}
+</style>
+</head>
+<body>
+
+<h1>Ashish Kacholia Portfolio — Analysis for Garvit's 3x Goal</h1>
+<div class="sub">"Big Whale of Dalal Street" · ₹2,500 Cr portfolio · 49 disclosed stocks · Net worth grew ₹1,050 Cr (2020) → ₹3,461 Cr (2025) · Focus: small &amp; mid-cap hidden gems · Evaluating which of his holdings fit Garvit's 3x-in-3-years criteria</div>
+
+<div class="sg">
+  <div class="sc"><div class="sl">Portfolio value</div><div class="sv" style="color:#4527A0">~₹2,500 Cr</div></div>
+  <div class="sc"><div class="sl">Disclosed holdings</div><div class="sv">49 stocks</div></div>
+  <div class="sc"><div class="sl">Top holding</div><div class="sv">Shaily Eng ₹471 Cr</div></div>
+  <div class="sc"><div class="sl">Net worth CAGR</div><div class="sv" style="color:#1D9E75">~15.7%/yr</div></div>
+  <div class="sc"><div class="sl">Common with Garvit</div><div class="sv" style="color:#1D9E75">Zaggle ✅</div></div>
+  <div class="sc"><div class="sl">Q4'25 new buys</div><div class="sv">12 stocks</div></div>
+  <div class="sc"><div class="sl">Avg holding period</div><div class="sv">3–5 years</div></div>
+  <div class="sc"><div class="sl">Focus market cap</div><div class="sv">₹500–5,000 Cr</div></div>
+</div>
+
+<div class="tab-row">
+  <button class="tab active" onclick="show('philosophy',this)">Investment philosophy</button>
+  <button class="tab" onclick="show('portfolio',this)">Full portfolio map</button>
+  <button class="tab" onclick="show('balu',this)">⭐ Balu Forge — deep dive</button>
+  <button class="tab" onclick="show('kmew',this)">Knowledge Marine — deep dive</button>
+  <button class="tab" onclick="show('beta',this)">Beta Drugs — deep dive</button>
+  <button class="tab" onclick="show('guidance',this)">Guidance analysis</button>
+  <button class="tab" onclick="show('compare',this)">Sector comparisons</button>
+  <button class="tab" onclick="show('filter',this)">Garvit's filter</button>
+  <button class="tab" onclick="show('verdict',this)">⭐ Verdict & action</button>
+</div>
+
+<!-- PHILOSOPHY -->
+<div id="philosophy" class="panel active">
+  <div class="sh">Who is Ashish Kacholia — the "Big Whale" framework</div>
+  <div class="phi-card">
+    <div class="phi-h">🐋 The "Big Whale" Philosophy — 5 core principles Garvit must understand before evaluating his picks</div>
+    <div class="phi-b">
+    <strong>1. Small &amp; Mid-cap focus only:</strong> Kacholia invests almost exclusively in companies with ₹500–5,000 Cr market cap — exactly Garvit's sweet spot for 3x returns. He explicitly avoids large-cap blue chips as "growth is already priced in."<br><br>
+    <strong>2. Early entry before institutional discovery:</strong> His edge is finding companies BEFORE sell-side coverage begins. When Kacholia files a >1% stake, the stock often jumps 10–20% on the day. His cost basis is typically 30–60% below current market price — so stocks in his portfolio now may already have his gain priced in.<br><br>
+    <strong>3. Hold for 3–5 years minimum:</strong> Unlike traders, Kacholia holds through cycles. Many of his winners needed 2–3 years of patience (Shaily Engineering, Beta Drugs, Safari Industries). This patience is required — stocks he owns can be -30% before turning multibaggers.<br><br>
+    <strong>4. Sector themes: Manufacturing, Make in India, Defence, Pharma, Niche services:</strong> His current portfolio is heavy in precision manufacturing (Balu Forge, Shaily Engineering), speciality chemicals (Fineotex, Tanfac), niche services (Knowledge Marine, NIIT Learning), and pharma (Beta Drugs, AMI Organics).<br><br>
+    <strong>5. Governance above all:</strong> He exits when governance deteriorates. When promoters pledge shares aggressively or management changes, he sells quickly. Zero leverage on his own portfolio — he doesn't believe in borrowing to invest (relevant context for Garvit's 20L loan strategy).
+    </div>
+  </div>
+
+  <div class="sh">The Kacholia filter — what he looks for that matches Garvit's 3x criteria</div>
+  <table>
+    <tr><th>Kacholia criterion</th><th>What it means</th><th>Why it works for 3x</th><th>Garvit alignment</th></tr>
+    <tr><td><strong>Market cap ₹500–5,000 Cr</strong></td><td>Small enough for 3–5x but not micro-cap</td><td>Institutional buying can re-rate to 3x as the "next discovery"</td><td class="g">✅ Perfect range for Garvit's goal</td></tr>
+    <tr><td><strong>ROCE &gt;20%</strong></td><td>Business generates real returns on capital</td><td>High ROCE = earnings compound without dilution</td><td class="g">✅ All Garvit's core holdings pass this</td></tr>
+    <tr><td><strong>Revenue CAGR &gt;25% for 3+ years</strong></td><td>Not a one-year wonder — sustained growth</td><td>Revenue compounding = earnings compounding = PE re-rating</td><td class="g">✅ Bondada (+81%), Websol, EFC all pass</td></tr>
+    <tr><td><strong>Promoter holding &gt;50%, zero pledge</strong></td><td>Founders have skin in the game</td><td>Aligned incentives = better decisions over 5 years</td><td class="g">✅ Most Garvit holdings pass (EFC 60%, Bondada 45%)</td></tr>
+    <tr><td><strong>Niche monopoly or quasi-monopoly</strong></td><td>Market leader in a niche nobody covers</td><td>Pricing power = margin expansion = earnings leverage</td><td class="g">✅ Websol (ALMM), Borana Weaves, EFC (industrial)</td></tr>
+    <tr><td><strong>Debt-free or very low debt</strong></td><td>Balance sheet clean</td><td>Earnings not consumed by interest; can fund growth internally</td><td class="g">✅ DEE Dev, Vintage Coffee, Borana Weaves</td></tr>
+  </table>
+
+  <div class="sh">Kacholia's biggest winners — to understand the pattern</div>
+  <div class="flow-row"><div class="fl">Bodal Chemicals (2013→2018)</div><div class="ft"><div class="fb" style="width:100%;background:#4527A0">+2,000% return — specialty dye chemical at ₹50 Cr mcap</div></div><div class="fv" style="color:#4527A0">2000%+</div></div>
+  <div class="flow-row"><div class="fl">Shaily Engineering (long hold)</div><div class="ft"><div class="fb" style="width:70%;background:#1D9E75">+300% in 3 years</div></div><div class="fv g">+300%</div></div>
+  <div class="flow-row"><div class="fl">Beta Drugs (long hold)</div><div class="ft"><div class="fb" style="width:45%;background:#1D9E75">+125% in 3 years</div></div><div class="fv g">+125%</div></div>
+  <div class="flow-row"><div class="fl">Balu Forge (recent)</div><div class="ft"><div class="fb" style="width:38%;background:#1D9E75">+103% in 3 years</div></div><div class="fv g">+103%</div></div>
+  <div class="warn whale"><strong>The key pattern in Kacholia multibaggers:</strong> He enters when the company is doing ₹100–300 Cr revenue with clear evidence of 25%+ sustainable growth, a niche moat, and a clean balance sheet. He then holds for 3–5 years while the market "discovers" the company and re-rates the PE from 15–20x to 30–50x. The double engine: earnings growth (2–3x PAT) + PE re-rating (1.5–2x) = 3–6x total return. This is exactly Garvit's 3x thesis — and validates the approach.</div>
+</div>
+
+<!-- FULL PORTFOLIO MAP -->
+<div id="portfolio" class="panel">
+  <div class="sh">Kacholia's 49-stock portfolio — mapped by sector and size</div>
+
+  <div class="sector-alloc">
+    <div class="sa-card"><div class="sa-h" style="color:#1D9E75">⚙️ Precision Manufacturing</div><div class="sa-v g">~22%</div><div class="sa-s">Shaily Eng (₹471 Cr) · Balu Forge (₹117 Cr) · Universal Autofoundry · Dhabriya</div></div>
+    <div class="sa-card"><div class="sa-h" style="color:#E65100">💊 Pharmaceuticals</div><div class="sa-v" style="color:#E65100">~17%</div><div class="sa-s">Beta Drugs (₹182 Cr) · AMI Organics · Bharat Parenterals · Infinium Pharmachem</div></div>
+    <div class="sa-card"><div class="sa-h" style="color:#185FA5">⚗️ Specialty Chemicals</div><div class="sa-v b">~8%</div><div class="sa-s">Fineotex Chemical · Tanfac Industries · Organic Industries</div></div>
+    <div class="sa-card"><div class="sa-h" style="color:#4527A0">💻 Technology / SaaS</div><div class="sa-v" style="color:#4527A0">~7%</div><div class="sa-s">Zaggle (₹128 Cr) · NIIT Learning · Adcounty Media · TechEra Engineering</div></div>
+    <div class="sa-card"><div class="sa-h" style="color:#1B5E20">🛢️ Industrial / Niche Services</div><div class="sa-v" style="color:#1B5E20">~12%</div><div class="sa-s">Knowledge Marine (₹143 Cr) · Agarwal Industrial · Gujarat Apollo</div></div>
+    <div class="sa-card"><div class="sa-h" style="color:#880E4F">🧳 Consumer</div><div class="sa-v" style="color:#880E4F">~9%</div><div class="sa-s">Safari Industries (₹142 Cr) · Thomas Scott · Saraswati Saree</div></div>
+  </div>
+
+  <div class="sh">Complete holdings table — sorted by conviction value (Kacholia's disclosed holding value)</div>
+  <table>
+    <tr><th>#</th><th>Stock</th><th>Sector</th><th>Kacholia value</th><th>Stake %</th><th>Market cap</th><th>Garvit fit?</th><th>Action</th></tr>
+    <tr style="background:#EDE7F6"><td>1</td><td><strong>Shaily Engineering Plastics</strong></td><td>Precision plastics mfg</td><td>₹471 Cr</td><td>5.2%</td><td>₹9,273 Cr</td><td class="r">❌ Too large for 3x</td><td><span class="badge br">Wrong size</span></td></tr>
+    <tr><td>2</td><td><strong>Beta Drugs</strong></td><td>Oncology pharma</td><td>₹182 Cr</td><td>12.5%</td><td>₹1,903 Cr</td><td class="a">⚠️ Possible</td><td><span class="badge ba">Review tab 6</span></td></tr>
+    <tr><td>3</td><td><strong>Jain Resource Recycling</strong></td><td>E-waste/recycling</td><td>₹167 Cr</td><td>~5%</td><td>₹2,800 Cr</td><td class="a">⚠️ Similar to Eco Recycling — compare</td><td><span class="badge ba">Watchlist</span></td></tr>
+    <tr><td>4</td><td><strong>Safari Industries</strong></td><td>Luggage / consumer</td><td>₹142 Cr</td><td>1.8%</td><td>₹7,800 Cr</td><td class="r">❌ Too large + cyclical</td><td><span class="badge br">Skip</span></td></tr>
+    <tr><td>5</td><td><strong>Zaggle Prepaid ✅</strong></td><td>B2B SaaS fintech</td><td>₹128 Cr</td><td>2.24%</td><td>₹4,800 Cr</td><td class="g">✅ Already in Garvit's portfolio!</td><td><span class="badge bg">HELD — validates thesis</span></td></tr>
+    <tr><td>6</td><td><strong>Knowledge Marine (KMEW)</strong></td><td>Dredging + shipbuilding</td><td>₹143 Cr</td><td>2.9%</td><td>₹4,979 Cr</td><td class="a">⚠️ Interesting but expensive</td><td><span class="badge ba">Review tab 5</span></td></tr>
+    <tr style="background:#E8F5E9"><td>7</td><td><strong>Balu Forge Industries ⭐</strong></td><td>Defence forging + machining</td><td>₹117 Cr</td><td>1.66%</td><td>₹6,802 Cr</td><td class="g">✅ BEST FIT for Garvit's 3x</td><td><span class="badge bg">DEEP DIVE → Tab 4</span></td></tr>
+    <tr><td>8</td><td><strong>AMI Organics</strong></td><td>Specialty pharma chemicals</td><td>₹95 Cr</td><td>1.72%</td><td>₹5,500 Cr</td><td class="a">⚠️ Premium valuation</td><td><span class="badge ba">Watchlist</span></td></tr>
+    <tr><td>9</td><td><strong>Fineotex Chemical</strong></td><td>Specialty chemicals</td><td>₹90 Cr</td><td>2.74%</td><td>₹3,200 Cr</td><td class="a">⚠️ Debt-free but slower growth</td><td><span class="badge bgray">Below 25% growth bar</span></td></tr>
+    <tr><td>10</td><td><strong>Aeroflex Industries</strong></td><td>Flexible tubing — medical/industrial</td><td>₹82 Cr</td><td>2.27%</td><td>₹2,800 Cr</td><td class="a">⚠️ Interesting niche</td><td><span class="badge ba">Monitor</span></td></tr>
+    <tr><td>11</td><td><strong>NIIT Learning Systems</strong></td><td>Corporate learning / EdTech</td><td>₹75 Cr</td><td>—</td><td>₹3,500 Cr</td><td class="r">❌ Cyclical; no strong moat</td><td><span class="badge br">Skip</span></td></tr>
+    <tr><td>12</td><td><strong>Bharat Parenterals</strong></td><td>IV bags / parenteral drugs</td><td>₹60 Cr</td><td>2.0%</td><td>₹1,200 Cr</td><td class="a">⚠️ Niche but very small</td><td><span class="badge ba">Too small</span></td></tr>
+    <tr><td>13</td><td><strong>TechEra Engineering (New!)</strong></td><td>Engineering components</td><td>~₹40 Cr</td><td>6.23%</td><td>₹500 Cr</td><td class="a">⚠️ Very new — Kacholia just bought</td><td><span class="badge ba">Watchlist</span></td></tr>
+    <tr><td>14</td><td><strong>Tanfac Industries</strong></td><td>Specialty fluorine chemicals</td><td>₹38 Cr</td><td>1.71%</td><td>₹2,200 Cr</td><td class="r">❌ Revenue declined recently</td><td><span class="badge br">Skip</span></td></tr>
+    <tr><td>15</td><td><strong>Agarwal Industrial Corp</strong></td><td>Bitumen / road construction</td><td>₹35 Cr</td><td>—</td><td>₹800 Cr</td><td class="a">⚠️ Commodity exposure</td><td><span class="badge bgray">Sector risk</span></td></tr>
+    <tr><td>—</td><td><strong>BEW Engineering, Naman Industries, Finbud Financial (new Mar 2026)</strong></td><td>Various</td><td>Small/new</td><td>5–9%</td><td>Sub-₹500 Cr</td><td class="r">❌ Too small/early for analysis</td><td><span class="badge br">Micro-cap</span></td></tr>
+  </table>
+
+  <div class="warn whale"><strong>Key finding — Kacholia also holds Zaggle!</strong> He holds 2.24% stake (₹128 Cr value) in Zaggle Prepaid Ocean Services. This directly validates Garvit's existing holding. Two independent investors (Garvit at ₹229 avg, Kacholia at much lower entry) are both holding Zaggle — this cross-validation is a strong signal that the thesis is sound.</div>
+</div>
+
+<!-- BALU FORGE DEEP DIVE -->
+<div id="balu" class="panel">
+  <div class="sh">Balu Forge Industries — the best Kacholia stock for Garvit's 3x goal</div>
+
+  <div class="stock-card">
+    <div class="sc-hdr">
+      <div>
+        <div class="sc-nm">Balu Forge Industries Ltd (NSE: BALUFORGE)</div>
+        <div class="sc-tg">Precision forging + Machining · Defence 20% · Agriculture 36% · Heavy Engineering 17% · 54% promoter holding</div>
+      </div>
+      <span class="badge bg">⭐ RECOMMENDED — Small position</span>
+    </div>
+    <div class="sc-grid2">
+      <div><div class="sc2-v" style="color:#854F0B">₹6,802 Cr</div><div class="sc2-l">Market cap</div></div>
+      <div><div class="sc2-v">₹1,113 Cr</div><div class="sc2-l">FY26 Revenue (TTM)</div></div>
+      <div><div class="sc2-v" style="color:#1D9E75">₹256 Cr</div><div class="sc2-l">FY26 PAT (TTM)</div></div>
+      <div><div class="sc2-v" style="color:#1D9E75">22.5%</div><div class="sc2-l">PAT margin (Q3)</div></div>
+      <div><div class="sc2-v">27.2%</div><div class="sc2-l">EBITDA margin (Q3)</div></div>
+      <div><div class="sc2-v" style="color:#1D9E75">+29%</div><div class="sc2-l">9M FY26 revenue growth</div></div>
+      <div><div class="sc2-v" style="color:#1D9E75">+36.8%</div><div class="sc2-l">9M FY26 PAT growth</div></div>
+      <div><div class="sc2-v" style="color:#A32D2D">26.6x</div><div class="sc2-l">Trailing PE</div></div>
+    </div>
+    <div class="sc-bd">
+    <strong>What Balu Forge does:</strong> India's leading precision engineering + forging company. Manufactures critical components for: (1) Agriculture (tractors, farm equipment — 36% of revenue), (2) Defence (155mm artillery shells, military vehicle parts — 20%), (3) Heavy Engineering/Industrial (17%), (4) Commercial Vehicles (12%). Has 3 plants in Karnataka + 1 in UAE.<br><br>
+    <strong>Why it's special — the Defence inflection:</strong> Balu Forge commissioned a dedicated 155mm large-caliber artillery shell production line (360,000 shells/year, 55-second cycle using Fanuc robotics, near-100% automation) and achieved NATO Supply Chain induction in Q3 FY26. This puts Balu Forge in a very small group of Indian private sector companies certified to produce artillery ammunition. With India's defence budget growing and the push for indigenization (post-Operation Sindoor), Balu Forge's defence revenue (currently 20%) could grow to 40%+ — dramatically re-rating the company.<br><br>
+    <strong>The 5-year track record is extraordinary:</strong> Revenue CAGR of 50% over 5 years (₹286 Cr in FY22 → ₹1,113 Cr FY26). EBIT CAGR of 94% over 5 years. PAT ₹204 Cr FY25 → growing strongly. This is genuine compounding at enormous speed.<br><br>
+    <strong>Why Kacholia holds:</strong> Classic Kacholia pick — precision manufacturing niche, debt managed carefully, strong promoter family control (54.4%), manufacturing moat (defence certifications, CNC machining expertise), and multiple growth verticals (defence + aerospace + railway).
+    </div>
+  </div>
+
+  <div class="sh">Revenue trajectory and segment evolution</div>
+  <div class="chart-wrap"><canvas id="brc"></canvas></div>
+
+  <table>
+    <tr><th>Period</th><th>Revenue</th><th>Growth</th><th>EBITDA%</th><th>PAT</th><th>PAT%</th><th>Defence %</th><th>Key event</th></tr>
+    <tr><td>FY22</td><td>₹286 Cr</td><td>—</td><td>~20%</td><td>~₹25 Cr</td><td class="a">8.7%</td><td>~5%</td><td>Small base. Agriculture + CV focus. Early forging capacity.</td></tr>
+    <tr><td>FY23</td><td>~₹470 Cr</td><td class="g">+64%</td><td>~22%</td><td>~₹60 Cr</td><td class="g">12.8%</td><td>~10%</td><td>Capacity expansion. Defence orders beginning. CNC machining lines added.</td></tr>
+    <tr><td>FY24</td><td>~₹740 Cr</td><td class="g">+57%</td><td>~24%</td><td>~₹130 Cr</td><td class="g">17.6%</td><td>~15%</td><td>Defence orders accelerating. Aerospace + Railway added. UAE plant operational.</td></tr>
+    <tr><td>FY25</td><td>₹923 Cr</td><td class="g">+25%</td><td>~27%</td><td>₹204 Cr</td><td class="g">22.1%</td><td>~18%</td><td>EBITDA +110.8% to ₹251 Cr. PAT +100%+. Multiple defence certifications.</td></tr>
+    <tr><td>9M FY26</td><td>₹844 Cr</td><td class="g">+29% YoY</td><td>28.4%</td><td>₹193 Cr</td><td class="g">22.9%</td><td>20%</td><td>Artillery shell line commissioned. NATO supply chain inducted. 7-Axis CNC machining live.</td></tr>
+    <tr><td>Q3 FY26</td><td>₹311 Cr</td><td class="g">+21.6% YoY</td><td>27.2%</td><td>₹71 Cr</td><td class="g">22.8%</td><td>20%</td><td>Sequential +3.9%. EBITDA +24.8% YoY. 100% capacity utilisation. Machining expansion delivering.</td></tr>
+    <tr><td>FY26E</td><td>~₹1,113 Cr</td><td class="g">+21%</td><td>~27%</td><td>~₹256 Cr</td><td class="g">~23%</td><td>~20%</td><td>Full year confirmed on screener. Q4 results May 12 — watch for defence guidance and FY27 outlook.</td></tr>
+    <tr><td>FY27E</td><td>~₹1,400–1,550 Cr</td><td class="g">+25–40%</td><td>~27–29%</td><td>~₹340–430 Cr</td><td class="g">~24–28%</td><td>~30%</td><td>Full Belgaum facility contribution. Defence shells ramp (360,000/yr capacity). Machining EBITDA 35%+. US/EU export growth.</td></tr>
+    <tr><td>FY28E</td><td>~₹1,900–2,500 Cr</td><td class="g">~35–60%</td><td>~29–32%</td><td>~₹550–800 Cr</td><td class="g">~29%</td><td>~35–40%</td><td>Defence becomes largest segment. Operating leverage from automated lines. Export orders scaling. DRDO partnerships deepening.</td></tr>
+  </table>
+
+  <div class="sh">The 3x scenario analysis — from current ₹6,802 Cr market cap</div>
+  <div class="warn caution"><strong>The market cap challenge:</strong> At ₹6,802 Cr, 3x = ₹20,406 Cr. At 25x PE: needs PAT of ₹816 Cr. FY26E PAT: ₹256 Cr. Needs 3.2x PAT growth in 3 years = 47% annual PAT growth. Historical 5-year PAT CAGR: 94% (!). If Balu Forge sustains even HALF its historical CAGR (47%), 3x PAT by FY28 is achievable. The bull case is plausible — not a certainty.</div>
+
+  <div class="two-col">
+    <div class="scenario" style="border-left:3px solid #1D9E75">
+      <div style="font-size:12px;font-weight:500;color:#0F6E56;margin-bottom:7px">Bull: 2.5–3x by FY28</div>
+      <div class="sc-grid">
+        <div class="sc-cell"><div class="sc-l">FY28 PAT</div><div class="sc-v">₹700–800 Cr</div></div>
+        <div class="sc-cell"><div class="sc-l">PE (defence premium)</div><div class="sc-v">28–32x</div></div>
+        <div class="sc-cell"><div class="sc-l">FY28 mcap</div><div class="sc-v">₹19,600–25,600 Cr</div></div>
+        <div class="sc-cell"><div class="sc-l">Return</div><div class="sc-v">2.9–3.8x</div></div>
+        <div class="sc-cell"><div class="sc-l">Driver</div><div class="sc-v">Defence 40% + automation</div></div>
+        <div class="sc-cell"><div class="sc-l">Probability</div><div class="sc-v">20–25%</div></div>
+      </div>
+    </div>
+    <div class="scenario" style="border-left:3px solid #378ADD">
+      <div style="font-size:12px;font-weight:500;color:#185FA5;margin-bottom:7px">Base: 1.5–2x by FY27</div>
+      <div class="sc-grid">
+        <div class="sc-cell"><div class="sc-l">FY27 PAT</div><div class="sc-v">₹380–440 Cr</div></div>
+        <div class="sc-cell"><div class="sc-l">PE</div><div class="sc-v">22–26x</div></div>
+        <div class="sc-cell"><div class="sc-l">FY27 mcap</div><div class="sc-v">₹8,360–11,440 Cr</div></div>
+        <div class="sc-cell"><div class="sc-l">Return</div><div class="sc-v">1.2–1.7x</div></div>
+        <div class="sc-cell"><div class="sc-l">Timing</div><div class="sc-v">FY27</div></div>
+        <div class="sc-cell"><div class="sc-l">Probability</div><div class="sc-v">45%</div></div>
+      </div>
+    </div>
+  </div>
+
+  <div class="sh">Key risks — one new concern</div>
+  <div class="point"><div class="dot dr">!</div><div><strong>Promoter pledged 875,000 shares to Aditya Birla Capital (March 16, 2026).</strong> Promoter Jaspalsingh Chandock pledged ~1.6% of total shares to raise working capital. This is a yellow flag — when promoters pledge shares, forced selling risk emerges if stock falls. However, the total outstanding promoter holding remains at 54.4% with limited pledge as % of total — the pledge is for "financial facilities" not distress. Monitor this carefully: if pledge increases to >5% of total shares, it becomes a red flag.</div></div>
+  <div class="point"><div class="dot da">2</div><div><strong>Market cap ₹6,802 Cr is at the upper end for Garvit's 3x math.</strong> 3x requires ₹20,406 Cr — achievable but requires sustained 40%+ PAT growth for 3 years. The historical track record supports this (94% 5-year PAT CAGR), but as the base grows larger, sustaining such rates gets harder. Consider a small position (₹20–30K) rather than a large bet.</div></div>
+  <div class="point"><div class="dg">+</div><div><strong>Post-Operation Sindoor: Defence capex acceleration benefits Balu Forge directly.</strong> India's military action in May 2026 has triggered a national conversation about ammunition supply chains. India was heavily import-dependent for 155mm shells — Balu Forge's dedicated production line (360,000 shells/year) now has strategic national importance. Government procurement of artillery shells could accelerate significantly, potentially bringing forward Balu Forge's FY27–28 defence revenue into FY26–27.</div></div>
+</div>
+
+<!-- KNOWLEDGE MARINE -->
+<div id="kmew" class="panel">
+  <div class="sh">Knowledge Marine &amp; Engineering Works (KMEW) — the dredging niche play</div>
+
+  <div class="stock-card">
+    <div class="sc-hdr">
+      <div>
+        <div class="sc-nm">Knowledge Marine &amp; Engineering Works (NSE: KMEW)</div>
+        <div class="sc-tg">Dredging services + Marine engineering + Shipbuilding (new) · Listed Nov 2024 on Main Board · Kacholia stake 2.9%</div>
+      </div>
+      <span class="badge ba">⚠ WATCHLIST — expensive at 78x PE</span>
+    </div>
+    <div class="sc-grid2">
+      <div><div class="sc2-v" style="color:#854F0B">₹4,979 Cr</div><div class="sc2-l">Market cap (May 4)</div></div>
+      <div><div class="sc2-v">₹236 Cr</div><div class="sc2-l">FY26 Revenue (TTM)</div></div>
+      <div><div class="sc2-v" style="color:#1D9E75">₹66.4 Cr</div><div class="sc2-l">FY26 PAT (TTM)</div></div>
+      <div><div class="sc2-v" style="color:#1D9E75">+56%</div><div class="sc2-l">Q3 FY26 revenue growth</div></div>
+      <div><div class="sc2-v">43%</div><div class="sc2-l">Q3 EBITDA margin</div></div>
+      <div><div class="sc2-v" style="color:#1D9E75">34%</div><div class="sc2-l">Q3 PAT margin</div></div>
+      <div><div class="sc2-v" style="color:#A32D2D">78x</div><div class="sc2-l">Trailing PE</div></div>
+      <div><div class="sc2-v" style="color:#1D9E75">₹1,500 Cr</div><div class="sc2-l">Order book (6x rev!)</div></div>
+    </div>
+    <div class="sc-bd">
+    <strong>What KMEW does:</strong> India's private sector dredging specialist. Operates a fleet of dredgers (hopper, cutter suction, backhoe, grab), pilot boats, tug boats, and survey vessels for Indian ports, Inland Waterways Authority (IWAI), and international contracts. Moved from BSE SME to Main Board in Nov 2024. Fleet: 40+ vessels operating at 100% utilisation.<br><br>
+    <strong>The transformation story:</strong> Revenue jumped from ~₹50 Cr/year (FY23) to ₹236 Cr (FY26 TTM) — nearly 5x in 3 years. In Q3 FY26 alone, revenue was ₹90 Cr (56% YoY growth). Three game-changers: (1) Tonnage Tax Scheme approved (reduces effective tax rate to &lt;1% of turnover — from 25–30% — dramatically boosting PAT), (2) Entry into commercial shipbuilding (₹230 Cr IWAI orders + ₹700 Cr green tug 15-year contract), (3) Order book ₹1,500 Cr = 6x annual revenue, with bids pending of ₹3,000 Cr.<br><br>
+    <strong>Why Kacholia increased stake to 2.9%:</strong> Dredging demand from India's Sagarmala program (₹13 lakh Cr port infrastructure), Inland Waterways Authority expansion (70+ national waterways), and green tug mandates for major ports. KMEW is the only private-sector listed dredging company in India with a clean audit and growing fleet. The Nuvama initiation (Dec 2025, target ₹2,500) at a time when the stock was ₹650 validates the re-rating potential.<br><br>
+    <strong>The tonnage tax is a massive PAT catalyst:</strong> Under tonnage tax, shipping income is taxed on a presumptive basis (essentially near-zero tax on operational income). KMEW received approval from Joint Commissioner of Income Tax for 10 years effective FY26. Q3 FY26 PAT margin jumped to 34% — primarily due to this tax benefit. At full year scale, PAT margins could structurally remain 25–35%.
+    </div>
+  </div>
+
+  <div class="sh">KMEW 3x scenario</div>
+  <div class="warn caution"><strong>KMEW at 78x PE is very expensive</strong> — similar to the Valiant Communications concern. At ₹4,979 Cr mcap, 3x = ₹14,937 Cr. At 35x PE: needs PAT ₹427 Cr. FY26 PAT: ₹66 Cr. Needs 6.4x PAT growth. Achievable IF: tonnage tax continues + order book converts + shipbuilding revenue scales. But it requires 3–4 years of exceptional execution at the same time. 3x probability: 15–20%. Compare Balu Forge (20–25% 3x probability) — Balu Forge is the better risk/reward. KMEW is Kacholia's conviction but enters Garvit's watchlist only.</div>
+
+  <table>
+    <tr><th>Scenario</th><th>FY28 PAT</th><th>PE</th><th>FY28 mcap</th><th>Return</th><th>Probability</th></tr>
+    <tr><td>Bull (tonnage tax + shipbuilding scales)</td><td>₹350–450 Cr</td><td>35x</td><td>₹12,250–15,750 Cr</td><td class="g">2.5–3.2x</td><td class="a">15–20%</td></tr>
+    <tr><td>Base (order book converts, core dredging)</td><td>₹200–280 Cr</td><td>28x</td><td>₹5,600–7,840 Cr</td><td class="a">1.1–1.6x</td><td class="a">40–45%</td></tr>
+    <tr><td>Bear (execution delays, project losses)</td><td>₹80–100 Cr</td><td>20x</td><td>₹1,600–2,000 Cr</td><td class="r">-60% to -68%</td><td class="a">30–35%</td></tr>
+  </table>
+  <div class="warn danger"><strong>The bear case for KMEW is severe:</strong> Q2 FY26 revenue actually DECLINED (-4.4% YoY) before the Q3 jump. This lumpiness is inherent in dredging — large projects arrive, get executed, then there's a quiet period. At 78x PE, even one bad quarter creates a 30–40% stock fall. The borrowing limit increase to ₹1,200 Cr (from ₹500 Cr) increases financial leverage risk. For Garvit with a personal loan already deployed, adding illiquid high-leverage marine exposure is too risky.</div>
+</div>
+
+<!-- BETA DRUGS -->
+<div id="beta" class="panel">
+  <div class="sh">Beta Drugs Ltd — Kacholia's highest-stake holding in pharma</div>
+
+  <div class="stock-card">
+    <div class="sc-hdr">
+      <div>
+        <div class="sc-nm">Beta Drugs Ltd (NSE: BETADRUGS)</div>
+        <div class="sc-tg">Oncology APIs + Generic medicines · 12.5% Kacholia stake (highest concentration in his portfolio!) · Chandigarh</div>
+      </div>
+      <span class="badge ba">⚠ WATCHLIST — niche pharma, right size, but sector risk</span>
+    </div>
+    <div class="sc-grid2">
+      <div><div class="sc2-v" style="color:#854F0B">₹1,903 Cr</div><div class="sc2-l">Market cap</div></div>
+      <div><div class="sc2-v">~₹350–400 Cr</div><div class="sc2-l">FY26E Revenue</div></div>
+      <div><div class="sc2-v" style="color:#1D9E75">~₹70–80 Cr</div><div class="sc2-l">FY26E PAT</div></div>
+      <div><div class="sc2-v" style="color:#1D9E75">+30%/yr</div><div class="sc2-l">Avg annual PAT growth</div></div>
+      <div><div class="sc2-v" style="color:#1D9E75">+125%</div><div class="sc2-l">3-year stock return</div></div>
+      <div><div class="sc2-v">~24x</div><div class="sc2-l">Trailing PE (est.)</div></div>
+      <div><div class="sc2-v" style="color:#1D9E75">12.5%</div><div class="sc2-l">Kacholia stake</div></div>
+      <div><div class="sc2-v" style="color:#1D9E75">Export-heavy</div><div class="sc2-l">Business model</div></div>
+    </div>
+    <div class="sc-bd">
+    <strong>What Beta Drugs does:</strong> India's niche oncology API (Active Pharmaceutical Ingredient) and finished dosage manufacturer. Specialises in anti-cancer drugs — carboplatin, paclitaxel, cisplatin, etc. Supplies to global pharmaceutical companies as a B2B supplier. Also manufactures generic oncology medicines sold in India and emerging markets.<br><br>
+    <strong>Why Kacholia owns 12.5% (his highest-conviction individual stake):</strong> Oncology is the fastest-growing segment of global pharma. Cancer incidence growing globally — India's cancer cases expected to grow 12% by 2030. Beta Drugs is a specialized, hard-to-replicate manufacturer — oncology APIs require very specialized chemistry and sterile manufacturing that takes years to certify. At 12.5%, Kacholia essentially controls (with promoters) a large portion — this is Kacholia's highest conviction pharma bet.<br><br>
+    <strong>Market cap of ₹1,903 Cr is the right size for 3x math:</strong> 3x = ₹5,709 Cr. At 22x PE on ₹260 Cr PAT (FY28E) = ₹5,720 Cr. Achievable if PAT grows from ₹75 Cr (FY26) to ₹260 Cr by FY28 = 3.5x PAT growth at 87% CAGR. At 30% annual PAT growth (historical), FY28E PAT = ₹126 Cr → 22x PE = ₹2,772 Cr = only 1.5x. The 3x case for Beta Drugs requires revenue acceleration beyond historical pace.<br><br>
+    <strong>The risk:</strong> Oncology pharma is heavily regulated. Any FDA/EMA warning letter or quality concern = stock falls 50%+ instantly. Beta Drugs's primary market (USA + Europe) has stringent quality standards. This regulatory binary risk is the primary reason Garvit should keep any Beta Drugs position very small.
+    </div>
+  </div>
+
+  <div class="warn whale"><strong>Kacholia's 12.5% stake is very high — this is unusual for him:</strong> He rarely holds more than 5% of any company. 12.5% suggests either very early discovery (low valuation) or extremely high conviction. His average cost is likely ₹200–400 vs current ₹1,885. He's already made 4–8x on this position. For Garvit entering at current price, the upside is more limited — 1.5–2x is more realistic than 3x unless Beta Drugs's revenue significantly accelerates.</div>
+</div>
+
+<!-- GUIDANCE -->
+<div id="guidance" class="panel">
+  <div class="sh">Guidance from Kacholia portfolio stocks — what management has guided</div>
+
+  <div class="sh" style="margin-top:8px">Balu Forge Industries — FY27 guidance</div>
+  <div class="guid-card beat"><div class="guid-h">✓ FY27 machining capacity to 80,000 TPA at Belgaum + Defence 30%+ of revenue</div><div class="guid-b">Management guided scaling machining capacity to 80,000 TPA at the Belgaum facility by FY27. The dedicated 155mm artillery shell line (360,000 shells/year) is now operational. Defence/Aerospace/Railway is 40% of the current order book — expect this to become 30–35% of revenue by FY27. Management specifically cited confidence in 25–30% revenue growth for FY27 with improving margins as the Belgaum facility achieves scale. NATO supply chain induction opens European defence export opportunities.</div><div class="guid-s">Credibility: 8/10. Capacity investments already made and commissioned — revenue ramp is mechanical not discretionary.</div></div>
+
+  <div class="guid-card watch"><div class="guid-h">⚠ Promoter pledge (March 2026) — needs explanation at May 12 results</div><div class="guid-b">The pledge of 875,000 shares to Aditya Birla Capital (March 16, 2026) needs to be addressed by management at the Q4 FY26 results call (May 12, 2026). Is this for working capital to fund the Belgaum expansion, or is it personal financing? The nature of the pledge matters. If it's company-related growth financing, it's manageable. If it's personal borrowing, it reduces governance comfort.</div><div class="guid-s">Watch Q4 May 12 call specifically for management commentary on the pledge and whether it will increase or decrease.</div></div>
+
+  <div class="sh">Knowledge Marine — FY27 guidance</div>
+  <div class="guid-card beat"><div class="guid-h">✓ Revenue target ₹500–700 Cr by FY28 from current ₹236 Cr — 2–3x growth guided</div><div class="guid-b">Management explicitly guided revenue of ₹500–700 Cr within 3 years from the shipbuilding capex of ₹100 Cr. The 15-year green tug contract (₹700 Cr total = ₹47 Cr/year annuity) provides long-term revenue visibility. IWAI inland waterways orders continue to grow. Tonnage tax scheme effective for 10 years — sustained tax benefit locked in. Orderbook ₹1,500 Cr = 6x annual revenue = strong near-term visibility.</div><div class="guid-s">Credibility: 7/10. Revenue trajectory is clear but lumpiness makes quarterly comparisons unreliable.</div></div>
+
+  <div class="sh">Zaggle Prepaid — FY27 guidance (Garvit already holds)</div>
+  <div class="guid-card beat"><div class="guid-h">✓ FY27 revenue growth 40%+ — Kacholia's continued holding validates</div><div class="guid-b">Zaggle guided 40%+ revenue growth for FY27. Management expects margin expansion from FY26 base as the SaaS/fintech platform reaches scale. Kacholia holding 2.24% stake (₹128 Cr value) confirms this is not a stock he's exiting — he finds the valuation justified at current levels. This is a strong cross-validation for Garvit's existing 450-share position.</div><div class="guid-s">Kacholia + Garvit both holding Zaggle = strong confluence signal.</div></div>
+</div>
+
+<!-- COMPARE -->
+<div id="compare" class="panel">
+  <div class="sh">Sector comparisons — Kacholia's picks vs Garvit's current holdings</div>
+
+  <div style="border:1px solid #ddd;border-radius:10px;overflow:hidden;font-size:11px;margin-bottom:12px">
+    <div class="comp-h">
+      <div class="cc-h" style="background:#f5f5f3">Metric</div>
+      <div class="cc-h" style="background:#E8F5E9;color:#1B5E20">Balu Forge (Kacholia)</div>
+      <div class="cc-h" style="background:#E3F2FD;color:#0D47A1">DEE Development (Garvit)</div>
+      <div class="cc-h" style="background:#f5f5f3">Bondada Engineering (Garvit)</div>
+    </div>
+    <div class="comp-row"><div class="cc cc-label">Category</div><div class="cc">Precision forging + Defence</div><div class="cc winner-cell">Industrial piping + Nuclear</div><div class="cc winner-cell">Solar EPC + T&amp;D + Defence</div></div>
+    <div class="comp-row"><div class="cc cc-label">Market cap</div><div class="cc loser-cell">₹6,802 Cr</div><div class="cc winner-cell">₹2,100 Cr (better size)</div><div class="cc mid-cell">₹3,828 Cr</div></div>
+    <div class="comp-row"><div class="cc cc-label">Revenue growth (FY26)</div><div class="cc mid-cell">+21% (YTD +29%)</div><div class="cc winner-cell">+25–30%</div><div class="cc winner-cell">+81%</div></div>
+    <div class="comp-row"><div class="cc cc-label">PAT margin</div><div class="cc winner-cell">22–23% (excellent)</div><div class="cc mid-cell">~12–15%</div><div class="cc mid-cell">~7.4%</div></div>
+    <div class="comp-row"><div class="cc cc-label">Defence exposure</div><div class="cc winner-cell">20% + growing + artillery shells</div><div class="cc mid-cell">Nuclear piping + DRDO</div><div class="cc winner-cell">BEL order + BESS defence</div></div>
+    <div class="comp-row"><div class="cc cc-label">Promoter pledge?</div><div class="cc loser-cell">Yes — new March 2026 ⚠</div><div class="cc winner-cell">No pledge</div><div class="cc winner-cell">No pledge</div></div>
+    <div class="comp-row"><div class="cc cc-label">3x probability</div><div class="cc mid-cell">20–25%</div><div class="cc winner-cell">25–30%</div><div class="cc winner-cell">40–45%</div></div>
+    <div class="comp-row"><div class="cc cc-label">Verdict for Garvit</div><div class="cc">Consider small ₹20K position</div><td class="cc winner-cell">✅ Already held — add more</td><td class="cc winner-cell">✅ Core position — hold all</td></div>
+  </div>
+
+  <div style="border:1px solid #ddd;border-radius:10px;overflow:hidden;font-size:11px">
+    <div class="comp-h">
+      <div class="cc-h" style="background:#f5f5f3">Metric</div>
+      <div class="cc-h" style="background:#EDE7F6;color:#4527A0">KMEW (Kacholia)</div>
+      <div class="cc-h" style="background:#E3F2FD;color:#0D47A1">Enviro Infra (Garvit)</div>
+      <div class="cc-h" style="background:#f5f5f3">RBM Infra (Garvit)</div>
+    </div>
+    <div class="comp-row"><div class="cc cc-label">Category</div><div class="cc">Marine dredging + shipbuilding</div><div class="cc">Water EPC + BESS</div><div class="cc">Oil/gas EPC + semiconductor</div></div>
+    <div class="comp-row"><div class="cc cc-label">Market cap</div><div class="cc loser-cell">₹4,979 Cr</div><div class="cc winner-cell">₹1,200 Cr (better)</div><div class="cc winner-cell">₹2,200 Cr</div></div>
+    <div class="comp-row"><div class="cc cc-label">Revenue growth Q3</div><div class="cc winner-cell">+56% (but lumpy!)</div><div class="cc mid-cell">+25–30%</div><div class="cc mid-cell">+15–20%</div></div>
+    <div class="cc cc-label">Trailing PE</div><div class="cc loser-cell">78x</div><div class="cc winner-cell">~18–22x</div><div class="cc winner-cell">~20–25x</div>
+    <div class="comp-row"><div class="cc cc-label">Revenue lumpiness</div><div class="cc loser-cell">Very high (Q2 -4.4% YoY)</div><div class="cc mid-cell">Some (project timing)</div><div class="cc mid-cell">Moderate</div></div>
+    <div class="comp-row"><div class="cc cc-label">Debt risk</div><div class="cc loser-cell">Borrowing limit ₹500→₹1,200 Cr</div><div class="cc winner-cell">Low debt</div><div class="cc winner-cell">Moderate</div></div>
+    <div class="comp-row"><div class="cc cc-label">3x probability</div><div class="cc mid-cell">15–20%</div><div class="cc winner-cell">20–25% (if audit clean)</div><td class="cc mid-cell">15–20%</td></div>
+  </div>
+</div>
+
+<!-- GARVIT'S FILTER -->
+<div id="filter" class="panel">
+  <div class="sh">Applying Garvit's 3x filter to Kacholia's entire portfolio</div>
+  <div class="warn whale"><strong>The critical insight:</strong> Garvit should NOT blindly copy Kacholia's portfolio. Kacholia's cost basis is typically 40–70% below current market prices — stocks he's held for 3+ years have already appreciated significantly. Entering at current prices means the "Kacholia discount" is gone. The right approach: identify stocks where Kacholia's thesis is STILL playing out and enough room exists for the stock to grow 3x FROM CURRENT PRICE.</div>
+
+  <div class="sh">Complete Kacholia portfolio screened against Garvit's 3x criteria</div>
+  <table>
+    <tr><th>Stock</th><th>Mcap</th><th>Revenue CAGR</th><th>PAT margin</th><th>PE</th><th>Promoter %</th><th>Pledge?</th><th>3x prob.</th><th>Garvit action</th></tr>
+    <tr style="background:#E8F5E9"><td><strong>Balu Forge ⭐</strong></td><td class="a">₹6,802 Cr</td><td class="g">+50% 5yr</td><td class="g">23%</td><td class="a">26x</td><td class="g">54%</td><td class="r">Yes (new)</td><td class="g">20–25%</td><td><span class="badge bg">Small buy ₹20–25K</span></td></tr>
+    <tr style="background:#E8F5E9"><td><strong>Zaggle ✅ Already held</strong></td><td class="a">₹4,800 Cr</td><td class="g">+35%</td><td class="a">10–12%</td><td class="a">30x</td><td class="a">48%</td><td class="g">No</td><td class="a">20–25%</td><td><span class="badge bg">HOLD — Kacholia validates!</span></td></tr>
+    <tr><td>Beta Drugs</td><td class="g">₹1,903 Cr</td><td class="g">+25–30%</td><td class="g">18–20%</td><td class="a">24x</td><td class="g">62%</td><td class="g">No</td><td class="a">15–20%</td><td><span class="badge ba">Watchlist ₹1,300</span></td></tr>
+    <tr><td>Knowledge Marine</td><td class="a">₹4,979 Cr</td><td class="g">+50%</td><td class="g">34%</td><td class="r">78x</td><td class="a">53%</td><td class="g">No</td><td class="a">15–20%</td><td><span class="badge ba">Too expensive</span></td></tr>
+    <tr><td>Shaily Engineering</td><td class="r">₹9,273 Cr</td><td class="a">+15–20%</td><td class="a">12%</td><td class="r">35–40x</td><td class="a">55%</td><td class="g">No</td><td class="r">8–10%</td><td><span class="badge br">Too large</span></td></tr>
+    <tr><td>Aeroflex Industries</td><td class="g">₹2,800 Cr</td><td class="g">+30%</td><td class="a">15%</td><td class="a">30x</td><td class="g">55%</td><td class="g">No</td><td class="a">18–22%</td><td><span class="badge ba">Monitor</span></td></tr>
+    <tr><td>AMI Organics</td><td class="a">₹5,500 Cr</td><td class="a">+18%</td><td class="a">15%</td><td class="r">45x</td><td class="a">50%</td><td class="g">No</td><td class="r">10–12%</td><td><span class="badge br">Too expensive</span></td></tr>
+    <tr><td>Jain Resource Recycling</td><td class="a">₹2,800 Cr</td><td class="g">+40%</td><td class="a">12%</td><td class="a">25x</td><td class="a">52%</td><td class="g">No</td><td class="a">18–22%</td><td><span class="badge ba">Compare Eco Recycling</span></td></tr>
+    <tr><td>Fineotex Chemical</td><td class="g">₹3,200 Cr</td><td class="r">+8–10%</td><td class="g">20%</td><td class="a">22x</td><td class="g">68%</td><td class="g">No</td><td class="r">8–12%</td><td><span class="badge br">Growth too slow</span></td></tr>
+    <tr><td>All others (BEW, TechEra, Naman etc.)</td><td class="g">&lt;₹500 Cr</td><td>Unknown</td><td>Unknown</td><td>N/A</td><td>N/A</td><td>N/A</td><td class="r">Too small</td><td><span class="badge br">Micro-cap</span></td></tr>
+  </table>
+</div>
+
+<!-- VERDICT -->
+<div id="verdict" class="panel">
+  <div class="sh">The definitive verdict — which Kacholia stocks belong in Garvit's 3x portfolio</div>
+
+  <div class="garvit-action">
+    <div class="ga-h">🎯 Summary: 1 BUY recommendation, 1 validation, 1 watchlist, rest skip</div>
+    <div class="ga-b">
+    From Ashish Kacholia's entire 49-stock portfolio, applying Garvit's strict 3x-in-3-years filter:<br><br>
+    <strong>✅ RECOMMENDATION 1 — BUY Balu Forge Industries (small position ₹20,000–25,000):</strong><br>
+    Balu Forge is the single best Kacholia holding that Garvit doesn't own and should consider. Why: (1) Precision engineering + defence forging with 50% 5-year revenue CAGR, (2) Defence exposure at 20% growing to 35–40% — Operation Sindoor adds urgency to Indian artillery ammunition indigenisation, (3) PAT margin 22–23% (one of the highest in Kacholia's portfolio), (4) Kacholia holds ₹117 Cr (1.66% stake) — meaningful conviction, (5) Q4 FY26 results May 12 — if no guidance concern and pledge explained positively, it's a strong entry. HOWEVER: market cap ₹6,802 Cr is on the larger side for 3x math. Keep position small (₹20–25K) as a satellite, not a core position. Priority remains RPSG Ventures + Muthoot Microfin + DEE Development.<br><br>
+    <strong>✅ RECOMMENDATION 2 — ZAGGLE ALREADY HELD (validates existing position):</strong><br>
+    Kacholia holds 2.24% (₹128 Cr) in Zaggle. This is a powerful cross-validation — two independent investors with completely different research processes both own the same stock. Kacholia's continued holding (he has not sold) says the FY27 40% guidance is credible. Garvit's 450 shares at ₹229 avg is a good position — HOLD firmly. The Kacholia validation should give Garvit confidence to not panic on any short-term weakness.<br><br>
+    <strong>📋 WATCHLIST — Beta Drugs (monitor for FY27 revenue acceleration):</strong><br>
+    Kacholia's 12.5% stake is his highest-conviction pharma bet. At ₹1,903 Cr mcap with 30% annual PAT growth, if PAT reaches ₹200+ Cr by FY28 at 25x PE = ₹5,000 Cr = 2.6x. The 3x case is possible but requires revenue acceleration beyond historical pace. No urgent action for Garvit — set a watchlist at ₹1,200 (current ~₹1,885) for potential entry if there's a sector-driven correction.<br><br>
+    <strong>❌ SKIP — Knowledge Marine (78x PE), Shaily Engineering (₹9,273 Cr too large), all micro-caps:</strong><br>
+    KMEW at 78x PE with revenue lumpiness (Q2 FY26 declined -4.4% YoY) is too expensive for Garvit's 3x goal. Even Kacholia's position at current prices is likely held from much lower levels. Better dredging/marine exposure doesn't exist at a reasonable valuation currently.
+    </div>
+  </div>
+
+  <div class="sh">Garvit's specific action items from this analysis</div>
+  <table>
+    <tr><th>Action</th><th>Stock</th><th>Amount</th><th>When</th><th>Rationale</th></tr>
+    <tr><td><span class="badge bg">BUY — small position</span></td><td>Balu Forge Industries (BALUFORGE)</td><td>₹20,000–25,000</td><td>AFTER May 12 Q4 results — if pledge explained + no guidance cut</td><td>Kacholia holds; 50% 5yr revenue CAGR; defence inflection (Operation Sindoor tailwind); PAT 22–23%; precision manufacturing moat. Keep small — it's a satellite bet, not core. Fund from Nurture Well trim proceeds (₹36K).</td></tr>
+    <tr><td><span class="badge bg">HOLD — strong signal</span></td><td>Zaggle Prepaid (already in portfolio)</td><td>Keep 450 shares</td><td>Already held — maintain</td><td>Kacholia's 2.24% stake = direct cross-validation of Garvit's thesis. Both investors hold the same stock. Don't trim Zaggle — the Kacholia holding adds conviction to the existing 450-share position.</td></tr>
+    <tr><td><span class="badge ba">WATCHLIST</span></td><td>Beta Drugs (BETADRUGS)</td><td>Watchlist at ₹1,200</td><td>Only if corrects 35%</td><td>Oncology niche + Kacholia 12.5% stake = genuine quality signal. But at current ₹1,885 the 3x math is stretched. Buy only if pharma sector correction brings it to ₹1,200–1,300.</td></tr>
+    <tr><td><span class="badge bgray">WATCHLIST</span></td><td>Jain Resource Recycling</td><td>Watchlist</td><td>When FY26 full results published</td><td>Kacholia holds. Similar to Eco Recycling thesis (recycling + compliance). Compare both on FY26 results — the better-valued one gets a speculative ₹15K position.</td></tr>
+    <tr><td><span class="badge br">SKIP all others</span></td><td>All remaining Kacholia holdings</td><td>₹0</td><td>—</td><td>Either too large (Shaily, AMI Organics), too expensive (KMEW at 78x PE, Tanfac), too slow-growing (Fineotex), or too small/unknown (BEW, Naman, Finbud, etc.). None pass Garvit's 3x filter better than existing positions.</td></tr>
+  </table>
+
+  <div class="sh">The most important lesson from Kacholia's approach for Garvit</div>
+  <div class="verdict-card" style="background:#EDE7F6;border:1px solid #CE93D8">
+    <div class="vc-h" style="color:#4527A0">🐋 What Kacholia's approach teaches about Garvit's existing portfolio</div>
+    <div class="vc-b">
+    Studying Kacholia's portfolio reveals that Garvit already owns some excellent stocks — but confirms the core problem: too many low-conviction positions diluting capital that should be in high-conviction ones.<br><br>
+    <strong>Where Garvit IS already Kacholia-aligned:</strong><br>
+    • Zaggle ✅ — Kacholia holds 2.24%. Validates Garvit's existing position<br>
+    • Bondada Engineering — Would be a Kacholia pick at this stage (SME→mainboard, clear moat, promoter buying)<br>
+    • DEE Development — Classic Kacholia niche industrial with nuclear optionality<br>
+    • Borana Weaves — Small-cap textile compounder = Kacholia's favourite pattern<br>
+    • EFC (I) — Industrial workspace monopoly = typical Kacholia niche discovery<br><br>
+    <strong>Where Garvit diverges from Kacholia's discipline:</strong><br>
+    • Kacholia would have ALREADY exited Delton Cables and RBZ Jewellers (no moat, no thesis)<br>
+    • Kacholia would NOT hold Nurture Well at such large allocation vs conviction<br>
+    • Kacholia would NEVER have 24 stocks — he typically holds 15–25 with real conviction in each<br>
+    • Kacholia would have bought RPSG Ventures already (NAV discount plays are exactly his pattern)<br><br>
+    <strong>The Kacholia portfolio insight for Garvit's execution:</strong> The "Big Whale" creates his returns not just from stock picking but from POSITION SIZING — big bets on high conviction, small/zero on low conviction. Garvit's portfolio quality score improves more from exiting Delton + RBZ + trimming Nurture Well than from adding any new Kacholia stock right now.
+    </div>
+  </div>
+
+  <div class="warn whale" style="margin-top:12px"><strong>One-line Kacholia summary for Garvit:</strong> Ashish Kacholia's ₹2,500 Cr portfolio teaches us that concentrated bets on small-cap niche monopolies with 25%+ revenue CAGR, promoter buying, and zero pledge compound wealth at 15%+ CAGR over 20 years. From his 49 holdings, only ONE — Balu Forge Industries — passes Garvit's strict 3x filter at current market conditions (defence precision engineering, 50% revenue CAGR, 22% PAT margins, reasonable entry at ₹680). One existing holding — Zaggle Prepaid — gets a powerful validation signal from Kacholia's concurrent 2.24% stake. Everything else in Kacholia's portfolio either has better equivalents already in Garvit's portfolio, or is too large/expensive/slow for the 3-year 3x target.</div>
+</div>
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/4.4.1/chart.umd.js"></script>
+<script>
+function show(id,btn){
+  document.querySelectorAll('.tab').forEach(t=>t.classList.remove('active'));
+  document.querySelectorAll('.panel').forEach(p=>p.classList.remove('active'));
+  btn.classList.add('active');
+  document.getElementById(id).classList.add('active');
+}
+new Chart(document.getElementById('brc').getContext('2d'),{
+  type:'bar',
+  data:{
+    labels:['FY22','FY23','FY24','FY25','9M FY26','FY26E','FY27E','FY28E'],
+    datasets:[
+      {label:'Revenue ₹ Cr',data:[286,470,740,923,844,1113,1450,2100],backgroundColor:['#1D9E75','#1D9E75','#1D9E75','#1D9E75','#1D9E75','#1D9E75','#A5D6A7','#A5D6A7'],borderRadius:4,yAxisID:'y'},
+      {label:'PAT ₹ Cr',data:[25,60,130,204,193,256,390,650],type:'line',borderColor:'#4527A0',backgroundColor:'transparent',pointBackgroundColor:'#4527A0',tension:0.3,yAxisID:'y2'},
+      {label:'Defence %',data:[5,10,15,18,20,21,30,38],type:'line',borderColor:'#A32D2D',backgroundColor:'transparent',pointBackgroundColor:'#A32D2D',tension:0.3,borderDash:[5,3],yAxisID:'y2'}
+    ]
+  },
+  options:{responsive:true,maintainAspectRatio:false,plugins:{legend:{position:'top',labels:{font:{size:10},boxWidth:10}}},scales:{y:{ticks:{font:{size:10}}},y2:{position:'right',ticks:{font:{size:10}},grid:{drawOnChartArea:false}},x:{ticks:{font:{size:10}}}}}
+});
+</script>
+</body>
+</html>

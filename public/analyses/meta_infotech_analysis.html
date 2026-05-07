@@ -1,0 +1,417 @@
+<!DOCTYPE html>
+<html><head><meta charset="utf-8">
+<style>
+*{box-sizing:border-box;margin:0;padding:0}
+body{font-family:system-ui,sans-serif;padding:16px;background:#fff;color:#1a1a1a;font-size:14px}
+h1{font-size:20px;font-weight:500;margin-bottom:3px}
+.sub{font-size:12px;color:#666;margin-bottom:14px}
+.sg{display:grid;grid-template-columns:repeat(auto-fill,minmax(110px,1fr));gap:8px;margin-bottom:16px}
+.sc{background:#f5f5f3;border-radius:8px;padding:10px 12px}
+.sl{font-size:10px;color:#666;margin-bottom:2px}
+.sv{font-size:17px;font-weight:500}
+.tab-row{display:flex;gap:5px;flex-wrap:wrap;margin-bottom:14px}
+.tab{font-size:11.5px;padding:5px 13px;border-radius:20px;border:1px solid #ddd;background:#fff;cursor:pointer;white-space:nowrap}
+.tab.active{background:#1a1a1a;color:#fff;border-color:#1a1a1a}
+.panel{display:none}.panel.active{display:block}
+.sh{font-size:10.5px;font-weight:500;color:#666;text-transform:uppercase;letter-spacing:.06em;margin:16px 0 7px;padding-bottom:5px;border-bottom:1px solid #eee}
+table{width:100%;border-collapse:collapse;font-size:12px;margin:8px 0}
+th{font-size:10.5px;font-weight:500;color:#666;padding:5px 7px;text-align:left;border-bottom:1px solid #eee;white-space:nowrap}
+td{padding:8px 7px;border-bottom:1px solid #eee;color:#1a1a1a;vertical-align:top}
+tr:last-child td{border-bottom:none}
+tr:hover td{background:#fafaf9}
+.g{color:#0F6E56;font-weight:500}.r{color:#A32D2D;font-weight:500}.a{color:#854F0B;font-weight:500}.b{color:#185FA5;font-weight:500}
+.badge{display:inline-block;font-size:10px;padding:2px 7px;border-radius:10px;white-space:nowrap}
+.bg{background:#E1F5EE;color:#0F6E56}.bb{background:#E6F1FB;color:#185FA5}.ba{background:#FAEEDA;color:#854F0B}.br{background:#FCEBEB;color:#A32D2D}.bgray{background:#f1f0e8;color:#5F5E5A}.bcyb{background:#E0F2F1;color:#004D40}.bsme{background:#EDE7F6;color:#4527A0}
+.warn{padding:10px 13px;margin:8px 0;border-left:3px solid;font-size:12px;line-height:1.65}
+.warn.success{background:#E1F5EE;border-color:#1D9E75;color:#04342C}
+.warn.caution{background:#FAEEDA;border-color:#BA7517;color:#412402}
+.warn.danger{background:#FCEBEB;border-color:#A32D2D;color:#712B13}
+.warn.info{background:#E6F1FB;border-color:#185FA5;color:#042C53}
+.warn.cyb{background:#E0F2F1;border-color:#0097A7;color:#00363A}
+.warn.asm{background:#FFF3E0;border-color:#F57C00;color:#3E2723}
+.warn strong{font-weight:500}
+.chart-wrap{position:relative;width:100%;height:240px;margin:8px 0}
+.kpi-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:10px;margin:10px 0}
+.kpi{background:#f5f5f3;border-radius:8px;padding:10px 12px;border-left:3px solid transparent}
+.kpi.green{border-left-color:#1D9E75}.kpi.amber{border-left-color:#EF9F27}.kpi.blue{border-left-color:#378ADD}.kpi.red{border-left-color:#A32D2D}.kpi.cyb{border-left-color:#0097A7}.kpi.sme{border-left-color:#5E35B1}
+.kpi-l{font-size:10px;color:#666;margin-bottom:3px}
+.kpi-v{font-size:17px;font-weight:500}
+.kpi-s{font-size:10px;color:#888;margin-top:2px}
+.point{display:flex;gap:9px;align-items:flex-start;padding:9px 0;border-bottom:1px solid #eee;font-size:12px;line-height:1.6;color:#555}
+.point:last-child{border-bottom:none}
+.point strong{color:#1a1a1a;font-weight:500}
+.dot{width:19px;height:19px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:10px;font-weight:500;flex-shrink:0;margin-top:1px}
+.dg{background:#E1F5EE;color:#0F6E56}.dr{background:#FCEBEB;color:#A32D2D}.da{background:#FAEEDA;color:#854F0B}.db{background:#E6F1FB;color:#185FA5}.dc{background:#E0F2F1;color:#004D40}.ds{background:#EDE7F6;color:#4527A0}
+.two-col{display:grid;grid-template-columns:1fr 1fr;gap:12px}
+.pane{border:1px solid #ddd;border-radius:10px;padding:13px}
+.pane-h{font-size:13px;font-weight:500;margin-bottom:9px}
+.scenario{border:1px solid #ddd;border-radius:10px;padding:13px;margin-bottom:9px}
+.sc-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:7px;margin:9px 0}
+.sc-cell{background:#f5f5f3;border-radius:6px;padding:7px 9px}
+.sc-l{font-size:10px;color:#666}
+.sc-v{font-size:12px;font-weight:500;margin-top:2px}
+.comp-h{display:grid;grid-template-columns:155px repeat(3,1fr);background:#f5f5f3;border-radius:8px 8px 0 0;overflow:hidden}
+.comp-row{display:grid;grid-template-columns:155px repeat(3,1fr);border-bottom:1px solid #eee}
+.comp-row:last-child{border-bottom:none}
+.cc{padding:8px 10px;font-size:11px;border-right:1px solid #eee}
+.cc:last-child{border-right:none}
+.cc-h{font-size:10px;font-weight:500;color:#444;padding:8px 10px;border-right:1px solid #ddd}
+.cc-h:last-child{border-right:none}
+.cc-label{color:#666;font-size:11px}
+.winner-cell{background:#E1F5EE}.mid-cell{background:#FAEEDA}.loser-cell{background:#fff5f5}
+.verdict-card{border-radius:10px;padding:13px 15px;margin-bottom:10px}
+.vc-h{font-size:13px;font-weight:500;margin-bottom:6px}
+.vc-b{font-size:12px;line-height:1.65;color:#444}
+.sector-card{border:1px solid #ddd;border-radius:10px;overflow:hidden;margin-bottom:10px}
+.sc-hdr{padding:10px 13px;display:flex;justify-content:space-between;align-items:center;background:#fafaf9}
+.sc-nm{font-size:13px;font-weight:500}
+.sc-tg{font-size:11px;color:#666;margin-top:2px}
+.sc-bd{padding:10px 13px;font-size:12px;line-height:1.65;color:#555;border-top:1px solid #eee}
+.sc-bd strong{color:#1a1a1a}
+.guid-card{border-radius:10px;padding:12px 14px;margin-bottom:8px;border-left:3px solid #0097A7;background:#E0F2F1}
+.guid-h{font-size:11.5px;font-weight:500;margin-bottom:4px;color:#004D40}
+.guid-b{font-size:11.5px;color:#333;line-height:1.6}
+.guid-s{font-size:10px;color:#888;margin-top:4px}
+.guid-card.miss{background:#FCEBEB;border-left-color:#A32D2D}.guid-card.miss .guid-h{color:#A32D2D}
+.guid-card.watch{background:#FAEEDA;border-left-color:#BA7517}.guid-card.watch .guid-h{color:#854F0B}
+.redflag-box{background:#FCEBEB;border:2px solid #A32D2D;border-radius:10px;padding:13px;margin:10px 0}
+.rf-h{font-size:14px;font-weight:500;color:#A32D2D;margin-bottom:8px}
+.rf-b{font-size:12px;color:#333;line-height:1.7}
+.asm-box{background:#FFF3E0;border:2px solid #F57C00;border-radius:10px;padding:13px;margin:10px 0}
+.asm-h{font-size:13px;font-weight:500;color:#E65100;margin-bottom:6px}
+.asm-b{font-size:12px;color:#1a1a1a;line-height:1.65}
+.rev-bar{display:flex;align-items:center;gap:8px;margin:5px 0}
+.rb-label{font-size:11px;color:#555;width:160px;flex-shrink:0}
+.rb-track{flex:1;background:#f5f5f3;border-radius:4px;height:15px;overflow:hidden}
+.rb-fill{height:100%;border-radius:4px;display:flex;align-items:center;padding-left:6px;font-size:9px;font-weight:600;color:#fff}
+.rb-val{font-size:11px;font-weight:500;width:90px;text-align:right}
+</style>
+</head>
+<body>
+
+<h1>Meta Infotech Ltd — Deep Investment Analysis</h1>
+<div class="sub">BSE SME: 544441 · Cybersecurity solutions (SASE, Cloud Security, Sustenance) · Founded 1998 · CMD: Venu Gopal Peruri · Mumbai (Andheri East) · IPO Jul 2025 at ₹161 · Market cap ~₹158 Cr · Stock -48% from IPO price · On ASM list</div>
+
+<div class="sg">
+  <div class="sc"><div class="sl">Market cap</div><div class="sv" style="color:#854F0B">~₹158 Cr</div></div>
+  <div class="sc"><div class="sl">FY25 revenue</div><div class="sv" style="color:#1D9E75">₹220 Cr</div></div>
+  <div class="sc"><div class="sl">FY25 PAT</div><div class="sv" style="color:#1D9E75">₹14.5 Cr</div></div>
+  <div class="sc"><div class="sl">Revenue CAGR (3yr)</div><div class="sv" style="color:#1D9E75">42%</div></div>
+  <div class="sc"><div class="sl">Order book</div><div class="sv" style="color:#185FA5">₹514 Cr</div></div>
+  <div class="sc"><div class="sl">Trailing PE</div><div class="sv" style="color:#1D9E75">~11x</div></div>
+  <div class="sc"><div class="sl">ROCE</div><div class="sv" style="color:#1D9E75">38%</div></div>
+  <div class="sc"><div class="sl">⚠ Promoter sold</div><div class="sv" style="color:#A32D2D">26% post-IPO</div></div>
+  <div class="sc"><div class="sl">⚠ ASM status</div><div class="sv" style="color:#A32D2D">Yes (SEBI)</div></div>
+  <div class="sc"><div class="sl">⚠ Client concentration</div><div class="sv" style="color:#A32D2D">1 client &gt;50%</div></div>
+  <div class="sc"><div class="sl">52-wk range</div><div class="sv" style="color:#A32D2D">₹76–₹250</div></div>
+  <div class="sc"><div class="sl">Daily volume</div><div class="sv" style="color:#A32D2D">~8,800 shares</div></div>
+</div>
+
+<div class="tab-row">
+  <button class="tab active" onclick="show('redflag',this)">🚨 Red flags first</button>
+  <button class="tab" onclick="show('revenue',this)">Revenue history</button>
+  <button class="tab" onclick="show('sectorKPI',this)">Sector KPIs</button>
+  <button class="tab" onclick="show('business',this)">Business model</button>
+  <button class="tab" onclick="show('guidance',this)">Guidance</button>
+  <button class="tab" onclick="show('risks',this)">Risks</button>
+  <button class="tab" onclick="show('scenarios',this)">3x scenarios</button>
+  <button class="tab" onclick="show('compare',this)">Sector peers</button>
+  <button class="tab" onclick="show('verdict',this)">Verdict</button>
+</div>
+
+<!-- RED FLAGS -->
+<div id="redflag" class="panel active">
+  <div class="sh">Start here — 5 serious red flags that demand immediate attention before any analysis</div>
+
+  <div class="redflag-box">
+    <div class="rf-h">🚨 The 5 red flags that together make Meta Infotech uninvestable at this stage</div>
+    <div class="rf-b">
+    <strong>1. ASM (Additional Surveillance Measure) by SEBI</strong><br>
+    Meta Infotech is on SEBI's Additional Surveillance Measure list. This is a serious regulatory signal — SEBI places stocks on ASM when they detect unusual price/volume activity suggesting possible manipulation. ASM stocks face circuit limits, increased margins, and reduced institutional participation. Stocks on ASM are explicitly avoided by most institutional investors and should be approached with extreme caution by retail investors.<br><br>
+    <strong>2. Promoter sold 26% stake in 2 months after IPO (94.94% → 68.90%)</strong><br>
+    This is the single most damaging governance signal in this analysis. The IPO was in July 2025, and by September 2025, promoters had already sold 26% of their stake — from 94.94% to 68.90% in just 2 months. This is the opposite of what healthy promoter behavior looks like. Compare to Bondada Engineering where the promoter was BUYING shares in the open market. At Meta Infotech, the promoters used the IPO as a liquidity event to exit as fast as possible, not to fund company growth (75% of the IPO was OFS — offer for sale by existing shareholders, not fresh capital for the company).<br><br>
+    <strong>3. 75% of IPO was OFS — most proceeds went to selling shareholders, not the company</strong><br>
+    Only 25% of the ₹80 Cr IPO was fresh issue (company received ~₹20 Cr). The remaining ₹60 Cr went to existing shareholders exiting. This is a very unfavorable IPO structure — the company is at ₹158 Cr market cap today without growing its own capital base significantly.<br><br>
+    <strong>4. Single client >50% revenue — extreme concentration risk</strong><br>
+    Over 50% of Meta Infotech's revenue comes from a single client (a large bank). And over 72.6% of revenue comes from the banking sector. If this single client reduces purchases, delays renewals, or switches vendor, Meta Infotech's revenue could halve in one year. The IPO review analysts flagged this as a "major concern" specifically.<br><br>
+    <strong>5. "Boosted bottom lines from FY24 onwards raise eyebrows" — analyst concern about earnings quality</strong><br>
+    Independent IPO analysts (chittorgarh.com — one of India's most respected SME IPO analysts) specifically flagged that profit margins improved suspiciously in FY24 and FY25. PAT margins: FY23: 6.04% → FY24: 6.91% → FY25: 6.63%. While these are consistent, the absolute PAT numbers doubled very quickly. Combined with the OFS structure and promoter selling, this raises questions about whether reported earnings reflect real cash flows.</div>
+  </div>
+
+  <div class="asm-box">
+    <div class="asm-h">⚠️ ASM (Additional Surveillance Measure) — what this means for investors</div>
+    <div class="asm-b">SEBI's ASM framework places stocks with unusual price-volume patterns under enhanced surveillance. Consequences: (1) Circuit breaker limits tightened (often 2–5% up/down vs normal 10–20%), (2) Higher margin requirements for trading (often 100% margin), (3) Institutional investors cannot buy ASM stocks, (4) Many brokers restrict buying, (5) Exit becomes very difficult in a falling market. The stock cannot re-rate to higher PE while on ASM because institutional buyers are locked out. Until the stock comes off ASM, the valuation ceiling is artificially suppressed by the regulatory constraint. This is not just a governance concern — it is a practical trading constraint that prevents normal price discovery.</div>
+  </div>
+
+  <div class="warn caution"><strong>Important clarification before reading further:</strong> Meta Infotech has genuine underlying business growth — 42% revenue CAGR, ₹514 Cr order book, high ROCE (38%), and exposure to the right sector (cybersecurity). The concern is NOT that the business is fraudulent — it may be perfectly legitimate. The concern is that the combination of ASM + promoter exit + OFS IPO + client concentration creates a risk profile that is inappropriate for Garvit's aggressive but risk-managed 3x portfolio. There are much better risk/reward options available from the same or better sector exposure.</div>
+</div>
+
+<!-- REVENUE -->
+<div id="revenue" class="panel">
+  <div class="sh">Revenue &amp; profit history — genuine 42% CAGR, but with caveats</div>
+  <div class="chart-wrap"><canvas id="rc"></canvas></div>
+  <div style="display:flex;gap:14px;font-size:11.5px;color:#666;margin-bottom:10px">
+    <span><span style="display:inline-block;width:10px;height:10px;border-radius:2px;background:#0097A7;margin-right:4px"></span>Revenue ₹ Cr</span>
+    <span><span style="display:inline-block;width:10px;height:10px;border-radius:2px;background:#1D9E75;margin-right:4px"></span>PAT ₹ Cr</span>
+    <span><span style="display:inline-block;width:10px;height:10px;border-radius:2px;background:#80DEEA;margin-right:4px"></span>Projected</span>
+  </div>
+
+  <div class="sh">Revenue concentration — where the money comes from</div>
+  <div class="rev-bar"><div class="rb-label">Banking sector revenue</div><div class="rb-track"><div class="rb-fill" style="width:72.6%;background:#A32D2D">72.6% of FY25</div></div><div class="rb-val r">72.6% — extreme</div></div>
+  <div class="rev-bar"><div class="rb-label">Capital markets</div><div class="rb-track"><div class="rb-fill" style="width:7.2%;background:#0097A7">7.2%</div></div><div class="rb-val">7.2%</div></div>
+  <div class="rev-bar"><div class="rb-label">NBFCs</div><div class="rb-track"><div class="rb-fill" style="width:5.9%;background:#0097A7">5.9%</div></div><div class="rb-val">5.9%</div></div>
+  <div class="rev-bar"><div class="rb-label">Others</div><div class="rb-track"><div class="rb-fill" style="width:14.3%;background:#1D9E75">14.3%</div></div><div class="rb-val">14.3%</div></div>
+  <div class="rev-bar"><div class="rb-label">Product sales share</div><div class="rb-track"><div class="rb-fill" style="width:83.8%;background:#5E35B1">83.8% of revenue</div></div><div class="rb-val">83.8% products</div></div>
+
+  <table>
+    <tr><th>Period</th><th>Revenue</th><th>Growth</th><th>EBITDA%</th><th>PAT</th><th>PAT%</th><th>ROCE</th><th>Key event</th></tr>
+    <tr><td>FY23</td><td>₹109.54 Cr</td><td>—</td><td>~8%</td><td>₹6.54 Cr</td><td class="a">5.97%</td><td>33.4%</td><td>Base year. Cybersecurity reselling / distribution model. Banking clients primary. SASE product adoption beginning.</td></tr>
+    <tr><td>FY24</td><td>₹153.05 Cr</td><td class="g">+39.7%</td><td>~9%</td><td>₹10.51 Cr</td><td class="a">6.87%</td><td>48.4%</td><td>Strong growth. SASE (Secure Access Service Edge) becoming >72% of revenue. New OEM partnerships. Client count growing from ~60 to 80.</td></tr>
+    <tr><td>FY25</td><td>₹220.02 Cr</td><td class="g">+43.8%</td><td>~10.1%</td><td>₹14.50 Cr</td><td class="a">6.59%</td><td>37.8%</td><td>Revenue +44%. 87 active clients. IPO July 2025 at ₹161. Order book ₹573 Cr at IPO time. Chennai + Hyderabad expansion planned.</td></tr>
+    <tr><td>H1 FY26</td><td>~₹105–115 Cr</td><td class="g">~+10–15% YoY</td><td>~15%</td><td>₹10.4 Cr</td><td class="g">~9.5%</td><td>—</td><td>H1 FY26 PAT ₹10.4 Cr (+48% CAGR in 2 years). EBITDA ₹15.8 Cr. New office orders: Chennai, Hyderabad opened April 2026. Order book ₹514 Cr.</td></tr>
+    <tr><td>FY26E</td><td>~₹240–265 Cr</td><td class="g">~+9–20%</td><td>~11%</td><td>~₹18–22 Cr</td><td class="a">~7–8%</td><td>~35%</td><td>New geography (Chennai, Hyderabad) adding clients. FY26 order wins continuing (₹1–2.5 Cr tickets). SASE renewals growing. Profitability improving.</td></tr>
+    <tr><td>FY27E</td><td>~₹300–360 Cr</td><td class="g">~+25–40%</td><td>~11–12%</td><td>~₹25–35 Cr</td><td class="a">~8%</td><td>~33%</td><td>IF: New banking clients added. Order book ₹514 Cr converting. Chennai + Hyderabad offices generating revenue. SASE annual renewals compounding.</td></tr>
+    <tr><td>FY28E</td><td>~₹400–500 Cr</td><td class="g">~+33–40%</td><td>~12%</td><td>~₹40–55 Cr</td><td class="a">~9%</td><td>~32%</td><td>IF: 3x thesis requires PAT ₹45 Cr at 10–11x PE = ₹450–495 Cr mcap = 3x from ₹158 Cr.</td></tr>
+  </table>
+
+  <div class="warn cyb"><strong>The revenue quality concern:</strong> 83.8% of Meta Infotech's revenue is product sales — they are primarily a cybersecurity product reseller/distributor for global OEM brands, not a technology product developer. This means revenue growth depends on two things: (1) winning more product distribution contracts from global OEMs, and (2) adding clients. The margin is thin (6–7% PAT on ₹220 Cr revenue) because most of the product value goes to the OEM — Meta Infotech earns a distribution margin. This is fundamentally a distribution/reselling business wearing the "cybersecurity" label — which commands much higher PE multiples than distribution businesses typically deserve.</div>
+</div>
+
+<!-- SECTOR KPIs -->
+<div id="sectorKPI" class="panel">
+  <div class="sh">Cybersecurity sector KPIs — India's fastest-growing IT segment</div>
+  <div class="warn cyb"><strong>The cybersecurity sector is genuinely exciting — India's fastest-growing IT sub-sector.</strong> But there is a critical distinction: Meta Infotech is NOT a cybersecurity technology company like Palo Alto Networks, CrowdStrike, or even Sequretek (India). It is a distributor/reseller of cybersecurity products from global OEMs (Zscaler, Palo Alto, Fortinet etc.). The sector KPIs (market growth, India spend) apply — but Meta Infotech captures only a thin slice of this value chain.</div>
+  <div class="kpi-grid">
+    <div class="kpi cyb"><div class="kpi-l">India cybersecurity market</div><div class="kpi-v">$3.5B (2025)</div><div class="kpi-s">Growing at 14–17% CAGR to $7B by 2030</div></div>
+    <div class="kpi green"><div class="kpi-l">Revenue CAGR (3yr)</div><div class="kpi-v">42%</div><div class="kpi-s">FY23→FY25: ₹110 Cr → ₹220 Cr</div></div>
+    <div class="kpi green"><div class="kpi-l">ROCE</div><div class="kpi-v">38%</div><div class="kpi-s">Excellent capital efficiency</div></div>
+    <div class="kpi red"><div class="kpi-l">Customer concentration</div><div class="kpi-v" style="color:#A32D2D">&gt;50% one client</div><div class="kpi-s">Extreme risk — single client dependency</div></div>
+    <div class="kpi red"><div class="kpi-l">PAT margin</div><div class="kpi-v" style="color:#A32D2D">6–7%</div><div class="kpi-s">Distribution margin — not tech margin</div></div>
+    <div class="kpi amber"><div class="kpi-l">Order book</div><div class="kpi-v">₹514 Cr</div><div class="kpi-s">2.35x FY25 revenue over 5 years</div></div>
+  </div>
+
+  <div class="sh">SASE — the product that drives 72%+ of revenue</div>
+  <div class="point"><div class="dot dc">S</div><div><strong>SASE (Secure Access Service Edge) is genuinely the fastest-growing cybersecurity category globally.</strong> SASE combines network security (firewall, zero trust) with WAN (wide area network) connectivity into a single cloud-delivered service. As India's banks and financial institutions moved to cloud + remote work post-COVID, they needed SASE solutions. Meta Infotech sells SASE from global vendors (likely Zscaler, Palo Alto Prisma, Netskope etc.) to Indian banks. The renewal model means each contract generates annual subscription revenue — creating a compounding base. But the margins are those of a distributor, not a technology company.</div></div>
+  <div class="point"><div class="dot dc">R</div><div><strong>The "sustenance resources" business = IT staffing/managed services:</strong> Meta Infotech also provides on-site IT support staff ("sustenance resources") to banks — essentially IT staff augmentation. The orders for this (₹68L to ₹1 Cr tickets) are very small, low-margin, and commoditised. This part of the business is even lower-quality than the product distribution segment. The combination of both lowers the blended business quality significantly.</div></div>
+</div>
+
+<!-- BUSINESS MODEL -->
+<div id="business" class="panel">
+  <div class="sh">What Meta Infotech actually does — the honest business model description</div>
+  <div class="warn asm"><strong>The most important clarification in this entire analysis:</strong> Meta Infotech markets itself as a "cybersecurity company" — but the accurate description is a cybersecurity product VALUE-ADDED RESELLER (VAR) + IT staffing company. This distinction matters enormously for valuation. Technology companies with proprietary IP trade at 30–80x PE. Distributors/resellers trade at 8–15x PE. Services/staffing companies trade at 12–18x PE. Meta Infotech at the current ₹11x PE is actually trading at a DISTRIBUTION multiple — which is the right multiple for what they do. The risk is that if the market prices it as a "cybersecurity company" at 25–30x, the PE compression risk when fundamentals are understood is severe.</div>
+
+  <div class="two-col" style="margin:10px 0">
+    <div class="pane">
+      <div class="pane-h">Revenue line 1: Cybersecurity Product Reselling (83.8%)</div>
+      <div class="point"><div class="dot dc">+</div><div><strong>What they do:</strong> Meta Infotech is an authorised distributor/VAR for global cybersecurity OEMs. They buy Zscaler, Palo Alto Networks, Fortinet (or similar) SASE/cloud security licenses and resell them to Indian banks and financial institutions. The gross margin is typically 8–15% for cybersecurity distributors (the OEM takes the bulk of the value). This accounts for 83.8% of revenue but explains why PAT margin is only 6–7%.</div></div>
+      <div class="point"><div class="dot da">!</div><div><strong>The dependency risk:</strong> 86.19% of purchases in FY25 were imported — from global OEMs. If Zscaler or Palo Alto changes their India distribution policy (as has happened in the industry before), Meta Infotech's entire product supply chain is disrupted. The top vendor relationship has no long-term contract. This is an existential supply risk that most investors in this stock may not appreciate.</div></div>
+    </div>
+    <div class="pane">
+      <div class="pane-h">Revenue line 2: Sustenance Resources / IT staffing (16.2%)</div>
+      <div class="point"><div class="dot da">!</div><div><strong>On-site IT support:</strong> Meta Infotech provides "sustenance resources" — essentially IT support engineers placed at client sites. Orders are ₹68 lakh to ₹1–2 Cr for 12-month contracts. This is classic IT staff augmentation — a commoditised, low-margin, people-intensive business. The recent order wins from banks (₹1.03 Cr renewal for "sustenance resources") are these staffing contracts.</div></div>
+      <div class="point"><div class="dot dc">+</div><div><strong>Why this is actually sticky:</strong> Once Meta Infotech's engineers are embedded at a bank's IT infrastructure, switching them out is disruptive. The renewal rates appear high (30 of 87 clients retained for 3+ years). This creates a floor of recurring staffing revenue — not exciting growth but reliable base. However, this segment doesn't justify a technology PE multiple.</div></div>
+    </div>
+  </div>
+  <div class="point"><div class="dot dg">+</div><div><strong>Geographic expansion (Hyderabad April 2026, Chennai underway):</strong> New sales offices opened in Hyderabad and Chennai — expanding from the Mumbai/Delhi base. This is a genuine growth initiative — South India's banking sector (HDFC, ICICI, Kotak, Axis all have large South India operations) is an opportunity. If these offices win even 2–3 large banking clients, the revenue base grows meaningfully. The company's announcement that "sales operations commenced at Hyderabad on April 20, 2026" suggests the geographic diversification strategy is executing.</div></div>
+</div>
+
+<!-- GUIDANCE -->
+<div id="guidance" class="panel">
+  <div class="sh">Guidance analysis — BSE SME companies provide limited formal guidance</div>
+  <div class="warn cyb"><strong>Meta Infotech is a BSE SME-listed company that does not hold formal quarterly earnings calls.</strong> Communication is primarily through BSE order announcements (disclosed in real-time) and board meeting outcomes. Analysis must rely on: order win disclosures, IPO prospectus targets, and the order book trajectory.</div>
+
+  <div class="guid-card">
+    <div class="guid-h">✓ Revenue CAGR 42%: Delivered across FY23→FY25 — genuine execution</div>
+    <div class="guid-b">The 42% CAGR over 3 years (FY23: ₹109 Cr → FY25: ₹220 Cr) is a real data point validated by the IPO RHP (audited financials submitted to SEBI). This is not guidance — it's historical fact. The question is whether this pace continues. H1 FY26 PAT grew at 48% CAGR in 2 years, suggesting the growth momentum hasn't stalled. However, growth at ₹220 Cr base is harder to maintain than at ₹109 Cr base — each percentage point requires ₹2.2 Cr of additional revenue.</div>
+    <div class="guid-s">Historical credibility: 8/10. Revenue growth is real and consistent. Forward sustainability depends on client concentration resolution.</div>
+  </div>
+
+  <div class="guid-card watch">
+    <div class="guid-h">⚠ Order book ₹514 Cr over 5 years — revenue visibility is moderate</div>
+    <div class="guid-b">The ₹514 Cr order book (vs ₹573 Cr at IPO time) sounds impressive — 2.35x FY25 revenue. However, it's spread over 5 years, with only ₹140.7 Cr from banking executable within 1 year. Annual revenue visibility: ~₹100–115 Cr/year from existing order book. Against FY25 revenue of ₹220 Cr, this means ~50% of revenue still needs to come from new orders each year. The order book is not a coverage ratio as strong as Bondada Engineering's (₹7,385 Cr covering 1.9x annual revenue in near-term). It's a 5-year pipeline, not a 1–2 year backlog.</div>
+    <div class="guid-s">Watch: Annual order win rate. Does the company win ₹250–300 Cr of new orders annually to sustain 25%+ revenue growth?</div>
+  </div>
+
+  <div class="guid-card watch">
+    <div class="guid-h">⚠ H1 FY26 EBITDA ₹15.8 Cr (growing) — profitability improving</div>
+    <div class="guid-b">H1 FY26 EBITDA ₹15.8 Cr growing at 62% CAGR in 2 years. Net profit ₹10.4 Cr in H1 FY26 (vs FY25 full year ₹14.5 Cr — so H2 FY26 also likely profitable). If H2 FY26 adds ₹8–10 Cr more PAT, FY26 full year PAT would be ₹18–20 Cr — a meaningful improvement from FY25's ₹14.5 Cr. This would bring the trailing PE down to ~8–9x on ₹158 Cr market cap — extremely cheap on paper. But the qualitative concerns (ASM, promoter selling, client concentration) prevent this cheapness from being actionable.</div>
+    <div class="guid-s">FY26E PAT ₹18–22 Cr is a reasonable estimate. Trailing PE would drop to 7–9x — deeply cheap but qualitatively restricted.</div>
+  </div>
+
+  <div class="sh">Guidance scorecard</div>
+  <table>
+    <tr><th>Item</th><th>Credibility</th><th>Base case</th><th>Key risk</th></tr>
+    <tr><td>FY26 revenue ₹240–265 Cr</td><td class="a">6/10 — H1 tracking suggests</td><td>₹230–255 Cr</td><td>Single client dependency; order book 5yr spread</td></tr>
+    <tr><td>FY26 PAT ₹18–22 Cr</td><td class="a">6/10 — H1 ₹10.4 Cr suggests</td><td>₹17–20 Cr</td><td>Margin compression if OEM changes terms</td></tr>
+    <tr><td>FY27 growth 25–30%</td><td class="a">5/10 — needs new banking clients</td><td>₹270–300 Cr revenue</td><td>Client concentration not diversifying fast enough</td></tr>
+    <tr><td>Geographic expansion (Hyderabad, Chennai)</td><td class="a">7/10 — offices opened</td><td>₹30–50 Cr additional revenue by FY27</td><td>South India banking relationships take 12–18 months to develop</td></tr>
+    <tr><td>ASM removal</td><td class="r">Unknown — SEBI discretion</td><td>If ASM removed, stock re-rates</td><td>If ASM continues, institutional investors permanently locked out</td></tr>
+  </table>
+</div>
+
+<!-- RISKS -->
+<div id="risks" class="panel">
+  <div class="sh">Risks — the comprehensive picture for a BSE SME cybersecurity reseller on ASM</div>
+
+  <div class="point"><div class="dot dr">1</div><div><strong>ASM (Additional Surveillance Measure) — practical investment constraint.</strong><br>ASM is not just a stigma — it has real consequences: circuit limits tightened to 2–5%, higher margins required, institutional investors excluded. With only ~8,800 shares traded daily (₹7.3 lakh daily liquidity), any meaningful buy order by Garvit (say ₹20K = 240 shares) would be 2.7% of daily volume — moving the price against him. And exiting in any distress scenario would be extremely difficult. ASM stocks are genuinely illiquid — and illiquid stocks in a retail investor's portfolio are particularly dangerous.</div></div>
+
+  <div class="point"><div class="dot dr">2</div><div><strong>Promoter sold 26% of company in 2 months post-IPO — the clearest insider exit signal.</strong><br>94.94% → 68.90% in 2 months after listing. The promoters had been holding this company for 25+ years. They chose to sell 26% within 2 months of listing — the first opportunity to liquidate at IPO valuation. This is the starkest possible insider signal: people who know the business best chose to sell as fast as legally allowed. Contrast with Bondada Engineering where Dr. Bondada bought 9,600 shares in the open market after 20 years of ownership. These two signals are polar opposites in terms of what they imply about insider conviction.</div></div>
+
+  <div class="point"><div class="dot da">3</div><div><strong>Single client >50% revenue — one email can halve revenues.</strong><br>The IPO prospectus disclosed that a single client accounts for >50% of revenue. If this bank: (a) runs an RFP and changes vendor, (b) reduces IT security spend due to budget cuts, (c) moves to direct OEM relationship bypassing Meta Infotech, or (d) simply delays a renewal — Meta Infotech's revenues collapse. At ₹220 Cr revenue, this client contributes >₹110 Cr annually. Losing this client = ₹110 Cr revenue loss = business returns to FY23 scale. That is an existential risk at current valuations.</div></div>
+
+  <div class="point"><div class="dot da">4</div><div><strong>Reseller model is structurally fragile — OEMs can disintermediate.</strong><br>As global cybersecurity OEMs (Zscaler, Palo Alto, Fortinet) mature in India, they invest in direct sales teams. Direct salesforce gives OEMs better margin and customer relationships. Meta Infotech is the middleman — and middlemen are systematically disintermediated as markets mature. This is not theoretical: Palo Alto Networks, Zscaler, and Fortinet have all significantly increased their direct India headcount in the past 3 years. Value-added resellers (VARs) globally have seen margin compression as OEMs push direct. If an OEM reduces Meta Infotech's channel margin from 12% to 8%, PAT collapses.</div></div>
+
+  <div class="point"><div class="dot da">5</div><div><strong>86% of purchases imported — FX risk, supply chain disruption, and US tariff risk.</strong><br>At ₹220 Cr revenue and ~₹183 Cr COGS, approximately ₹158 Cr of purchases are imported (86.19%). If the rupee depreciates 5–10% vs USD, Meta Infotech faces a direct margin hit on ₹158 Cr of imports (~₹8–16 Cr additional cost vs FY25 PAT of only ₹14.5 Cr). Supply chain disruption (if US imposes export controls on cybersecurity products to India — as has happened with semiconductors) could halt Meta Infotech's product supply entirely.</div></div>
+
+  <div class="point"><div class="dot dg">+</div><div><strong>Genuine strengths that make this cheap, not garbage:</strong><br>42% revenue CAGR is genuine. ROCE 38% is genuinely excellent. 87 active clients with 30 repeat for 3+ years = some stickiness. ₹514 Cr order book = revenue visibility exists. Cybersecurity is genuinely India's fastest-growing IT segment — the tailwind is real. SASE adoption by Indian banks is structural — it will grow regardless of vendor. Geographic expansion (Hyderabad, Chennai) is being executed. H1 FY26 PAT ₹10.4 Cr suggests full-year trajectory improving. At 11x PE on growing earnings, the stock is statistically cheap. FY26E PAT ₹20 Cr at 11x = ₹220 Cr — 39% upside from ₹158 Cr even without re-rating. But the structural risks mean this cheapness is not a margin of safety — it's a fair price for the risk embedded.</div></div>
+</div>
+
+<!-- SCENARIOS -->
+<div id="scenarios" class="panel">
+  <div class="sh">Three scenarios — from current ~₹83 (~₹158 Cr mcap)</div>
+  <div class="warn asm"><strong>The 3x math at ₹158 Cr is achievable in pure numbers — but the qualitative risk makes probability very different from similarly-sized growth companies.</strong> 3x = ₹474 Cr. At 10–11x PE (appropriate for a reseller), needs PAT of ₹43–47 Cr. FY25 PAT: ₹14.5 Cr. Needs 3x PAT growth. At 35–40% annual growth (history supports this), achievable by FY28. BUT: ASM + promoter selling + client concentration + OEM disintermediation create a wide range of outcomes.</div>
+
+  <div class="scenario" style="border-left:3px solid #0097A7">
+    <div style="font-size:13px;font-weight:500;color:#004D40;margin-bottom:8px">Bull case — 3x in 3 years: ASM removed + new banking clients + geographic expansion works</div>
+    <div class="sc-grid">
+      <div class="sc-cell"><div class="sc-l">FY27 revenue</div><div class="sc-v">₹320–380 Cr</div></div>
+      <div class="sc-cell"><div class="sc-l">FY27 PAT</div><div class="sc-v">₹28–35 Cr</div></div>
+      <div class="sc-cell"><div class="sc-l">FY28 revenue</div><div class="sc-v">₹440–500 Cr</div></div>
+      <div class="sc-cell"><div class="sc-l">FY28 PAT</div><div class="sc-v">₹40–50 Cr</div></div>
+      <div class="sc-cell"><div class="sc-l">PE (if ASM removed)</div><div class="sc-v">10–12x</div></div>
+      <div class="sc-cell"><div class="sc-l">FY28 mcap</div><div class="sc-v">₹400–600 Cr</div></div>
+    </div>
+    <div style="font-size:11.5px;color:#333;margin-top:8px"><strong>What must happen:</strong> ASM removed (institutional buying resumes). South India banking clients added (3–5 large clients from Chennai/Hyderabad). Top client doesn't leave. OEM relationships maintained. PAT ₹45 Cr at 11x = ₹495 Cr = 3.1x. <strong>Bull probability: 15–18% — the qualitative risks are real and non-trivial.</strong></div>
+  </div>
+
+  <div class="scenario" style="border-left:3px solid #378ADD">
+    <div style="font-size:13px;font-weight:500;color:#185FA5;margin-bottom:8px">Base case — 1.5–2x in 3 years: Steady growth but PE stays suppressed by ASM + qualitative concerns</div>
+    <div class="sc-grid">
+      <div class="sc-cell"><div class="sc-l">FY26 PAT</div><div class="sc-v">₹18–20 Cr</div></div>
+      <div class="sc-cell"><div class="sc-l">FY27 PAT</div><div class="sc-v">₹24–28 Cr</div></div>
+      <div class="sc-cell"><div class="sc-l">PE (stays suppressed)</div><div class="sc-v">10–12x</div></div>
+      <div class="sc-cell"><div class="sc-l">FY27 mcap</div><div class="sc-v">₹240–336 Cr</div></div>
+      <div class="sc-cell"><div class="sc-l">Return from ₹158 Cr</div><div class="sc-v">1.5–2.1x</div></div>
+      <div class="sc-cell"><div class="sc-l">FY28</div><div class="sc-v">Possibly 2.5x</div></div>
+    </div>
+    <div style="font-size:11.5px;color:#333;margin-top:8px">Business grows steadily at 20–25% annually. ASM may or may not be removed. Earnings grow but PE stays at 10–12x because institutional investors can't buy. FY27 PAT ₹26 Cr at 11x = ₹286 Cr = 1.8x. <strong>Base case is 1.5–2x — decent absolute return but not 3x in 3 years.</strong></div>
+  </div>
+
+  <div class="scenario" style="border-left:3px solid #A32D2D">
+    <div style="font-size:13px;font-weight:500;color:#A32D2D;margin-bottom:8px">Bear case — -40 to -60%: Top client leaves OR OEM disintermediates OR accounting concern materialises</div>
+    <div class="sc-grid">
+      <div class="sc-cell"><div class="sc-l">Trigger</div><div class="sc-v">Top client (>50% rev) changes vendor</div></div>
+      <div class="sc-cell"><div class="sc-l">Trigger</div><div class="sc-v">OEM reduces channel margin</div></div>
+      <div class="sc-cell"><div class="sc-l">Trigger</div><div class="sc-v">ASM escalates to ESM (further restrictions)</div></div>
+      <div class="sc-cell"><div class="sc-l">FY27 revenue</div><div class="sc-v">₹110–140 Cr (client loss)</div></div>
+      <div class="sc-cell"><div class="sc-l">PE at 8–10x</div><div class="sc-v">₹48–90 Cr mcap</div></div>
+      <div class="sc-cell"><div class="sc-l">Stock</div><div class="sc-v">₹25–47/share (-43 to -70%)</div></div>
+    </div>
+    <div style="font-size:11.5px;color:#333;margin-top:8px"><strong>Bear probability: 30–35%.</strong> Client concentration is the existential risk — it's not "what if" but "when if the relationship changes." OEM disintermediation is happening globally to all cybersecurity VARs — it's a structural headwind. Bear case is stock revisits ₹40–50 (below 52-week low). <strong>This is a genuine, high-probability downside scenario, not just a tail risk.</strong></div>
+  </div>
+
+  <table style="margin-top:10px">
+    <tr><th>Target</th><th>Mcap needed</th><th>Driver</th><th>Timeline</th><th>Probability</th></tr>
+    <tr><td>3x (₹474 Cr)</td><td>₹474 Cr</td><td>FY28 PAT ₹45 Cr at 10.5x PE + ASM removed</td><td>FY28</td><td class="r">15–18%</td></tr>
+    <tr><td>2x (₹316 Cr)</td><td>₹316 Cr</td><td>FY27 PAT ₹28 Cr at 11x PE</td><td>FY27</td><td class="a">25–30%</td></tr>
+    <tr><td>1.5x (₹237 Cr)</td><td>₹237 Cr</td><td>FY26 PAT ₹21 Cr at 11x PE</td><td>FY26</td><td class="a">30–35%</td></tr>
+    <tr><td>Bear (-50%: ₹79 Cr)</td><td>₹79 Cr</td><td>Client loss + margin compression + ASM deepens</td><td>—</td><td class="a">30–35%</td></tr>
+  </table>
+</div>
+
+<!-- SECTOR PEERS -->
+<div id="compare" class="panel">
+  <div class="sh">Cybersecurity sector — where Garvit can get better exposure for the same theme</div>
+  <div style="border:1px solid #ddd;border-radius:10px;overflow:hidden;font-size:11px">
+    <div class="comp-h">
+      <div class="cc-h" style="background:#f5f5f3">Metric</div>
+      <div class="cc-h" style="background:#E0F2F1;color:#004D40">Meta Infotech (BSE SME)</div>
+      <div class="cc-h" style="background:#E6F1FB;color:#185FA5">Quick Heal Technologies</div>
+      <div class="cc-h" style="background:#f5f5f3">Tata Consultancy (Cybersec)</div>
+    </div>
+    <div class="comp-row"><div class="cc cc-label">Market cap</div><div class="cc mid-cell">₹158 Cr</div><div class="cc mid-cell">₹800+ Cr</div><div class="cc loser-cell">₹14 lakh Cr+</div></div>
+    <div class="comp-row"><div class="cc cc-label">Business model</div><div class="cc loser-cell">Reseller / VAR + IT staffing</div><div class="cc winner-cell">Own-IP antivirus + enterprise</div><div class="cc winner-cell">Services + consulting (own IP)</div></div>
+    <div class="comp-row"><div class="cc cc-label">PAT margin</div><div class="cc loser-cell">6–7% (reseller margins)</div><div class="cc mid-cell">~8–10%</div><div class="cc winner-cell">~25%</div></div>
+    <div class="comp-row"><div class="cc cc-label">Client concentration</div><div class="cc loser-cell">&gt;50% one client</div><div class="cc winner-cell">Very diversified (millions)</div><div class="cc winner-cell">Diversified</div></div>
+    <div class="comp-row"><div class="cc cc-label">Promoter action</div><div class="cc loser-cell">Sold 26% in 2 months post-IPO</div><div class="cc mid-cell">Stable</div><div class="cc winner-cell">Tata group — stable</div></div>
+    <div class="comp-row"><div class="cc cc-label">ASM/regulatory</div><div class="cc loser-cell">Yes — ASM (SEBI surveillance)</div><div class="cc winner-cell">No</div><div class="cc winner-cell">No</div></div>
+    <div class="comp-row"><div class="cc cc-label">Liquidity</div><div class="cc loser-cell">~₹7L/day (illiquid)</div><div class="cc winner-cell">Adequate</div><div class="cc winner-cell">Very high</div></div>
+    <div class="comp-row"><div class="cc cc-label">3x probability</div><div class="cc loser-cell">15–18% (weighted by risks)</div><td class="cc a">15–20%</td><td class="cc loser-cell">3–5% (too large)</td></div>
+    <div class="comp-row"><div class="cc cc-label">Better cybersec option?</div><div class="cc">No — too many qualitative problems</div><div class="cc">Better IP; more stable</div><div class="cc">Wrong size for 3x</div></div>
+  </div>
+
+  <div class="sector-card" style="margin-top:12px">
+    <div class="sc-hdr"><div><div class="sc-nm">The best cybersecurity exposure for Garvit's portfolio — not Meta Infotech</div><div class="sc-tg">Better route: Valiant Communications (🛡️ defence + cybersecurity) at lower prices vs current</div></div><span class="badge ba">Already analyzed</span></div>
+    <div class="sc-bd">We already analyzed Valiant Communications — which is a HARDWARE cybersecurity company (Data Diode, quantum-safe storage, NavIC GPS) with actual IP (not reselling). Valiant is also overvalued currently (20x P/S) but the business quality is higher — proprietary technology, 30-year heritage, Armed Forces validation. If Garvit wants cybersecurity exposure, Valiant Communications at ₹550 (vs current ₹982) is a better instrument than Meta Infotech at any price, because Valiant has actual IP whereas Meta Infotech is a reseller. Neither is recommended right now — but if one must choose between the two for the sector thesis, Valiant wins on business quality.</div>
+  </div>
+</div>
+
+<!-- VERDICT -->
+<div id="verdict" class="panel">
+  <div class="sh">The definitive verdict for Garvit's 3x portfolio goal</div>
+
+  <div class="verdict-card" style="background:#FFF3E0;border:1px solid #FFB74D">
+    <div class="vc-h" style="color:#E65100">Meta Infotech Ltd — Verdict: DO NOT BUY. The stock is on SEBI's ASM list, promoters sold 26% stake in 2 months after IPO, over 50% revenue depends on one client, and the business is a cybersecurity reseller (not a technology company) deserving distribution multiples. The cybersecurity sector narrative is genuinely exciting — but Meta Infotech is the wrong vehicle for it at any allocation size.</div>
+    <div class="vc-b">Here is the complete, honest picture:<br><br>
+    <strong>The fundamental problem with Meta Infotech is not the business — it's the structure:</strong><br>
+    • <strong>ASM status:</strong> SEBI has Meta Infotech under surveillance. Institutional investors cannot buy. Daily volume ~₹7 lakh. Garvit cannot enter or exit meaningfully without moving the price. This is the most practical barrier to investment.<br>
+    • <strong>Promoter sold 26% post-IPO:</strong> The clearest possible "insider selling at peak" signal. In 25+ years, the promoters never sold. Within 2 months of IPO (first opportunity to liquidate), they sold 26%. This one fact alone should disqualify the stock.<br>
+    • <strong>75% OFS IPO:</strong> Of ₹80 Cr raised, ₹60 Cr went to selling shareholders. The company itself got only ₹20 Cr of fresh capital. This was an exit event, not a growth funding event.<br>
+    • <strong>Reselling, not technology:</strong> 83.8% of revenue = product reselling. PAT margin 6–7%. This is distribution economics, not technology economics. Peers at 30–80x PE (like Valiant Communications which Garvit was also analyzing) have actual IP. Meta Infotech at 11x PE is pricing itself correctly as a distributor.<br>
+    • <strong>Single client >50%:</strong> One relationship can cut revenue in half overnight.<br><br>
+    <strong>What IS genuinely interesting (and worth monitoring):</strong><br>
+    • Revenue CAGR 42% in 3 years — real growth in a real sector<br>
+    • ROCE 38% — genuinely good capital efficiency (when it works)<br>
+    • ₹514 Cr order book — 2.35x revenue pipeline<br>
+    • H1 FY26 PAT ₹10.4 Cr growing — trajectory positive<br>
+    • Hyderabad + Chennai expansion — geographic diversification starting<br>
+    • Cheap at 11x PE if earnings continue growing<br><br>
+    <strong>The specific test for reconsideration:</strong><br>
+    IF all three of these happen: (1) Removed from ASM list, (2) Promoter holding stabilises at 68–70% for 2 consecutive quarters (no more selling), (3) Client concentration drops below 40% (new client wins diversify the base) — then a ₹10,000–15,000 speculative allocation makes sense as a small-cap cybersecurity bet. Until all three conditions, capital is better deployed in EFC I, RPSG Ventures, and Muthoot Microfin — all better risk/reward.<br><br>
+    <strong>One more concern specific to "Meta" naming:</strong> The company's name "Meta Infotech" may attract retail investors searching for "Meta" (Meta Platforms, Facebook) — creating potentially inflated retail interest that eventually corrects when fundamentals are assessed. The 52-week high of ₹250 (IPO hype + Meta confusion) vs current ₹83 (reality) is consistent with this pattern.</div>
+  </div>
+
+  <div class="sh">Allocation recommendation</div>
+  <table>
+    <tr><th>Action</th><th>Amount</th><th>Rationale</th></tr>
+    <tr><td><span class="badge br">DO NOT BUY — zero allocation</span></td><td>₹0</td><td>ASM status + promoter selling + OFS IPO + client concentration = too many qualitative red flags. Better alternatives with same or better thesis exist in portfolio (EFC I, Muthoot Microfin, RPSG Ventures).</td></tr>
+    <tr><td><span class="badge ba">WATCHLIST — 3 conditions for reconsideration</span></td><td>₹0 until conditions met</td><td>(1) ASM removed, (2) Promoter holding stable 2 quarters, (3) Single client below 40% of revenue. Only then consider ₹10–15K speculative position.</td></tr>
+    <tr><td><span class="badge bg">Better cybersec alternative: Valiant Communications at ₹550</span></td><td>Watchlist at ₹550</td><td>If cybersecurity sector exposure is needed, Valiant Communications has actual IP (NavIC, quantum-safe, Data Diode). Currently overpriced but more compelling at ₹550 than Meta Infotech at any price.</td></tr>
+  </table>
+
+  <div class="sh">Six triggers to watch — if ever reconsidering</div>
+  <table>
+    <tr><th>#</th><th>Trigger</th><th>Status</th><th>Impact</th></tr>
+    <tr><td>1</td><td>ASM removal</td><td class="r">Currently on ASM — SEBI discretion</td><td>🔥 Most critical. Removal = institutional buying can resume = PE re-rating possible. Without this, stock is capped.</td></tr>
+    <tr><td>2</td><td>Promoter holding change</td><td class="r">68.90% — was 94.94% just 6 months ago</td><td>🔴 Any further decline = exit trigger. 🟢 Promoter buying open market = exceptional signal (currently no indication).</td></tr>
+    <tr><td>3</td><td>Single client revenue share (quarterly)</td><td class="r">&gt;50% — disclosed in IPO RHP</td><td>🟢 Drop below 40% = diversification working → reconsider. 🔴 If this client announces a vendor change = catastrophic.</td></tr>
+    <tr><td>4</td><td>FY26 full year results</td><td class="a">H1 FY26 PAT ₹10.4 Cr — full year pending</td><td>🟢 PAT ₹20+ Cr + revenue ₹250+ Cr = growth intact at new scale. 🔴 Revenue decline = client concentration risk materialising.</td></tr>
+    <tr><td>5</td><td>Hyderabad + Chennai first revenue</td><td class="a">Hyderabad opened April 20, 2026</td><td>🟢 First South India client win = geographic diversification beginning → reduces client concentration risk.</td></tr>
+    <tr><td>6</td><td>OEM relationship stability</td><td class="a">Top vendor: no long-term contract</td><td>🔥 If primary OEM renews/extends distribution agreement formally → supply chain risk resolved. If OEM announces direct-to-client push in India → existential threat.</td></tr>
+  </table>
+
+  <div class="warn asm" style="margin-top:12px"><strong>One-line verdict:</strong> Meta Infotech Ltd is a genuine cybersecurity product reseller and IT staffing company that has delivered 42% revenue CAGR and 38% ROCE — real numbers in India's fastest-growing IT sector. But the combination of SEBI ASM surveillance, promoters selling 26% within 2 months of IPO, a 75% OFS IPO structure, over 50% revenue from a single client, thin PAT margins of 6–7% (reseller economics), and extremely illiquid trading (₹7L/day) creates a risk profile that is fundamentally incompatible with Garvit's disciplined 3x-in-3-years strategy. Do not buy. Add to watchlist with strict conditions (ASM removal + promoter stabilisation + client diversification). Redeploy any earmarked capital to Muthoot Microfin (30–35% 3x probability), DEE Development (9.0/10 conviction), or EFC I (8.5/10 conviction) — all of which offer better risk-adjusted returns.</div>
+</div>
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/4.4.1/chart.umd.js"></script>
+<script>
+function show(id,btn){
+  document.querySelectorAll('.tab').forEach(t=>t.classList.remove('active'));
+  document.querySelectorAll('.panel').forEach(p=>p.classList.remove('active'));
+  btn.classList.add('active');
+  document.getElementById(id).classList.add('active');
+}
+new Chart(document.getElementById('rc').getContext('2d'),{
+  type:'bar',
+  data:{
+    labels:['FY23','FY24','FY25','H1FY26','FY26E','FY27E','FY28E'],
+    datasets:[
+      {label:'Revenue ₹ Cr',data:[109.54,153.05,220.02,110,252,310,440],backgroundColor:['#0097A7','#0097A7','#0097A7','#EF9F27','#80DEEA','#80DEEA','#80DEEA'],borderRadius:4,yAxisID:'y'},
+      {label:'PAT ₹ Cr',data:[6.54,10.51,14.50,10.4,19,26,42],type:'line',borderColor:'#1D9E75',backgroundColor:'transparent',pointBackgroundColor:'#1D9E75',tension:0.3,yAxisID:'y2'}
+    ]
+  },
+  options:{responsive:true,maintainAspectRatio:false,plugins:{legend:{display:false}},scales:{y:{ticks:{font:{size:10}}},y2:{position:'right',ticks:{font:{size:10}},grid:{drawOnChartArea:false}},x:{ticks:{font:{size:10}}}}}
+});
+</script>
+</body>
+</html>

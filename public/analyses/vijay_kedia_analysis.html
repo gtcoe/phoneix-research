@@ -1,0 +1,526 @@
+<!DOCTYPE html>
+<html><head><meta charset="utf-8">
+<style>
+*{box-sizing:border-box;margin:0;padding:0}
+body{font-family:system-ui,sans-serif;padding:16px;background:#fff;color:#1a1a1a;font-size:14px}
+h1{font-size:20px;font-weight:500;margin-bottom:3px}
+.sub{font-size:12px;color:#666;margin-bottom:14px}
+.sg{display:grid;grid-template-columns:repeat(auto-fill,minmax(120px,1fr));gap:8px;margin-bottom:16px}
+.sc{background:#f5f5f3;border-radius:8px;padding:10px 12px}
+.sl{font-size:10px;color:#666;margin-bottom:2px}
+.sv{font-size:15px;font-weight:600}
+.tab-row{display:flex;gap:5px;flex-wrap:wrap;margin-bottom:14px}
+.tab{font-size:11.5px;padding:5px 13px;border-radius:20px;border:1px solid #ddd;background:#fff;cursor:pointer;white-space:nowrap}
+.tab.active{background:#1a1a1a;color:#fff;border-color:#1a1a1a}
+.panel{display:none}.panel.active{display:block}
+.sh{font-size:10.5px;font-weight:500;color:#666;text-transform:uppercase;letter-spacing:.06em;margin:16px 0 7px;padding-bottom:5px;border-bottom:1px solid #eee}
+table{width:100%;border-collapse:collapse;font-size:12px;margin:8px 0}
+th{font-size:10.5px;font-weight:500;color:#666;padding:5px 7px;text-align:left;border-bottom:1px solid #eee;white-space:nowrap}
+td{padding:8px 7px;border-bottom:1px solid #eee;color:#1a1a1a;vertical-align:top}
+tr:last-child td{border-bottom:none}
+tr:hover td{background:#fafaf9}
+.g{color:#0F6E56;font-weight:500}.r{color:#A32D2D;font-weight:500}.a{color:#854F0B;font-weight:500}.b{color:#185FA5;font-weight:500}
+.badge{display:inline-block;font-size:10px;padding:2px 7px;border-radius:10px;white-space:nowrap}
+.bg{background:#E1F5EE;color:#0F6E56}.bb{background:#E6F1FB;color:#185FA5}.ba{background:#FAEEDA;color:#854F0B}.br{background:#FCEBEB;color:#A32D2D}.bgray{background:#f1f0e8;color:#5F5E5A}.bvk{background:#F3E5F5;color:#4A148C}.bheal{background:#E8F5E9;color:#1B5E20}.bsmile{background:#FFF9C4;color:#F57F17}
+.warn{padding:10px 13px;margin:8px 0;border-left:3px solid;font-size:12px;line-height:1.65}
+.warn.vk{background:#F3E5F5;border-color:#7B1FA2;color:#1A0030}
+.warn.success{background:#E1F5EE;border-color:#1D9E75;color:#04342C}
+.warn.caution{background:#FAEEDA;border-color:#BA7517;color:#412402}
+.warn.danger{background:#FCEBEB;border-color:#A32D2D;color:#712B13}
+.warn.info{background:#E6F1FB;border-color:#185FA5;color:#042C53}
+.warn.heal{background:#E8F5E9;border-color:#2E7D32;color:#1B3A1E}
+.warn strong{font-weight:500}
+.chart-wrap{position:relative;width:100%;height:230px;margin:8px 0}
+.kpi-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:10px;margin:10px 0}
+.kpi{background:#f5f5f3;border-radius:8px;padding:10px 12px;border-left:3px solid transparent}
+.kpi.green{border-left-color:#1D9E75}.kpi.amber{border-left-color:#EF9F27}.kpi.blue{border-left-color:#378ADD}.kpi.red{border-left-color:#A32D2D}.kpi.vk{border-left-color:#7B1FA2}.kpi.heal{border-left-color:#2E7D32}
+.kpi-l{font-size:10px;color:#666;margin-bottom:3px}
+.kpi-v{font-size:17px;font-weight:500}
+.kpi-s{font-size:10px;color:#888;margin-top:2px}
+.point{display:flex;gap:9px;align-items:flex-start;padding:9px 0;border-bottom:1px solid #eee;font-size:12px;line-height:1.6;color:#555}
+.point:last-child{border-bottom:none}
+.point strong{color:#1a1a1a;font-weight:500}
+.dot{width:19px;height:19px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:10px;font-weight:500;flex-shrink:0;margin-top:1px}
+.dg{background:#E1F5EE;color:#0F6E56}.dr{background:#FCEBEB;color:#A32D2D}.da{background:#FAEEDA;color:#854F0B}.db{background:#E6F1FB;color:#185FA5}.dv{background:#F3E5F5;color:#4A148C}.dh{background:#E8F5E9;color:#1B5E20}
+.two-col{display:grid;grid-template-columns:1fr 1fr;gap:12px}
+.pane{border:1px solid #ddd;border-radius:10px;padding:13px}
+.pane-h{font-size:13px;font-weight:500;margin-bottom:9px}
+.scenario{border:1px solid #ddd;border-radius:10px;padding:13px;margin-bottom:9px}
+.sc-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:7px;margin:9px 0}
+.sc-cell{background:#f5f5f3;border-radius:6px;padding:7px 9px}
+.sc-l{font-size:10px;color:#666}
+.sc-v{font-size:12px;font-weight:500;margin-top:2px}
+.comp-h{display:grid;grid-template-columns:160px repeat(3,1fr);background:#f5f5f3;border-radius:8px 8px 0 0;overflow:hidden}
+.comp-row{display:grid;grid-template-columns:160px repeat(3,1fr);border-bottom:1px solid #eee}
+.comp-row:last-child{border-bottom:none}
+.cc{padding:8px 10px;font-size:11px;border-right:1px solid #eee}
+.cc:last-child{border-right:none}
+.cc-h{font-size:10px;font-weight:500;color:#444;padding:8px 10px;border-right:1px solid #ddd}
+.cc-h:last-child{border-right:none}
+.cc-label{color:#666;font-size:11px}
+.winner-cell{background:#E1F5EE}.mid-cell{background:#FAEEDA}.loser-cell{background:#fff5f5}
+.stock-card{border:1px solid #ddd;border-radius:12px;overflow:hidden;margin-bottom:16px}
+.sc-hdr{padding:12px 14px;display:flex;justify-content:space-between;align-items:flex-start;background:#fafaf9}
+.sc-nm{font-size:14px;font-weight:600}
+.sc-sub{font-size:11px;color:#666;margin-top:2px}
+.sc-meta{display:grid;grid-template-columns:repeat(5,1fr);gap:6px;padding:10px 14px;border-top:1px solid #eee;border-bottom:1px solid #eee;background:#fdfdfd}
+.sm-v{font-size:13px;font-weight:600;margin-bottom:1px}
+.sm-l{font-size:9.5px;color:#888}
+.sc-body{padding:12px 14px;font-size:12px;line-height:1.7;color:#555}
+.sc-body strong{color:#1a1a1a;font-weight:500}
+.sc-verdict{padding:10px 14px;border-top:1px solid #eee;font-size:12px;font-weight:500}
+.smile-box{background:#FFF9C4;border:2px solid #F9A825;border-radius:10px;padding:13px;margin:10px 0}
+.sb-h{font-size:14px;font-weight:600;color:#E65100;margin-bottom:7px}
+.sb-b{font-size:12px;color:#1a1a1a;line-height:1.65}
+.garvit-box{background:#E1F5EE;border:2px solid #1D9E75;border-radius:10px;padding:13px;margin:10px 0}
+.gb-h{font-size:13px;font-weight:600;color:#0F6E56;margin-bottom:7px}
+.gb-b{font-size:12px;color:#1a1a1a;line-height:1.65}
+.ranking-row{display:flex;align-items:center;gap:10px;padding:8px 10px;border-bottom:1px solid #eee;font-size:12px}
+.rank-num{font-size:16px;font-weight:700;width:28px;text-align:center;flex-shrink:0}
+.rank-info{flex:1}
+.rank-nm{font-weight:500;color:#1a1a1a}
+.rank-desc{font-size:10.5px;color:#666;margin-top:1px}
+.rank-score{font-size:12px;font-weight:600;width:60px;text-align:right}
+.smile-pill{display:inline-block;font-size:11px;font-weight:600;padding:3px 10px;border-radius:12px;margin:2px}
+.s-s{background:#E3F2FD;color:#0D47A1}
+.s-m{background:#E8F5E9;color:#1B5E20}
+.s-i{background:#FFF9C4;color:#E65100}
+.s-l{background:#F3E5F5;color:#4A148C}
+.s-e{background:#FFEBEE;color:#B71C1C}
+.guid-card{border-radius:10px;padding:12px 14px;margin-bottom:8px}
+.guid-card.beat{background:#E1F5EE;border-left:3px solid #1D9E75}.guid-card.beat .guid-h{color:#0F6E56}
+.guid-card.watch{background:#FAEEDA;border-left:3px solid #BA7517}.guid-card.watch .guid-h{color:#854F0B}
+.guid-card.miss{background:#FCEBEB;border-left:3px solid #A32D2D}.guid-card.miss .guid-h{color:#A32D2D}
+.guid-h{font-size:11.5px;font-weight:600;margin-bottom:4px}
+.guid-b{font-size:11.5px;color:#333;line-height:1.6}
+.guid-s{font-size:10px;color:#888;margin-top:4px}
+</style>
+</head>
+<body>
+
+<h1>Vijay Kedia Portfolio — Analysis for Garvit's 3x Goal</h1>
+<div class="sub">"Market Master" · 22-stock disclosed portfolio · ₹1,222 Cr value · SMILE investing philosophy · Net worth ₹1,400+ Cr · Multibaggers: Atul Auto (100x), Cera Sanitaryware (100x), Aegis Logistics (100x) · New buys March 2026: TAC Infosec, SPML Infra, Webel Solar, Precision Camshafts</div>
+
+<div class="sg">
+  <div class="sc"><div class="sl">Portfolio value</div><div class="sv" style="color:#7B1FA2">~₹1,222 Cr</div></div>
+  <div class="sc"><div class="sl">Disclosed stocks</div><div class="sv">22</div></div>
+  <div class="sc"><div class="sl">Largest holding</div><div class="sv">Atul Auto 18.2%</div></div>
+  <div class="sc"><div class="sl">Philosophy</div><div class="sv">SMILE</div></div>
+  <div class="sc"><div class="sl">Common with Garvit</div><div class="sv" style="color:#1D9E75">None (yet)</div></div>
+  <div class="sc"><div class="sl">Mar'26 new buys</div><div class="sv">5 stocks</div></div>
+  <div class="sc"><div class="sl">Avg holding period</div><div class="sv">5–15 years</div></div>
+  <div class="sc"><div class="sl">Exits Mar'26</div><div class="sv">Atul Auto ↓</div></div>
+</div>
+
+<div class="tab-row">
+  <button class="tab active" onclick="show('philosophy',this)">SMILE philosophy</button>
+  <button class="tab" onclick="show('portfolio',this)">Full portfolio</button>
+  <button class="tab" onclick="show('tac',this)">⭐⭐ TAC Infosec</button>
+  <button class="tab" onclick="show('yatharth',this)">⭐ Yatharth Hospital</button>
+  <button class="tab" onclick="show('webel',this)">⭐ Webel Solar</button>
+  <button class="tab" onclick="show('others',this)">Other holdings</button>
+  <button class="tab" onclick="show('guidance',this)">Guidance analysis</button>
+  <button class="tab" onclick="show('filter',this)">Garvit's filter</button>
+  <button class="tab" onclick="show('verdict',this)">⭐ Verdict & action</button>
+</div>
+
+<!-- PHILOSOPHY -->
+<div id="philosophy" class="panel active">
+  <div class="sh">Who is Vijay Kedia — the "Market Master" vs Ashish Kacholia</div>
+
+  <div class="smile-box">
+    <div class="sb-h">😊 The SMILE Framework — Kedia's 5-factor investing checklist</div>
+    <div class="sb-b">
+    <span class="smile-pill s-s">S — Small in size</span> Market cap ₹100–3,000 Cr when he enters. Too large = already discovered.<br>
+    <span class="smile-pill s-m">M — Medium in experience</span> Company must have 5–15 years of track record. Not a startup, not a mature MNC.<br>
+    <span class="smile-pill s-i">I — Integrity of management</span> Promoter must be trustworthy. He exits the moment governance degrades. Has called out promoters publicly.<br>
+    <span class="smile-pill s-l">L — Large in aspiration</span> Management must have a vision to become 10x the current size. Complacency = no investment.<br>
+    <span class="smile-pill s-e">E — Extra-large in market potential</span> The TAM must be enormous relative to current revenue. A ₹100 Cr company in a ₹10,000 Cr market = compelling.<br><br>
+    <strong>The key difference from Kacholia:</strong> Kedia is MORE concentrated (22 stocks vs Kacholia's 49). He holds longer (10–15 years vs 3–5 for Kacholia). He exits faster when governance or fundamentals crack. Kedia is known for saying: "I would rather have 3 great stocks than 30 average ones." His biggest winners (Atul Auto, Cera Sanitaryware, Aegis Logistics — all 100x+) came from holding for a DECADE. Garvit's 3-year horizon is shorter than Kedia's ideal, but the entry-point logic still applies.
+    </div>
+  </div>
+
+  <div class="sh">Kedia vs Kacholia — the key differences for Garvit</div>
+  <table>
+    <tr><th>Dimension</th><th style="color:#7B1FA2">Vijay Kedia</th><th style="color:#4527A0">Ashish Kacholia</th><th>Implication for Garvit</th></tr>
+    <tr><td>Portfolio concentration</td><td>22 stocks — very concentrated</td><td>49 stocks — more diversified</td><td>Kedia's picks = higher conviction per stock</td></tr>
+    <tr><td>Holding period</td><td>5–15 years (very long)</td><td>3–5 years</td><td>Kedia's picks may need more patience</td></tr>
+    <tr><td>Entry timing</td><td>Very early — pre-institutional discovery</td><td>Early — but sometimes after some run-up</td><td>Kedia's newly bought stocks = freshest opportunity</td></tr>
+    <tr><td>Sectors preferred</td><td>Healthcare, tech, industrials, auto, infra</td><td>Manufacturing, pharma, specialty chemicals</td><td>Kedia has MORE healthcare = new sector for Garvit</td></tr>
+    <tr><td>Exit discipline</td><td>Quick exit on governance concerns</td><td>Slower exit — holds through cycles</td><td>When Kedia holds = strong governance confidence</td></tr>
+    <tr><td>New buys (Mar 2026)</td><td>TAC Infosec, SPML Infra, Webel Solar, Precision Camshafts</td><td>Various SME stocks</td><td>Kedia's fresh buys = most actionable for Garvit</td></tr>
+  </table>
+
+  <div class="sh">Kedia's biggest multibaggers — the pattern for Garvit</div>
+  <div class="point"><div class="dot dv">★</div><div><strong>Atul Auto (bought ~2004–2005, 100x return in 10 years):</strong> Small 3-wheeler manufacturer in semi-urban India at ₹10–15 Cr revenue when he entered. He saw: (1) last-mile mobility as a structural theme, (2) management with integrity and ambition, (3) near-monopoly in niche. Held through 3 economic cycles. Still his largest holding (18.2%).</div></div>
+  <div class="point"><div class="dot dv">★</div><div><strong>Cera Sanitaryware (100x):</strong> Small sanitaryware company when India's housing boom was just beginning. He saw aspirational India demanding premium bathrooms. Classic SMILE: Small company (₹50 Cr revenue), in a medium-experience sector, with Large aspiration, in a market with Extra-large potential.</div></div>
+  <div class="point"><div class="dot dv">★</div><div><strong>TAC Infosec (new buy Mar 2026 — current fresh conviction):</strong> His newest significant position. Cybersecurity SaaS for vulnerability management. He took a 14.6% combined stake (himself + son Ankit). At ₹29 Cr H1 FY26 revenue growing 142% YoY. This is the most actionable new pick for Garvit — most potential from here vs his legacy holdings.</div></div>
+</div>
+
+<!-- FULL PORTFOLIO -->
+<div id="portfolio" class="panel">
+  <div class="sh">Kedia's 22-stock portfolio — complete map with sector allocation</div>
+  <table>
+    <tr><th>#</th><th>Stock</th><th>Sector</th><th>Kedia %</th><th>Value</th><th>Mcap</th><th>Recent action</th><th>Garvit fit?</th></tr>
+    <tr style="background:#F3E5F5"><td>1</td><td><strong>Atul Auto</strong></td><td>3-wheeler auto (CNG/EV transition)</td><td class="r">18.2% ↓</td><td>~₹250 Cr</td><td>₹1,383 Cr</td><td><span class="badge br">Trimming! -2.71%</span></td><td class="r">❌ Kedia reducing — skip</td></tr>
+    <tr style="background:#E8F5E9"><td>2</td><td><strong>TAC Infosec ⭐⭐</strong></td><td>Cybersecurity SaaS — vulnerability mgmt</td><td class="g">9.58% + son 3.65% = 13.2%</td><td>~₹150 Cr</td><td>₹900 Cr</td><td><span class="badge bg">NEW BUY Mar'26</span></td><td class="g">✅ BEST FIT — deep dive tab 3</td></tr>
+    <tr><td>3</td><td><strong>Neuland Laboratories</strong></td><td>API pharma (oncology, CRAMS)</td><td>~1%</td><td>~₹176 Cr</td><td>₹17,000+ Cr</td><td><span class="badge bgray">Long hold</span></td><td class="r">❌ ₹17,000 Cr — too large</td></tr>
+    <tr style="background:#E8F5E9"><td>4</td><td><strong>Yatharth Hospital ⭐</strong></td><td>Healthcare — North India multi-specialty</td><td>~2–3%</td><td>~₹80 Cr</td><td>₹3,400 Cr</td><td><span class="badge bb">Holding</span></td><td class="a">⚠️ Possible — deep dive tab 4</td></tr>
+    <tr><td>5</td><td><strong>Elecon Engineering</strong></td><td>Industrial gearboxes + material handling</td><td>~1–2%</td><td>~₹70 Cr</td><td>₹8,500 Cr</td><td><span class="badge bgray">Long hold</span></td><td class="r">❌ ₹8,500 Cr — too large for 3x</td></tr>
+    <tr><td>6</td><td><strong>Repro India</strong></td><td>Print-on-demand publishing + EdTech</td><td>~5%</td><td>~₹60 Cr</td><td>₹1,200 Cr</td><td><span class="badge bgray">Long hold</span></td><td class="a">⚠️ Watchlist — niche but slow</td></tr>
+    <tr style="background:#E8F5E9"><td>7</td><td><strong>Webel Solar ⭐ (NEW)</strong></td><td>Solar modules/systems</td><td>~1.02% (new)</td><td>~₹20 Cr</td><td>₹2,000+ Cr</td><td><span class="badge bg">NEW BUY Mar'26</span></td><td class="a">⚠️ Possible — Garvit has Websol</td></tr>
+    <tr><td>8</td><td><strong>Vaibhav Global</strong></td><td>Online jewellery/lifestyle retail (global)</td><td>~1.5%</td><td>~₹50 Cr</td><td>₹4,800 Cr</td><td><span class="badge bgray">Long hold</span></td><td class="r">❌ Too large + US dependency</td></tr>
+    <tr style="background:#E8F5E9"><td>9</td><td><strong>SPML Infra (NEW)</strong></td><td>Water infra + smart cities EPC</td><td>1.88% (new)</td><td>~₹25 Cr</td><td>₹1,350 Cr</td><td><span class="badge bg">NEW BUY Mar'26</span></td><td class="a">⚠️ Watchlist — water EPC</td></tr>
+    <tr><td>10</td><td><strong>Precision Camshafts (NEW)</strong></td><td>Auto components — camshafts export</td><td>1.05% (new)</td><td>~₹15 Cr</td><td>₹1,400 Cr</td><td><span class="badge bg">NEW BUY Mar'26</span></td><td class="a">⚠️ Monitor</td></tr>
+    <tr><td>11</td><td><strong>Global Vectra Helicorp</strong></td><td>Helicopter services (ONGC, offshore)</td><td>~3%</td><td>~₹30 Cr</td><td>₹1,000 Cr</td><td><span class="badge bgray">Long hold</span></td><td class="a">⚠️ Interesting niche</td></tr>
+    <tr><td>12</td><td><strong>Om Infra</strong></td><td>Water EPC + Hydro power</td><td>~5%</td><td>~₹35 Cr</td><td>₹700 Cr</td><td><span class="badge bgray">Long hold</span></td><td class="a">⚠️ Garvit has Enviro Infra — overlap</td></tr>
+    <tr><td>13</td><td><strong>Sudarshan Chemical</strong></td><td>Pigments + specialty chemicals</td><td>~1%</td><td>~₹25 Cr</td><td>₹5,000+ Cr</td><td><span class="badge bgray">Long hold</span></td><td class="r">❌ Too large</td></tr>
+    <tr><td>14</td><td><strong>Others (BSE 544611, small)</strong></td><td>Various SME / small cap</td><td>4.53% (new)</td><td>Small</td><td>Sub-₹500 Cr</td><td><span class="badge bg">NEW BUY Mar'26</span></td><td class="a">⚠️ Investigate further</td></tr>
+  </table>
+
+  <div class="warn vk"><strong>The March 2026 new buys signal is very important:</strong> Kedia added 5 new positions in one quarter — TAC Infosec, SPML Infra, Webel Solar, Precision Camshafts, and an unlisted BSE SME stock. This is unusual for him (he typically holds for years, not quarters). Five new entries in one quarter = a cluster bet on a specific India theme: <strong>cybersecurity + infrastructure + green energy + auto component exports.</strong> Post-Operation Sindoor, this cluster looks prescient — defence, digital security, and infrastructure are the three most relevant themes for India's next 5 years.</div>
+</div>
+
+<!-- TAC INFOSEC -->
+<div id="tac" class="panel">
+  <div class="sh">TAC Infosec — Kedia's highest-conviction new buy and Garvit's #1 opportunity</div>
+
+  <div class="stock-card">
+    <div class="sc-hdr">
+      <div>
+        <div class="sc-nm">TAC Infosec Limited (NSE SME: TAC)</div>
+        <div class="sc-sub">Cybersecurity SaaS · Vulnerability management · ESOF platform · AI-driven · 8,000+ clients globally · 100+ countries · Founded 2014 · Ahmedabad · Kedia family 13.23% combined</div>
+      </div>
+      <span class="badge bg">⭐⭐ BEST Kedia pick for Garvit — small position</span>
+    </div>
+    <div class="sc-meta">
+      <div><div class="sm-v" style="color:#854F0B">~₹900 Cr</div><div class="sm-l">Market cap</div></div>
+      <div><div class="sm-v" style="color:#1D9E75">₹58+ Cr</div><div class="sm-l">FY26 Revenue (TTM est.)</div></div>
+      <div><div class="sm-v" style="color:#1D9E75">₹32+ Cr</div><div class="sm-l">FY26 PAT (TTM est.)</div></div>
+      <div><div class="sm-v" style="color:#1D9E75">+142%</div><div class="sm-l">H1 FY26 revenue growth</div></div>
+      <div><div class="sm-v" style="color:#1D9E75">55%</div><div class="sm-l">PAT margin (H1 FY26)</div></div>
+    </div>
+    <div class="sc-meta" style="border-top:none">
+      <div><div class="sm-v" style="color:#1D9E75">+129%</div><div class="sm-l">H1 FY26 PAT growth</div></div>
+      <div><div class="sm-v">8,000+</div><div class="sm-l">Clients (was 0 in Apr 2024!)</div></div>
+      <div><div class="sm-v">$1,682</div><div class="sm-l">Revenue per client ↑36%</div></div>
+      <div><div class="sm-v">13.23%</div><div class="sm-l">Kedia family stake</div></div>
+      <div><div class="sm-v" style="color:#A32D2D">NASDAQ F1</div><div class="sm-l">CyberScope IPO planned</div></div>
+    </div>
+    <div class="sc-body">
+    <strong>What TAC Infosec does — India's first global vulnerability management SaaS:</strong><br>
+    TAC Infosec operates ESOF (Enterprise Security in One Framework) — a SaaS platform that: (1) Scans an organization's entire digital infrastructure for vulnerabilities (unpatched software, misconfigurations, weak credentials), (2) Quantifies cyber risk in financial terms (₹/$ at risk), (3) Provides AI-driven remediation suggestions, (4) Tracks compliance (SOC2, ISO27001, DPDP Act India). Clients include Microsoft, Fujifilm, Casio, BlackBerry, Salesforce, Xerox, DBS Bank, Bandhan Bank, Nissan, Dropbox. The business model is pure SaaS — $1,682 annual subscription per client. As clients renew and upsell, Revenue per Client grows without additional sales cost.<br><br>
+    <strong>The extraordinary client acquisition story:</strong><br>
+    In April 2024 (IPO listing), TAC had ~2,000 clients. By January 2026, it added 600+ clients IN A SINGLE MONTH — reaching 8,000 clients. This is a company that went from near-zero to 8,000 global enterprise clients in 21 months. The target: 10,000 by March 2026. At $1,682/client, 10,000 clients = $16.82 million = ₹140 Cr annual run rate revenue — nearly 2.5x its current revenue base.<br><br>
+    <strong>The CyberScope NASDAQ listing — the value-unlocking catalyst:</strong><br>
+    TAC acquired Cyberscope (European Web3 security firm) and filed an F-1 registration statement with the SEC for a NASDAQ IPO of the CyberScope subsidiary. If CyberScope lists on NASDAQ at even $50M valuation, it would be worth ₹417 Cr — more than 46% of TAC Infosec's current ₹900 Cr market cap. This is a subsidiary value-unlocking event that could trigger a massive re-rating of the parent.<br><br>
+    <strong>Post-Operation Sindoor — cybersecurity becomes national priority:</strong><br>
+    India's military action exposed critical vulnerabilities in digital infrastructure. India's National Cybersecurity Policy will receive emergency funding. Every bank, port, power company, and defence PSU will face stronger compliance requirements. TAC's vulnerability management platform directly addresses this — the regulatory demand is now existential, not optional.
+    </div>
+    <div class="sc-verdict" style="background:#E1F5EE">
+      <span class="badge bg">⭐⭐ BUY — ₹15,000–20,000 speculative position</span>
+      <span style="font-size:12px;color:#0F6E56">Kedia family 13.23% = HIGHEST conviction stake in any new buy. IPO listing in 2024 at ₹106 → now ₹450+. Still significant upside if 10K clients + CyberScope NASDAQ listing executes.</span>
+    </div>
+  </div>
+
+  <div class="sh">Revenue trajectory — from ₹0 to hypergrowth</div>
+  <table>
+    <tr><th>Period</th><th>Revenue</th><th>Growth</th><th>PAT</th><th>PAT%</th><th>Clients</th><th>Key milestone</th></tr>
+    <tr><td>Pre-IPO (FY24)</td><td>~₹18–20 Cr</td><td>—</td><td>~₹8 Cr</td><td class="g">~40%</td><td>~2,000</td><td>NSE SME IPO Apr 2024 at ₹106. Kedia enters at IPO anchor/secondary.</td></tr>
+    <tr><td>H1 FY25</td><td>₹12 Cr</td><td>Base</td><td>₹7 Cr</td><td class="g">58%</td><td>~3,000</td><td>Kacholia also holds (different Kacholia — no relation). Client acquisition accelerates.</td></tr>
+    <tr><td>H1 FY26</td><td>₹29 Cr</td><td class="g">+142% YoY</td><td>₹16 Cr</td><td class="g">55%</td><td>~7,000</td><td>Revenue +142%, PAT +129%. CyberScope acquired. VULMAN UK subsidiary. F1 filing.</td></tr>
+    <tr><td>FY26E (full)</td><td>~₹55–65 Cr</td><td class="g">~+180–200%</td><td>~₹30–36 Cr</td><td class="g">~55%</td><td>~10,000</td><td>Target: 10,000 clients. $1,682/client = ₹140 Cr ARR at target. CyberScope NASDAQ filing complete.</td></tr>
+    <tr><td>FY27E</td><td>~₹120–160 Cr</td><td class="g">~+100–150%</td><td>~₹65–90 Cr</td><td class="g">~55%</td><td>~15,000</td><td>Client upselling drives revenue per client to $2,200+. Enterprise deals growing. NASDAQ listing potential value unlock.</td></tr>
+    <tr><td>FY28E</td><td>~₹220–320 Cr</td><td class="g">~+80–100%</td><td>~₹120–180 Cr</td><td class="g">~55%</td><td>~25,000</td><td>3x PAT from FY26. At 30x PE = ₹3,600–5,400 Cr = 4–6x from ₹900 Cr mcap.</td></tr>
+  </table>
+
+  <div class="sh">3x scenario — from ₹900 Cr market cap</div>
+  <div class="warn success"><strong>The 3x math is very compelling:</strong> 3x from ₹900 Cr = ₹2,700 Cr. At 30x PE on ₹90 Cr PAT = ₹2,700 Cr. FY26E PAT: ~₹33 Cr. To reach ₹90 Cr PAT: 2.7x growth in 2 years = 65% annual growth. H1 FY26 PAT already growing at 129% YoY. <strong>If growth even HALVES from current pace, 3x is still achievable by FY28.</strong> This is one of the strongest 3x cases in the entire Kacholia + Kedia universe analyzed.</div>
+
+  <div class="two-col">
+    <div class="scenario" style="border-left:3px solid #1D9E75">
+      <div style="font-size:12px;font-weight:500;color:#0F6E56;margin-bottom:7px">Bull: 5–8x by FY28</div>
+      <div class="sc-grid">
+        <div class="sc-cell"><div class="sc-l">FY28 PAT</div><div class="sc-v">₹160 Cr</div></div>
+        <div class="sc-cell"><div class="sc-l">PE (SaaS premium)</div><div class="sc-v">35–45x</div></div>
+        <div class="sc-cell"><div class="sc-l">CyberScope NASDAQ</div><div class="sc-v">+₹500 Cr value</div></div>
+        <div class="sc-cell"><div class="sc-l">Total mcap</div><div class="sc-v">₹5,600–7,700 Cr</div></div>
+        <div class="sc-cell"><div class="sc-l">Return</div><div class="sc-v">6.2–8.6x</div></div>
+        <div class="sc-cell"><div class="sc-l">Probability</div><div class="sc-v">20–25%</div></div>
+      </div>
+    </div>
+    <div class="scenario" style="border-left:3px solid #A32D2D">
+      <div style="font-size:12px;font-weight:500;color:#A32D2D;margin-bottom:7px">Bear: -40 to -60%</div>
+      <div style="font-size:11px;color:#555">Client acquisition stalls at 8,000. NASDAQ IPO delayed/cancelled. Global cybersecurity peers (Tenable, Rapid7) compete aggressively on price. PAT stagnates at ₹35 Cr at 20x = ₹700 Cr mcap = -22%. Probability: 25%.</div>
+    </div>
+  </div>
+</div>
+
+<!-- YATHARTH HOSPITAL -->
+<div id="yatharth" class="panel">
+  <div class="sh">Yatharth Hospital — Kedia's healthcare bet, North India's fastest-growing hospital chain</div>
+
+  <div class="stock-card">
+    <div class="sc-hdr">
+      <div>
+        <div class="sc-nm">Yatharth Hospital &amp; Trauma Care Services Ltd (NSE: YATHARTH)</div>
+        <div class="sc-sub">Multi-specialty hospitals · Delhi NCR + North India · 8 hospitals · 2,500+ beds (targeting 5,000) · Q3 FY26: Revenue +46% YoY · PAT +41% YoY · Vijay Kedia 2–3% stake</div>
+      </div>
+      <span class="badge ba">⭐ WATCHLIST — wait for Q4 FY26 results + correction</span>
+    </div>
+    <div class="sc-meta">
+      <div><div class="sm-v" style="color:#854F0B">₹3,400 Cr</div><div class="sm-l">Market cap</div></div>
+      <div><div class="sm-v" style="color:#1D9E75">₹800+ Cr</div><div class="sm-l">FY26E Revenue</div></div>
+      <div><div class="sm-v" style="color:#1D9E75">₹160+ Cr</div><div class="sm-l">FY26E PAT</div></div>
+      <div><div class="sm-v" style="color:#1D9E75">+46%</div><div class="sm-l">Q3 FY26 Revenue growth</div></div>
+      <div><div class="sm-v" style="color:#1D9E75">+41%</div><div class="sm-l">Q3 FY26 PAT growth</div></div>
+    </div>
+    <div class="sc-meta" style="border-top:none">
+      <div><div class="sm-v">29.2%</div><div class="sm-l">Adj. EBITDA Q3 FY26</div></div>
+      <div><div class="sm-v">₹44,000</div><div class="sm-l">ARPOB (Noida Ext. record)</div></div>
+      <div><div class="sm-v">5,000</div><div class="sm-l">Bed target in 3 years</div></div>
+      <div><div class="sm-v">₹1,500 Cr</div><div class="sm-l">Capex plan (3 years)</div></div>
+      <div><div class="sm-v" style="color:#A32D2D">-20%</div><div class="sm-l">52-wk stock performance</div></div>
+    </div>
+    <div class="sc-body">
+    <strong>What Yatharth does:</strong> North India's fast-growing multi-specialty hospital chain. Operates 8 hospitals: Noida (flagship, 91% occupancy!), Greater Noida (74%), Noida Extension (61%), Greater Faridabad, New Delhi Model Town (300 beds, Jul 2025), Faridabad Sec-20 (400 beds), Jhansi-Orchha (MP), and Agra (acquired Feb 2026). Clinical focus: oncology (fastest growing — ₹85 Cr growing from ₹63 Cr YoY), critical care, orthopaedics, cardiology.<br><br>
+    <strong>Q3 FY26 was extraordinary — record revenues:</strong> Revenue ₹320.5 Cr (+46% YoY, +15% QoQ). EBITDA ₹74.2 Cr (+35% YoY). PAT ₹43.1 Cr (+41% YoY). The two new hospitals (New Delhi + Faridabad Sec-20) contributed ₹27.9 Cr in revenue within their very first full quarter of operations — extraordinarily fast ramp-up. Management guided "30% revenue growth is conservative — we should overachieve."<br><br>
+    <strong>The bed-doubling thesis (from 2,500 to 5,000 beds in 3 years):</strong> At ₹60L capex per bed (average), 2,500 new beds = ₹1,500 Cr capex. Funded by internal cash (₹200+ Cr cash on hand) + debt + OCF. Once new beds mature (12–18 months), EBITDA margin expands toward 29–30% adjusted levels. The operating leverage play is identical to Krsnaa Diagnostics (which Garvit analyzed) — but Yatharth's governance and execution have been far cleaner.<br><br>
+    <strong>Why Kedia holds:</strong> Healthcare in Delhi NCR is a structural moat — branded hospital networks in North India's mega-city cluster are impossible to replicate quickly. ARPOB growing 10% annually. Oncology as a clinical focus = highest-value patients + government national cancer mission funding. 13 consecutive quarters of EBITDA growth = the most reliable operating streak in the healthcare sector.
+    </div>
+    <div class="sc-verdict" style="background:#E3F2FD">
+      <span class="badge bb">⭐ WATCHLIST — buy ₹20,000–30,000 if stock corrects to ₹400–420 range (currently ₹480)</span>
+      <span style="font-size:12px;color:#185FA5">At ₹480 (₹3,400 Cr), PE ~21x FY26E. Good but not cheap. At ₹420 (₹2,960 Cr), PE drops to 18.5x on growing earnings — much better entry. Q4 FY26 results in May — watch for FY27 guidance.</span>
+    </div>
+  </div>
+
+  <div class="sh">Guidance — the most explicit from Kedia's portfolio</div>
+  <div class="guid-card beat">
+    <div class="guid-h">✓ 30% revenue growth guidance — management says "conservative, should overachieve"</div>
+    <div class="guid-b">Yatharth management explicitly guided 30%+ revenue growth for FY26 and FY27. Q3 FY26 at +46% YoY is well ahead. The company has delivered 13 consecutive quarters of EBITDA growth. Management added: "I think we are being conservative when saying 30% revenue growth. We feel that this number should be easily overachieved." This is genuinely one of the strongest guidance credibility records in Indian healthcare.</div>
+    <div class="guid-s">Credibility: 9/10. 13-quarter streak + management explicitly calling 30% guidance "conservative" = extremely high confidence.</div>
+  </div>
+  <div class="guid-card beat">
+    <div class="guid-h">✓ 5,000 beds in 3 years — roadmap clear, locations identified</div>
+    <div class="guid-b">Management targets 5,000 beds from current ~2,500 in 3 years. ₹1,500 Cr capex planned. Locations: NCR priority, then North India major cities. Already acquired Agra hospital (integrated Feb 2026, profitable Day 1). The pipeline is visible: Noida Extension brownfield expansion + Greater Noida brownfield + new greenfield sites in Lucknow, Chandigarh. Each new bed at maturity generates ₹30,000–44,000 ARPOB = significant revenue addition.</div>
+    <div class="guid-s">Credibility: 8/10. Two new hospitals (New Delhi + Faridabad) ramped to ₹7–8 Cr MRR within 3 months = management knows how to execute hospital launches.</div>
+  </div>
+
+  <div class="sh">3x scenario — from ₹3,400 Cr</div>
+  <div class="two-col">
+    <div class="scenario" style="border-left:3px solid #2E7D32">
+      <div style="font-size:12px;font-weight:500;color:#1B5E20;margin-bottom:7px">Bull: 2.5–3x by FY28 — 5,000 beds operational</div>
+      <div class="sc-grid">
+        <div class="sc-cell"><div class="sc-l">FY28 Revenue</div><div class="sc-v">₹1,500+ Cr</div></div>
+        <div class="sc-cell"><div class="sc-l">FY28 PAT</div><div class="sc-v">₹280–350 Cr</div></div>
+        <div class="sc-cell"><div class="sc-l">PE (healthcare)</div><div class="sc-v">28–35x</div></div>
+        <div class="sc-cell"><div class="sc-l">FY28 mcap</div><div class="sc-v">₹7,840–12,250 Cr</div></div>
+        <div class="sc-cell"><div class="sc-l">Return</div><div class="sc-v">2.3–3.6x</div></div>
+        <div class="sc-cell"><div class="sc-l">Probability</div><div class="sc-v">25–30%</div></div>
+      </div>
+    </div>
+    <div class="scenario" style="border-left:3px solid #378ADD">
+      <div style="font-size:12px;font-weight:500;color:#185FA5;margin-bottom:7px">Base: 1.5–2x — 30% growth sustained</div>
+      <div style="font-size:11px;color:#555">FY27 PAT ₹215 Cr at 25x PE = ₹5,375 Cr = 1.58x. FY28 PAT ₹290 Cr at 28x = ₹8,120 Cr = 2.4x. Stock currently -20% from high = attractive entry level.</div>
+    </div>
+  </div>
+</div>
+
+<!-- WEBEL SOLAR -->
+<div id="webel" class="panel">
+  <div class="sh">Webel Solar — Kedia's new solar bet, but Garvit already has Websol</div>
+
+  <div class="stock-card">
+    <div class="sc-hdr">
+      <div>
+        <div class="sc-nm">Webel Solar Ltd (NSE: WEBELSOLAR)</div>
+        <div class="sc-sub">Solar modules + EPC + rooftop solar · West Bengal govt connection · Kedia 1.02% (new Mar 2026) · ₹2,000+ Cr mcap · PSU-adjacent solar company</div>
+      </div>
+      <span class="badge ba">⚠️ SKIP — Garvit has BETTER Websol Energy (9.0/10)</span>
+    </div>
+    <div class="sc-body">
+    <strong>Why Kedia bought:</strong> Webel Solar is a West Bengal government-adjacent solar manufacturing company. Solar sector tailwind + state government backing + national solar mission = the broad thesis. Kedia sees solar as India's multi-decade energy transition theme.<br><br>
+    <strong>Why Garvit should NOT buy Webel Solar:</strong> Garvit already holds 1,300 shares of Websol Energy System (9.0/10 conviction) — India's only BSE-listed pure-play solar CELL manufacturer with an ALMM manufacturing moat. Websol Energy is categorically superior to Webel Solar in: (1) ALMM certification (mandatory for all solar projects — Websol's moat), (2) PAT margins (44% vs much lower for Webel), (3) Technology quality (monocrystalline PERC cells vs standard modules). Adding Webel Solar when Garvit already has the better-quality solar play would be redundant dilution of a superior thesis. Stay with Websol Energy.
+    </div>
+    <div class="sc-verdict" style="background:#FFF5F5">
+      <span class="badge br">SKIP — redundant with Garvit's existing Websol Energy (1,300 shares, 9.0/10 conviction)</span>
+    </div>
+  </div>
+
+  <div class="sh">Webel Solar vs Websol Energy — direct comparison for Garvit</div>
+  <div style="border:1px solid #ddd;border-radius:10px;overflow:hidden;font-size:11px">
+    <div class="comp-h">
+      <div class="cc-h" style="background:#f5f5f3">Metric</div>
+      <div class="cc-h" style="background:#E8F5E9;color:#1B5E20">Websol Energy (Garvit holds ✅)</div>
+      <div class="cc-h" style="background:#FAEEDA;color:#854F0B">Webel Solar (Kedia buying new)</div>
+    </div>
+    <div class="comp-row"><div class="cc cc-label">Product</div><div class="cc winner-cell">Solar CELLS (PERC monocrystalline) — higher tech</div><div class="cc mid-cell">Solar Modules + EPC — lower tech</div></div>
+    <div class="comp-row"><div class="cc cc-label">ALMM Certification</div><div class="cc winner-cell">YES — mandatory for all solar projects</div><div class="cc loser-cell">Module manufacturer — different ALMM category</div></div>
+    <div class="comp-row"><div class="cc cc-label">PAT margin</div><div class="cc winner-cell">44% EBITDA (excellent)</div><div class="cc mid-cell">Lower — module assembly is lower margin</div></div>
+    <div class="comp-row"><div class="cc cc-label">Competitive moat</div><div class="cc winner-cell">Only Indian PERC cell maker — real monopoly</div><div class="cc loser-cell">Many module makers — commoditised</div></div>
+    <div class="comp-row"><div class="cc cc-label">Verdict</div><div class="cc winner-cell">HOLD ALL 1,300 shares firmly</div><td class="cc">SKIP — don't add this to portfolio</td></div>
+  </div>
+</div>
+
+<!-- OTHER HOLDINGS -->
+<div id="others" class="panel">
+  <div class="sh">Other Kedia holdings — analyzed for Garvit</div>
+
+  <div class="stock-card">
+    <div class="sc-hdr"><div><div class="sc-nm">SPML Infra (NSE: SPMLINFRA) — NEW Mar'26 buy</div><div class="sc-sub">Water/wastewater + smart city EPC · Government contracts · ₹1,350 Cr mcap · Kedia 1.88%</div></div><span class="badge ba">⚠️ WATCHLIST — Garvit has Enviro Infra already</span></div>
+    <div class="sc-body">SPML Infra executes large EPC projects for water treatment, sewerage, smart cities, and underground utilities for municipalities and government bodies. Similar thesis to Garvit's existing Enviro Infra Engineers holding. SPML is larger (₹1,350 Cr vs ₹1,200 Cr for Enviro) but has historically had receivable concerns from government contracts. Kedia's 1.88% is a relatively small position — lower conviction than his usual. <strong>Since Garvit already holds Enviro Infra Engineers (400 shares) in the same space, SPML would be redundant unless Enviro Infra's Q4 FY26 audit reveals concerns.</strong> If Enviro Infra has a clean Q4 audit → hold Enviro, skip SPML. If Enviro has concerns → consider SPML as an alternative water EPC play.</div>
+  </div>
+
+  <div class="stock-card">
+    <div class="sc-hdr"><div><div class="sc-nm">Precision Camshafts (NSE: PRECAM) — NEW Mar'26 buy</div><div class="sc-sub">Auto component — camshafts for global OEMs · Export-heavy · Kedia 1.05% · ₹1,400 Cr mcap</div></div><span class="badge ba">⚠️ WATCHLIST — auto components export play</span></div>
+    <div class="sc-body">Precision Camshafts manufactures engine camshafts for global automotive OEMs — primarily European and US clients. Classic Make-in-India export play: India-made precision auto components at globally competitive prices. Kedia sees this as a China+1 beneficiary (global OEMs diversifying supply chains away from China). Revenue ~₹700–800 Cr. PAT margins ~8–10% (auto component margins are thin). At ₹1,400 Cr mcap and ~₹75–80 Cr PAT = 17.5x PE — reasonable but not cheap. <strong>The global EV transition is actually a risk for camshaft manufacturers</strong> (camshafts are combustion engine components — EVs don't need them). Kedia's entry is small (1.05%) = exploratory, not core conviction.</div>
+  </div>
+
+  <div class="stock-card">
+    <div class="sc-hdr"><div><div class="sc-nm">Global Vectra Helicorp (NSE: GLOBALVECT) — long-held position</div><div class="sc-sub">Helicopter services · ONGC + offshore · Aviation niche · ₹1,000 Cr mcap · Kedia ~3%</div></div><span class="badge bgray">SKIP — niche, but limited growth visibility</span></div>
+    <div class="sc-body">Global Vectra operates helicopters for ONGC's offshore oil operations, emergency medical services, and other aviation contracts. Pure niche — India's only listed helicopter services company. Classic Kedia SMILE pick (Small, niche moat, low coverage). But: revenue growth is slow (dependent on ONGC capex), margins are thin, and the aviation MRO business requires expensive capital. At ₹1,000 Cr mcap with limited PAT growth visibility, the 3x math is challenging. <strong>Post-Operation Sindoor, the offshore oil sector actually benefits from India prioritising energy independence — a mild positive for ONGC spending.</strong> Monitor quarterly but don't buy.</div>
+  </div>
+
+  <div class="stock-card">
+    <div class="sc-hdr"><div><div class="sc-nm">Repro India (BSE: REPRO) — Kedia's publishing/EdTech bet</div><div class="sc-sub">Print-on-demand + digital content · NCERT textbooks + international publishing · ~5% Kedia stake · ₹1,200 Cr mcap</div></div><span class="badge bgray">SKIP — revenue growth too slow for 3x</span></div>
+    <div class="sc-body">Repro India is India's largest print-on-demand company — it prints books only when ordered (eliminating inventory waste). Clients include NCERT, international publishers (Oxford, Wiley). Kedia has held ~5% for years. The thesis: digitisation of education + NCERT curriculum revamp + international print outsourcing to India. However, PAT growth has been slow (12–15% annually) — well below Garvit's 25% minimum threshold. At ₹1,200 Cr mcap, the 3x case requires acceleration that hasn't materialised yet. <strong>Skip unless Repro announces a major NCERT contract or international digital content deal.</strong></div>
+  </div>
+</div>
+
+<!-- GUIDANCE -->
+<div id="guidance" class="panel">
+  <div class="sh">Kedia portfolio guidance — what managements are saying</div>
+
+  <div class="sh">TAC Infosec — most aggressive guidance in the portfolio</div>
+  <div class="guid-card beat">
+    <div class="guid-h">✓ 10,000 client target by March 2026 — tracking at 8,000 (on track)</div>
+    <div class="guid-b">TAC guided 10,000 global clients by March 2026. By January 2026, it had nearly 8,000. Q4 FY26 (Jan-Mar 2026) should have added 600–1,000 more. The company added 600+ clients in January alone. Revenue per client growing 36% YoY ($1,200 → $1,682) = upselling working. Management targets 20% revenue growth on a half-yearly basis — a target they've been beating. CyberScope F-1 filing with SEC = US NASDAQ listing pathway clear.</div>
+    <div class="guid-s">Credibility: 8/10. Client acquisition trajectory strongly suggests 10,000 was achieved by March 2026.</div>
+  </div>
+  <div class="guid-card beat">
+    <div class="guid-h">✓ TAC Infosec FY26 revenue/profit targets — both "overachieved" per management</div>
+    <div class="guid-b">"Both revenue and profitability targets for FY26 have been overachieved compared with FY25, reflecting improved margins and growth momentum." H1 FY26 revenue ₹29 Cr vs H1 FY25 ₹12 Cr = +142%. H1 FY26 PAT ₹16 Cr vs ₹7 Cr = +129%. If H2 continues at similar growth, FY26 full year: Revenue ₹55–65 Cr, PAT ₹30–35 Cr — a company growing from ₹0 revenue to ₹60 Cr in 2 years as a listed entity.</div>
+    <div class="guid-s">Credibility: 9/10. Already confirmed ahead of targets. Q4 FY26 results will give the full-year picture.</div>
+  </div>
+
+  <div class="sh">Yatharth Hospital — most explicit guidance in healthcare</div>
+  <div class="guid-card beat">
+    <div class="guid-h">✓ 30% revenue growth — Q3 FY26 delivered 46% — management says "conservative"</div>
+    <div class="guid-b">Yatharth management explicitly said: "I think we are being conservative when we're saying 30% revenue growth. We feel that this number should be easily overachieved." This is a management confident enough to say their own guidance is too conservative — then backing it up with a 46% revenue growth quarter. 13 consecutive quarters of EBITDA growth. Adjusted EBITDA margin at 29.2% (adjusted for new hospital ramp-up losses).</div>
+    <div class="guid-s">Credibility: 9/10 — 13-quarter track record is the proof.</div>
+  </div>
+  <div class="guid-card watch">
+    <div class="guid-h">⚠ ARPOB guidance: 8–10% annual growth — achievable but competitive</div>
+    <div class="guid-b">Management guided 8–10% annual ARPOB growth (Revenue per Occupied Bed). Noida Extension achieving ₹44,000 ARPOB (+16% YoY) shows the high end is achievable. But new hospitals (New Delhi, Faridabad Sec-20) are at ₹40,000 — below Noida's ₹44,000. As clinical specialisation deepens (oncology from 10% to 15% of revenue), ARPOB should rise toward ₹50,000+ at the flagship hospitals. Receivable days still high at 116 days — management targets <110 by March 2027 as government business mix falls from 35% to 25–28%.</div>
+    <div class="guid-s">Watch: Q4 FY26 and Q1 FY27 ARPOB trends — if new hospitals reach ₹42,000+ ARPOB within 12 months of launch, the ramp-up is faster than expected = massive positive.</div>
+  </div>
+</div>
+
+<!-- GARVIT FILTER -->
+<div id="filter" class="panel">
+  <div class="sh">Applying Garvit's 3x filter to Kedia's full portfolio</div>
+  <div class="warn vk"><strong>Critical insight:</strong> Kedia's stocks need a different filter than Kacholia's. Kedia holds fewer stocks with higher conviction and longer time horizon. His new buys in March 2026 (TAC Infosec, SPML Infra, Webel Solar, Precision Camshafts) are the most actionable — he's entering fresh positions after decades of discipline. When Kedia enters a stock in Q1 2026 with his long-term holding philosophy, it signals he believes the next 5–7 years are compelling for that company.</div>
+
+  <table>
+    <tr><th>Stock</th><th>Mcap</th><th>Growth rate</th><th>PAT margin</th><th>Kedia action</th><th>3x prob.</th><th>Garvit action</th></tr>
+    <tr style="background:#E8F5E9"><td><strong>TAC Infosec ⭐⭐</strong></td><td class="a">₹900 Cr</td><td class="g">+142% H1 FY26</td><td class="g">55%</td><td><span class="badge bg">NEW BUY + increasing</span></td><td class="g">35–40%</td><td><span class="badge bg">BUY ₹15–20K speculative</span></td></tr>
+    <tr style="background:#E8F5E9"><td><strong>Yatharth Hospital ⭐</strong></td><td class="a">₹3,400 Cr</td><td class="g">+46% Q3 FY26</td><td class="a">14%</td><td><span class="badge bb">Holding</span></td><td class="a">25–30%</td><td><span class="badge ba">WATCHLIST — buy at ₹420</span></td></tr>
+    <tr><td>Neuland Labs</td><td class="r">₹17,000 Cr</td><td class="a">+15–20%</td><td class="g">18%</td><td><span class="badge bgray">Long hold</span></td><td class="r">5–8%</td><td><span class="badge br">SKIP — too large</span></td></tr>
+    <tr><td>Elecon Engineering</td><td class="r">₹8,500 Cr</td><td class="a">+12–15%</td><td class="g">20%</td><td><span class="badge bgray">Long hold</span></td><td class="r">7–10%</td><td><span class="badge br">SKIP — too large</span></td></tr>
+    <tr><td>Webel Solar</td><td class="a">₹2,000 Cr</td><td class="a">+25%</td><td class="a">8–10%</td><td><span class="badge bg">NEW BUY</span></td><td class="a">20–25%</td><td><span class="badge br">SKIP — Garvit has Websol (superior)</span></td></tr>
+    <tr><td>SPML Infra</td><td class="a">₹1,350 Cr</td><td class="a">+20%</td><td class="a">5–8%</td><td><span class="badge bg">NEW BUY</span></td><td class="a">18–22%</td><td><span class="badge ba">Skip if Enviro audit clean</span></td></tr>
+    <tr><td>Precision Camshafts</td><td class="a">₹1,400 Cr</td><td class="a">+15%</td><td class="a">8–10%</td><td><span class="badge bg">NEW BUY</span></td><td class="a">15–20%</td><td><span class="badge ba">Monitor — EV risk</span></td></tr>
+    <tr><td>Atul Auto</td><td class="a">₹1,383 Cr</td><td class="a">+15%</td><td class="a">8%</td><td><span class="badge br">TRIMMING! -2.71%</span></td><td class="r">10–12%</td><td><span class="badge br">SKIP — Kedia selling</span></td></tr>
+    <tr><td>Repro India</td><td class="a">₹1,200 Cr</td><td class="r">+10–12%</td><td class="a">10%</td><td><span class="badge bgray">Long hold</span></td><td class="r">8–10%</td><td><span class="badge br">SKIP — too slow</span></td></tr>
+    <tr><td>Vaibhav Global</td><td class="r">₹4,800 Cr</td><td class="r">+8%</td><td class="a">5%</td><td><span class="badge bgray">Long hold</span></td><td class="r">5–7%</td><td><span class="badge br">SKIP — US dependency + slow</span></td></tr>
+    <tr><td>Global Vectra</td><td class="a">₹1,000 Cr</td><td class="a">+12%</td><td class="a">8%</td><td><span class="badge bgray">Small hold</span></td><td class="a">15–18%</td><td><span class="badge bgray">Monitor — limited upside</span></td></tr>
+  </table>
+</div>
+
+<!-- VERDICT -->
+<div id="verdict" class="panel">
+  <div class="sh">The definitive verdict — Kedia portfolio filtered for Garvit's 3x goal</div>
+
+  <div class="garvit-box">
+    <div class="gb-h">🎯 Summary: 1 BUY, 1 Watchlist, rest skip — cleaner portfolio improvement than Kacholia</div>
+    <div class="gb-b">
+    Vijay Kedia's March 2026 cluster buy (5 new stocks) reveals his current highest-conviction themes: cybersecurity, infrastructure, solar energy, auto exports. From these, only ONE passes Garvit's strict 3x filter at current prices:<br><br>
+    <strong>✅ BUY — TAC Infosec (₹15,000–20,000 small speculative position):</strong><br>
+    Kedia family holds 13.23% combined (Vijay + son Ankit). This is his HIGHEST combined family stake in any stock by percentage — the ultimate conviction signal. TAC Infosec is growing revenue at 142% YoY with 55% PAT margins. The SaaS model (8,000+ clients paying $1,682/year) creates an asset-light, recurring revenue moat that compounds as churn is low and upselling grows. The NASDAQ listing of CyberScope subsidiary could unlock ₹400–500 Cr of value — more than 44% of the parent company's current market cap. Post-Operation Sindoor, cybersecurity is now a national security imperative, not just a corporate IT spend. At ₹900 Cr mcap with ₹55–65 Cr revenue growing 180%+ — the 3–4x potential in 2 years is the most credible in Kedia's portfolio. Note: Already analyzed this vis-à-vis Kacholia's micro-cap context — the recommendation holds.<br><br>
+    <strong>📋 WATCHLIST — Yatharth Hospital (buy ₹20–30K if stock corrects to ₹420–440):</strong><br>
+    Yatharth is a high-quality hospital chain with 13 consecutive quarters of EBITDA growth, 46% Q3 FY26 revenue growth, and a clear bed-doubling roadmap (2,500 → 5,000 beds). Management guidance of 30% growth is explicitly called "conservative." But at ₹3,400 Cr mcap (₹480 stock), the PE of ~21x FY26 is fair, not cheap. The stock is already down -20% from its 52-week high of ₹720 — a further 8–12% correction to ₹420–440 would create an excellent entry. Garvit's portfolio lacks healthcare exposure entirely — Yatharth at the right price would be a meaningful portfolio diversification into India's fastest-growing healthcare market (Delhi NCR).<br><br>
+    <strong>❌ SKIP — All others:</strong><br>
+    Webel Solar (Garvit has Websol — superior), SPML Infra (Garvit has Enviro Infra — similar), Precision Camshafts (EV transition headwind), Atul Auto (Kedia trimming = negative signal), Neuland/Elecon/Vaibhav (too large for 3x), Repro India (too slow growth).
+    </div>
+  </div>
+
+  <div class="sh">Final ranking of Kedia holdings for Garvit's 3x portfolio</div>
+  <div class="ranking-row" style="background:#E8F5E9">
+    <div class="rank-num" style="color:#1D9E75">1</div>
+    <div class="rank-info">
+      <div class="rank-nm">TAC Infosec ⭐⭐ — BUY ₹15–20K</div>
+      <div class="rank-desc">Cybersecurity SaaS · Kedia family 13.23% · 142% revenue growth · 55% PAT margins · 8,000+ clients · CyberScope NASDAQ · Post-Sindoor direct beneficiary</div>
+    </div>
+    <div class="rank-score g">9.0/10</div>
+  </div>
+  <div class="ranking-row">
+    <div class="rank-num" style="color:#185FA5">2</div>
+    <div class="rank-info">
+      <div class="rank-nm">Yatharth Hospital ⭐ — Watchlist, buy at ₹420</div>
+      <div class="rank-desc">Healthcare North India · 13 qtrs EBITDA growth · 46% Q3 revenue growth · 5,000 beds roadmap · Management says 30% guidance "conservative"</div>
+    </div>
+    <div class="rank-score b">7.0/10</div>
+  </div>
+  <div class="ranking-row">
+    <div class="rank-num" style="color:#854F0B">3</div>
+    <div class="rank-info">
+      <div class="rank-nm">SPML Infra — Conditional (only if Enviro Infra fails audit)</div>
+      <div class="rank-desc">Water EPC + smart cities · Kedia new buy · Similar to Enviro Infra · Use only as alternative if Enviro exits</div>
+    </div>
+    <div class="rank-score a">5.5/10</div>
+  </div>
+  <div class="ranking-row">
+    <div class="rank-num" style="color:#854F0B">4</div>
+    <div class="rank-info">
+      <div class="rank-nm">Precision Camshafts — Monitor</div>
+      <div class="rank-desc">Auto component export · China+1 beneficiary · EV risk is structural headwind · Kedia's entry is small (exploratory)</div>
+    </div>
+    <div class="rank-score a">4.5/10</div>
+  </div>
+  <div class="ranking-row" style="background:#FFF5F5">
+    <div class="rank-num" style="color:#A32D2D">5</div>
+    <div class="rank-info">
+      <div class="rank-nm">Atul Auto ❌</div>
+      <div class="rank-desc">Kedia is REDUCING stake — from 20.91% to 18.20%. Never buy when the anchor investor is actively reducing.</div>
+    </div>
+    <div class="rank-score r">2/10</div>
+  </div>
+
+  <div class="sh">Complete action table for Garvit</div>
+  <table>
+    <tr><th>Action</th><th>Stock</th><th>Amount</th><th>When</th><th>Source of funds</th></tr>
+    <tr><td><span class="badge bg">BUY</span></td><td>TAC Infosec (TAC)</td><td>₹15,000–20,000</td><td>This week</td><td>Delton Cables exit (₹26,410) — part of proceeds. Combined with C2C Advanced allocation.</td></tr>
+    <tr><td><span class="badge ba">WATCHLIST</span></td><td>Yatharth Hospital (YATHARTH)</td><td>₹20,000–30,000 if corrects</td><td>Post Q4 results (May 2026). Buy only at ₹420–440 range</td><td>If Awfis partial exit (₹28–35K from 80–100 shares) — part of proceeds → Yatharth at correction.</td></tr>
+    <tr><td><span class="badge ba">CONDITIONAL</span></td><td>SPML Infra</td><td>₹15,000</td><td>Only if Enviro Infra Q4 audit shows concern</td><td>If Enviro exits → SPML becomes alternative water EPC play. Same capex allocation.</td></tr>
+    <tr><td><span class="badge br">SKIP</span></td><td>Atul Auto</td><td>₹0</td><td>—</td><td>Kedia reducing. Never buy when anchor investor selling.</td></tr>
+    <tr><td><span class="badge br">SKIP</span></td><td>Webel Solar</td><td>₹0</td><td>—</td><td>Garvit has Websol Energy (9.0/10, 1,300 shares) — categorically superior.</td></tr>
+    <tr><td><span class="badge br">SKIP all others</span></td><td>Neuland, Elecon, Vaibhav, Repro, Precision Camshafts</td><td>₹0</td><td>—</td><td>Either too large, too slow, or sector already covered.</td></tr>
+  </table>
+
+  <div class="warn vk" style="margin-top:12px"><strong>The Kedia vs Kacholia comparison for Garvit — final word:</strong><br>
+  From Kacholia's 49 stocks → 2 gems (C2C Advanced, TechEra)<br>
+  From Kedia's 22 stocks → 1 gem (TAC Infosec) + 1 watchlist (Yatharth Hospital)<br><br>
+  Combined Kacholia + Kedia micro-cap allocation for Garvit: C2C Advanced ₹18K + TechEra ₹10K + TAC Infosec ₹18K = ₹46K total "star investor validated" allocation = ~2.5% of portfolio. Yatharth Hospital at ₹25K (at ₹420 entry) = another 1.3%. Total "super investor validated" allocation: ₹71K = ~3.7% of portfolio. Small, disciplined, speculative — but backed by two of India's best long-term investors entering fresh. The core 3x spine (Bondada, Websol, EFC, DEE Dev, Borana Weaves) remains the primary compounding engine. These are lottery tickets with very credible lottery-sellers behind them.<br><br>
+  <strong>One-line verdict:</strong> From Vijay Kedia's 22-stock portfolio built on the SMILE philosophy, TAC Infosec (cybersecurity SaaS, 13.23% Kedia family stake, 142% revenue growth, 55% PAT margins, direct beneficiary of post-Sindoor digital security push) is the single clearest 3x opportunity Garvit is missing — a small ₹15–20K speculative position is warranted. Yatharth Hospital (North India healthcare chain, 13 consecutive EBITDA growth quarters, 46% Q3 FY26 revenue growth) earns watchlist status with a price alert at ₹420 for a ₹20–30K position. Everything else either overlaps with existing holdings or doesn't pass the 3x filter.</div>
+</div>
+
+<script>
+function show(id,btn){
+  document.querySelectorAll('.tab').forEach(t=>t.classList.remove('active'));
+  document.querySelectorAll('.panel').forEach(p=>p.classList.remove('active'));
+  btn.classList.add('active');
+  document.getElementById(id).classList.add('active');
+}
+</script>
+</body>
+</html>
