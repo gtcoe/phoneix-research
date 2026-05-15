@@ -1,0 +1,437 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<style>
+@import url('https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&family=DM+Mono:wght@400;500&display=swap');
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+:root{--bg:#F5F3EE;--s:#FFF;--s2:#FAF8F4;--bd:#E8E2D8;--bd2:#D4CCC0;--tx:#1C1917;--tx2:#57534E;--tx3:#A8A29E;--g:#15803D;--gbg:#DCFCE7;--gm:#16A34A;--r:#991B1B;--rbg:#FEE2E2;--a:#92400E;--abg:#FEF3C7;--am:#D97706;--b:#1D4ED8;--bbg:#DBEAFE;--t:#0D7377;--tbg:#CCFBF1;--p:#6B21A8;--pbg:#F3E8FF;--o:#9A3412;--obg:#FFEDD5}
+body{font-family:'Plus Jakarta Sans',sans-serif;background:var(--bg);color:var(--tx);font-size:13px;padding:20px;line-height:1.5}
+h1{font-size:22px;font-weight:800;letter-spacing:-.5px;margin-bottom:3px}
+.sub{font-size:11px;color:var(--tx3);font-family:'DM Mono',monospace;margin-bottom:16px}
+.hero{display:grid;grid-template-columns:repeat(6,1fr);gap:8px;margin-bottom:16px}
+.hc{background:var(--s);border:1px solid var(--bd);border-radius:10px;padding:10px 12px}
+.hl{font-size:9px;color:var(--tx3);font-family:'DM Mono',monospace;text-transform:uppercase;letter-spacing:.08em;margin-bottom:3px}
+.hv{font-size:17px;font-weight:800;letter-spacing:-.5px}
+.hs{font-size:9px;color:var(--tx3);margin-top:2px}
+.tabs{display:flex;gap:5px;flex-wrap:wrap;margin-bottom:16px}
+.tab{font-size:11px;font-weight:600;padding:5px 12px;border-radius:20px;border:1.5px solid var(--bd);background:var(--s);color:var(--tx2);cursor:pointer;transition:all .15s}
+.tab:hover{background:var(--s2);border-color:var(--bd2)}
+.tab.active{background:var(--tx);color:#fff;border-color:var(--tx)}
+.panel{display:none}.panel.active{display:block}
+.sh{font-size:9.5px;font-weight:700;color:var(--tx3);text-transform:uppercase;letter-spacing:.12em;display:flex;align-items:center;gap:8px;margin:16px 0 10px;font-family:'DM Mono',monospace}
+.sh::after{content:'';flex:1;height:1px;background:var(--bd)}
+.mono{font-family:'DM Mono',monospace}
+.ht{width:100%;border-collapse:collapse;font-size:11px;margin-bottom:12px}
+.ht th{font-size:8.5px;font-weight:700;color:var(--tx3);text-transform:uppercase;letter-spacing:.07em;padding:5px 8px;border-bottom:2px solid var(--bd);text-align:left;font-family:'DM Mono',monospace;background:var(--s2)}
+.ht td{padding:7px 8px;border-bottom:1px solid var(--bd);color:var(--tx2);vertical-align:middle}
+.ht tr:hover td{background:var(--s2)}
+.trg{background:#F0FDF4}.tra{background:#FFFBEB}.trr{background:#FFF1F2}.trb{background:#EFF6FF}.trp{background:#FAF5FF}
+.badge{font-size:8.5px;font-weight:700;padding:1.5px 6px;border-radius:8px;white-space:nowrap}
+.bg{background:var(--gbg);color:var(--g)}.br{background:var(--rbg);color:var(--r)}.ba{background:var(--abg);color:var(--a)}.bb2{background:var(--bbg);color:var(--b)}.bt2{background:var(--tbg);color:var(--t)}.bp{background:var(--pbg);color:var(--p)}
+.box{border-radius:10px;padding:14px;margin-bottom:12px;border:1.5px solid}
+.box-g{background:#F0FDF4;border-color:#86EFAC}.box-g .bt{color:var(--g)}.box-g .bb{color:#14532D;opacity:.9}
+.box-r{background:#FFF1F2;border-color:#FECACA}.box-r .bt{color:var(--r)}.box-r .bb{color:#7F1D1D;opacity:.9}
+.box-a{background:#FFFBEB;border-color:#FDE68A}.box-a .bt{color:var(--a)}.box-a .bb{color:#451A03;opacity:.9}
+.box-b{background:#EFF6FF;border-color:#BFDBFE}.box-b .bt{color:var(--b)}.box-b .bb{color:#1E3A5F;opacity:.9}
+.box-t{background:#F0FDFA;border-color:#99F6E4}.box-t .bt{color:var(--t)}.box-t .bb{color:#134E4A;opacity:.9}
+.bt{font-size:12px;font-weight:700;margin-bottom:6px}
+.bb{font-size:11px;line-height:1.65}
+.alist{background:var(--s);border:1px solid var(--bd);border-radius:10px;padding:12px;margin-bottom:12px}
+.aitem{display:flex;gap:8px;align-items:flex-start;padding:7px 0;border-bottom:1px solid var(--bg);font-size:11px}
+.aitem:last-child{border-bottom:none}
+.adot{width:20px;height:20px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:9px;font-weight:700;flex-shrink:0;margin-top:1px}
+.dg{background:var(--gbg);color:var(--g)}.dr{background:var(--rbg);color:var(--r)}.da{background:var(--abg);color:var(--a)}.db{background:var(--bbg);color:var(--b)}.dt{background:var(--tbg);color:var(--t)}.dp{background:var(--pbg);color:var(--p)}.do{background:var(--obg);color:var(--o)}
+.ac strong{font-weight:700;color:var(--tx);display:block;margin-bottom:1px}
+.ac .meta{font-size:9px;color:var(--tx3);font-family:'DM Mono',monospace;margin-top:2px}
+.ic{display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-bottom:12px}
+.icard{background:var(--s);border:1px solid var(--bd);border-radius:10px;padding:12px 14px}
+.icard.g{border-left:3px solid var(--gm)}.icard.r{border-left:3px solid var(--r)}.icard.a{border-left:3px solid var(--am)}.icard.b{border-left:3px solid var(--b)}.icard.t{border-left:3px solid var(--t)}.icard.p{border-left:3px solid var(--p)}
+.icard h3{font-size:11px;font-weight:700;margin-bottom:4px}
+.icard p{font-size:10.5px;color:var(--tx2);line-height:1.5}
+.pill{display:inline-flex;font-size:9px;font-weight:700;padding:1.5px 7px;border-radius:20px;margin-bottom:4px}
+.pg{background:var(--gbg);color:var(--g)}.pr{background:var(--rbg);color:var(--r)}.pa{background:var(--abg);color:var(--a)}.pb{background:var(--bbg);color:var(--b)}.pt{background:var(--tbg);color:var(--t)}.pp{background:var(--pbg);color:var(--p)}
+.urg{background:#FFF7ED;border:2px solid #FED7AA;border-radius:10px;padding:12px;margin-bottom:12px}
+.urg-t{font-size:12px;font-weight:700;color:var(--o);margin-bottom:4px}
+.urg-b{font-size:10.5px;color:#431407;line-height:1.6}
+.verdict{background:#F0FDF4;border:2px solid #86EFAC;border-radius:12px;padding:16px;margin-bottom:12px}
+.vt{font-size:14px;font-weight:800;color:var(--g);margin-bottom:6px}
+.vb{font-size:11.5px;color:#14532D;line-height:1.7}
+.owner{font-size:8px;font-weight:700;padding:1px 5px;border-radius:6px;vertical-align:middle}
+.og{background:#E0E7FF;color:#3730A3}.oa{background:#FCE7F3;color:#9D174D}.ob{background:#FEF3C7;color:#92400E}
+.flow{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-bottom:12px}
+.fbox{background:var(--s);border:1px solid var(--bd);border-radius:10px;padding:12px}
+.fbox h3{font-size:11px;font-weight:700;margin-bottom:6px}
+.frow{display:flex;justify-content:space-between;padding:3px 0;border-bottom:1px solid var(--bg);font-size:10.5px}
+.frow:last-child{border-bottom:none}
+.bars{background:var(--s);border:1px solid var(--bd);border-radius:10px;padding:12px;margin-bottom:12px}
+.brow{display:flex;align-items:center;gap:8px;padding:4px 0;border-bottom:1px solid var(--bg)}
+.brow:last-child{border-bottom:none}
+.blb{font-size:10px;color:var(--tx2);width:180px;flex-shrink:0}
+.btr{flex:1;background:var(--bg);border-radius:4px;height:12px;overflow:hidden}
+.bfl{height:100%;border-radius:4px;display:flex;align-items:center;padding-left:5px;font-size:7.5px;font-weight:700;color:rgba(255,255,255,.9)}
+.bvl{font-size:10px;font-weight:700;width:70px;text-align:right;font-family:'DM Mono',monospace}
+.footer{border-top:1px solid var(--bd);margin-top:16px;padding-top:10px;font-size:9px;color:var(--tx3);font-family:'DM Mono',monospace}
+</style>
+</head>
+<body>
+
+<h1>Garvit + Aastha — Combined Portfolio Master Recalibration</h1>
+<div class="sub">Session 12 · May 14, 2026 · Garvit: 20 stocks + ₹1.34L cash · Aastha: 11 stocks + ₹2.0L cash · Combined: ₹26.89L · 3x target by FY28</div>
+
+<div class="hero">
+  <div class="hc"><div class="hl">Garvit invested</div><div class="hv" style="color:var(--b)">₹17.47L</div><div class="hs">20 holdings</div></div>
+  <div class="hc"><div class="hl">Garvit current</div><div class="hv" style="color:var(--r)">₹17.25L</div><div class="hs">P&L: -₹22,355 (-1.3%)</div></div>
+  <div class="hc"><div class="hl">Aastha invested</div><div class="hv" style="color:var(--b)">₹5.80L</div><div class="hs">11 holdings</div></div>
+  <div class="hc"><div class="hl">Aastha current</div><div class="hv" style="color:var(--gm)">₹6.30L</div><div class="hs">P&L: +₹49,162 (+8.5%)</div></div>
+  <div class="hc"><div class="hl">Combined cash</div><div class="hv" style="color:var(--gm)">₹3.34L</div><div class="hs">G: ₹1.34L + A: ₹2.0L</div></div>
+  <div class="hc"><div class="hl">Total portfolio</div><div class="hv" style="color:var(--b)">₹26.89L</div><div class="hs">Stocks + Cash combined</div></div>
+</div>
+
+<div class="tabs">
+  <button class="tab active" onclick="go('summary',this)">📊 Combined View</button>
+  <button class="tab" onclick="go('garvit',this)">👤 Garvit's Portfolio</button>
+  <button class="tab" onclick="go('aastha',this)">👩 Aastha's Portfolio</button>
+  <button class="tab" onclick="go('q4impact',this)">📈 Q4 Results Impact</button>
+  <button class="tab" onclick="go('overlaps',this)">🔗 Overlaps & Gaps</button>
+  <button class="tab" onclick="go('rebalance',this)">⚖️ Rebalance Plan</button>
+  <button class="tab" onclick="go('capital',this)">💰 Capital Deployment</button>
+  <button class="tab" onclick="go('actions',this)">⚡ Action List</button>
+  <button class="tab" onclick="go('target',this)">🎯 Target Portfolio</button>
+  <button class="tab" onclick="go('threex',this)">🔮 3x Path</button>
+</div>
+
+<!-- COMBINED VIEW -->
+<div id="summary" class="panel active">
+  <div class="box box-a">
+    <div class="bt">🔄 Key changes since last review (May 9 → May 14)</div>
+    <div class="bb">
+    <strong>Market correction hit hard:</strong> Garvit went from +6.13% overall to -1.3% in 5 days. Websol -7.6%, RBM Infra -14.9%, Bondada flat, EFC -7.3%, Borana -3.1%, TAC -3.2%.<br>
+    <strong>Actions executed:</strong> ✅ Nurture Well trimmed 2,600→1,500 (good!). ❌ Sky Gold ADDED 100 shares (200→300 at ₹1,19,160) — contrary to trim recommendation.<br>
+    <strong>Big reveal:</strong> Aastha's portfolio exists! She already bought RPSG Ventures (₹44K), SG Finserve (₹56K), C2C Advanced (₹64K), Advait Energy (₹57K). All stocks we analysed but Garvit hadn't bought. She also holds Kalyan Jewellers (₹1.14L), MTAR Technologies (₹14K, +180%!), and JIO Financial (₹19K).<br>
+    <strong>RBZ exit window MISSED:</strong> Was at +6% gain, now at -8.8% loss. Still exit but lesson learned — act on recommendations immediately.<br>
+    <strong>EFC Rights NOT YET EXERCISED:</strong> 52 REs still showing in demat. Deadline May 22 — 8 DAYS LEFT!
+    </div>
+  </div>
+
+  <div class="sh">Combined portfolio — all unique holdings across both accounts</div>
+  <div style="overflow-x:auto">
+  <table class="ht">
+    <thead><tr><th>Stock</th><th>Owner</th><th>Shares</th><th>Invested</th><th>Current</th><th>P&L%</th><th>Conv.</th><th>Q4 FY26</th><th>Action</th></tr></thead>
+    <tbody>
+      <tr class="trg"><td><strong>Bondada Engineering ⭐</strong></td><td><span class="owner og">G</span></td><td class="mono">600</td><td class="mono">₹1,95,228</td><td class="mono">₹1,95,060</td><td class="mono" style="color:var(--r)">-0.1%</td><td class="mono" style="color:var(--gm)">9.5↑</td><td><span class="badge bg">FY26: ₹2,843 Cr rev (+81%), ₹211 Cr PAT (+86%), OB ₹7,147 Cr</span></td><td><span class="badge bg">HOLD STRONG</span></td></tr>
+      <tr class="trg"><td><strong>Websol Energy ⭐</strong></td><td><span class="owner og">G</span><span class="owner oa">A</span></td><td class="mono">G:1300 A:400</td><td class="mono">G:₹1,49K A:₹43K</td><td class="mono">G:₹1,38K A:₹42K</td><td class="mono" style="color:var(--r)">G:-7.6% A:-1.9%</td><td class="mono" style="color:var(--gm)">9.0</td><td><span class="badge ba">Results pending</span></td><td><span class="badge bg">HOLD — Solar cell monopoly</span></td></tr>
+      <tr class="trg"><td><strong>DEE Development ⭐</strong></td><td><span class="owner og">G</span><span class="owner oa">A</span></td><td class="mono">G:173 A:100</td><td class="mono">G:₹71K A:₹43K</td><td class="mono" style="color:var(--gm)">G:₹86K A:₹50K</td><td class="mono" style="color:var(--gm)">G:+21.1% A:+17%</td><td class="mono" style="color:var(--gm)">9.0</td><td><span class="badge ba">Results pending</span></td><td><span class="badge bg">HOLD STRONG — top performer</span></td></tr>
+      <tr class="trg"><td><strong>TAC Infosec ⭐</strong></td><td><span class="owner og">G</span></td><td class="mono">200</td><td class="mono">₹99,820</td><td class="mono">₹96,640</td><td class="mono" style="color:var(--r)">-3.2%</td><td class="mono" style="color:var(--gm)">8.5</td><td><span class="badge ba">Results pending</span></td><td><span class="badge bg">HOLD FIRM — Kedia conviction</span></td></tr>
+      <tr class="trg"><td><strong>EFC (I) ⭐</strong></td><td><span class="owner og">G</span></td><td class="mono">675+52RE</td><td class="mono">₹1,31,625</td><td class="mono">₹1,22,060</td><td class="mono" style="color:var(--r)">-7.3%</td><td class="mono" style="color:var(--gm)">8.5</td><td><span class="badge ba">Results pending</span></td><td><span class="badge br">⚡ SUBSCRIBE RIGHTS — May 22!</span></td></tr>
+      <tr class="trg"><td><strong>Vintage Coffee ⭐</strong></td><td><span class="owner og">G</span></td><td class="mono">400</td><td class="mono">₹53,056</td><td class="mono">₹52,204</td><td class="mono" style="color:var(--r)">-1.6%</td><td class="mono" style="color:var(--gm)">8.5</td><td><span class="badge ba">Results pending</span></td><td><span class="badge bg">HOLD</span></td></tr>
+      <tr class="trg"><td><strong>Borana Weaves ⭐</strong></td><td><span class="owner og">G</span></td><td class="mono">315</td><td class="mono">₹1,06,612</td><td class="mono">₹1,03,320</td><td class="mono" style="color:var(--r)">-3.1%</td><td class="mono" style="color:var(--gm)">8.0</td><td><span class="badge ba">Results pending</span></td><td><span class="badge bg">HOLD</span></td></tr>
+      <tr class="trg"><td><strong>RPSG Ventures</strong></td><td><span class="owner oa">A</span></td><td class="mono">50</td><td class="mono">₹44,145</td><td class="mono" style="color:var(--gm)">₹48,403</td><td class="mono" style="color:var(--gm)">+9.6%</td><td class="mono" style="color:var(--gm)">7.5</td><td><span class="badge ba">Pending</span></td><td><span class="badge bg">HOLD + GARVIT BUY TOO</span></td></tr>
+      <tr class="trg"><td><strong>SG Finserve</strong></td><td><span class="owner oa">A</span></td><td class="mono">100</td><td class="mono">₹55,850</td><td class="mono" style="color:var(--gm)">₹57,900</td><td class="mono" style="color:var(--gm)">+3.7%</td><td class="mono" style="color:var(--gm)">7.0</td><td><span class="badge ba">Pending</span></td><td><span class="badge bg">HOLD + GARVIT BUY TOO</span></td></tr>
+      <tr class="trb"><td><strong>Kalyan Jewellers</strong></td><td><span class="owner oa">A</span></td><td class="mono">300</td><td class="mono">₹1,13,739</td><td class="mono">₹1,08,225</td><td class="mono" style="color:var(--r)">-4.8%</td><td class="mono" style="color:var(--gm)">7.0↑</td><td><span class="badge bg">FY26 PAT ₹1,350 Cr (+89%!), Rev ₹35,743 Cr (+43%)</span></td><td><span class="badge bg">HOLD — results strong</span></td></tr>
+      <tr class="trb"><td><strong>C2C Advanced Systems</strong></td><td><span class="owner oa">A</span></td><td class="mono">150</td><td class="mono">₹64,050</td><td class="mono">₹64,065</td><td class="mono" style="color:var(--gm)">+0%</td><td class="mono" style="color:var(--b)">6.5–7</td><td><span class="badge ba">FY26 pending</span></td><td><span class="badge ba">HOLD — investigate governance</span></td></tr>
+      <tr class="trb"><td><strong>Transformers India (TARIL)</strong></td><td><span class="owner og">G</span><span class="owner oa">A</span></td><td class="mono">G:200 A:200</td><td class="mono">G:₹61K A:₹52K</td><td class="mono">G:₹61K A:₹61K</td><td class="mono" style="color:var(--gm)">G:+0.5% A:+17.4%</td><td class="mono">5.5</td><td><span class="badge ba">Results pending</span></td><td><span class="badge bg">HOLD — defence T&D</span></td></tr>
+      <tr class="trb"><td><strong>Advait Energy</strong></td><td><span class="owner oa">A</span></td><td class="mono">30</td><td class="mono">₹57,060</td><td class="mono">₹59,199</td><td class="mono" style="color:var(--gm)">+3.8%</td><td class="mono" style="color:var(--b)">6.5</td><td><span class="badge ba">FY26 pending</span></td><td><span class="badge bg">HOLD — BESS + electrolyser</span></td></tr>
+      <tr class="trb"><td><strong>MTAR Technologies</strong></td><td><span class="owner oa">A</span></td><td class="mono">5</td><td class="mono">₹13,636</td><td class="mono" style="color:var(--gm)">₹38,250</td><td class="mono" style="color:var(--gm)">+180.6%</td><td class="mono" style="color:var(--gm)">7.5↑</td><td><span class="badge bg">ISRO + Aerospace + Defence</span></td><td><span class="badge bg">HOLD — compounder</span></td></tr>
+      <tr class="trb"><td><strong>Oriana Power</strong></td><td><span class="owner og">G</span></td><td class="mono">75</td><td class="mono">₹1,24,050</td><td class="mono" style="color:var(--gm)">₹1,37,250</td><td class="mono" style="color:var(--gm)">+10.6%</td><td class="mono">6.5</td><td><span class="badge ba">Results pending</span></td><td><span class="badge bg">HOLD SME lot</span></td></tr>
+      <tr class="trb"><td><strong>Sky Gold</strong></td><td><span class="owner og">G</span></td><td class="mono">300</td><td class="mono">₹1,19,160</td><td class="mono" style="color:var(--gm)">₹1,32,060</td><td class="mono" style="color:var(--gm)">+10.8%</td><td class="mono">6.5</td><td><span class="badge ba">Pending</span></td><td><span class="badge ba">HOLD — Kalyan client</span></td></tr>
+      <tr class="tra"><td><strong>Zaggle Prepaid</strong></td><td><span class="owner og">G</span><span class="owner oa">A</span></td><td class="mono">G:450 A:360</td><td class="mono">G:₹1,03K A:₹75K</td><td class="mono" style="color:var(--r)">G:₹1,02K A:₹82K</td><td class="mono" style="color:var(--am)">G:-1.1% A:+8.6%</td><td class="mono" style="color:var(--r)">4.5↓</td><td><span class="badge br">FY27 guidance CUT 35%→25%. Interim CFO. Margins not improving.</span></td><td><span class="badge br">TRIM both portfolios</span></td></tr>
+      <tr class="tra"><td><strong>Enviro Infra</strong></td><td><span class="owner og">G</span></td><td class="mono">400</td><td class="mono">₹84,372</td><td class="mono">₹79,632</td><td class="mono" style="color:var(--r)">-5.6%</td><td class="mono">6.5</td><td><span class="badge ba">Pending</span></td><td><span class="badge bg">HOLD — Water + BESS</span></td></tr>
+      <tr class="tra"><td><strong>EPACK Durable</strong></td><td><span class="owner og">G</span></td><td class="mono">250</td><td class="mono">₹62,000</td><td class="mono">₹60,838</td><td class="mono" style="color:var(--r)">-1.9%</td><td class="mono">5.5</td><td><span class="badge ba">Pending</span></td><td><span class="badge ba">WATCH Q4</span></td></tr>
+      <tr class="tra"><td><strong>RBM Infra</strong></td><td><span class="owner og">G</span></td><td class="mono">400</td><td class="mono">₹1,60,780</td><td class="mono" style="color:var(--r)">₹1,36,800</td><td class="mono" style="color:var(--r)">-14.9%</td><td class="mono" style="color:var(--r)">5.0↓</td><td><span class="badge ba">No results yet</span></td><td><span class="badge br">HOLD — July LoI FINAL gate</span></td></tr>
+      <tr class="tra"><td><strong>Emerald Finance</strong></td><td><span class="owner og">G</span></td><td class="mono">750</td><td class="mono">₹47,768</td><td class="mono">₹43,575</td><td class="mono" style="color:var(--r)">-8.8%</td><td class="mono">6.0</td><td><span class="badge ba">Pending</span></td><td><span class="badge bg">HOLD — SG Fin is better NBFC</span></td></tr>
+      <tr class="tra"><td><strong>KPI Green</strong></td><td><span class="owner og">G</span></td><td class="mono">150</td><td class="mono">₹59,400</td><td class="mono" style="color:var(--gm)">₹64,553</td><td class="mono" style="color:var(--gm)">+8.7%</td><td class="mono" style="color:var(--r)">4.5</td><td><span class="badge ba">Pending</span></td><td><span class="badge br">SELL NOW — gain fading</span></td></tr>
+      <tr class="tra"><td><strong>Northern Spirits</strong></td><td><span class="owner og">G</span></td><td class="mono">300</td><td class="mono">₹36,300</td><td class="mono" style="color:var(--gm)">₹40,230</td><td class="mono" style="color:var(--gm)">+10.8%</td><td class="mono">5.0</td><td><span class="badge ba">Pending</span></td><td><span class="badge ba">HOLD or EXIT</span></td></tr>
+      <tr class="tra"><td><strong>Nurture Well</strong></td><td><span class="owner og">G</span></td><td class="mono">1,500</td><td class="mono">₹54,555</td><td class="mono" style="color:var(--r)">₹46,920</td><td class="mono" style="color:var(--r)">-14.0%</td><td class="mono" style="color:var(--r)">5.0</td><td><span class="badge ba">Pending</span></td><td><span class="badge bg">Already trimmed ✅</span></td></tr>
+      <tr class="trr"><td><strong>RBZ Jewellers</strong></td><td><span class="owner og">G</span></td><td class="mono">200</td><td class="mono">₹28,678</td><td class="mono" style="color:var(--r)">₹26,160</td><td class="mono" style="color:var(--r)">-8.8%</td><td class="mono" style="color:var(--r)">3.0</td><td><span class="badge ba">N/A</span></td><td><span class="badge br">EXIT NOW — stop bleeding</span></td></tr>
+      <tr class="trb"><td><strong>JIO Financial</strong></td><td><span class="owner oa">A</span></td><td class="mono">80</td><td class="mono">₹19,080</td><td class="mono">₹18,745</td><td class="mono" style="color:var(--r)">-1.8%</td><td class="mono">5.0</td><td><span class="badge ba">Pre-revenue stage</span></td><td><span class="badge ba">HOLD — long-term Ambani bet</span></td></tr>
+    </tbody>
+  </table>
+  </div>
+</div>
+
+<!-- GARVIT -->
+<div id="garvit" class="panel">
+  <div class="sh">Garvit's portfolio — 20 stocks + ₹1.34L cash · Total ₹18.59L</div>
+  <div class="box box-r">
+    <div class="bt">📉 Portfolio has turned negative: -₹22,355 (-1.3%) vs +6.13% on May 9</div>
+    <div class="bb">
+    Market correction + specific stock weakness. <strong>Worst performers:</strong> RBM Infra -14.9% (₹24K loss), Nurture Well -14.0% (₹7.6K loss), RBZ -8.8% (₹2.5K loss), Emerald -8.8% (₹4.2K loss), Websol -7.6% (₹11.2K loss), EFC -7.3% (₹9.6K loss).<br>
+    <strong>Best performers:</strong> DEE Dev +21.1% (₹15K gain), Sky Gold +10.8% (₹12.9K gain), Northern Spirits +10.8% (₹3.9K gain), Oriana +10.6% (₹13.2K gain), KPI Green +8.7% (₹5.2K gain).<br>
+    <strong>Key observation:</strong> You added 100 Sky Gold shares (200→300) instead of trimming as recommended. This increases jewellery B2B concentration. The Kalyan relationship is strong — but position sizing at ₹1.32L (7.7% of portfolio) is already large enough. No more adds to Sky Gold.
+    </div>
+  </div>
+
+  <div class="sh">Garvit stock-by-stock with updated P&L</div>
+  <table class="ht">
+    <thead><tr><th>Stock</th><th>Shares</th><th>Invested</th><th>Current</th><th>P&L</th><th>P&L%</th><th>Weight%</th><th>Action</th></tr></thead>
+    <tbody>
+      <tr class="trg"><td>Bondada Engineering</td><td class="mono">600</td><td class="mono">₹1,95,228</td><td class="mono">₹1,95,060</td><td class="mono" style="color:var(--r)">-₹168</td><td class="mono" style="color:var(--r)">-0.1%</td><td class="mono">11.3%</td><td><span class="badge bg">HOLD ⭐ FY26 blowout</span></td></tr>
+      <tr><td>RBM Infra</td><td class="mono">400</td><td class="mono">₹1,60,780</td><td class="mono" style="color:var(--r)">₹1,36,800</td><td class="mono" style="color:var(--r)">-₹23,980</td><td class="mono" style="color:var(--r)">-14.9%</td><td class="mono">7.9%</td><td><span class="badge br">July LoI is LAST chance</span></td></tr>
+      <tr><td>Websol Energy</td><td class="mono">1,300</td><td class="mono">₹1,48,785</td><td class="mono" style="color:var(--r)">₹1,37,540</td><td class="mono" style="color:var(--r)">-₹11,245</td><td class="mono" style="color:var(--r)">-7.6%</td><td class="mono">8.0%</td><td><span class="badge bg">HOLD — thesis intact</span></td></tr>
+      <tr class="trg"><td>Oriana Power</td><td class="mono">75</td><td class="mono">₹1,24,050</td><td class="mono" style="color:var(--gm)">₹1,37,250</td><td class="mono" style="color:var(--gm)">+₹13,200</td><td class="mono" style="color:var(--gm)">+10.6%</td><td class="mono">8.0%</td><td><span class="badge bg">HOLD SME lot</span></td></tr>
+      <tr class="trg"><td>Sky Gold</td><td class="mono">300</td><td class="mono">₹1,19,160</td><td class="mono" style="color:var(--gm)">₹1,32,060</td><td class="mono" style="color:var(--gm)">+₹12,900</td><td class="mono" style="color:var(--gm)">+10.8%</td><td class="mono">7.7%</td><td><span class="badge bg">HOLD — no more adds</span></td></tr>
+      <tr><td>EFC (I) + 52 RE</td><td class="mono">675</td><td class="mono">₹1,31,625</td><td class="mono" style="color:var(--r)">₹1,22,060</td><td class="mono" style="color:var(--r)">-₹9,565</td><td class="mono" style="color:var(--r)">-7.3%</td><td class="mono">7.1%</td><td><span class="badge br">⚡ RIGHTS May 22!</span></td></tr>
+      <tr><td>Borana Weaves</td><td class="mono">315</td><td class="mono">₹1,06,612</td><td class="mono" style="color:var(--r)">₹1,03,320</td><td class="mono" style="color:var(--r)">-₹3,292</td><td class="mono" style="color:var(--r)">-3.1%</td><td class="mono">6.0%</td><td><span class="badge bg">HOLD ⭐</span></td></tr>
+      <tr><td>Zaggle</td><td class="mono">450</td><td class="mono">₹1,03,316</td><td class="mono" style="color:var(--r)">₹1,02,186</td><td class="mono" style="color:var(--r)">-₹1,130</td><td class="mono" style="color:var(--r)">-1.1%</td><td class="mono">5.9%</td><td><span class="badge br">TRIM 300 shares on bounce</span></td></tr>
+      <tr><td>TAC Infosec</td><td class="mono">200</td><td class="mono">₹99,820</td><td class="mono" style="color:var(--r)">₹96,640</td><td class="mono" style="color:var(--r)">-₹3,180</td><td class="mono" style="color:var(--r)">-3.2%</td><td class="mono">5.6%</td><td><span class="badge bg">HOLD FIRM ⭐</span></td></tr>
+      <tr class="trg"><td>DEE Development</td><td class="mono">173</td><td class="mono">₹71,177</td><td class="mono" style="color:var(--gm)">₹86,189</td><td class="mono" style="color:var(--gm)">+₹15,012</td><td class="mono" style="color:var(--gm)">+21.1%</td><td class="mono">5.0%</td><td><span class="badge bg">HOLD STRONG ⭐</span></td></tr>
+      <tr><td>Enviro Infra</td><td class="mono">400</td><td class="mono">₹84,372</td><td class="mono" style="color:var(--r)">₹79,632</td><td class="mono" style="color:var(--r)">-₹4,740</td><td class="mono" style="color:var(--r)">-5.6%</td><td class="mono">4.6%</td><td><span class="badge bg">HOLD</span></td></tr>
+      <tr class="trg"><td>KPI Green</td><td class="mono">150</td><td class="mono">₹59,400</td><td class="mono" style="color:var(--gm)">₹64,553</td><td class="mono" style="color:var(--gm)">+₹5,153</td><td class="mono" style="color:var(--gm)">+8.7%</td><td class="mono">3.7%</td><td><span class="badge br">SELL — rotational exit</span></td></tr>
+      <tr><td>Transformers India</td><td class="mono">200</td><td class="mono">₹60,600</td><td class="mono">₹60,930</td><td class="mono" style="color:var(--gm)">+₹330</td><td class="mono" style="color:var(--gm)">+0.5%</td><td class="mono">3.5%</td><td><span class="badge bg">HOLD</span></td></tr>
+      <tr><td>EPACK Durable</td><td class="mono">250</td><td class="mono">₹62,000</td><td class="mono" style="color:var(--r)">₹60,838</td><td class="mono" style="color:var(--r)">-₹1,163</td><td class="mono" style="color:var(--r)">-1.9%</td><td class="mono">3.5%</td><td><span class="badge ba">WATCH Q4</span></td></tr>
+      <tr><td>Nurture Well</td><td class="mono">1,500</td><td class="mono">₹54,555</td><td class="mono" style="color:var(--r)">₹46,920</td><td class="mono" style="color:var(--r)">-₹7,635</td><td class="mono" style="color:var(--r)">-14.0%</td><td class="mono">2.7%</td><td><span class="badge bg">Already trimmed ✅</span></td></tr>
+      <tr><td>Vintage Coffee</td><td class="mono">400</td><td class="mono">₹53,056</td><td class="mono" style="color:var(--r)">₹52,204</td><td class="mono" style="color:var(--r)">-₹852</td><td class="mono" style="color:var(--r)">-1.6%</td><td class="mono">3.0%</td><td><span class="badge bg">HOLD ⭐</span></td></tr>
+      <tr><td>Emerald Finance</td><td class="mono">750</td><td class="mono">₹47,768</td><td class="mono" style="color:var(--r)">₹43,575</td><td class="mono" style="color:var(--r)">-₹4,193</td><td class="mono" style="color:var(--r)">-8.8%</td><td class="mono">2.5%</td><td><span class="badge bg">HOLD</span></td></tr>
+      <tr class="trg"><td>Northern Spirits</td><td class="mono">300</td><td class="mono">₹36,300</td><td class="mono" style="color:var(--gm)">₹40,230</td><td class="mono" style="color:var(--gm)">+₹3,930</td><td class="mono" style="color:var(--gm)">+10.8%</td><td class="mono">2.3%</td><td><span class="badge ba">HOLD or EXIT</span></td></tr>
+      <tr class="trr"><td>RBZ Jewellers</td><td class="mono">200</td><td class="mono">₹28,678</td><td class="mono" style="color:var(--r)">₹26,160</td><td class="mono" style="color:var(--r)">-₹2,518</td><td class="mono" style="color:var(--r)">-8.8%</td><td class="mono">1.5%</td><td><span class="badge br">EXIT NOW</span></td></tr>
+      <tr><td>EFCIL-RE</td><td class="mono">52</td><td class="mono">₹0</td><td class="mono">₹780</td><td class="mono" style="color:var(--gm)">+₹780</td><td class="mono">—</td><td class="mono">0.0%</td><td><span class="badge br">⚡ EXERCISE via ASBA</span></td></tr>
+    </tbody>
+  </table>
+  <div style="text-align:right;font-size:11px;font-weight:700;padding:5px;color:var(--tx2)">Cash available: ₹1,34,000 · Total portfolio + cash: ₹18,58,927</div>
+</div>
+
+<!-- AASTHA -->
+<div id="aastha" class="panel">
+  <div class="sh">Aastha's portfolio — 11 stocks + ₹2.0L cash · Total ₹8.30L</div>
+  <div class="box box-g">
+    <div class="bt">✅ Aastha's portfolio is outperforming Garvit's: +8.5% vs -1.3%</div>
+    <div class="bb">Aastha has fewer positions, higher conviction concentration, and critically — already bought the stocks Garvit was supposed to buy (RPSG +9.6%, SG Finserve +3.7%, C2C flat, Advait +3.8%). Her MTAR at +180% is the standout performer. Only drag: Kalyan Jewellers -4.8% (but Q4 results were phenomenal — FY26 PAT ₹1,350 Cr +89%).</div>
+  </div>
+
+  <table class="ht">
+    <thead><tr><th>Stock</th><th>Shares</th><th>Invested</th><th>Current</th><th>P&L</th><th>P&L%</th><th>Weight%</th><th>Action</th></tr></thead>
+    <tbody>
+      <tr class="trg"><td><strong>Kalyan Jewellers</strong></td><td class="mono">300</td><td class="mono">₹1,13,739</td><td class="mono">₹1,08,225</td><td class="mono" style="color:var(--r)">-₹5,514</td><td class="mono" style="color:var(--r)">-4.8%</td><td class="mono">17.2%</td><td><span class="badge bg">HOLD — FY26 PAT +89%! Akshaya Tritiya strong.</span></td></tr>
+      <tr><td>Zaggle Prepaid</td><td class="mono">360</td><td class="mono">₹75,290</td><td class="mono" style="color:var(--gm)">₹81,749</td><td class="mono" style="color:var(--gm)">+₹6,459</td><td class="mono" style="color:var(--gm)">+8.6%</td><td class="mono">13.0%</td><td><span class="badge br">TRIM 200 shares on bounce — guidance cut</span></td></tr>
+      <tr><td>C2C Advanced</td><td class="mono">150</td><td class="mono">₹64,050</td><td class="mono">₹64,065</td><td class="mono" style="color:var(--gm)">+₹15</td><td class="mono" style="color:var(--gm)">+0%</td><td class="mono">10.2%</td><td><span class="badge ba">HOLD — investigate promoter + RPT</span></td></tr>
+      <tr class="trg"><td>Transformers India</td><td class="mono">200</td><td class="mono">₹52,040</td><td class="mono" style="color:var(--gm)">₹61,080</td><td class="mono" style="color:var(--gm)">+₹9,040</td><td class="mono" style="color:var(--gm)">+17.4%</td><td class="mono">9.7%</td><td><span class="badge bg">HOLD — defence T&D tailwind</span></td></tr>
+      <tr class="trg"><td>Advait Energy</td><td class="mono">30</td><td class="mono">₹57,060</td><td class="mono" style="color:var(--gm)">₹59,199</td><td class="mono" style="color:var(--gm)">+₹2,139</td><td class="mono" style="color:var(--gm)">+3.8%</td><td class="mono">9.4%</td><td><span class="badge bg">HOLD — BESS + electrolyser thesis</span></td></tr>
+      <tr class="trg"><td>SG Finserve</td><td class="mono">100</td><td class="mono">₹55,850</td><td class="mono" style="color:var(--gm)">₹57,900</td><td class="mono" style="color:var(--gm)">+₹2,050</td><td class="mono" style="color:var(--gm)">+3.7%</td><td class="mono">9.2%</td><td><span class="badge bg">HOLD — Kacholia + CRISIL AA</span></td></tr>
+      <tr class="trg"><td>DEE Development</td><td class="mono">100</td><td class="mono">₹42,660</td><td class="mono" style="color:var(--gm)">₹49,900</td><td class="mono" style="color:var(--gm)">+₹7,240</td><td class="mono" style="color:var(--gm)">+17.0%</td><td class="mono">7.9%</td><td><span class="badge bg">HOLD STRONG</span></td></tr>
+      <tr class="trg"><td>RPSG Ventures</td><td class="mono">50</td><td class="mono">₹44,145</td><td class="mono" style="color:var(--gm)">₹48,403</td><td class="mono" style="color:var(--gm)">+₹4,258</td><td class="mono" style="color:var(--gm)">+9.6%</td><td class="mono">7.7%</td><td><span class="badge bg">HOLD — ADD ₹25K more</span></td></tr>
+      <tr><td>Websol Energy</td><td class="mono">400</td><td class="mono">₹42,880</td><td class="mono" style="color:var(--r)">₹42,076</td><td class="mono" style="color:var(--r)">-₹804</td><td class="mono" style="color:var(--r)">-1.9%</td><td class="mono">6.7%</td><td><span class="badge bg">HOLD — solar cell monopoly</span></td></tr>
+      <tr class="trg"><td><strong>MTAR Technologies 🚀</strong></td><td class="mono">5</td><td class="mono">₹13,636</td><td class="mono" style="color:var(--gm)">₹38,250</td><td class="mono" style="color:var(--gm)">+₹24,614</td><td class="mono" style="color:var(--gm)">+180.6%</td><td class="mono">6.1%</td><td><span class="badge bg">HOLD — aerospace compounder</span></td></tr>
+      <tr><td>JIO Financial</td><td class="mono">80</td><td class="mono">₹19,080</td><td class="mono" style="color:var(--r)">₹18,745</td><td class="mono" style="color:var(--r)">-₹335</td><td class="mono" style="color:var(--r)">-1.8%</td><td class="mono">3.0%</td><td><span class="badge ba">HOLD — Ambani long-term</span></td></tr>
+    </tbody>
+  </table>
+  <div style="text-align:right;font-size:11px;font-weight:700;padding:5px;color:var(--tx2)">Cash: ₹2,00,000 · Total: ₹8,29,592</div>
+
+  <div class="sh">Aastha's portfolio assessment</div>
+  <div class="ic">
+    <div class="icard g"><h3>✅ Strengths: Higher conviction, better executed</h3><p>Aastha has 11 positions vs Garvit's 20 — more concentrated. She already bought the 4 stocks Garvit kept delaying (RPSG, SG Finserve, C2C, Advait). MTAR at +180% shows she picked a winner early. Kalyan Jewellers Q4 FY26 was phenomenal (PAT +89%, revenue +43%) — the current -4.8% is a buy-the-dip on a fundamentally strong stock.</p></div>
+    <div class="icard a"><h3>⚠️ Weaknesses: Zaggle overweight, missing Bondada</h3><p>Zaggle at 13% portfolio weight is too much given guidance cut. Trim 200 shares. She doesn't own Bondada Engineering — the single best EPC stock in both portfolios. Consider adding Bondada ₹25–30K. Also missing TAC Infosec (cybersecurity) and Borana Weaves (mainboard migration catalyst). These would diversify her into proven winners.</p></div>
+  </div>
+</div>
+
+<!-- Q4 IMPACT -->
+<div id="q4impact" class="panel">
+  <div class="sh">Q4 FY26 results impact — confirmed results across holdings</div>
+  <table class="ht">
+    <thead><tr><th>Stock</th><th>FY26 Revenue</th><th>FY26 PAT</th><th>YoY Growth</th><th>Key highlight</th><th>Impact on conviction</th></tr></thead>
+    <tbody>
+      <tr class="trg"><td><strong>Bondada Engineering ⭐</strong></td><td class="mono" style="color:var(--gm)">₹2,843 Cr</td><td class="mono" style="color:var(--gm)">₹211 Cr</td><td class="mono" style="color:var(--gm)">Rev +81%, PAT +86.5%</td><td>Order book ₹7,147 Cr. FY27 guide: 60-70% growth. Cash flow turned positive (₹125 Cr vs -₹141 Cr). Entering BESS + data centres + defence. NTPC ₹816 Cr solar order. Adani ₹125 Cr order.</td><td><span class="badge bg">UPGRADE 9.1 → 9.5/10</span> Phenomenal results. FY27 guide confirms 3x thesis. Best holding in combined portfolio.</td></tr>
+      <tr class="trg"><td><strong>Kalyan Jewellers</strong></td><td class="mono" style="color:var(--gm)">₹35,743 Cr</td><td class="mono" style="color:var(--gm)">₹1,350 Cr</td><td class="mono" style="color:var(--gm)">Rev +43%, PAT +89%</td><td>Q4 revenue +66% YoY. EBITDA margin expanded 7.1% from 6.4%. International +43%. Candere ₹131 Cr revenue. ₹2.50/share dividend recommended.</td><td><span class="badge bg">UPGRADE 6.5 → 7.0/10</span> At ₹56,000 Cr MCap, 3x is hard. But Aastha has a quality compounder. HOLD.</td></tr>
+      <tr class="tra"><td><strong>Zaggle Prepaid ⚠️</strong></td><td class="mono">₹2,100 Cr (est.)</td><td class="mono">₹136 Cr (est.)</td><td class="mono" style="color:var(--gm)">Rev +46%, PAT +52%</td><td>FY26 was actually STRONG. BUT FY27 standalone guidance cut 35%→25%. Interim CFO. IPO proceeds utilization issue. Margins not expanding despite scale.</td><td><span class="badge br">DOWNGRADE 6.0 → 4.5/10</span> Guidance cut + CFO departure = structural concern. TRIM both portfolios.</td></tr>
+      <tr class="trb"><td><strong>C2C Advanced</strong></td><td class="mono" style="color:var(--gm)">₹138 Cr (TTM)</td><td class="mono" style="color:var(--gm)">₹42.8 Cr</td><td class="mono" style="color:var(--gm)">~+150% est.</td><td>H1 FY26: PAT +143% YoY. 18x PE on 31% margins. Kacholia added shares. BUT promoter fell 41→37%. Related party ₹120 Cr.</td><td><span class="badge ba">MAINTAIN 6.5–7/10 conditional</span> INVESTIGATE governance before adding.</td></tr>
+    </tbody>
+  </table>
+
+  <div class="sh">Bondada — the standout performer, now with confirmed FY26 results</div>
+  <div class="verdict">
+    <div class="vt">🏆 Bondada Engineering FY26 Results: Revenue ₹2,843 Cr (+81%), PAT ₹211 Cr (+86.5%), Order Book ₹7,147 Cr</div>
+    <div class="vb">
+    This is the best set of results in either portfolio. The numbers:<br>
+    • <strong>Revenue:</strong> ₹2,843 Cr vs ₹1,571 Cr FY25 = +81% YoY. The FY27 guidance of 60-70% growth on this base = ₹4,549–4,833 Cr revenue<br>
+    • <strong>PAT:</strong> ₹211 Cr = 7.4% PAT margin. Improving from 7.2% FY25. EBITDA margin 11.5%<br>
+    • <strong>Order book:</strong> ₹7,147 Cr = 2.5x FY26 revenue. This is the strongest coverage ratio in the portfolio<br>
+    • <strong>Cash flow from operations:</strong> TURNED POSITIVE at ₹125 Cr (was -₹141 Cr in FY25) — critical quality improvement<br>
+    • <strong>New verticals:</strong> Entering BESS, data centres, defence, aerospace — exactly the diversification playbook<br>
+    • <strong>3x math updated:</strong> MCap ~₹1,700 Cr currently. FY27E PAT: ₹211 × 1.65 (65% guided growth) = ₹348 Cr. At 15x PE = ₹5,220 Cr = 3.1x from current. <strong>3x ACHIEVABLE BY FY27 ON BASE CASE.</strong><br>
+    Bondada is now the single highest-conviction position across both portfolios. HOLD every share. Consider adding ₹25K in Aastha's portfolio.
+    </div>
+  </div>
+</div>
+
+<!-- OVERLAPS -->
+<div id="overlaps" class="panel">
+  <div class="sh">Overlap analysis — stocks held in both portfolios</div>
+  <table class="ht">
+    <thead><tr><th>Stock</th><th>Garvit</th><th>Aastha</th><th>Combined exposure</th><th>Assessment</th></tr></thead>
+    <tbody>
+      <tr class="trg"><td><strong>DEE Development</strong></td><td class="mono">173 sh (₹86K)</td><td class="mono">100 sh (₹50K)</td><td class="mono" style="color:var(--gm)">₹1,36,089</td><td>✅ GOOD overlap. Top performer (+17–21%). Process piping structural play. Combined weight is appropriate.</td></tr>
+      <tr class="trg"><td><strong>Websol Energy</strong></td><td class="mono">1,300 sh (₹1,38K)</td><td class="mono">400 sh (₹42K)</td><td class="mono" style="color:var(--am)">₹1,79,616</td><td>⚠️ HEAVY combined position at ₹1.8L. Solar cell monopoly thesis is strong but Garvit's 1,300 shares is very concentrated. No action needed — just don't add more in either portfolio.</td></tr>
+      <tr class="tra"><td><strong>Zaggle Prepaid</strong></td><td class="mono">450 sh (₹1,02K)</td><td class="mono">360 sh (₹82K)</td><td class="mono" style="color:var(--r)">₹1,83,935</td><td>❌ OVERWEIGHT at ₹1.84L combined on a DOWNGRADED stock. Trim both: Garvit 450→150, Aastha 360→160. Free ₹1.1L combined.</td></tr>
+      <tr class="trb"><td><strong>Transformers India (TARIL)</strong></td><td class="mono">200 sh (₹61K)</td><td class="mono">200 sh (₹61K)</td><td class="mono" style="color:var(--am)">₹1,22,010</td><td>✅ OK. T&D + defence theme. Combined ₹1.22L is reasonable for a 5.5/10 hold.</td></tr>
+    </tbody>
+  </table>
+
+  <div class="sh">Gap analysis — what Aastha has that Garvit doesn't (and vice versa)</div>
+  <div class="ic">
+    <div class="icard g"><span class="pill pg">Aastha has, Garvit doesn't</span><h3>RPSG Ventures (+9.6%), SG Finserve (+3.7%), C2C Advanced, Advait Energy, Kalyan Jewellers, MTAR, JIO Financial</h3><p>All four "buy now" stocks that Garvit kept delaying — Aastha already has! <strong>Garvit should now add: RPSG Ventures (₹35K), SG Finserve (₹25K), and Muthoot Microfin (₹28K)</strong> using his ₹1.34L cash + KPI Green and RBZ exit proceeds. No need to duplicate C2C and Advait since Aastha already holds them — combined household already has exposure.</p></div>
+    <div class="icard b"><span class="pill pb">Garvit has, Aastha doesn't</span><h3>Bondada ⭐, TAC Infosec ⭐, Borana Weaves ⭐, EFC, Vintage Coffee, Sky Gold, Oriana, Enviro</h3><p><strong>Aastha should add Bondada (₹25–30K)</strong> — it's the #1 holding with confirmed FY26 blowout results. She should also consider TAC Infosec (₹15K) for cybersecurity exposure and Borana Weaves (₹15K) for the mainboard migration catalyst. These fill her gaps in EPC infrastructure + tech + textiles themes.</p></div>
+  </div>
+</div>
+
+<!-- REBALANCE -->
+<div id="rebalance" class="panel">
+  <div class="sh">Combined household rebalancing plan</div>
+
+  <div class="urg">
+    <div class="urg-t">⚡ EFC Rights — 8 DAYS LEFT (May 22 deadline). Garvit has 52 REs in demat. Exercise via bank ASBA = ₹7,800. DO NOT LET THESE EXPIRE.</div>
+    <div class="urg-b">Net banking → ASBA/Rights Issue → search "EFC India" → 52 shares at ₹150. Takes 10 minutes. Trading window for EFCIL-RE closes May 15 (TOMORROW). If you miss ASBA, you can sell the 52 REs on exchange for ~₹780 — but exercising is far better (shares worth ₹9,500+ at current EFC price vs ₹7,800 cost).</div>
+  </div>
+
+  <div class="flow">
+    <div class="fbox">
+      <h3 style="color:var(--r)">📤 GARVIT — Exits (free ₹~₹91K + ₹1.34L cash = ₹2.25L total)</h3>
+      <div class="frow"><div>EXIT: RBZ Jewellers (200 sh)</div><div class="mono" style="color:var(--gm)">+₹26,160</div></div>
+      <div class="frow"><div>SELL: KPI Green (150 sh)</div><div class="mono" style="color:var(--gm)">+₹64,553</div></div>
+      <div class="frow"><div>TRIM: Zaggle (300 sh at ₹230)</div><div class="mono" style="color:var(--gm)">+₹69,000</div></div>
+      <div class="frow" style="border-top:2px solid var(--bd);padding-top:4px"><div style="font-weight:700">Freed from sells + cash</div><div class="mono" style="font-weight:700;color:var(--gm)">₹2,93,713</div></div>
+    </div>
+    <div class="fbox">
+      <h3 style="color:var(--g)">📥 GARVIT — New Buys (deploy ₹~₹1.31L)</h3>
+      <div class="frow"><div>EFC Rights (52 × ₹150)</div><div class="mono" style="color:var(--r)">-₹7,800</div></div>
+      <div class="frow"><div>RPSG Ventures ₹35,000</div><div class="mono" style="color:var(--r)">-₹35,000</div></div>
+      <div class="frow"><div>Muthoot Microfin ₹30,000</div><div class="mono" style="color:var(--r)">-₹30,000</div></div>
+      <div class="frow"><div>SG Finserve ₹28,000</div><div class="mono" style="color:var(--r)">-₹28,000</div></div>
+      <div class="frow"><div>Satin Creditcare ₹25,000 (post earnings)</div><div class="mono" style="color:var(--r)">-₹25,000</div></div>
+      <div class="frow" style="border-top:2px solid var(--bd);padding-top:4px"><div style="font-weight:700">Deployed</div><div class="mono" style="font-weight:700;color:var(--r)">-₹1,25,800</div></div>
+      <div class="frow"><div style="font-weight:700;color:var(--gm)">Remaining cash buffer</div><div class="mono" style="font-weight:700;color:var(--gm)">₹1,67,913</div></div>
+    </div>
+  </div>
+
+  <div class="flow">
+    <div class="fbox">
+      <h3 style="color:var(--r)">📤 AASTHA — Exits (free ₹~₹46K + ₹2.0L cash = ₹2.46L total)</h3>
+      <div class="frow"><div>TRIM: Zaggle (200 sh at ₹230)</div><div class="mono" style="color:var(--gm)">+₹46,000</div></div>
+      <div class="frow" style="border-top:2px solid var(--bd);padding-top:4px"><div style="font-weight:700">Freed + cash</div><div class="mono" style="font-weight:700;color:var(--gm)">₹2,46,000</div></div>
+    </div>
+    <div class="fbox">
+      <h3 style="color:var(--g)">📥 AASTHA — New Buys (deploy ₹~₹95K)</h3>
+      <div class="frow"><div>Bondada Engineering ₹30,000</div><div class="mono" style="color:var(--r)">-₹30,000</div></div>
+      <div class="frow"><div>ADD RPSG Ventures ₹25,000</div><div class="mono" style="color:var(--r)">-₹25,000</div></div>
+      <div class="frow"><div>Muthoot Microfin ₹25,000</div><div class="mono" style="color:var(--r)">-₹25,000</div></div>
+      <div class="frow"><div>TAC Infosec ₹15,000</div><div class="mono" style="color:var(--r)">-₹15,000</div></div>
+      <div class="frow" style="border-top:2px solid var(--bd);padding-top:4px"><div style="font-weight:700">Deployed</div><div class="mono" style="font-weight:700;color:var(--r)">-₹95,000</div></div>
+      <div class="frow"><div style="font-weight:700;color:var(--gm)">Remaining cash buffer</div><div class="mono" style="font-weight:700;color:var(--gm)">₹1,51,000</div></div>
+    </div>
+  </div>
+</div>
+
+<!-- CAPITAL -->
+<div id="capital" class="panel">
+  <div class="sh">Combined household capital position — post-rebalancing</div>
+  <div class="bars">
+    <div class="brow"><div class="blb">Garvit stocks (post-rebalance)</div><div class="btr"><div class="bfl" style="width:55%;background:#16A34A">₹17.82L</div></div><div class="bvl" style="color:var(--gm)">₹17.82L</div></div>
+    <div class="brow"><div class="blb">Garvit cash buffer</div><div class="btr"><div class="bfl" style="width:11%;background:#1D4ED8">₹1.68L</div></div><div class="bvl" style="color:var(--b)">₹1.68L</div></div>
+    <div class="brow"><div class="blb">Aastha stocks (post-rebalance)</div><div class="btr"><div class="bfl" style="width:26%;background:#0D7377">₹7.25L</div></div><div class="bvl" style="color:var(--t)">₹7.25L</div></div>
+    <div class="brow"><div class="blb">Aastha cash buffer</div><div class="btr"><div class="bfl" style="width:10%;background:#6B21A8">₹1.51L</div></div><div class="bvl" style="color:var(--p)">₹1.51L</div></div>
+    <div class="brow" style="background:#F0FDF4"><div class="blb" style="font-weight:700;color:var(--g)">COMBINED TOTAL</div><div class="btr"><div class="bfl" style="width:100%;background:#052E16">₹28.26L total household (₹25.07L stocks + ₹3.19L cash)</div></div><div class="bvl" style="color:var(--g);font-weight:700">₹28.26L</div></div>
+  </div>
+
+  <div class="sh">Cash buffers — what they're reserved for</div>
+  <div class="ic">
+    <div class="icard b"><h3>Garvit's ₹1.68L cash — reserved for</h3><p>1. Sahasra Electronics — ₹1.4L (NSE Emerge lot of 500 shares) AFTER FY26 results confirm ₹130+ Cr revenue. This is the biggest single deployment waiting.<br>2. C2C Advanced — ₹28K if governance check passes. But Aastha already holds 150 shares, so household already has exposure. Garvit can skip unless very convinced.<br>3. Averaging down opportunities if Bondada or Websol correct further.</p></div>
+    <div class="icard b"><h3>Aastha's ₹1.51L cash — reserved for</h3><p>1. Satin Creditcare — ₹20–25K (if May 12 earnings call confirms thesis). P/B 0.83x is deep value.<br>2. Advait Energy add — ₹15K more (she already has 30 shares, add after FY26 results).<br>3. C2C Advanced add — ₹15K more (if governance clears) — she already has 150 shares at cost, adding near breakeven is smart if thesis intact.<br>4. Market correction dry powder — keep ₹50K minimum as buffer.</p></div>
+  </div>
+</div>
+
+<!-- ACTIONS -->
+<div id="actions" class="panel">
+  <div class="sh">Combined action list — both portfolios, priority order</div>
+  <div class="alist">
+    <div class="aitem"><div class="adot dr">🔥</div><div class="ac"><strong>GARVIT: EFC Rights via bank ASBA — ₹7,800 (May 22 DEADLINE)</strong><div class="meta">52 REs × ₹150 = ₹7,800. Net banking → ASBA → EFC India. 8 DAYS LEFT. Non-negotiable. RE trading closes May 15 (tomorrow).</div></div></div>
+    <div class="aitem"><div class="adot dr">1</div><div class="ac"><strong>GARVIT: EXIT RBZ Jewellers — all 200 shares</strong><div class="meta">Now -8.8%. Exit window at +6% was missed. Still exit to stop further bleeding. Free ₹26,160. Lesson: act on sell recommendations immediately.</div></div></div>
+    <div class="aitem"><div class="adot dr">2</div><div class="ac"><strong>GARVIT: SELL KPI Green — all 150 shares at +8.7%</strong><div class="meta">Was +20.3% on May 9. Gain is fading fast. Sell now while still positive. Free ₹64,553.</div></div></div>
+    <div class="aitem"><div class="adot da">3</div><div class="ac"><strong>GARVIT: TRIM Zaggle 450→150 shares on any bounce to ₹230+</strong><div class="meta">Guidance cut. Interim CFO. Don't sell at today's low — wait 2–3 days for bounce, then trim 300 shares. Free ~₹69K.</div></div></div>
+    <div class="aitem"><div class="adot da">4</div><div class="ac"><strong>AASTHA: TRIM Zaggle 360→160 shares on same bounce</strong><div class="meta">Same logic. 13% portfolio weight on a downgraded stock is too much. Trim 200 shares. Free ~₹46K.</div></div></div>
+    <div class="aitem"><div class="adot dg">5</div><div class="ac"><strong>GARVIT: BUY RPSG Ventures ₹35,000</strong><div class="meta">7.5/10. Aastha already bought and is +9.6%. Garvit has been delaying since session 7. Dual-household coverage strengthens conviction. Use RBZ + KPI Green proceeds.</div></div></div>
+    <div class="aitem"><div class="adot dg">6</div><div class="ac"><strong>GARVIT: BUY Muthoot Microfin ₹30,000</strong><div class="meta">7.0/10. FY26 PAT ₹170 Cr confirmed. Neither portfolio has it. New position for combined household.</div></div></div>
+    <div class="aitem"><div class="adot dg">7</div><div class="ac"><strong>GARVIT: BUY SG Finserve ₹28,000</strong><div class="meta">7.0/10. Aastha already holds 100 shares at +3.7%. Garvit adding deepens household conviction. Kacholia 2.37% + CRISIL AA.</div></div></div>
+    <div class="aitem"><div class="adot dg">8</div><div class="ac"><strong>AASTHA: BUY Bondada Engineering ₹30,000</strong><div class="meta">9.5/10. FY26 results confirmed ₹211 Cr PAT, ₹7,147 Cr order book. Her portfolio's biggest gap. Use Zaggle trim + cash.</div></div></div>
+    <div class="aitem"><div class="adot dg">9</div><div class="ac"><strong>AASTHA: ADD RPSG Ventures ₹25,000 more</strong><div class="meta">Current 50 shares showing +9.6%. Adding more at conviction. Household RPSG position grows stronger.</div></div></div>
+    <div class="aitem"><div class="adot dg">10</div><div class="ac"><strong>AASTHA: BUY Muthoot Microfin ₹25,000</strong><div class="meta">Complementary to her SG Finserve position. MFI + NBFC as a sector play across both portfolios.</div></div></div>
+    <div class="aitem"><div class="adot db">11</div><div class="ac"><strong>AASTHA: BUY TAC Infosec ₹15,000</strong><div class="meta">Cybersecurity pure play. Kedia 13.5%. Garvit already holds 200 shares. Household deepens tech/cyber exposure.</div></div></div>
+    <div class="aitem"><div class="adot db">12</div><div class="ac"><strong>BOTH: INVESTIGATE C2C governance — promoter + RPT filings</strong><div class="meta">Aastha already holds 150 shares. Before any adds: check SEBI filings for promoter stake decline and ₹120 Cr related party nature. If clean → Garvit also buys. If not → Aastha holds but doesn't add.</div></div></div>
+    <div class="aitem"><div class="adot dp">13</div><div class="ac"><strong>GARVIT: Plan Sahasra Electronics ₹1.4L from cash buffer (post FY26 results)</strong><div class="meta">6.5/10. NSE Emerge lot size ~500 shares = ₹1.4L. This is the largest single deployment pending. Use Garvit's ₹1.68L cash buffer. Wait for FY26 results (June-July 2026). Mukul 2.76% fresh add validates.</div></div></div>
+  </div>
+</div>
+
+<!-- TARGET PORTFOLIO -->
+<div id="target" class="panel">
+  <div class="sh">Target combined household portfolio — post-rebalancing</div>
+  <div class="box box-b">
+    <div class="bt">🏠 Combined household: 26 unique stocks across both portfolios, ₹28.26L total (₹25.07L stocks + ₹3.19L cash)</div>
+    <div class="bb">
+    <strong>Overlapping positions (held in both):</strong> DEE Development, Websol Energy, Zaggle (trimmed), Transformers India — 4 overlaps = household conviction plays.<br>
+    <strong>Garvit-only positions (15):</strong> Bondada ⭐, TAC Infosec ⭐, EFC ⭐, Vintage Coffee ⭐, Borana Weaves ⭐, Oriana Power, Sky Gold, Enviro Infra, EPACK, RBM Infra, Emerald, Northern Spirits, Nurture Well, + NEW: RPSG, Muthoot, SG Finserve<br>
+    <strong>Aastha-only positions (7):</strong> Kalyan Jewellers, C2C Advanced, Advait Energy, MTAR Technologies, JIO Financial, + NEW: Bondada, TAC Infosec, RPSG add, Muthoot
+    </div>
+  </div>
+
+  <div class="sh">Household sector allocation — diversified across India's growth themes</div>
+  <div class="bars">
+    <div class="brow"><div class="blb">Infrastructure/EPC (Bondada, DEE, Enviro, RBM)</div><div class="btr"><div class="bfl" style="width:30%;background:#16A34A">Combined ₹7.5L</div></div><div class="bvl" style="color:var(--gm)">~30%</div></div>
+    <div class="brow"><div class="blb">Energy/Solar (Websol, Oriana, KPI→exit, Advait)</div><div class="btr"><div class="bfl" style="width:18%;background:#0D7377">Combined ₹4.5L</div></div><div class="bvl" style="color:var(--t)">~18%</div></div>
+    <div class="brow"><div class="blb">NBFC/Finance (Muthoot, SG Fin, EFC, Emerald, Satin)</div><div class="btr"><div class="bfl" style="width:16%;background:#1D4ED8">Combined ₹4L</div></div><div class="bvl" style="color:var(--b)">~16%</div></div>
+    <div class="brow"><div class="blb">Defence/Tech (C2C, TAC Infosec, MTAR, TARIL)</div><div class="btr"><div class="bfl" style="width:14%;background:#6B21A8">Combined ₹3.5L</div></div><div class="bvl" style="color:var(--p)">~14%</div></div>
+    <div class="brow"><div class="blb">Consumer/Retail (Kalyan, Sky Gold, Vintage, Borana)</div><div class="btr"><div class="bfl" style="width:14%;background:#D97706">Combined ₹3.5L</div></div><div class="bvl" style="color:var(--am)">~14%</div></div>
+    <div class="brow"><div class="blb">Diversified/Other (RPSG, Zaggle, JIO, Northern)</div><div class="btr"><div class="bfl" style="width:8%;background:#9A3412">Combined ₹2L</div></div><div class="bvl" style="color:var(--o)">~8%</div></div>
+  </div>
+</div>
+
+<!-- 3x PATH -->
+<div id="threex" class="panel">
+  <div class="sh">The 3x path — ₹28.26L → ₹85L by FY28</div>
+
+  <div class="verdict">
+    <div class="vt">🎯 Combined household 3x target: ₹28.26L current → ₹85L by March 2028</div>
+    <div class="vb">
+    <strong>The math stock by stock (top 10 positions driving the 3x):</strong><br><br>
+    1. <strong>Bondada Engineering (G:₹1.95L + A:₹30K = ₹2.25L combined):</strong> FY26 PAT ₹211 Cr confirmed. FY27 guide 60-70%. MCap ~₹1,700 Cr → FY27E PAT ₹348 Cr × 15x = ₹5,220 Cr. Currently ₹325/share → target ₹1,000+. <strong>3x+ by FY27.</strong><br>
+    2. <strong>DEE Development (G:₹86K + A:₹50K = ₹1.36L):</strong> Order book 5x. Kedia holding. 30%+ growth. <strong>2.5–3x by FY28.</strong><br>
+    3. <strong>TAC Infosec (G:₹97K + A:₹15K = ₹1.12L):</strong> Only cybersecurity pure play. SaaS scaling. Kedia 13.5%. <strong>3x+ by FY28 on mainboard migration.</strong><br>
+    4. <strong>RPSG Ventures (G:₹35K + A:₹73K = ₹1.08L):</strong> Media rights + gaming + sports. Deep undervaluation vs sum-of-parts. <strong>3x by FY28.</strong><br>
+    5. <strong>Websol Energy (G:₹1.38L + A:₹42K = ₹1.80L):</strong> Solar cell monopoly. PLI + anti-dumping moat. Capacity expansion. <strong>3x by FY28.</strong><br>
+    6. <strong>C2C Advanced (A:₹64K):</strong> 18x PE on 31% margins. Post-Sindoor demand. <strong>3–5x by FY27 if governance clean.</strong><br>
+    7. <strong>Muthoot Microfin (G:₹30K + A:₹25K = ₹55K new):</strong> MFI recovery. ₹170 Cr PAT confirmed. P/B 1.0x. <strong>2.5–3x by FY28.</strong><br>
+    8. <strong>EFC (I) (G:₹1.31L + rights):</strong> Managed office growth. Rights at 21% discount. <strong>2.5x by FY28.</strong><br>
+    9. <strong>Kalyan Jewellers (A:₹1.08L):</strong> FY26 PAT ₹1,350 Cr (+89%!). 43% revenue growth. <strong>1.5–2x by FY28 (compounder, not 3x candidate at ₹56K Cr MCap).</strong><br>
+    10. <strong>MTAR Technologies (A:₹38K):</strong> Already +180%. Aerospace + ISRO. <strong>Continued compounder.</strong><br><br>
+    <strong>Conservative estimate:</strong> If top 5 positions deliver 2.5x and rest deliver 1.5x average → weighted portfolio return = ~2.2x. Combined: ₹28.26L × 2.2 = ₹62.2L.<br>
+    <strong>Base case:</strong> If top 5 deliver 3x and rest deliver 1.8x → weighted return = ~2.6x. Combined: ₹28.26L × 2.6 = ₹73.5L.<br>
+    <strong>Bull case:</strong> If 8/10 execute on thesis and get PE re-ratings → 3x+ achievable. Combined: ₹28.26L × 3 = ₹84.8L.<br><br>
+    <strong>The critical factor:</strong> Execution of the sell/buy rebalancing this week. Every day of delay on exiting low-conviction (RBZ, KPI Green) and deploying into high-conviction (RPSG, Muthoot, SG Finserve, Bondada for Aastha) costs compounding time. The stocks that should be in the portfolio are sitting in cash right now — that's the biggest drag on the 3x path.
+    </div>
+  </div>
+
+  <div class="sh">P&L history — tracking portfolio evolution</div>
+  <table class="ht">
+    <thead><tr><th>Session</th><th>Date</th><th>Portfolio</th><th>Invested</th><th>Current</th><th>P&L</th><th>%</th></tr></thead>
+    <tbody>
+      <tr><td>Session 5</td><td class="mono">Apr 29</td><td>Garvit only</td><td class="mono">~₹18.05L</td><td class="mono">~₹19.59L</td><td class="mono" style="color:var(--gm)">+₹1,54,312</td><td class="mono" style="color:var(--gm)">+8.55%</td></tr>
+      <tr><td>Session 7</td><td class="mono">May 5</td><td>Garvit only</td><td class="mono">₹18,67,217</td><td class="mono">₹19,49,598</td><td class="mono" style="color:var(--gm)">+₹82,381</td><td class="mono" style="color:var(--gm)">+4.41%</td></tr>
+      <tr><td>Session 9</td><td class="mono">May 9</td><td>Garvit only</td><td class="mono">₹18,68,177</td><td class="mono">₹19,82,726</td><td class="mono" style="color:var(--gm)">+₹1,14,549</td><td class="mono" style="color:var(--gm)">+6.13%</td></tr>
+      <tr class="tra"><td><strong>Session 12</strong></td><td class="mono"><strong>May 14</strong></td><td><strong>Garvit only</strong></td><td class="mono"><strong>₹17,47,282</strong></td><td class="mono"><strong>₹17,24,927</strong></td><td class="mono" style="color:var(--r)"><strong>-₹22,355</strong></td><td class="mono" style="color:var(--r)"><strong>-1.28%</strong></td></tr>
+      <tr class="trg"><td><strong>Session 12</strong></td><td class="mono"><strong>May 14</strong></td><td><strong>Aastha</strong></td><td class="mono"><strong>₹5,80,430</strong></td><td class="mono" style="color:var(--gm)"><strong>₹6,29,592</strong></td><td class="mono" style="color:var(--gm)"><strong>+₹49,162</strong></td><td class="mono" style="color:var(--gm)"><strong>+8.47%</strong></td></tr>
+      <tr class="trb"><td><strong>Session 12</strong></td><td class="mono"><strong>May 14</strong></td><td><strong>COMBINED</strong></td><td class="mono"><strong>₹23,27,712</strong></td><td class="mono"><strong>₹23,54,519</strong></td><td class="mono" style="color:var(--gm)"><strong>+₹26,807</strong></td><td class="mono" style="color:var(--gm)"><strong>+1.15%</strong></td></tr>
+    </tbody>
+  </table>
+  <p style="font-size:10px;color:var(--tx3);margin-bottom:8px">Note: Garvit's invested amount decreased from ₹18.68L to ₹17.47L because he trimmed Nurture Well (freed ~₹35K cash) and the total reflects actual current invested capital. Sky Gold add of 100 shares added ₹43.5K but Nurture Well trim freed ₹39K — net +₹4.5K adjustment plus market movements explain the difference.</p>
+</div>
+
+<div class="footer">Garvit + Aastha Combined Portfolio · Session 12 · May 14, 2026 · 31 stock positions across 2 accounts · Combined ₹28.26L (stocks + cash) · Next review: post all Q4 FY26 results (June 2026) · Not investment advice · Verify all data independently · Consult SEBI-registered advisor</div>
+
+<script>
+function go(id,btn){
+  document.querySelectorAll('.tab').forEach(t=>t.classList.remove('active'));
+  document.querySelectorAll('.panel').forEach(p=>p.classList.remove('active'));
+  btn.classList.add('active');
+  document.getElementById(id).classList.add('active');
+}
+</script>
+</body>
+</html>

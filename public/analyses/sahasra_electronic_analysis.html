@@ -1,0 +1,561 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<style>
+@import url('https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&family=DM+Mono:wght@400;500&display=swap');
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+:root{
+  --bg:#F5F3EE;--surf:#FFFFFF;--surf2:#FAF8F4;--brd:#E8E2D8;--brd2:#D4CCC0;
+  --tx:#1C1917;--tx2:#57534E;--tx3:#A8A29E;
+  --g:#15803D;--gbg:#DCFCE7;--gm:#16A34A;
+  --r:#991B1B;--rbg:#FEE2E2;
+  --a:#92400E;--abg:#FEF3C7;--am:#D97706;
+  --b:#1D4ED8;--bbg:#DBEAFE;
+  --t:#0D7377;--tbg:#CCFBF1;
+  --o:#9A3412;--obg:#FFEDD5;
+  --p:#6B21A8;--pbg:#F3E8FF;
+  --ind:#0369A1;--indbg:#E0F2FE;
+}
+body{font-family:'Plus Jakarta Sans',sans-serif;background:var(--bg);color:var(--tx);font-size:14px;padding:22px;line-height:1.5}
+h1{font-size:23px;font-weight:800;letter-spacing:-.5px;margin-bottom:4px}
+.sub{font-size:11.5px;color:var(--tx3);font-family:'DM Mono',monospace;margin-bottom:18px}
+.hero{display:grid;grid-template-columns:repeat(5,1fr);gap:10px;margin-bottom:18px}
+.hcard{background:var(--surf);border:1px solid var(--brd);border-radius:12px;padding:13px 15px;box-shadow:0 1px 3px rgba(0,0,0,.04)}
+.hl{font-size:10px;color:var(--tx3);font-family:'DM Mono',monospace;text-transform:uppercase;letter-spacing:.08em;margin-bottom:4px}
+.hv{font-size:19px;font-weight:800;letter-spacing:-.5px}
+.hs{font-size:10.5px;color:var(--tx3);margin-top:3px}
+.tabs{display:flex;gap:6px;flex-wrap:wrap;margin-bottom:18px}
+.tab{font-size:11.5px;font-weight:600;padding:6px 14px;border-radius:20px;border:1.5px solid var(--brd);background:var(--surf);color:var(--tx2);cursor:pointer;transition:all .15s}
+.tab:hover{background:var(--surf2);border-color:var(--brd2)}
+.tab.active{background:var(--tx);color:#fff;border-color:var(--tx)}
+.panel{display:none}.panel.active{display:block}
+.sh{font-size:10px;font-weight:700;color:var(--tx3);text-transform:uppercase;letter-spacing:.12em;display:flex;align-items:center;gap:10px;margin:18px 0 12px;font-family:'DM Mono',monospace}
+.sh::after{content:'';flex:1;height:1px;background:var(--brd)}
+.mono{font-family:'DM Mono',monospace}
+/* KPI */
+.kg{display:grid;grid-template-columns:repeat(4,1fr);gap:10px;margin-bottom:14px}
+.kc{background:var(--surf);border:1px solid var(--brd);border-radius:12px;padding:13px 15px;box-shadow:0 1px 3px rgba(0,0,0,.04)}
+.kc.g{border-left:3px solid var(--gm)}.kc.r{border-left:3px solid var(--r)}.kc.a{border-left:3px solid var(--am)}.kc.b{border-left:3px solid var(--b)}.kc.t{border-left:3px solid var(--t)}.kc.p{border-left:3px solid var(--p)}.kc.o{border-left:3px solid var(--o)}.kc.ind{border-left:3px solid var(--ind)}
+.kv{font-size:21px;font-weight:800;letter-spacing:-.5px;margin:4px 0 3px}
+.kl{font-size:10px;color:var(--tx3);font-family:'DM Mono',monospace;text-transform:uppercase;letter-spacing:.07em}
+.ks{font-size:10.5px;color:var(--tx2)}
+/* Box */
+.box{border-radius:12px;padding:16px;margin-bottom:14px;border:1.5px solid}
+.box-g{background:#F0FDF4;border-color:#86EFAC}.box-g .bt{color:var(--g)}.box-g .bb{color:#14532D;opacity:.9}
+.box-r{background:#FFF1F2;border-color:#FECADA}.box-r .bt{color:var(--r)}.box-r .bb{color:#7F1D1D;opacity:.9}
+.box-a{background:#FFFBEB;border-color:#FDE68A}.box-a .bt{color:var(--a)}.box-a .bb{color:#451A03;opacity:.9}
+.box-b{background:#EFF6FF;border-color:#BFDBFE}.box-b .bt{color:var(--b)}.box-b .bb{color:#1E3A5F;opacity:.9}
+.box-t{background:#F0FDFA;border-color:#99F6E4}.box-t .bt{color:var(--t)}.box-t .bb{color:#134E4A;opacity:.9}
+.box-p{background:#FAF5FF;border-color:#D8B4FE}.box-p .bt{color:var(--p)}.box-p .bb{color:#3B0764;opacity:.9}
+.bt{font-size:13px;font-weight:700;margin-bottom:7px}
+.bb{font-size:12px;line-height:1.7}
+/* table */
+.ht{width:100%;border-collapse:collapse;font-size:12px;margin-bottom:14px}
+.ht th{font-size:9.5px;font-weight:700;color:var(--tx3);text-transform:uppercase;letter-spacing:.08em;padding:7px 11px;border-bottom:2px solid var(--brd);text-align:left;font-family:'DM Mono',monospace;background:var(--surf2)}
+.ht td{padding:9px 11px;border-bottom:1px solid var(--brd);color:var(--tx2);vertical-align:middle}
+.ht tr:hover td{background:var(--surf2)}
+.ht tr:last-child td{border-bottom:none}
+.trg{background:#F0FDF4}.tra{background:#FFFBEB}.trr{background:#FFF1F2}.trb{background:#EFF6FF}.trp{background:#FAF5FF}
+/* Badge */
+.badge{font-size:9.5px;font-weight:700;padding:2px 8px;border-radius:10px}
+.bg{background:var(--gbg);color:var(--g)}.br{background:var(--rbg);color:var(--r)}.ba{background:var(--abg);color:var(--a)}.bb2{background:var(--bbg);color:var(--b)}.bt2{background:var(--tbg);color:var(--t)}.bp{background:var(--pbg);color:var(--p)}
+/* Info cards */
+.ic{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-bottom:14px}
+.icard{background:var(--surf);border:1px solid var(--brd);border-radius:12px;padding:14px 16px;box-shadow:0 1px 3px rgba(0,0,0,.04)}
+.icard.g{border-left:3px solid var(--gm)}.icard.r{border-left:3px solid var(--r)}.icard.a{border-left:3px solid var(--am)}.icard.b{border-left:3px solid var(--b)}.icard.t{border-left:3px solid var(--t)}.icard.p{border-left:3px solid var(--p)}.icard.o{border-left:3px solid var(--o)}
+.icard h3{font-size:12px;font-weight:700;margin-bottom:6px;color:var(--tx)}
+.icard p{font-size:11.5px;color:var(--tx2);line-height:1.6}
+/* Pill */
+.pill{display:inline-flex;align-items:center;font-size:10px;font-weight:700;padding:2px 9px;border-radius:20px;margin-bottom:5px;letter-spacing:.03em}
+.pg{background:var(--gbg);color:var(--g)}.pr{background:var(--rbg);color:var(--r)}.pa{background:var(--abg);color:var(--a)}.pb{background:var(--bbg);color:var(--b)}.pt{background:var(--tbg);color:var(--t)}.pp{background:var(--pbg);color:var(--p)}.po{background:var(--obg);color:var(--o)}
+/* bars */
+.bars{background:var(--surf);border:1px solid var(--brd);border-radius:12px;padding:14px;margin-bottom:14px}
+.brow{display:flex;align-items:center;gap:10px;padding:5px 0;border-bottom:1px solid var(--bg)}
+.brow:last-child{border-bottom:none}
+.blb{font-size:11px;color:var(--tx2);width:220px;flex-shrink:0}
+.btr{flex:1;background:var(--bg);border-radius:5px;height:14px;overflow:hidden}
+.bfl{height:100%;border-radius:5px;display:flex;align-items:center;padding-left:6px;font-size:8.5px;font-weight:700;color:rgba(255,255,255,.9)}
+.bvl{font-size:11px;font-weight:700;width:90px;text-align:right;font-family:'DM Mono',monospace}
+/* Action list */
+.alist{background:var(--surf);border:1px solid var(--brd);border-radius:12px;padding:14px;margin-bottom:14px}
+.aitem{display:flex;gap:10px;align-items:flex-start;padding:9px 0;border-bottom:1px solid var(--bg);font-size:12px}
+.aitem:last-child{border-bottom:none}
+.adot{width:22px;height:22px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:10px;font-weight:700;flex-shrink:0;margin-top:1px}
+.dg{background:var(--gbg);color:var(--g)}.dr{background:var(--rbg);color:var(--r)}.da{background:var(--abg);color:var(--a)}.db{background:var(--bbg);color:var(--b)}.dt{background:var(--tbg);color:var(--t)}.dp{background:var(--pbg);color:var(--p)}
+.ac strong{font-weight:700;color:var(--tx);display:block;margin-bottom:2px}
+.ac .meta{font-size:10.5px;color:var(--tx3);font-family:'DM Mono',monospace;margin-top:3px}
+/* Future cards */
+.fg{display:grid;grid-template-columns:repeat(3,1fr);gap:10px;margin-bottom:14px}
+.fcard{background:var(--surf);border:1px solid var(--brd);border-radius:12px;padding:14px;box-shadow:0 1px 3px rgba(0,0,0,.04)}
+.fcard-ico{font-size:24px;margin-bottom:8px}
+.fcard-title{font-size:12px;font-weight:700;color:var(--tx);margin-bottom:4px}
+.fcard-tag{font-size:9.5px;font-weight:700;padding:2px 8px;border-radius:10px;display:inline-block;margin-bottom:7px}
+.fcard-body{font-size:11px;color:var(--tx2);line-height:1.6}
+.fcard-tl{font-size:10px;font-family:'DM Mono',monospace;color:var(--tx3);margin-top:7px;font-weight:500}
+/* Scenarios */
+.scen{display:grid;grid-template-columns:1fr 1fr 1fr;gap:12px;margin-bottom:14px}
+.sc{background:var(--surf);border:1px solid var(--brd);border-radius:12px;padding:14px}
+.sc.bull{border-top:3px solid var(--gm)}.sc.base{border-top:3px solid var(--b)}.sc.bear{border-top:3px solid var(--r)}
+.sc-t{font-size:11.5px;font-weight:700;margin-bottom:5px}
+.sc-v{font-size:20px;font-weight:800;letter-spacing:-.5px;margin-bottom:5px}
+.sc-b{font-size:11px;color:var(--tx2);line-height:1.6}
+/* Verdict */
+.verdict{background:#F0FDF4;border:2px solid #86EFAC;border-radius:14px;padding:18px;margin-bottom:14px}
+.vt{font-size:15px;font-weight:800;color:var(--g);margin-bottom:8px}
+.vb{font-size:12px;color:#14532D;line-height:1.75}
+/* PE box */
+.pe-box{background:#EFF6FF;border:1.5px solid #93C5FD;border-radius:12px;padding:16px;margin-bottom:14px}
+.pe-title{font-size:13px;font-weight:700;color:var(--b);margin-bottom:10px}
+.pe-row{display:flex;align-items:center;justify-content:space-between;padding:7px 0;border-bottom:1px solid #BFDBFE;font-size:12px}
+.pe-row:last-child{border-bottom:none}
+.pe-label{color:var(--tx2)}
+.pe-val{font-family:'DM Mono',monospace;font-weight:700}
+/* warning */
+.warn-sme{background:#FFF7ED;border:1.5px solid #FED7AA;border-radius:10px;padding:13px;margin-bottom:14px}
+.wsme-t{font-size:12px;font-weight:700;color:var(--o);margin-bottom:5px}
+.wsme-b{font-size:11.5px;color:#431407;opacity:.9;line-height:1.6}
+.footer{border-top:1px solid var(--brd);margin-top:20px;padding-top:12px;font-size:10px;color:var(--tx3);font-family:'DM Mono',monospace}
+</style>
+</head>
+<body>
+
+<h1>Sahasra Electronic Solutions Ltd — Deep Investment Analysis</h1>
+<div class="sub">NSE Emerge: SAHASRA · ESDM (Electronics System Design & Manufacturing) · Founded 2023 (IPO Oct 2024) · CMD: Amrit Lal Manwani · Noida + Bhiwadi · MCap ~₹700 Cr · Revenue ₹110 Cr TTM · Two businesses: EMS + Semiconductor · Mukul Agrawal 2.76% fresh Q4 FY26 add</div>
+
+<div class="hero">
+  <div class="hcard"><div class="hl">Market Cap</div><div class="hv" style="color:var(--am)">~₹700 Cr</div><div class="hs">NSE Emerge SME</div></div>
+  <div class="hcard"><div class="hl">Revenue TTM</div><div class="hv" style="color:var(--gm)">₹110 Cr</div><div class="hs">H1 FY26: ₹61 Cr (+recovery)</div></div>
+  <div class="hcard"><div class="hl">PAT TTM</div><div class="hv" style="color:var(--am)">₹1.53 Cr</div><div class="hs">Consolidated (semi drag); H1: ₹9.5 Cr</div></div>
+  <div class="hcard"><div class="hl">Promoter</div><div class="hv" style="color:var(--gm)">69.9%</div><div class="hs">Post-merger target 73.77%</div></div>
+  <div class="hcard"><div class="hl">Mukul stake</div><div class="hv" style="color:var(--b)">2.76%</div><div class="hs">Fresh Q4 FY26 — early signal</div></div>
+</div>
+
+<div class="tabs">
+  <button class="tab active" onclick="go('overview',this)">🏭 Overview</button>
+  <button class="tab" onclick="go('financials',this)">📊 Financials</button>
+  <button class="tab" onclick="go('newbiz',this)">🚀 New Businesses</button>
+  <button class="tab" onclick="go('pe',this)">📐 PE & Valuation</button>
+  <button class="tab" onclick="go('sector',this)">⚡ Sector KPIs</button>
+  <button class="tab" onclick="go('guidance',this)">🎯 Guidance</button>
+  <button class="tab" onclick="go('risks',this)">⚠️ Risks</button>
+  <button class="tab" onclick="go('peers',this)">⚔️ Peers</button>
+  <button class="tab" onclick="go('scenarios',this)">🔮 3x Scenarios</button>
+  <button class="tab" onclick="go('verdict',this)">🏆 Verdict</button>
+</div>
+
+<!-- OVERVIEW -->
+<div id="overview" class="panel active">
+  <div class="warn-sme">
+    <div class="wsme-t">⚠️ NSE Emerge (SME) listing — Key structural fact before everything else</div>
+    <div class="wsme-b">Sahasra is listed on NSE Emerge, India's SME exchange. Minimum lot size: 500 shares. At ₹280/share → minimum investment = ₹1,40,000. You cannot buy exactly ₹15–20K worth. Daily volumes are thin (~22,000–59,000 shares). Mainboard migration is a potential re-rating catalyst — eligible after 3 years of profitable operations + ₹25 Cr net worth. IPO listed Oct 2024, so mainboard eligibility earliest Oct 2027. Plan accordingly.</div>
+  </div>
+
+  <div class="sh">What Sahasra Electronic Solutions actually does — the business in full</div>
+  <div class="box box-b">
+    <div class="bt">💻 Sahasra ESDM — India's emerging integrated electronics + semiconductor company</div>
+    <div class="bb">
+    Incorporated Feb 2023 (listed Oct 2024). Took over the running business of promoter Amrit Lal Manwani's proprietorship "M/s Sahasra Electronic Solutions" (started ~2000, ELCINA Export Prize 2022–23). Manufacturing in Noida (SEZ, 4 SMT lines) + Bhiwadi, Rajasthan (semiconductor packaging). CEO is Varun Manwani (second generation).<br><br>
+    <strong>Two integrated businesses:</strong><br>
+    🔷 <strong>EMS Division (listed entity — SESL):</strong> Electronics System Design & Manufacturing from Noida SEZ. Products: PCB assemblies (automotive, medical, industrial, IT), box builds (laptops, tablets), LED lighting, IT accessories (motherboards, DRAM, SSDs, USB drives). Revenue model: contract manufacturing + design + sell. Certified: EN 9100:2018 (aerospace-grade quality), ISO 9001:2015. International exports to EU, UK, Middle East + domestic OEMs.<br><br>
+    🔶 <strong>Semiconductor Division (Sahasra Semiconductors Pvt Ltd — 54.18% subsidiary):</strong> Bhiwadi, Rajasthan semiconductor packaging facility. Products: eSIMs, eMMC, micro-SD cards, COBs, COB-based USBs, LED driver ICs, BGA packages, NAND flash. Customers: telecom, consumer electronics, IoT, EV. SPECS subsidy ₹18.5 Cr received from govt. Phase-II ₹200 Cr capex planned (50% India Semiconductor Mission 2.0 grant expected).<br><br>
+    <strong>Merger underway:</strong> SEPL + ITPL + SSSDPL merging into listed SESL (approved March 2026). Post-merger promoter rises to 73.77%. Simplifies governance, creates integrated semiconductor+EMS company.
+    </div>
+  </div>
+
+  <div class="sh">Key product lines and customers</div>
+  <div class="kg">
+    <div class="kc g"><div class="kl">PCBA / Box Builds</div><div class="kv" style="color:var(--gm)">Core revenue</div><div class="ks">Automotive, medical, industrial, IT. Noida SEZ. 4 SMT + 2 more Bhiwadi lines.</div></div>
+    <div class="kc g"><div class="kl">Solsta (UK) — multi-year</div><div class="kv" style="color:var(--gm)">Export anchor</div><div class="ks">Solid State Group PLC subsidiary. Multi-year manufacturing + supply chain agreement. UK market foothold.</div></div>
+    <div class="kc g"><div class="kl">Inepro (Netherlands) — EV meters</div><div class="kv" style="color:var(--gm)">New vertical</div><div class="ks">EV charging station energy meters. First shipment Dec 2025. EU export. High-margin IoT product.</div></div>
+    <div class="kc b"><div class="kl">eSIM manufacturing</div><div class="kv" style="color:var(--b)">European contract</div><div class="ks">Contract with European company (Oct 2025). Mass production targeted Mar 2026. Export to EU.</div></div>
+    <div class="kc b"><div class="kl">Memory chips (eMMC, NAND)</div><div class="kv" style="color:var(--b)">AI demand</div><div class="ks">Memory recovery driven by AI infrastructure demand. 0.5M micro-SD order (3-yr contract).</div></div>
+    <div class="kc p"><div class="kl">Desktop Motherboard (own design)</div><div class="kv" style="color:var(--p)">IP development</div><div class="ks">Designed in-house. Filed copyright for SPI TPM Reference Design. Verification cycle, launch Q4 FY26.</div></div>
+    <div class="kc t"><div class="kl">Thomson laptops/tablets</div><div class="kv" style="color:var(--t)">Box builds</div><div class="ks">Partnership with Thomson Computing for laptop/tablet box-build manufacturing in India.</div></div>
+    <div class="kc a"><div class="kl">LED + IT accessories</div><div class="kv" style="color:var(--am)">Legacy revenue</div><div class="ks">LED lighting solutions. DRAM modules, SSDs, USB drives. Stable, lower-margin segment.</div></div>
+  </div>
+</div>
+
+<!-- FINANCIALS -->
+<div id="financials" class="panel">
+  <div class="sh">Full financial history — understanding the numbers correctly</div>
+  <div class="box box-a">
+    <div class="bt">⚠️ Important: FY25 TTM PAT ₹1.53 Cr is MISLEADING — semiconductor subsidiary losses are dragging consolidated PAT</div>
+    <div class="bb">The listed entity (SESL) alone (standalone) has healthy margins. The semiconductor subsidiary (Sahasra Semiconductors) is pre-profitability — burning cash on capex + ramp-up. Consolidated PAT includes semi losses. H1 FY26 consolidated PAT margin was 15.49% on ₹61 Cr revenue = ₹9.5 Cr PAT — the business is actually quite profitable. The TTM PAT of ₹1.53 Cr on Screener includes the difficult H2 FY25 (post-IPO restructuring, semiconductor capex). Evaluate on a forward basis: FY26E should show ₹18–25 Cr PAT on management's ₹140 Cr revenue guidance.</div>
+  </div>
+
+  <table class="ht">
+    <thead><tr><th>Period</th><th>Revenue</th><th>EBITDA%</th><th>PAT</th><th>Debtor days</th><th>Key event</th></tr></thead>
+    <tbody>
+      <tr><td class="mono">FY23 (pre-IPO)</td><td class="mono">~₹125 Cr</td><td class="mono">~22%</td><td class="mono">~₹28 Cr</td><td class="mono">~140</td><td>Proprietorship operations. High margins, mostly export. EMS to global OEMs. 51% export.</td></tr>
+      <tr><td class="mono">FY24 (pre-IPO)</td><td class="mono">~₹101 Cr</td><td class="mono">~33%</td><td class="mono">~₹33 Cr</td><td class="mono">—</td><td>Revenue dipped (global slowdown, export softness). High EBITDA on favorable product mix. Semiconductor setup begins.</td></tr>
+      <tr class="tra"><td class="mono">FY25 (post-IPO)</td><td class="mono">~₹100 Cr</td><td class="mono">~12%</td><td class="mono">₹1.53 Cr</td><td class="mono">113</td><td>Transition year. IPO costs. Semiconductor losses absorb EMS profits. Pivot to domestic revenue. Revenue seasonality: 40% H1, 60% H2. H2 FY25 "below expectations" per management. Debtor days improved from 275 to 113 — significant working capital improvement.</td></tr>
+      <tr class="trg"><td class="mono">H1 FY26</td><td class="mono">₹61.44 Cr</td><td class="mono green">21.71%</td><td class="mono green">₹9.5 Cr</td><td class="mono">~100</td><td>Strong recovery. PAT margin 15.49%. Domestic pivot working — domestic growth offset by export softness. Solsta multi-year deal signed. Inepro EV meter order. eSIM contract signed Oct 2025. 2 new SMT lines Bhiwadi added. Merger of 3 entities approved.</td></tr>
+      <tr class="trg"><td class="mono">FY26E Full</td><td class="mono">₹110–140 Cr</td><td class="mono">~18–22%</td><td class="mono">₹15–25 Cr</td><td class="mono">~100</td><td>H2 FY26 stronger (60:40 rule = ₹70–80 Cr in H2). eSIM mass production from Mar 2026. Memory recovery. EV meter revenue. Screener TTM shows ₹110 Cr and ₹1.53 Cr (includes H2 FY25 weak quarter). Forward PAT much better.</td></tr>
+      <tr><td class="mono">FY27E</td><td class="mono">₹225–325 Cr</td><td class="mono">~18–20%</td><td class="mono">₹35–55 Cr</td><td class="mono">~90</td><td>Management guided ₹225 Cr (conservative) to ₹325 Cr (aspirational). Merger completed → consolidated entity cleaner. Semiconductor becomes PAT-positive. Solsta + Inepro + eSIM + memory all contributing. 2 more SMT lines = 3x throughput capacity.</td></tr>
+      <tr><td class="mono">FY28E</td><td class="mono">₹400–700 Cr</td><td class="mono">~20–22%</td><td class="mono">₹80–130 Cr</td><td class="mono">~80</td><td>Phase-II semiconductor capex (₹200 Cr, 50% ISM 2.0 grant). eSIM scale: India 120 Cr SIM replacement over decade. Memory + AI server demand (DRAM). Motherboard IP commercialised. PLI scheme benefits. Potential mainboard migration in FY27 if financials qualify.</td></tr>
+    </tbody>
+  </table>
+
+  <div class="sh">Revenue breakdown — understanding what drives growth</div>
+  <div class="bars">
+    <div class="brow"><div class="blb">EMS / PCBA (domestic + export)</div><div class="btr"><div class="bfl" style="width:55%;background:#16A34A">Core business — PCBAs for industrial, auto, medical</div></div><div class="bvl" style="color:var(--gm)">~55%</div></div>
+    <div class="brow"><div class="blb">Box builds (laptops, tablets — Thomson)</div><div class="btr"><div class="bfl" style="width:20%;background:#1D4ED8">Thomson branded products</div></div><div class="bvl" style="color:var(--b)">~20%</div></div>
+    <div class="brow"><div class="blb">LED + IT accessories</div><div class="btr"><div class="bfl" style="width:15%;background:#D97706">Legacy — stable, lower margin</div></div><div class="bvl" style="color:var(--am)">~15%</div></div>
+    <div class="brow"><div class="blb">Semiconductor (eSIM, memory, ICs)</div><div class="btr"><div class="bfl" style="width:10%;background:#6B21A8">Early stage — scaling fast</div></div><div class="bvl" style="color:var(--p)">~10%</div></div>
+    <div class="brow"><div class="blb" style="color:var(--gm);font-weight:600">FY27 revenue mix (projected)</div><div class="btr"><div class="bfl" style="width:90%;background:#052E16">EMS 45% + Semi 25% + Box 20% + LED 10%</div></div><div class="bvl" style="color:var(--gm);font-weight:700">₹225–325 Cr</div></div>
+  </div>
+</div>
+
+<!-- NEW BUSINESSES -->
+<div id="newbiz" class="panel">
+  <div class="sh">Future products and new business entries — 6 growth vectors</div>
+  <div class="fg">
+    <div class="fcard">
+      <div class="fcard-ico">📱</div>
+      <div class="fcard-title">eSIM Manufacturing</div>
+      <div class="fcard-tag" style="background:var(--pbg);color:var(--p)">MASS PRODUCTION MAR 2026</div>
+      <div class="fcard-body">
+        Signed contract with European company (Oct 2025) to manufacture eSIMs for export to EU. Mass production targeted from March 2026. Sahasra Semiconductors' Bhiwadi facility handles packaging.<br><br>
+        <strong>The massive India opportunity:</strong> India has ~120 crore active SIM cards. TRAI pushing eSIM adoption (Apple iPhone 13+ models already eSIM-capable). Over the next 10 years, every new smartphone (30–40 Cr/yr) will use eSIM. Sahasra is one of the first Indian domestic eSIM manufacturers.<br><br>
+        <strong>Revenue math:</strong> At ₹10–15/unit manufacturing cost margin × 100 Cr units/decade = ₹10,000+ Cr potential. Near-term: EU exports + domestic pilot contracts.
+      </div>
+      <div class="fcard-tl">⏱ Mass production from Mar 2026 → Revenue contribution H2 FY26 + FY27 scaling</div>
+    </div>
+    <div class="fcard">
+      <div class="fcard-ico">🔋</div>
+      <div class="fcard-title">EV Charging Energy Meters</div>
+      <div class="fcard-tag" style="background:var(--tbg);color:var(--t)">FIRST SHIPMENT DEC 2025</div>
+      <div class="fcard-body">
+        Order from Inepro Metering (Netherlands) to manufacture off-grid energy meters for EV charging stations. First shipment Dec 2025. Multi-year EPC contract with EU company.<br><br>
+        <strong>Why this matters:</strong> EV charging infrastructure is scaling rapidly in India + globally. Energy meters are critical IoT devices embedded in every charging station. High-value, high-margin product (complex electronics + software integration). EU customer = quality validation, repeat orders.<br><br>
+        <strong>Scalability:</strong> India's EV charging target = 4 lakh stations by 2030 → 4 lakh meters minimum at domestic level alone. Export to EU adds multiplier.
+      </div>
+      <div class="fcard-tl">⏱ Ongoing from Dec 2025 → Revenue FY26 H2 and FY27 scaling</div>
+    </div>
+    <div class="fcard">
+      <div class="fcard-ico">🖥️</div>
+      <div class="fcard-title">In-House Motherboard Design</div>
+      <div class="fcard-tag" style="background:var(--gbg);color:var(--g)">IP FILING DONE · LAUNCH Q4 FY26</div>
+      <div class="fcard-body">
+        Filed copyright for "Sahasra In-House SPI TPM Reference Design." Desktop motherboard designed entirely in-house currently in verification and validation cycle. Launch scheduled Q4 FY26.<br><br>
+        <strong>Significance:</strong> Moving from pure contract manufacturing to IP-owning design company. A company with proprietary designs commands 3–5x higher margins vs pure contract assembly. TPM (Trusted Platform Module) integration suggests targeting security-grade hardware — enterprise, defence, and government procurement.<br><br>
+        <strong>Margin impact:</strong> Proprietary products → EBITDA margins expand from 20% to 25–30%+ on that product line.
+      </div>
+      <div class="fcard-tl">⏱ Launch Q4 FY26 → Commercial revenue FY27</div>
+    </div>
+    <div class="fcard">
+      <div class="fcard-ico">🧠</div>
+      <div class="fcard-title">Memory Chips — AI Server Demand</div>
+      <div class="fcard-tag" style="background:var(--bbg);color:var(--b)">AI TAILWIND</div>
+      <div class="fcard-body">
+        Memory business (DRAM, NAND, eMMC) impacted by H1 FY25 global inventory correction. Now recovering strongly: AI server infrastructure driving insatiable memory demand. Global memory prices recovering. Sahasra has signed 0.5 million micro-SD card order (3-year contract).<br><br>
+        <strong>The AI connection:</strong> Every AI server needs massive DRAM. India's data centre buildout (₹5 lakh Cr by 2030) = domestic memory demand. Sahasra's semiconductor subsidiary is positioned as an Indian memory packaging/assembly player in a market dominated by Samsung, Micron, SK Hynix — but for lower-tier products, Indian manufacturing can compete on cost.<br><br>
+        <strong>SPECS subsidy:</strong> ₹18.5 Cr already received. Total approved ₹21.88 Cr.
+      </div>
+      <div class="fcard-tl">⏱ Recovery ongoing in FY26 H2 → Full year FY27 contribution</div>
+    </div>
+    <div class="fcard">
+      <div class="fcard-ico">🌐</div>
+      <div class="fcard-title">Solsta (UK) Multi-Year Deal</div>
+      <div class="fcard-tag" style="background:var(--gbg);color:var(--g)">SIGNED JULY 2025</div>
+      <div class="fcard-body">
+        Multi-year manufacturing and supply chain agreement with Solid State Supplies (Solsta), part of Solid State Group PLC (UK-listed company). Aims to enhance global supply chain in electronics, strengthen Sahasra's UK footprint, help Solsta expand in India.<br><br>
+        <strong>Why this is significant:</strong> UK-listed institutional partner = quality validation from Western supply chain. Multi-year = revenue visibility. Solid State Group PLC is a £200+ Mn revenue company — even 5% of their supply chain = ₹80–100 Cr/yr for Sahasra. This is a potential anchor EU/UK export customer.<br><br>
+        <strong>UK CEO visit:</strong> Solid State Group CEO visited Sahasra's facility — signals high-level commitment from both sides.
+      </div>
+      <div class="fcard-tl">⏱ Revenue from FY27 as supply ramps up → Multi-year anchor</div>
+    </div>
+    <div class="fcard">
+      <div class="fcard-ico">🔬</div>
+      <div class="fcard-title">Phase-II Semiconductor Expansion</div>
+      <div class="fcard-tag" style="background:var(--abg);color:var(--a)">₹200 CR CAPEX · ISM 2.0 GRANT</div>
+      <div class="fcard-body">
+        Phase-II semiconductor expansion: ₹200 Cr total capex. Expected 50% grant from India Semiconductor Mission Scheme 2.0 (net cost ₹100 Cr). Balance from internal accruals + debt.<br><br>
+        <strong>What Phase-II enables:</strong> Much larger semiconductor packaging capacity. More advanced package types (BGA, wafer-level packaging). Higher-value chips for automotive + defence. DRAM module manufacturing at scale. eSIM manufacturing at commercial scale (millions/month).<br><br>
+        <strong>Timeline:</strong> ISM 2.0 scheme details expected H1 FY27. Capex deployment FY27–28. Revenue contribution from Phase-II: FY28–29 onwards. This is the long-term value creator, not near-term.
+      </div>
+      <div class="fcard-tl">⏱ ISM 2.0 grant application FY27 → Capex FY27–28 → Revenue FY28–29</div>
+    </div>
+  </div>
+
+  <div class="sh">The three-entity merger — simplifying corporate structure</div>
+  <div class="box box-t">
+    <div class="bt">🔄 Merger: SEPL + ITPL + SSSDPL → SESL (approved March 2026) — a major corporate event</div>
+    <div class="bb">
+    The Board approved amalgamation of three entities into the listed SESL:<br>
+    • <strong>SEPL (Sahasra Electronics Pvt Ltd):</strong> PCB manufacturing capability — adds bare PCB manufacturing to complement PCBA assembly<br>
+    • <strong>ITPL (assumed: Sahasra IT/skilling entity):</strong> Skill development and IT training — digital literacy training revenue + govt contracts<br>
+    • <strong>SSSDPL (semiconductor subsidiary):</strong> The Bhiwadi semiconductor packaging facility<br><br>
+    <strong>Post-merger impact:</strong> (1) Promoter stake rises from 69.9% → 73.77% (consolidation of family entities). (2) PCB manufacturing + PCBA assembly under one roof = vertical integration, better margins. (3) Semiconductor losses stop dragging EMS profits — separate P&Ls become one cleaner entity. (4) Corporate governance: from complex 3-subsidiary structure to clean single listed company. Exchange ratio: SEPL 226/100, SSSDPL 55/100. Expected completion: H1 FY27.
+    </div>
+  </div>
+</div>
+
+<!-- PE VALUATION -->
+<div id="pe" class="panel">
+  <div class="sh">PE and valuation analysis — where Sahasra stands vs sector and growth</div>
+
+  <div class="pe-box">
+    <div class="pe-title">📐 Current Valuation Math (May 2026)</div>
+    <div class="pe-row"><div class="pe-label">Current share price (approx.)</div><div class="pe-val" style="color:var(--b)">~₹280/share</div></div>
+    <div class="pe-row"><div class="pe-label">Total shares outstanding</div><div class="pe-val">2,49,92,763 shares (24.99 Cr)</div></div>
+    <div class="pe-row"><div class="pe-label">Market capitalization</div><div class="pe-val" style="color:var(--b)">~₹700 Cr</div></div>
+    <div class="pe-row"><div class="pe-label">Price-to-Book (P/B)</div><div class="pe-val" style="color:var(--am)">3.38x (Screener)</div></div>
+    <div class="pe-row"><div class="pe-label">TTM Revenue</div><div class="pe-val">₹110 Cr</div></div>
+    <div class="pe-row"><div class="pe-label">Price-to-Sales (P/S)</div><div class="pe-val" style="color:var(--gm)">6.4x — very reasonable for tech/EMS</div></div>
+    <div class="pe-row"><div class="pe-label">TTM PAT (consolidated, incl. semi losses)</div><div class="pe-val" style="color:var(--r)">₹1.53 Cr → TTM PE: ~457x (misleading!)</div></div>
+    <div class="pe-row"><div class="pe-label">H1 FY26 PAT annualised</div><div class="pe-val" style="color:var(--gm)">₹9.5 Cr × 2 = ₹19 Cr → PE ~37x</div></div>
+    <div class="pe-row"><div class="pe-label">FY26E PAT (₹140 Cr revenue × 15%)</div><div class="pe-val" style="color:var(--gm)">₹21 Cr → Forward PE ~33x ✅</div></div>
+    <div class="pe-row"><div class="pe-label">FY27E PAT (₹225 Cr revenue × 14%)</div><div class="pe-val" style="color:var(--gm)">₹31.5 Cr → Forward PE ~22x ✅✅</div></div>
+    <div class="pe-row"><div class="pe-label">FY28E PAT (₹450 Cr revenue × 18%)</div><div class="pe-val" style="color:var(--gm)">₹81 Cr → Forward PE ~8.6x ✅✅✅</div></div>
+  </div>
+
+  <div class="sh">PE comparison — Sahasra vs EMS sector peers</div>
+  <table class="ht">
+    <thead><tr><th>Company</th><th>MCap</th><th>FY26 Revenue</th><th>FY26 PAT</th><th>PE (current)</th><th>FY27E PE</th><th>Revenue CAGR (FY26–28E)</th><th>Assessment</th></tr></thead>
+    <tbody>
+      <tr class="trg"><td><strong style="color:var(--gm)">Sahasra Electronics ← GARVIT</strong></td><td class="mono">₹700 Cr</td><td class="mono">~₹130 Cr</td><td class="mono">~₹21 Cr</td><td class="mono" style="color:var(--gm)">~33x ✅ CHEAP</td><td class="mono" style="color:var(--gm)">~22x</td><td class="mono" style="color:var(--gm)">~65% CAGR</td><td><span class="badge bg">DEEP VALUE</span></td></tr>
+      <tr><td><strong>Dixon Technologies</strong></td><td class="mono">₹90,000+ Cr</td><td class="mono">₹16,590 Cr</td><td class="mono">₹696 Cr</td><td class="mono" style="color:var(--r)">~130x</td><td class="mono" style="color:var(--r)">~100x</td><td class="mono">~25% CAGR</td><td><span class="badge br">EXPENSIVE</span></td></tr>
+      <tr><td><strong>Amber Enterprises</strong></td><td class="mono">₹50,000 Cr</td><td class="mono">₹10,179 Cr</td><td class="mono">₹284 Cr</td><td class="mono" style="color:var(--r)">~176x</td><td class="mono" style="color:var(--r)">~120x</td><td class="mono">~24% CAGR</td><td><span class="badge br">VERY EXPENSIVE</span></td></tr>
+      <tr><td><strong>Kaynes Technology</strong></td><td class="mono">₹25,000 Cr</td><td class="mono">₹1,793 Cr</td><td class="mono">₹103 Cr</td><td class="mono" style="color:var(--am)">~243x</td><td class="mono" style="color:var(--am)">~150x</td><td class="mono">~40% CAGR</td><td><span class="badge br">EXTREMELY EXPENSIVE</span></td></tr>
+      <tr><td><strong>Syrma SGS Technology</strong></td><td class="mono">₹13,000+ Cr</td><td class="mono">₹4,819 Cr</td><td class="mono">₹345 Cr</td><td class="mono" style="color:var(--am)">~38x</td><td class="mono" style="color:var(--am)">~28x</td><td class="mono">~29% CAGR</td><td><span class="badge ba">FAIR VALUE</span></td></tr>
+      <tr class="trg"><td><strong>PG Electroplast</strong></td><td class="mono">₹14,700 Cr</td><td class="mono">~₹4,000 Cr</td><td class="mono">~₹200 Cr</td><td class="mono" style="color:var(--am)">~52–53x</td><td class="mono" style="color:var(--am)">~38x</td><td class="mono">~30% CAGR</td><td><span class="badge ba">PREMIUM</span></td></tr>
+    </tbody>
+  </table>
+
+  <div class="sh">What PE Sahasra should trade at — fair value estimation</div>
+  <div class="ic">
+    <div class="icard g"><span class="pill pg">✅ At 30x PE (sector discount for SME, early stage)</span><h3>Conservative — applies 50% sector discount to peer average</h3><p>EMS peers trade at 40–100x+ PE. Even at a steep 50% SME discount = 30x. FY27E PAT ₹31.5 Cr × 30x = ₹945 Cr MCap = 35% upside from current ₹700 Cr. This is the BEAR case fair value — assuming no re-rating from SME to mainboard.</p></div>
+    <div class="icard b"><span class="pill pb">📊 At 50x PE (mainboard migration re-rating)</span><h3>Base — if SESL migrates to mainboard in FY27</h3><p>Mainboard listing → institutional investors can buy → PE re-rates to sector average. FY27E PAT ₹31.5 Cr × 50x = ₹1,575 Cr = 2.25x from current ₹700 Cr. FY28E PAT ₹81 Cr × 50x = ₹4,050 Cr = 5.8x. Mainboard migration is the single biggest valuation catalyst.</p></div>
+    <div class="icard t"><span class="pill pt">🚀 At 40x PE on FY28E PAT</span><h3>Bull — semiconductor contribution confirmed</h3><p>FY28 PAT ₹81 Cr at 40x PE = ₹3,240 Cr = 4.6x from ₹700 Cr. If eSIM + EV meters + Solsta all delivering + semiconductor PAT-positive = PAT could be ₹100–130 Cr → at 40x = ₹4,000–5,200 Cr = 5.7–7.4x. This is the scenario Mukul is likely betting on.</p></div>
+    <div class="icard r"><span class="pill pr">⚠️ Key PE risk</span><h3>SME liquidity + sector de-rating</h3><p>EMS sector PE has compressed (Kaynes down 35%, Dixon down 29% in 2025). If sector PE re-rates down to 20–25x: FY27E PAT ₹31.5 Cr × 22x = ₹693 Cr = flat from current. Multiple compression is the primary risk — not operational failure.</p></div>
+  </div>
+
+  <div class="sh">3x valuation roadmap — what needs to happen</div>
+  <table class="ht">
+    <thead><tr><th>Scenario</th><th>Revenue</th><th>PAT margin</th><th>PAT</th><th>PE applied</th><th>MCap</th><th>Return from ₹700 Cr</th></tr></thead>
+    <tbody>
+      <tr class="trg"><td>FY27E Base (mainboard)</td><td class="mono">₹225 Cr</td><td class="mono">14%</td><td class="mono">₹31.5 Cr</td><td class="mono">50x</td><td class="mono" style="color:var(--gm)">₹1,575 Cr</td><td class="mono" style="color:var(--gm)">+125% = 2.25x</td></tr>
+      <tr class="trg"><td>FY28E Base (semi profitable)</td><td class="mono">₹450 Cr</td><td class="mono">18%</td><td class="mono">₹81 Cr</td><td class="mono">40x</td><td class="mono" style="color:var(--gm)">₹3,240 Cr</td><td class="mono" style="color:var(--gm)">+363% = 4.6x ✅</td></tr>
+      <tr class="trg"><td>FY28E Bull (₹350 Cr management guide met)</td><td class="mono">₹700 Cr</td><td class="mono">18%</td><td class="mono">₹126 Cr</td><td class="mono">40x</td><td class="mono" style="color:var(--gm)">₹5,040 Cr</td><td class="mono" style="color:var(--gm)">+620% = 7.2x 🚀</td></tr>
+      <tr class="tra"><td>FY27E Conservative (SME, no re-rate)</td><td class="mono">₹180 Cr</td><td class="mono">12%</td><td class="mono">₹21.6 Cr</td><td class="mono">30x</td><td class="mono" style="color:var(--am)">₹648 Cr</td><td class="mono" style="color:var(--am)">-7% (flat)</td></tr>
+      <tr class="trr"><td>FY27E Bear (semi stays loss-making)</td><td class="mono">₹150 Cr</td><td class="mono">8%</td><td class="mono">₹12 Cr</td><td class="mono">25x</td><td class="mono" style="color:var(--r)">₹300 Cr</td><td class="mono" style="color:var(--r)">-57% (severe)</td></tr>
+    </tbody>
+  </table>
+</div>
+
+<!-- SECTOR -->
+<div id="sector" class="panel">
+  <div class="sh">India ESDM / EMS sector — the structural mega-theme</div>
+  <div class="box box-b">
+    <div class="bt">🇮🇳 India electronics: ₹9.5 lakh Cr production in FY25, targeting ₹30 lakh Cr by 2026 — 3x in 2 years</div>
+    <div class="bb">
+    India's electronics sector recorded a 24% revenue CAGR over FY19–24, with momentum expected to accelerate to 27% CAGR over FY24–29E. The EMS sector is well-positioned for faster growth, supported by improving cost efficiencies and a structurally rising export share.<br><br>
+    <strong>Key structural drivers:</strong><br>
+    1. <strong>PLI Scheme:</strong> ₹44,000 Cr outlay for Electronics Components (ECMS scheme). Already attracted ₹2 lakh Cr of investments by Sep 2025.<br>
+    2. <strong>China+1:</strong> Global OEMs moving supply chains out of China. Apple manufacturing Samsung PCBAs in India = Sahasra-addressable market.<br>
+    3. <strong>Domestic demand:</strong> India smartphone penetration + EV growth + data centres = domestic electronics demand 20%+ CAGR.<br>
+    4. <strong>Sector evolution:</strong> Moving from finished goods assembly → components → PCB manufacturing → wafer packaging. Sahasra is already in this higher-value chain.
+    </div>
+  </div>
+
+  <div class="kg">
+    <div class="kc b"><div class="kl">India electronics output FY25</div><div class="kv" style="color:var(--b)">₹11.3L Cr</div><div class="ks">+6x in 10 years. 3rd largest export category.</div></div>
+    <div class="kc g"><div class="kl">Electronics exports FY25</div><div class="kv" style="color:var(--gm)">$38.6B</div><div class="ks">+8x growth. India's fastest-growing export.</div></div>
+    <div class="kc b"><div class="kl">ECMS scheme outlay</div><div class="kv" style="color:var(--b)">₹44,000 Cr</div><div class="ks">Components manufacturing scheme — recently doubled.</div></div>
+    <div class="kc t"><div class="kl">EMS sector CAGR</div><div class="kv" style="color:var(--t)">27% CAGR</div><div class="ks">FY24–29E analyst estimate (HDFC Sec).</div></div>
+    <div class="kc p"><div class="kl">India semiconductor mission</div><div class="kv" style="color:var(--p)">₹76,000 Cr</div><div class="ks">Govt committed to domestic chip manufacturing. ISM 2.0 coming.</div></div>
+    <div class="kc g"><div class="kl">Component import dependency</div><div class="kv" style="color:var(--am)">85–90%</div><div class="ks">India still imports most components — massive substitution opportunity.</div></div>
+    <div class="kc g"><div class="kl">Sahasra's ESDM positioning</div><div class="kv" style="color:var(--gm)">Full chain</div><div class="ks">Design → prototype → mass production → semiconductor → export.</div></div>
+    <div class="kc a"><div class="kl">EMS sector avg PE range</div><div class="kv" style="color:var(--am)">40–160x</div><div class="ks">Sahasra at 33x forward PE = deep sector discount.</div></div>
+  </div>
+
+  <div class="sh">The semiconductor angle — why Sahasra is different from pure EMS peers</div>
+  <div class="ic">
+    <div class="icard p"><span class="pill pp">🔬 India's semiconductor gap — ₹76,000 Cr mission</span><h3>India imports 100% of its chips — domestic manufacturing is top policy priority</h3><p>India's semiconductor import bill: $25+ Bn/year. The government's India Semiconductor Mission has committed ₹76,000 Cr to build domestic fabs. Micron (memory), TATA (fab), Sahasra (packaging) are all part of this ecosystem. Sahasra's Bhiwadi facility is one of the first domestic semiconductor packaging facilities — a critical link between chip design and finished product assembly. The SPECS subsidy (₹18.5 Cr received) validates government support.</p></div>
+    <div class="icard b"><span class="pill pb">📊 ESDM vs pure EMS — higher margin potential</span><h3>Full-chain ESDM vs pure contract assembly — Sahasra has both</h3><p>Pure EMS companies (Dixon, Amber) do final assembly at 5–8% EBITDA margins. ESDM companies add design + IP → 15–25% EBITDA. Sahasra targets this higher tier. In H1 FY26, they delivered 21.71% EBITDA margin — already in the premium ESDM tier, not the low-margin assembly tier that Dixon operates in. The in-house motherboard design and eSIM manufacturing confirm this higher-value positioning.</p></div>
+  </div>
+</div>
+
+<!-- GUIDANCE -->
+<div id="guidance" class="panel">
+  <div class="sh">Management guidance track record and forward projections</div>
+  <div class="alist">
+    <div class="aitem"><div class="adot da">!</div><div class="ac"><strong>FY26 revenue guidance ₹140 Cr — on track based on H1 ₹61 Cr</strong><div class="meta">With H2 seasonality (60% of annual revenue in H2), FY26 should be ₹110–140 Cr. ₹140 Cr assumes strong H2 with eSIM production starting, EV meter orders, and memory recovery. Management confirmed guidance post H1 FY26 results. Current TTM from Screener shows ₹110 Cr — slightly below but H2 FY26 should push full year to ₹130–140 Cr range.</div></div></div>
+    <div class="aitem"><div class="adot dg">→</div><div class="ac"><strong>FY27 guidance: ₹225 Cr (conservative) to ₹325 Cr (aspirational)</strong><div class="meta">Management has given two targets. ₹225 Cr is their published guidance (14% PAT margin = ₹31.5 Cr PAT). ₹325 Cr is the "long-term aspiration" target. The difference: ₹100 Cr gap is almost entirely from semiconductor scaling (eSIM mass adoption + memory recovery). At ₹225 Cr revenue target: EBITDA 20% = ₹45 Cr, PAT 14% = ₹31.5 Cr.</div></div></div>
+    <div class="aitem"><div class="adot dg">→</div><div class="ac"><strong>FY28 long-term goal: ₹350 Cr consolidated (from investor presentation)</strong><div class="meta">Management's long-term consolidated revenue target from the investor call. At 18% PAT margin (expected as semiconductor matures): PAT ₹63 Cr. This is the 3x trigger: ₹700 Cr MCap × 3 = ₹2,100 Cr. At 33x PE on ₹63 Cr = ₹2,079 Cr. Exactly 3x.</div></div></div>
+    <div class="aitem"><div class="adot dg">✓</div><div class="ac"><strong>EBITDA margin guidance: 20%+ sustained — H1 FY26 delivered 21.71%</strong><div class="meta">Management guided >20% EBITDA and delivered 21.71% in H1 FY26. This is well above industry average (EMS sector EBITDA 8–12% for finished goods assembly). Proves Sahasra's value-add positioning is real, not aspirational.</div></div></div>
+    <div class="aitem"><div class="adot dg">✓</div><div class="ac"><strong>Semiconductor break-even FY26, 10–12% PAT margin from FY27</strong><div class="meta">Sahasra Semiconductors expected to achieve cash break-even in FY26 (SPECS subsidy ₹18.5 Cr helps). 10–12% PAT margin target from FY27 onwards. If achieved: semi revenue ₹80–100 Cr × 12% PAT = ₹10–12 Cr additional PAT from zero contribution currently.</div></div></div>
+    <div class="aitem"><div class="adot db">📋</div><div class="ac"><strong>SPECS subsidy: ₹18.5 Cr received (approved ₹21.88 Cr). Balance ₹3.38 Cr pending.</strong><div class="meta">As of March 31, 2026: Final SPECS subsidy ₹18.5 Cr received (dated Dec 31, 2025 sanction). This reduces debt burden and improves break-even for semiconductor facility. Balance ₹3.38 Cr expected in coming quarters.</div></div></div>
+  </div>
+
+  <div class="sh">What Mukul Agrawal's Q4 FY26 entry tells us</div>
+  <div class="box box-g">
+    <div class="bt">🧠 Mukul's 2.76% fresh add in Q4 FY26 — decoding what he sees</div>
+    <div class="bb">
+    Mukul's entry is a fresh Q4 FY26 buy — the most recent quarter's disclosures. He didn't hold this before. He buys early in early-profitability companies. The fact he entered Sahasra now suggests:<br><br>
+    1. <strong>He's seen H1 FY26 results</strong> (21.71% EBITDA, 15.49% PAT margin) — the profitability recovery is real<br>
+    2. <strong>He believes the eSIM contract + Solsta anchor</strong> the FY27 revenue guidance of ₹225 Cr<br>
+    3. <strong>He's betting on the semiconductor subsidiary</strong> breaking even or contributing in FY27 — this would dramatically change consolidated PAT<br>
+    4. <strong>The SME-to-mainboard migration</strong> (earliest FY27) would unlock institutional buying — PE re-rating from 30x → 50x+ is the return multiplier he's underwriting<br>
+    5. <strong>At ₹700 Cr MCap, he's entering at 1/20th the size of Syrma SGS</strong> (₹13,000 Cr) for similar ESDM potential<br><br>
+    <strong>Historically, when Mukul enters with 2%+ stake fresh, he's usually right about the 2-year direction.</strong>
+    </div>
+  </div>
+</div>
+
+<!-- RISKS -->
+<div id="risks" class="panel">
+  <div class="sh">Comprehensive risk assessment — be honest about what could go wrong</div>
+  <div class="box box-r">
+    <div class="bt">🔴 Top 4 risks — rank-ordered by severity for Garvit's portfolio</div>
+    <div class="bb">
+    <strong>1. NSE Emerge SME lot size = ₹1,40,000 minimum (500 × ₹280)</strong><br>
+    Garvit cannot buy ₹15–20K worth. He must buy 500 shares = ₹1,40,000. This changes the position sizing — it becomes 7% of portfolio instead of 1%. Either skip entirely or go full lot knowing it's a ₹1.4L commitment. No fractional lots on SME exchange.<br><br>
+    <strong>2. Semiconductor subsidiary may stay loss-making longer than expected</strong><br>
+    Sahasra Semiconductors had negative operating cash flows in FY24 and FY25. If eSIM market develops slower than expected (TRAI delays, supply issues), or memory prices correct again, the subsidiary could drag consolidated PAT into FY27. This is the primary fundamental risk.<br><br>
+    <strong>3. Customer concentration — top 3 customers likely 60%+ of revenue</strong><br>
+    As a small EMS company, Sahasra is heavily dependent on a few customers (Thomson Computing, Inepro, Solsta likely top 3). Loss of any major customer = significant revenue gap.<br><br>
+    <strong>4. Limited operating history as a listed entity</strong><br>
+    Incorporated Feb 2023, listed Oct 2024. Only 1.5 years of quarterly data as public company. Management execution promises are largely untested at this scale. No broker coverage. No analyst model. Very limited public financial disclosure detail vs mainboard peers.
+    </div>
+  </div>
+
+  <table class="ht">
+    <thead><tr><th>Risk</th><th>Severity</th><th>Probability</th><th>Mitigation</th></tr></thead>
+    <tbody>
+      <tr class="trr"><td><strong>SME lot = ₹1.4L minimum, not ₹15–20K</strong></td><td class="mono" style="color:var(--r)">CRITICAL</td><td class="mono" style="color:var(--r)">100% — structural</td><td>Must plan for full ₹1.4L lot or skip. Check current lot size on NSE Emerge before trading.</td></tr>
+      <tr class="trr"><td>Semiconductor subsidiary stays loss-making</td><td class="mono" style="color:var(--r)">HIGH</td><td class="mono" style="color:var(--am)">30%</td><td>SPECS subsidy ₹18.5 Cr already received reduces cash burn. eSIM contract signed. Memory prices recovering. Risk is real but manageable.</td></tr>
+      <tr class="tra"><td>Customer concentration (top 3 = 60%+ revenue)</td><td class="mono" style="color:var(--am)">MEDIUM</td><td class="mono" style="color:var(--am)">20%</td><td>Solsta multi-year contract provides visibility. Inepro order ongoing. Thomson brand partnership. Diversifying actively but still concentrated.</td></tr>
+      <tr class="tra"><td>Limited operating history / management execution</td><td class="mono" style="color:var(--am)">MEDIUM</td><td class="mono" style="color:var(--am)">25%</td><td>Promoter Amrit Manwani has 20+ years in electronics (pre-IPO entity). EN 9100:2018 certification validates quality systems. Second-gen CEO Varun Manwani leading expansion.</td></tr>
+      <tr><td>SME liquidity (thin daily volume ~22–60K shares)</td><td>LOW-MED</td><td class="mono" style="color:var(--am)">High — structural</td><td>Long-term holding only. Exit in distress would take days/weeks in SME. Not suitable for short-term or stop-loss trading.</td></tr>
+      <tr><td>EMS sector PE compression (sector-wide de-rating)</td><td class="mono" style="color:var(--am)">MEDIUM</td><td class="mono" style="color:var(--am)">25%</td><td>Even at 20x PE on FY28E PAT ₹81 Cr = ₹1,620 Cr = 2.3x. PE compression partially protected by low starting PE (33x).</td></tr>
+      <tr class="trg"><td>Mainboard migration delay (earliest Oct 2027)</td><td>LOW</td><td class="mono">Inevitable delay</td><td>SEBI criteria: 3+ yrs profitable operations, ₹25 Cr+ net worth. Listed Oct 2024 → earliest migration Oct 2027. Not a risk, just a timeline management issue.</td></tr>
+    </tbody>
+  </table>
+</div>
+
+<!-- PEERS -->
+<div id="peers" class="panel">
+  <div class="sh">India EMS / ESDM sector — complete peer comparison</div>
+  <div class="box box-b">
+    <div class="bt">📊 EMS sector context: analysts expect 20–27% CAGR FY26–28. Sector PE 40–160x. Sahasra at 33x is the cheapest.</div>
+    <div class="bb">JPMorgan expects every stock barring Dixon to deliver over 20% revenue growth over FY26–28E, and sees evidence of the sector upping value addition, evolving from finished product assembly to component and PCB manufacturing. Sahasra is already in this higher-value tier.</div>
+  </div>
+
+  <div style="overflow-x:auto">
+  <table class="ht">
+    <thead><tr><th>Company</th><th>MCap</th><th>FY26 Revenue</th><th>FY26 PAT</th><th>EBITDA%</th><th>Current PE</th><th>Revenue CAGR</th><th>Promoter%</th><th>3x Prob</th></tr></thead>
+    <tbody>
+      <tr class="trg"><td><strong style="color:var(--gm)">Sahasra Electronics ← GARVIT</strong><br><small>NSE Emerge (SME)</small></td><td class="mono" style="color:var(--gm)">₹700 Cr</td><td class="mono">~₹130 Cr</td><td class="mono">~₹21 Cr</td><td class="mono" style="color:var(--gm)">~21%</td><td class="mono" style="color:var(--gm)">~33x ✅</td><td class="mono" style="color:var(--gm)">~65%</td><td class="mono" style="color:var(--gm)">69.9%</td><td><span class="badge bg">30–40%</span></td></tr>
+      <tr><td><strong>Dixon Technologies</strong><br><small>NSE Mainboard</small></td><td class="mono">₹90,000 Cr</td><td class="mono">₹16,590 Cr</td><td class="mono">₹696 Cr</td><td class="mono" style="color:var(--am)">~8%</td><td class="mono" style="color:var(--r)">~130x</td><td class="mono">~25%</td><td class="mono">~34%</td><td><span class="badge br">2–3%</span></td></tr>
+      <tr><td><strong>Amber Enterprises</strong><br><small>NSE Mainboard</small></td><td class="mono">₹50,000 Cr</td><td class="mono">₹10,179 Cr</td><td class="mono">₹284 Cr</td><td class="mono" style="color:var(--am)">~9%</td><td class="mono" style="color:var(--r)">~176x</td><td class="mono">~24%</td><td class="mono">~40%</td><td><span class="badge br">2–3%</span></td></tr>
+      <tr><td><strong>Kaynes Technology</strong><br><small>NSE Mainboard</small></td><td class="mono">₹25,000 Cr</td><td class="mono">₹1,793 Cr</td><td class="mono">₹103 Cr</td><td class="mono" style="color:var(--am)">~10%</td><td class="mono" style="color:var(--r)">~243x</td><td class="mono">~40%</td><td class="mono">~66%</td><td><span class="badge br">5–8%</span></td></tr>
+      <tr class="trb"><td><strong>Syrma SGS Technology</strong><br><small>NSE Mainboard</small></td><td class="mono">₹13,000 Cr</td><td class="mono">₹4,819 Cr</td><td class="mono">₹345 Cr</td><td class="mono" style="color:var(--gm)">~10.7%</td><td class="mono" style="color:var(--am)">~38x</td><td class="mono">~29%</td><td class="mono">~38%</td><td><span class="badge ba">8–12%</span></td></tr>
+      <tr><td><strong>PG Electroplast</strong><br><small>NSE Mainboard</small></td><td class="mono">₹14,700 Cr</td><td class="mono">~₹4,000 Cr</td><td class="mono">~₹200 Cr</td><td class="mono" style="color:var(--gm)">~9%</td><td class="mono" style="color:var(--am)">~52x</td><td class="mono">~30%</td><td class="mono">~41%</td><td><span class="badge ba">8–12%</span></td></tr>
+      <tr class="trg"><td><strong>Avalon Technologies</strong><br><small>NSE Mainboard</small></td><td class="mono">~₹3,500 Cr</td><td class="mono">~₹700 Cr</td><td class="mono">~₹55 Cr</td><td class="mono" style="color:var(--gm)">~9.7%</td><td class="mono" style="color:var(--am)">~65x</td><td class="mono">~40%</td><td class="mono">~59%</td><td><span class="badge ba">10–15%</span></td></tr>
+    </tbody>
+  </table>
+  </div>
+
+  <div class="sh">Best option in EMS sector for Garvit — definitive verdict</div>
+  <div class="ic">
+    <div class="icard g"><span class="pill pg">✅ Sahasra wins: Cheapest PE (33x) + highest growth (65%+ CAGR) + semiconductor upside</span><h3>No other EMS company offers Sahasra's growth/valuation combination</h3><p>Sahasra at 33x PE vs Dixon 130x, Amber 176x, Kaynes 243x — for HIGHER revenue growth rate (65% vs 25–40%). The semiconductor subsidiary is pure option value at current valuation — not yet priced in. Mukul sees the same arbitrage: ₹700 Cr for what could be a ₹5,000+ Cr company in FY28. The risk is SME illiquidity and semi execution — but the price compensates for these risks.</p></div>
+    <div class="icard a"><span class="pill pa">⚠️ If mainboard listed: Avalon Technologies worth studying</span><h3>Avalon — closest quality comp but 5x more expensive</h3><p>Avalon Technologies (~₹3,500 Cr MCap) is on mainboard, has defence electronics exposure, better corporate governance visibility, Kavach railway safety system in pipeline. Revenue growing 40%+ YoY. But at 65x PE vs Sahasra's 33x — Sahasra is meaningfully cheaper for similar growth quality. If Garvit wants mainboard liquidity, Avalon at ₹3,500 Cr is a consideration — but 3x from ₹3,500 Cr is harder than from ₹700 Cr.</p></div>
+  </div>
+</div>
+
+<!-- SCENARIOS -->
+<div id="scenarios" class="panel">
+  <div class="sh">3x scenarios from current ₹700 Cr market cap</div>
+  <div class="scen">
+    <div class="sc bull">
+      <div class="sc-t" style="color:var(--gm)">Bull: 5–7x by FY28 = ₹3,500–5,000 Cr</div>
+      <div class="sc-v" style="color:var(--gm)">₹3,500–5,000 Cr</div>
+      <div class="sc-b">Revenue ₹500–700 Cr (management's ₹350 Cr met + semi scaling). PAT ₹90–130 Cr (18–20% margin as semi matures). At 40–45x PE = ₹3,600–5,850 Cr = 5.1–8.4x. eSIM mass production + Solsta scale + EV meters + motherboard all firing. Mainboard migration re-rating. Probability: 20–25%.</div>
+    </div>
+    <div class="sc base">
+      <div class="sc-t" style="color:var(--b)">Base: 2–3x by FY27–28 = ₹1,400–2,100 Cr</div>
+      <div class="sc-v" style="color:var(--b)">₹1,400–2,100 Cr</div>
+      <div class="sc-b">Revenue ₹300–400 Cr (₹225 Cr guidance met + some semi contribution). PAT ₹45–65 Cr. At 35–40x PE = ₹1,575–2,600 Cr = 2.25–3.7x. This is achievable without semiconductor fireworks — just EMS scaling + eSIM ramp. Probability: 40–45%.</div>
+    </div>
+    <div class="sc bear">
+      <div class="sc-t" style="color:var(--r)">Bear: Flat to -40% = ₹420–700 Cr</div>
+      <div class="sc-v" style="color:var(--r)">₹420–700 Cr</div>
+      <div class="sc-b">Semiconductor stays loss-making FY27. Revenue ₹150 Cr (guidance missed). PAT ₹12–18 Cr (only EMS contribution). At 25x PE = ₹300–450 Cr = -35 to -55%. Main risk: if eSIM market delays and Solsta contract underperforms. Probability: 30–35%.</div>
+    </div>
+  </div>
+
+  <div class="sh">Step-by-step 3x math</div>
+  <div class="bars">
+    <div class="brow"><div class="blb">Current MCap (base)</div><div class="btr"><div class="bfl" style="width:14%;background:#92400E">₹700 Cr</div></div><div class="bvl" style="color:var(--am)">₹700 Cr</div></div>
+    <div class="brow"><div class="blb">3x target MCap</div><div class="btr"><div class="bfl" style="width:42%;background:#166534">₹2,100 Cr</div></div><div class="bvl" style="color:var(--gm)">₹2,100 Cr</div></div>
+    <div class="brow"><div class="blb">PAT needed at 35x PE</div><div class="btr"><div class="bfl" style="width:30%;background:#1D4ED8">₹60 Cr PAT @ 35x = ₹2,100 Cr</div></div><div class="bvl" style="color:var(--b)">₹60 Cr PAT</div></div>
+    <div class="brow"><div class="blb">Revenue needed (18% PAT margin)</div><div class="btr"><div class="bfl" style="width:50%;background:#16A34A">₹60 Cr PAT / 18% = ₹333 Cr revenue</div></div><div class="bvl" style="color:var(--gm)">₹333 Cr</div></div>
+    <div class="brow"><div class="blb">Management's FY27 target</div><div class="btr"><div class="bfl" style="width:65%;background:#059669">₹325 Cr revenue guided</div></div><div class="bvl" style="color:var(--gm)">₹325 Cr guided</div></div>
+    <div class="brow" style="background:#F0FDF4"><div class="blb" style="color:var(--g);font-weight:700">⟹ 3x is achievable in FY27 if management hits ₹325 Cr target</div><div class="btr"><div class="bfl" style="width:95%;background:#052E16">₹325 Cr × 18% PAT × 35x PE = ₹2,047 Cr ≈ 3x ✅</div></div><div class="bvl" style="color:var(--g);font-weight:700">3x possible</div></div>
+  </div>
+</div>
+
+<!-- VERDICT -->
+<div id="verdict" class="panel">
+  <div class="sh">Complete verdict for Garvit — everything you need to know</div>
+
+  <div class="verdict">
+    <div class="vt">🏆 SAHASRA: 6.5/10 conviction — HIGH potential but SME lot size forces ₹1.4L commitment (500 shares minimum)</div>
+    <div class="vb">
+    <strong>The bull case is genuinely compelling:</strong><br>
+    1. Sahasra at 33x forward PE is the cheapest EMS play in India — vs Dixon 130x, Kaynes 243x, Amber 176x<br>
+    2. Revenue growth rate (65%+ CAGR target FY26–28) is faster than every mainboard EMS peer<br>
+    3. EBITDA margins 21.71% (H1 FY26) = premium ESDM positioning, not low-margin assembly<br>
+    4. Semiconductor optionality: if eSIM + memory delivers, this becomes a ₹3,000–5,000 Cr MCap company by FY28<br>
+    5. Mukul Agrawal's fresh 2.76% Q4 FY26 entry at ₹700 Cr = strong validation from a 30-year Dalal Street veteran<br>
+    6. Promoter 69.9% (rising to 73.77% post-merger) — strong governance<br>
+    7. ₹700 Cr MCap → 3x = ₹2,100 Cr — achievable if FY27 ₹225–325 Cr revenue guidance met<br><br>
+    <strong>The critical caveat for Garvit's portfolio:</strong><br>
+    NSE Emerge lot size = 500 shares minimum. At ₹280/share = ₹1,40,000 minimum investment. This is NOT a ₹15–20K starter position — it's a ₹1.4L commitment from day one. That's ~7% of Garvit's ₹20L portfolio in a single SME stock. That's high concentration for a 6.5/10 conviction position.<br><br>
+    <strong>Recommended approach:</strong> Buy 1 lot (500 shares, ₹1.4L) ONLY after (a) FY26 full year results confirm ₹130+ Cr revenue + PAT ≥₹18 Cr, and (b) ALL other pending actions (RPSG Ventures, Muthoot Microfin, SG Finserve) are done first. Don't jump the queue for this.
+    </div>
+  </div>
+
+  <div class="sh">Decision framework — conviction scorecard</div>
+  <table class="ht">
+    <thead><tr><th>Garvit's criterion</th><th>Sahasra score</th><th>Pass/Fail</th><th>Note</th></tr></thead>
+    <tbody>
+      <tr class="trg"><td>Promoter ≥55%</td><td class="mono" style="color:var(--gm)">69.9% (rising to 73.77%)</td><td class="mono" style="color:var(--gm)">✅ PASS</td><td>Strong. Post-merger even better.</td></tr>
+      <tr class="trg"><td>Zero pledge</td><td class="mono" style="color:var(--gm)">0% pledge</td><td class="mono" style="color:var(--gm)">✅ PASS</td><td>Clean. Family promoters, no pledging.</td></tr>
+      <tr class="trg"><td>Multiple verticals</td><td class="mono" style="color:var(--gm)">EMS + Semiconductor + eSIM + EV meters + Motherboard IP</td><td class="mono" style="color:var(--gm)">✅ PASS</td><td>Best multi-vertical profile among all 4 Mukul picks.</td></tr>
+      <tr class="trg"><td>Ace investor validation</td><td class="mono" style="color:var(--gm)">Mukul Agrawal 2.76% — Q4 FY26 fresh entry</td><td class="mono" style="color:var(--gm)">✅ PASS</td><td>Mukul rarely enters new positions without deep conviction.</td></tr>
+      <tr class="trg"><td>SME-to-mainboard catalyst</td><td class="mono" style="color:var(--gm)">Listed Oct 2024 → eligible Oct 2027</td><td class="mono" style="color:var(--gm)">✅ PASS</td><td>This IS the re-rating catalyst Garvit specifically looks for.</td></tr>
+      <tr class="trg"><td>3x probability ≥20%</td><td class="mono" style="color:var(--gm)">30–40% (base case achieves 2–3x)</td><td class="mono" style="color:var(--gm)">✅ PASS</td><td>Strongest 3x probability of all 4 Mukul picks.</td></tr>
+      <tr class="trr"><td>Minimum lot size ≤₹20K</td><td class="mono" style="color:var(--r)">500 shares × ₹280 = ₹1,40,000</td><td class="mono" style="color:var(--r)">❌ FAIL (structural)</td><td>SME exchange. Cannot buy ₹15–20K. Forces ₹1.4L commitment.</td></tr>
+      <tr class="tra"><td>Liquidity (easy exit)</td><td class="mono" style="color:var(--am)">Thin (22–60K shares/day)</td><td class="mono" style="color:var(--am)">⚠️ CAUTION</td><td>Long-term hold only. Not suitable for quick exits.</td></tr>
+      <tr class="tra"><td>Operating history for conviction</td><td class="mono" style="color:var(--am)">Listed Oct 2024 — only 7 quarters</td><td class="mono" style="color:var(--am)">⚠️ LIMITED</td><td>Not enough data for deep fundamental conviction. Partially offset by 20+ yr promoter track record.</td></tr>
+      <tr style="background:#F0FDF4;font-weight:700"><td><strong>OVERALL VERDICT</strong></td><td colspan="2"><strong>6.5/10 conviction — Speculative-core position, buy 1 lot (₹1.4L) after priority actions done</strong></td><td><strong>Wait: FY26 full results + RPSG/Muthoot/SG first</strong></td></tr>
+    </tbody>
+  </table>
+
+  <div class="sh">Action plan for Garvit</div>
+  <div class="alist">
+    <div class="aitem"><div class="adot dr">1</div><div class="ac"><strong>FIRST — EFC Rights (May 22 deadline), RPSG Ventures, Muthoot Microfin, SG Finserve</strong><div class="meta">All 4 are higher conviction or pending longer. Don't let Sahasra excitement displace core portfolio actions.</div></div></div>
+    <div class="aitem"><div class="adot da">2</div><div class="ac"><strong>THEN — Wait for FY26 full results: confirm revenue ≥₹130 Cr + PAT ≥₹18 Cr</strong><div class="meta">FY26 audited results expected June–July 2026. This confirms H2 was indeed stronger (60:40 seasonality), eSIM production started, semiconductor on break-even path.</div></div></div>
+    <div class="aitem"><div class="adot db">3</div><div class="ac"><strong>Buy 1 lot (500 shares) = ₹1,40,000 — Accept this is a ₹1.4L bet, not a ₹15–20K one</strong><div class="meta">If all other priorities are done and FY26 confirms the thesis: buy 1 lot at current price. This becomes ~7% portfolio weight — appropriate for a 6.5/10 speculative position with 30–40% 3x probability.</div></div></div>
+    <div class="aitem"><div class="adot dg">4</div><div class="ac"><strong>Upgrade trigger: FY27 H1 revenue ≥₹120 Cr + Semiconductor PAT-positive → add 1 more lot</strong><div class="meta">If Sahasra delivers ₹120 Cr in H1 FY27 (on track for ₹225+ Cr full year) AND semiconductor contributes positive PAT → upgrade to 7.5/10. Add another ₹1.4L = ₹2.8L total in Sahasra.</div></div></div>
+    <div class="aitem"><div class="adot dp">5</div><div class="ac"><strong>Mainboard migration watch: Oct 2027 earliest — the PE re-rating catalyst</strong><div class="meta">This is THE exit/accumulation trigger. When SESL files for mainboard migration: FIIs/DIIs become eligible buyers, research coverage starts, PE re-rates from 33x → 50x+. That's a 50%+ return even with flat PAT growth.</div></div></div>
+  </div>
+</div>
+
+<div class="footer">Sahasra Electronic Solutions Ltd · NSE Emerge: SAHASRA · May 14, 2026 · MCap ~₹700 Cr · Revenue ₹110 Cr TTM · Promoter 69.9% · Mukul Agrawal 2.76% (Q4 FY26) · NSE Emerge SME · Lot size 500 shares (~₹1.4L) · Not investment advice · Verify independently · Consult SEBI-registered advisor</div>
+
+<script>
+function go(id,btn){
+  document.querySelectorAll('.tab').forEach(t=>t.classList.remove('active'));
+  document.querySelectorAll('.panel').forEach(p=>p.classList.remove('active'));
+  btn.classList.add('active');
+  document.getElementById(id).classList.add('active');
+}
+</script>
+</body>
+</html>

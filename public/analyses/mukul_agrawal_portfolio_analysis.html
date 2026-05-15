@@ -1,0 +1,469 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<style>
+@import url('https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&family=DM+Mono:wght@400;500&display=swap');
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+:root{
+  --bg:#F6F4EF;--surface:#FFFFFF;--surface2:#FAF8F4;--border:#E8E2D8;--border2:#D4CCC0;
+  --text:#1C1917;--text2:#57534E;--text3:#A8A29E;
+  --g:#15803D;--gbg:#DCFCE7;--gm:#16A34A;
+  --r:#991B1B;--rbg:#FEE2E2;
+  --a:#92400E;--abg:#FEF3C7;--am:#D97706;
+  --b:#1D4ED8;--bbg:#DBEAFE;
+  --t:#0D7377;--tbg:#CCFBF1;
+  --o:#9A3412;--obg:#FFEDD5;
+  --p:#6B21A8;--pbg:#F3E8FF;
+}
+body{font-family:'Plus Jakarta Sans',sans-serif;background:var(--bg);color:var(--text);font-size:14px;padding:22px;line-height:1.5}
+h1{font-size:23px;font-weight:800;letter-spacing:-.5px;margin-bottom:4px}
+.tagline{font-size:11.5px;color:var(--text3);font-family:'DM Mono',monospace;margin-bottom:18px}
+
+/* Hero */
+.hero{display:grid;grid-template-columns:repeat(5,1fr);gap:10px;margin-bottom:18px}
+.hcard{background:var(--surface);border:1px solid var(--border);border-radius:12px;padding:13px 15px;box-shadow:0 1px 3px rgba(0,0,0,.04)}
+.hl{font-size:10px;color:var(--text3);font-family:'DM Mono',monospace;text-transform:uppercase;letter-spacing:.08em;margin-bottom:4px}
+.hv{font-size:19px;font-weight:800;letter-spacing:-.5px}
+.hs{font-size:10.5px;color:var(--text3);margin-top:3px}
+
+/* Tabs */
+.tabs{display:flex;gap:6px;flex-wrap:wrap;margin-bottom:18px}
+.tab{font-size:11.5px;font-weight:600;padding:6px 14px;border-radius:20px;border:1.5px solid var(--border);background:var(--surface);color:var(--text2);cursor:pointer;transition:all .15s}
+.tab:hover{background:var(--surface2);border-color:var(--border2)}
+.tab.active{background:var(--text);color:#fff;border-color:var(--text)}
+.panel{display:none}.panel.active{display:block}
+
+.sh{font-size:10px;font-weight:700;color:var(--text3);text-transform:uppercase;letter-spacing:.12em;display:flex;align-items:center;gap:10px;margin:18px 0 12px;font-family:'DM Mono',monospace}
+.sh::after{content:'';flex:1;height:1px;background:var(--border)}
+.mono{font-family:'DM Mono',monospace}
+
+/* Stock hero card */
+.stock-hero{display:grid;grid-template-columns:repeat(4,1fr);gap:10px;margin-bottom:14px}
+.scard{background:var(--surface);border:1px solid var(--border);border-radius:12px;padding:13px 15px;box-shadow:0 1px 3px rgba(0,0,0,.04)}
+.scard.g{border-left:3px solid var(--gm)}.scard.r{border-left:3px solid var(--r)}.scard.a{border-left:3px solid var(--am)}.scard.b{border-left:3px solid var(--b)}.scard.t{border-left:3px solid var(--t)}.scard.p{border-left:3px solid var(--p)}.scard.o{border-left:3px solid var(--o)}
+.sv{font-size:21px;font-weight:800;letter-spacing:-.5px;margin:4px 0 3px}
+.sl{font-size:10px;color:var(--text3);font-family:'DM Mono',monospace;text-transform:uppercase;letter-spacing:.07em}
+.ss{font-size:10.5px;color:var(--text2)}
+
+/* Two col */
+.two{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-bottom:14px}
+/* Three col */
+.three{display:grid;grid-template-columns:1fr 1fr 1fr;gap:10px;margin-bottom:14px}
+
+/* Info card */
+.icard{background:var(--surface);border:1px solid var(--border);border-radius:12px;padding:14px 16px;box-shadow:0 1px 3px rgba(0,0,0,.04)}
+.icard.g{border-left:3px solid var(--gm)}.icard.r{border-left:3px solid var(--r)}.icard.a{border-left:3px solid var(--am)}.icard.b{border-left:3px solid var(--b)}.icard.t{border-left:3px solid var(--t)}.icard.o{border-left:3px solid var(--o)}
+.icard h3{font-size:12px;font-weight:700;margin-bottom:6px;color:var(--text)}
+.icard p{font-size:11.5px;color:var(--text2);line-height:1.6}
+
+/* Pills */
+.pill{display:inline-flex;align-items:center;font-size:10px;font-weight:700;padding:2px 9px;border-radius:20px;margin-bottom:5px;letter-spacing:.03em}
+.pg{background:var(--gbg);color:var(--g)}.pr{background:var(--rbg);color:var(--r)}.pa{background:var(--abg);color:var(--a)}.pb{background:var(--bbg);color:var(--b)}.pt{background:var(--tbg);color:var(--t)}.pp{background:var(--pbg);color:var(--p)}.po{background:var(--obg);color:var(--o)}
+
+/* Box */
+.box{border-radius:12px;padding:16px;margin-bottom:14px;border:1.5px solid}
+.box-g{background:#F0FDF4;border-color:#86EFAC}.box-g .bt{color:var(--g)}.box-g .bb{color:#14532D;opacity:.9}
+.box-r{background:#FFF1F2;border-color:#FECACA}.box-r .bt{color:var(--r)}.box-r .bb{color:#7F1D1D;opacity:.9}
+.box-a{background:#FFFBEB;border-color:#FDE68A}.box-a .bt{color:var(--a)}.box-a .bb{color:#451A03;opacity:.9}
+.box-b{background:#EFF6FF;border-color:#BFDBFE}.box-b .bt{color:var(--b)}.box-b .bb{color:#1E3A5F;opacity:.9}
+.box-t{background:#F0FDFA;border-color:#99F6E4}.box-t .bt{color:var(--t)}.box-t .bb{color:#134E4A;opacity:.9}
+.box-o{background:#FFF7ED;border-color:#FED7AA}.box-o .bt{color:var(--o)}.box-o .bb{color:#431407;opacity:.9}
+.bt{font-size:13px;font-weight:700;margin-bottom:7px}
+.bb{font-size:12px;line-height:1.7}
+
+/* Table */
+.ht{width:100%;border-collapse:collapse;font-size:12px;margin-bottom:14px}
+.ht th{font-size:9.5px;font-weight:700;color:var(--text3);text-transform:uppercase;letter-spacing:.08em;padding:7px 11px;border-bottom:2px solid var(--border);text-align:left;font-family:'DM Mono',monospace;background:var(--surface2)}
+.ht td{padding:9px 11px;border-bottom:1px solid var(--border);color:var(--text2);vertical-align:middle}
+.ht tr:hover td{background:var(--surface2)}
+.ht tr:last-child td{border-bottom:none}
+.trg{background:#F0FDF4}.tra{background:#FFFBEB}.trr{background:#FFF1F2}.trb{background:#EFF6FF}
+
+/* Badge */
+.badge{font-size:9.5px;font-weight:700;padding:2px 8px;border-radius:10px}
+.bg{background:var(--gbg);color:var(--g)}.br{background:var(--rbg);color:var(--r)}.ba{background:var(--abg);color:var(--a)}.bb2{background:var(--bbg);color:var(--b)}.bt2{background:var(--tbg);color:var(--t)}
+
+/* Bar */
+.bars{background:var(--surface);border:1px solid var(--border);border-radius:12px;padding:14px;margin-bottom:14px}
+.br2{display:flex;align-items:center;gap:10px;padding:5px 0;border-bottom:1px solid var(--bg)}
+.br2:last-child{border-bottom:none}
+.blabel{font-size:11px;color:var(--text2);width:230px;flex-shrink:0}
+.btrack{flex:1;background:var(--bg);border-radius:5px;height:14px;overflow:hidden}
+.bfill{height:100%;border-radius:5px;display:flex;align-items:center;padding-left:6px;font-size:8.5px;font-weight:700;color:rgba(255,255,255,.9)}
+.bval{font-size:11px;font-weight:700;width:85px;text-align:right;font-family:'DM Mono',monospace}
+
+/* Action list */
+.alist{background:var(--surface);border:1px solid var(--border);border-radius:12px;padding:14px;margin-bottom:14px}
+.aitem{display:flex;gap:10px;align-items:flex-start;padding:9px 0;border-bottom:1px solid var(--bg);font-size:12px}
+.aitem:last-child{border-bottom:none}
+.adot{width:22px;height:22px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:10px;font-weight:700;flex-shrink:0;margin-top:1px}
+.dg{background:var(--gbg);color:var(--g)}.dr{background:var(--rbg);color:var(--r)}.da{background:var(--abg);color:var(--a)}.db{background:var(--bbg);color:var(--b)}.dt{background:var(--tbg);color:var(--t)}.do{background:var(--obg);color:var(--o)}
+.ac strong{font-weight:700;color:var(--text);display:block;margin-bottom:2px}
+.ac .meta{font-size:10.5px;color:var(--text3);font-family:'DM Mono',monospace;margin-top:3px}
+
+/* Scenario */
+.scen{display:grid;grid-template-columns:1fr 1fr 1fr;gap:12px;margin-bottom:14px}
+.scard2{background:var(--surface);border:1px solid var(--border);border-radius:12px;padding:14px}
+.scard2.bull{border-top:3px solid var(--gm)}.scard2.base{border-top:3px solid var(--b)}.scard2.bear{border-top:3px solid var(--r)}
+.stitle{font-size:11.5px;font-weight:700;margin-bottom:5px}
+.sval{font-size:20px;font-weight:800;letter-spacing:-.5px;margin-bottom:5px}
+.sbody{font-size:11px;color:var(--text2);line-height:1.6}
+
+/* Stock section divider */
+.stock-divider{background:var(--text);color:#fff;padding:10px 15px;border-radius:10px;margin:20px 0 12px;font-size:13px;font-weight:700;display:flex;align-items:center;gap:10px}
+
+/* Verdict */
+.verdict{background:#F0FDF4;border:2px solid #86EFAC;border-radius:14px;padding:18px;margin-bottom:14px}
+.vtitle{font-size:15px;font-weight:800;color:var(--g);margin-bottom:8px}
+.vbody{font-size:12px;color:#14532D;line-height:1.75}
+
+.footer{border-top:1px solid var(--border);margin-top:20px;padding-top:12px;font-size:10px;color:var(--text3);font-family:'DM Mono',monospace}
+</style>
+</head>
+<body>
+
+<h1>Mukul Agrawal Portfolio — Best Picks for Garvit's 3x Framework</h1>
+<div class="tagline">Founder, Param Capital Group · Portfolio ₹7,375 Cr across 75 stocks (Q4 FY26) · Focus: undervalued small/mid-cap, high-growth, structural themes · Net worth via listed equities ₹7,375 Cr · Filtering for stocks Garvit is currently MISSING with 3x potential</div>
+
+<div class="hero">
+  <div class="hcard"><div class="hl">Total portfolio value</div><div class="hv" style="color:var(--b)">₹7,375 Cr</div><div class="hs">75 stocks · Q4 FY26</div></div>
+  <div class="hcard"><div class="hl">Top sector</div><div class="hv" style="color:var(--g)">Healthcare</div><div class="hs">₹1,640 Cr · 6 stocks</div></div>
+  <div class="hcard"><div class="hl">Q4 FY26 new adds</div><div class="hv" style="color:var(--am)">12 stocks</div><div class="hs">E2ERAIL, Sahasra, Osel, others</div></div>
+  <div class="hcard"><div class="hl">Avg stake per company</div><div class="hv" style="color:var(--t)">3.5%</div><div class="hs">Range 1.2% to 13.9%</div></div>
+  <div class="hcard"><div class="hl">Philosophy</div><div class="hv" style="color:var(--text)">Small-cap</div><div class="hs">Early entry, long hold, bulk deals</div></div>
+</div>
+
+<div class="tabs">
+  <button class="tab active" onclick="go('overview',this)">🧠 Who is Mukul</button>
+  <button class="tab" onclick="go('krn',this)">🌡️ KRN Heat Exchanger</button>
+  <button class="tab" onclick="go('sahasra',this)">💻 Sahasra Electronics</button>
+  <button class="tab" onclick="go('suryoday',this)">🏦 Suryoday SFB</button>
+  <button class="tab" onclick="go('ptc',this)">✈️ PTC Industries</button>
+  <button class="tab" onclick="go('others',this)">📋 Other Holdings</button>
+  <button class="tab" onclick="go('verdict',this)">🏆 Best Pick for Garvit</button>
+</div>
+
+<!-- OVERVIEW -->
+<div id="overview" class="panel active">
+  <div class="sh">Who is Mukul Agrawal — the investor's style and what to look for</div>
+  <div class="box box-b">
+    <div class="bt">🧠 Mukul Mahavir Agrawal — founder of Param Capital, 30+ years on Dalal Street, ₹7,375 Cr public portfolio</div>
+    <div class="bb">
+    Born 1981 in Rajasthan. Started trading unlisted IPOs (grey market) on Dalal Street in early 1990s. Founded Param Capital Group (1993) — sector-agnostic prop firm in BKC, Mumbai. Known as "Mukul Bhai" on Dalal Street. Has been early in dozens of multibaggers — PTC Industries (+5,263% in 5 years), Neuland Labs, ASM Technologies.<br><br>
+    <strong>Investment style:</strong> Enters via bulk deals in small/micro-cap at low valuations. Takes 1–10% stakes in companies with scalable business models and India structural tailwinds. Holds through multiple growth cycles. Portfolio is broadly diversified — Healthcare, Infra, Industrials, Tech, Banking, Chemicals, Textiles. Not a concentrated pure-play investor like Kacholia (20–30 stocks); runs 75+ stocks simultaneously.<br><br>
+    <strong>Key difference from Kacholia:</strong> Mukul runs a broader, more diversified book. He also trades — not all positions are long-term holds. Exit/entry signals matter more here. Track when he INCREASES stake (conviction signal) vs when he enters fresh.
+    </div>
+  </div>
+
+  <div class="sh">Q4 FY26 — what Mukul did (his freshest moves)</div>
+  <div class="alist">
+    <div class="aitem"><div class="adot dg">↑</div><div class="ac"><strong>NEW: E2ERAIL — 13.94% stake (largest new Q4 FY26 add)</strong><div class="meta">E to E Transportation Infrastructure Ltd. Rail and infra logistics. Very fresh listing. 13.94% = highest conviction new position this quarter. Signals deep rail infrastructure bet.</div></div></div>
+    <div class="aitem"><div class="adot dg">↑</div><div class="ac"><strong>NEW: Sahasra Electronic Solutions — 2.76% stake</strong><div class="meta">EMS + Semiconductor company. Noida-based. PLI scheme beneficiary. Revenue guidance ₹140 Cr FY26 → ₹325 Cr FY27. Mukul enters early in the semiconductor manufacturing wave.</div></div></div>
+    <div class="aitem"><div class="adot dg">↑</div><div class="ac"><strong>NEW: Gaudium IVF — 3.43% stake</strong><div class="meta">IVF fertility chain. Healthcare/IVF is a structural growth theme in India. Growing organised fertility market.</div></div></div>
+    <div class="aitem"><div class="adot da">↑</div><div class="ac"><strong>INCREASED: Capacite Infraprojects — 6.09% → 6.62% (added ₹10.5 Cr)</strong><div class="meta">Real estate EPC — high-rise buildings. Mumbai-based. MCap ₹1,996 Cr. Adding more = high conviction. BUT promoter only 31.69% — fails Garvit's test.</div></div></div>
+    <div class="aitem"><div class="adot da">↑</div><div class="ac"><strong>INCREASED: HCC — 1.68% → 1.91%; J&K Bank — 1.27% → 1.50%</strong><div class="meta">Infrastructure + regional bank. HCC = tunnels/hydro/nuclear EPC. J&K Bank = profitable PSB recovery play. Both added in Q4 FY26.</div></div></div>
+    <div class="aitem"><div class="adot dr">↓</div><div class="ac"><strong>EXITED: OneSource Specialty Pharma, Jagsonpal Pharma, Pearl Global</strong><div class="meta">Profit booking or thesis changes. Not concerning as exits in a 75-stock portfolio are normal rotation.</div></div></div>
+  </div>
+
+  <div class="sh">Mukul's current sector allocation — where conviction is highest</div>
+  <div class="bars">
+    <div class="br2"><div class="blabel">Healthcare & Pharma (₹1,640 Cr)</div><div class="btrack"><div class="bfill" style="width:60%;background:#16A34A">Neuland Labs, Zota, Onesource, Dishman, Strides</div></div><div class="bval" style="color:var(--gm)">~22%</div></div>
+    <div class="br2"><div class="blabel">Technology & Digital (₹950 Cr)</div><div class="btrack"><div class="bfill" style="width:40%;background:#1D4ED8">ASM Tech, Intellect Design, MPS, InfoBeans</div></div><div class="bval" style="color:var(--b)">~13%</div></div>
+    <div class="br2"><div class="blabel">Infra & Rail (₹550 Cr)</div><div class="btrack"><div class="bfill" style="width:25%;background:#0D7377">Capacite, HCC, E2ERAIL, J Kumar Infra</div></div><div class="bval" style="color:var(--t)">~7%</div></div>
+    <div class="br2"><div class="blabel">Capital Goods & Industrials (₹480 Cr)</div><div class="btrack"><div class="bfill" style="width:22%;background:#D97706">PTC Industries, KRN Heat, TAAL, WPIL</div></div><div class="bval" style="color:var(--am)">~6%</div></div>
+    <div class="br2"><div class="blabel">Financial Services (₹430 Cr)</div><div class="btrack"><div class="bfill" style="width:20%;background:#9A3412">Nuvama, J&K Bank, Arman, Suryoday SFB</div></div><div class="bval" style="color:var(--o)">~6%</div></div>
+    <div class="br2"><div class="blabel">Electronics/Semiconductor (Emerging)</div><div class="btrack"><div class="bfill" style="width:10%;background:#6B21A8">Sahasra, Osel Devices — fresh adds</div></div><div class="bval" style="color:var(--p)">~3%</div></div>
+  </div>
+
+  <div class="sh">4 stocks from Mukul's portfolio that fit Garvit's 3x use case — currently MISSING</div>
+  <table class="ht">
+    <thead><tr><th>Stock</th><th>Mukul Stake</th><th>MCap</th><th>FY26 PAT</th><th>Promoter</th><th>Key thesis</th><th>3x Probability</th><th>Garvit priority</th></tr></thead>
+    <tbody>
+      <tr class="trg"><td><strong style="color:var(--gm)">KRN Heat Exchanger</strong></td><td class="mono">1.61%</td><td class="mono amber">₹4,562 Cr</td><td class="mono">~₹80 Cr FY26E</td><td class="mono" style="color:var(--gm)">70.79%</td><td>Data centre cooling, HVAC, industrial. Zero debt. ₹500 Cr QIP for expansion.</td><td><span class="badge bg">20–25%</span></td><td><span class="badge bb2">HIGH</span></td></tr>
+      <tr class="trg"><td><strong style="color:var(--gm)">Sahasra Electronics</strong></td><td class="mono">2.76%</td><td class="mono" style="color:var(--gm)">₹630 Cr</td><td class="mono">~₹20 Cr FY26E</td><td class="mono" style="color:var(--gm)">73.77%</td><td>EMS + Semiconductor. PLI beneficiary. Revenue 3x target by FY27. Mukul fresh add Q4 FY26.</td><td><span class="badge bg">25–35%</span></td><td><span class="badge bg">HIGHEST</span></td></tr>
+      <tr class="trb"><td><strong style="color:var(--b)">Suryoday SFB</strong></td><td class="mono">2.82%</td><td class="mono" style="color:var(--b)">₹1,834 Cr</td><td class="mono">₹152 Cr FY26</td><td class="mono">N/A (bank)</td><td>SFB recovery play. Q4 FY26 PAT ₹49.72 Cr (vs -₹33 Cr Q4 FY25). Gross advances +29%. GNPA improving.</td><td><span class="badge ba">15–20%</span></td><td><span class="badge ba">MEDIUM</span></td></tr>
+      <tr class="tra"><td><strong style="color:var(--am)">PTC Industries</strong></td><td class="mono">1.07%</td><td class="mono" style="color:var(--r)">₹26,000 Cr</td><td class="mono">~₹55 Cr FY26E</td><td class="mono" style="color:var(--gm)">60%+</td><td>Titanium+Superalloy aerospace. BrahMos, ISRO, Honeywell, Blue Origin clients. 5yr return +5,263%. BUT: MCap too large for 3x.</td><td><span class="badge br">5–8%</span></td><td><span class="badge br">SKIP</span></td></tr>
+    </tbody>
+  </table>
+</div>
+
+<!-- KRN HEAT EXCHANGER -->
+<div id="krn" class="panel">
+  <div class="stock-divider">🌡️ KRN Heat Exchanger and Refrigeration Ltd — NSE: KRN · MCap ₹4,562 Cr · Mukul Agrawal 1.61% stake</div>
+
+  <div class="box box-t">
+    <div class="bt">What KRN does — heat exchangers for HVAC, refrigeration, automotive, and now data centres</div>
+    <div class="bb">
+    Bhiwadi, Rajasthan-based manufacturer of aluminium/copper fin heat exchangers, coils, and refrigeration components. Primarily supplies to OEMs in HVAC (Daikin, Voltas, Blue Star, Carrier), refrigeration, and automotive sectors. The new catalyst: <strong>data centre cooling.</strong> India's data centre market is scaling from 1.6 GW to 8 GW by FY30 — each data centre needs significant thermal management infrastructure. KRN is positioning to capture 50% of cooling equipment needs in hyperscale data centres like Google Vizag (₹1,500 Cr opportunity for KRN alone).<br><br>
+    <strong>Key facts:</strong> Listed on NSE main board (migrated from NSE Emerge). Zero net debt. Promoter 70.79% — no pledge. Revenue 5-yr CAGR 32%. ₹500 Cr QIP approved (March 2026) for capacity expansion. Exports growing: UAE 38%, USA 37% of export mix. Q3 FY26 EBITDA doubled (+97% YoY) — margin recovery underway.
+    </div>
+  </div>
+
+  <div class="sh">Key financial metrics — Q3 FY26 and trajectory</div>
+  <div class="stock-hero">
+    <div class="scard g"><div class="sl">Q3 FY26 Revenue</div><div class="sv" style="color:var(--gm)">₹153 Cr</div><div class="ss">+37% YoY from ₹111 Cr</div></div>
+    <div class="scard g"><div class="sl">Q3 FY26 EBITDA</div><div class="sv" style="color:var(--gm)">₹31 Cr</div><div class="ss">+97% YoY · 20.3% margin</div></div>
+    <div class="scard g"><div class="sl">Q3 FY26 PAT</div><div class="sv" style="color:var(--gm)">₹22.66 Cr</div><div class="ss">+65% YoY from ₹13.73 Cr</div></div>
+    <div class="scard g"><div class="sl">Promoter</div><div class="sv" style="color:var(--gm)">70.79%</div><div class="ss">No pledge · NSE main board</div></div>
+    <div class="scard b"><div class="sl">Market Cap</div><div class="sv" style="color:var(--b)">₹4,562 Cr</div><div class="ss">PE ~57x TTM · expanding</div></div>
+    <div class="scard g"><div class="sl">Net Debt</div><div class="sv" style="color:var(--gm)">ZERO</div><div class="ss">Debt-free balance sheet</div></div>
+    <div class="scard a"><div class="sl">5yr Revenue CAGR</div><div class="sv" style="color:var(--am)">32%</div><div class="ss">Consistent compounding</div></div>
+    <div class="scard t"><div class="sl">Data centre opportunity</div><div class="sv" style="color:var(--t)">₹1,500 Cr</div><div class="ss">Google Vizag alone (management est.)</div></div>
+  </div>
+
+  <div class="sh">Financial history and future trajectory</div>
+  <table class="ht">
+    <thead><tr><th>Period</th><th>Revenue</th><th>EBITDA%</th><th>PAT</th><th>Key event</th></tr></thead>
+    <tbody>
+      <tr><td class="mono">FY23</td><td class="mono">~₹230 Cr</td><td class="mono">~18%</td><td class="mono">~₹28 Cr</td><td>Core HVAC/refrigeration OEM supply. Stable growth.</td></tr>
+      <tr><td class="mono">FY24</td><td class="mono">~₹310 Cr</td><td class="mono">~19%</td><td class="mono">~₹40 Cr</td><td>Expansion: 6x capacity increase from 1M units/yr. New Alwar facility. ROE 20.3% avg.</td></tr>
+      <tr class="trg"><td class="mono">FY25</td><td class="mono">~₹420 Cr</td><td class="mono">~16%</td><td class="mono">~₹52 Cr</td><td>Capacity utilization at 20%. Margin compressed as new capacity absorbed. Exports 16% of revenue.</td></tr>
+      <tr class="trg"><td class="mono">9M FY26</td><td class="mono">₹400 Cr</td><td class="mono">~18%</td><td class="mono">~₹56 Cr</td><td>Q3 recovery strong: +97% EBITDA. Capacity to 50% utilization in FY27. Export: UAE+USA=75% of exports.</td></tr>
+      <tr class="trg"><td class="mono">FY26E Full</td><td class="mono">~₹530 Cr</td><td class="mono">~17%</td><td class="mono">~₹78–85 Cr</td><td>Q4 estimated ₹105 Cr (analyst est, +11% YoY). Data centre contracts in pipeline. QIP ₹500 Cr for Phase-II. FY26 results call May 15, 2026.</td></tr>
+      <tr><td class="mono">FY27E</td><td class="mono">~₹750–900 Cr</td><td class="mono">~19–20%</td><td class="mono">~₹120–140 Cr</td><td>50% capacity utilization of expanded facility. Data centre orders kicking in. Export growth 30%+. ₹500 Cr QIP deployed for manufacturing expansion.</td></tr>
+      <tr><td class="mono">FY28E</td><td class="mono">~₹1,200–1,500 Cr</td><td class="mono">~20–21%</td><td class="mono">~₹200–250 Cr</td><td>Data centre cooling becoming 25–30% of revenue. If Google Vizag ₹1,500 Cr captured 30% = ₹450 Cr incremental. Hyperscale cooling is the 3x driver.</td></tr>
+    </tbody>
+  </table>
+
+  <div class="sh">The data centre cooling thesis — the 3x catalyst</div>
+  <div class="two">
+    <div class="icard g"><span class="pill pg">✅ India data centre: 1.6 GW → 8 GW by FY30</span><h3>Every GW of data centre needs massive cooling infrastructure</h3><p>India's data centre capacity is scaling 5x by FY30. $63 billion of announced investments in 2025 alone (Google, AWS, Reliance, Adani). Each hyperscale facility needs custom heat exchanger coils for server cooling, precision air conditioning, and liquid cooling systems. KRN is positioning as India's top independent heat exchanger OEM for this segment — management claims potential 50% market share in hyperscale cooling projects.</p></div>
+    <div class="icard a"><span class="pill pa">⚠️ Risk: Valuation at ₹4,562 Cr is not cheap</span><h3>PE ~57x on FY26 PAT — data centre premium baked in partially</h3><p>The stock has already run. To deliver 3x from ₹4,562 Cr = ₹13,686 Cr target. Needs FY28 PAT ₹350 Cr+ at 40x PE. Achievable only if data centre orders materialize at significant scale. QIP dilution at ₹500 Cr (new equity) will impact EPS. This is a high-risk high-reward bet, NOT a value pick. 3x probability 20–25% from current price.</p></div>
+  </div>
+
+  <div class="sh">3x scenarios</div>
+  <div class="scen">
+    <div class="scard2 bull"><div class="stitle" style="color:var(--gm)">Bull: 2.5–3x by FY28</div><div class="sval" style="color:var(--gm)">₹11,400–13,700 Cr</div><div class="sbody">Data centre orders at scale (Google Vizag + 2 more). FY28 PAT ₹250 Cr. At 45x PE = ₹11,250 Cr = 2.5x. If full data centre thesis: ₹300 Cr PAT × 45x = ₹13,500 Cr = 3x. Probability: 20–25%. Requires data centre revenue confirming by FY27.</div></div>
+    <div class="scard2 base"><div class="stitle" style="color:var(--b)">Base: 1.5–2x by FY27</div><div class="sval" style="color:var(--b)">₹6,800–9,100 Cr</div><div class="sbody">Core HVAC/refrigeration + some data centre. FY27 PAT ₹130 Cr at 55x = ₹7,150 Cr = 1.6x. Modest appreciation from current levels. Probability: 45%.</div></div>
+    <div class="scard2 bear"><div class="stitle" style="color:var(--r)">Bear: Flat to -20%</div><div class="sval" style="color:var(--r)">₹3,650–4,562 Cr</div><div class="sbody">Data centre orders delayed. QIP dilution compresses EPS. PE re-rates from 57x to 35x. PAT ₹80 Cr × 35x = ₹2,800 Cr = -38%. Probability: 30–35%.</div></div>
+  </div>
+
+  <div class="sh">Verdict for Garvit</div>
+  <div class="box box-a">
+    <div class="bt">⚠️ KRN — Interesting thesis, but ₹4,562 Cr MCap makes 3x difficult. Watchlist at ₹550–650/share (20% correction).</div>
+    <div class="bb">5.5/10 conviction at current price. The data centre cooling story is real and the promoter quality (70.79%, zero pledge, debt-free) is excellent — passes Garvit's governance criteria. But at 57x PE on ₹80 Cr FY26 PAT, valuation assumes perfection. KRN results call is TOMORROW May 15, 2026 — watch FY27 data centre guidance. If management confirms first data centre contract ≥₹200 Cr, upgrade to 6.5/10 and buy ₹15,000. Don't buy before FY26 full results confirmed.</div>
+  </div>
+</div>
+
+<!-- SAHASRA -->
+<div id="sahasra" class="panel">
+  <div class="stock-divider">💻 Sahasra Electronic Solutions Ltd — NSE: SAHASRA · MCap ₹630 Cr · Mukul Agrawal 2.76% (fresh Q4 FY26 buy)</div>
+
+  <div class="box box-g">
+    <div class="bt">What Sahasra does — India's electronics manufacturing services (EMS) + semiconductor play in a single company</div>
+    <div class="bb">
+    Noida-based (SEZ facility), PCBA (Printed Circuit Board Assembly) manufacturer with a semiconductor subsidiary. Founded as a trading company, pivoted to electronics manufacturing FY21. Listed September 2024 on NSE Emerge. Now has 4 SMT lines + 2 more being added. Key products: PCBAs for automotive, medical, industrial, IT; LED solutions; laptop/tablet box builds; memory modules, SSDs, eSIMs.<br><br>
+    <strong>Two business units:</strong><br>
+    1. <strong>EMS (listed entity):</strong> PCBA assembly, box builds, LED — revenue ₹70–80 Cr FY26E, EBITDA 21.71%, PAT 15%+. Multi-year supply agreement with Solid State Supplies (Solsta). Order from Inepro for EV charging meters.<br>
+    2. <strong>Sahasra Semiconductors (subsidiary, 54.18% stake):</strong> Memory chips, eSIMs, DRAM modules. Revenue target ₹50 Cr FY26 (5x jump from ₹10 Cr). eSIM production to start mass production March 2026. SPECS subsidy ₹18.5 Cr received.<br><br>
+    <strong>Merger underway:</strong> Board approved amalgamation of 3 subsidiaries (SEPL, ITPL, SSSDPL) into listed entity. Post-merger promoter: 73.77%. This simplifies corporate structure and concentrates value.
+    </div>
+  </div>
+
+  <div class="sh">Key metrics</div>
+  <div class="stock-hero">
+    <div class="scard g"><div class="sl">MCap</div><div class="sv" style="color:var(--gm)">₹630 Cr</div><div class="ss">Small cap — massive TAM</div></div>
+    <div class="scard g"><div class="sl">H1 FY26 Revenue</div><div class="sv" style="color:var(--gm)">₹61 Cr</div><div class="ss">+significant vs H1 FY25</div></div>
+    <div class="scard g"><div class="sl">H1 FY26 EBITDA%</div><div class="sv" style="color:var(--gm)">21.71%</div><div class="ss">High margin for EMS</div></div>
+    <div class="scard g"><div class="sl">H1 FY26 PAT%</div><div class="sv" style="color:var(--gm)">15.49%</div><div class="ss">Well above industry avg</div></div>
+    <div class="scard g"><div class="sl">Post-merger promoter</div><div class="sv" style="color:var(--gm)">73.77%</div><div class="ss">Strong after consolidation</div></div>
+    <div class="scard b"><div class="sl">Revenue FY26 target</div><div class="sv" style="color:var(--b)">₹140 Cr</div><div class="ss">2x from FY25</div></div>
+    <div class="scard t"><div class="sl">Revenue FY27 target</div><div class="sv" style="color:var(--t)">₹225–325 Cr</div><div class="ss">CAGR 65%+ guided</div></div>
+    <div class="scard a"><div class="sl">SPECS subsidy</div><div class="sv" style="color:var(--am)">₹18.5 Cr</div><div class="ss">Govt semiconductor subsidy received</div></div>
+  </div>
+
+  <div class="sh">Financial projection and guidance</div>
+  <table class="ht">
+    <thead><tr><th>Period</th><th>Revenue (combined)</th><th>EBITDA%</th><th>PAT</th><th>Key milestone</th></tr></thead>
+    <tbody>
+      <tr><td class="mono">H1 FY26</td><td class="mono">₹61 Cr</td><td class="mono green">21.71%</td><td class="mono green">₹9.5 Cr</td><td>Recovery after challenging H2 FY25. EMS domestic demand strong. eSIM contract signed Oct 2025.</td></tr>
+      <tr class="trg"><td class="mono">FY26E Full</td><td class="mono">₹140 Cr</td><td class="mono">~20%</td><td class="mono">~₹20 Cr</td><td>Semiconductor subsidiary targeting ₹50 Cr revenue. EMS domestic book solid. 2 new SMT lines installed (Bhiwadi). SPECS subsidy ₹18.5 Cr received.</td></tr>
+      <tr class="trg"><td class="mono">FY27E</td><td class="mono">₹225–325 Cr</td><td class="mono">~20%</td><td class="mono">~₹35–50 Cr</td><td>Management guided ₹325 Cr by FY27. Semiconductor revenue scaling: eSIM mass production + memory. PLI scheme for ESDM. 4 SMT lines + 2 more (Bhiwadi) = capacity doubled.</td></tr>
+      <tr><td class="mono">FY28E (post-Phase II)</td><td class="mono">₹500–700 Cr</td><td class="mono">~18–20%</td><td class="mono">~₹75–110 Cr</td><td>₹200 Cr Phase-II capex for semiconductor. eSIM becoming mainstream (India's SIM card replacement over 10 years). Memory + DRAM demand from AI/data centres. PCBA for auto/EV growing.</td></tr>
+    </tbody>
+  </table>
+
+  <div class="sh">Why Mukul bought Sahasra — the structural thesis</div>
+  <div class="two">
+    <div class="icard g"><span class="pill pg">✅ India's electronics PLI boom — ₹2 lakh Cr market opportunity</span><h3>India ESDM market target: ₹30 lakh Cr by 2026 (govt target)</h3><p>India's electronics production was ₹9.5 lakh Cr in FY25, up from ₹4.5 lakh Cr FY19. Government's PLI for ESDM + semiconductor push (Tata, Micron, etc.) creates massive demand for downstream EMS companies like Sahasra. Every chip fab needs PCBA assemblers. China+1 strategy driving global electronics procurement away from China → India. Sahasra is at the bottom of this value chain — many options to grow into.</p></div>
+    <div class="icard b"><span class="pill pb">📊 eSIM — the hidden 10-year opportunity</span><h3>India's 120 crore SIM cards will migrate to eSIM over a decade</h3><p>eSIMs are embedded SIMs that don't need physical swapping — used in iPhones, Apple Watch, etc. India's telecom regulator TRAI pushing eSIM adoption. Sahasra Semiconductors secured an eSIM manufacturing contract (signed Oct 2025) with mass production from March 2026. India's eSIM market could be 1+ billion units over 10 years. At even ₹10–15/unit manufacturing margin = ₹10,000–15,000 Cr revenue at scale. This is the long-dated optionality.</p></div>
+  </div>
+
+  <div class="sh">3x scenarios from ₹630 Cr MCap</div>
+  <div class="scen">
+    <div class="scard2 bull"><div class="stitle" style="color:var(--gm)">Bull: 3–5x by FY28</div><div class="sval" style="color:var(--gm)">₹1,890–3,150 Cr</div><div class="sbody">FY28 PAT ₹90 Cr. At 30x PE (reasonable for high-growth EMS + semiconductor) = ₹2,700 Cr = 4.3x. eSIM mass adoption + PLI benefits + semiconductor subsidy = transformational story. Probability: 25–30%. This is the highest 3x probability of all 4 Mukul picks.</div></div>
+    <div class="scard2 base"><div class="stitle" style="color:var(--b)">Base: 2–3x by FY27</div><div class="sval" style="color:var(--b)">₹1,260–1,890 Cr</div><div class="sbody">FY27 PAT ₹40 Cr at 35x PE = ₹1,400 Cr = 2.2x. EMS growing solidly, semiconductor contributing ₹10 Cr PAT. Modest appreciation. Probability: 40%.</div></div>
+    <div class="scard2 bear"><div class="stitle" style="color:var(--r)">Bear: Flat to -20%</div><div class="sval" style="color:var(--r)">₹500–630 Cr</div><div class="sbody">Semiconductor stays loss-making. eSIM delays. Global supply chain disruptions. Customer concentration (limited history as public company). PAT ₹15–18 Cr at 30x PE = ₹450–540 Cr = sideways/small loss. Probability: 30%.</div></div>
+  </div>
+
+  <div class="sh">Verdict for Garvit</div>
+  <div class="verdict">
+    <div class="vtitle">✅ SAHASRA — Best Mukul pick for Garvit. 6.5/10 conviction. ₹15,000–20,000 after merger clarity.</div>
+    <div class="vbody">
+    Sahasra is the one Mukul portfolio stock that best fits ALL of Garvit's criteria: small MCap (₹630 Cr), multi-vertical (EMS + semiconductor + eSIM + LED), promoter 73.77% post-merger (passes!), zero pledge, PLI beneficiary (government backing), Mukul fresh add (Q4 FY26 = earliest signal), and 3x math works clearly (₹630 Cr → ₹1,890 Cr needs PAT ₹63 Cr at 30x — achievable by FY27–28).<br><br>
+    Wait for merger completion (SEPL + ITPL + SSSDPL → SESL) — expected H1 FY27. This simplifies valuation. Also wait for FY26 full year results to confirm ₹140 Cr revenue guidance delivered. Then buy ₹15–20K at current levels (~₹250/share). This is a 2–5 year holding, not 1 year.
+    </div>
+  </div>
+</div>
+
+<!-- SURYODAY -->
+<div id="suryoday" class="panel">
+  <div class="stock-divider">🏦 Suryoday Small Finance Bank — BSE: 543279 · MCap ₹1,834 Cr · Mukul Agrawal 2.82% stake</div>
+
+  <div class="box box-b">
+    <div class="bt">What Suryoday SFB is — microfinance-turned-SFB, now growing into secured lending</div>
+    <div class="bb">
+    Founded 2008 as an MFI, converted to Small Finance Bank in January 2017. HQ: Navi Mumbai. Focus on financial inclusion — rural/semi-urban borrowers, originally JLG microfinance. Pivoting aggressively to secured lending (55% non-inclusive finance now). Key products: microfinance (Vikas Loans — individual, not JLG), commercial vehicle loans, mortgages, two-wheelers.<br><br>
+    <strong>Q4 FY26 results (announced May 7, 2026):</strong> Strong turnaround. Q4 PAT ₹49.72 Cr vs loss ₹33.78 Cr in Q4 FY25. FY26 full year PAT ₹152 Cr (+32% YoY). Gross Advances ₹13,261 Cr (+29% YoY). Disbursements +46.5% YoY. GNPA improving: 6.55% March 2026 vs 7.16% March 2025. CE in inclusive finance near 99.7%.
+    </div>
+  </div>
+
+  <div class="sh">Key metrics — FY26 confirmed results</div>
+  <div class="stock-hero">
+    <div class="scard g"><div class="sl">FY26 Full PAT</div><div class="sv" style="color:var(--gm)">₹152 Cr</div><div class="ss">+32.2% YoY from ₹115 Cr</div></div>
+    <div class="scard g"><div class="sl">Q4 FY26 PAT</div><div class="sv" style="color:var(--gm)">₹49.72 Cr</div><div class="ss">vs -₹33.78 Cr Q4 FY25 — massive turnaround</div></div>
+    <div class="scard g"><div class="sl">Gross Advances FY26</div><div class="sv" style="color:var(--gm)">₹13,261 Cr</div><div class="ss">+29.4% YoY from ₹10,249 Cr</div></div>
+    <div class="scard g"><div class="sl">Deposits FY26</div><div class="sv" style="color:var(--gm)">₹13,994 Cr</div><div class="ss">+32.3% YoY — stable liability franchise</div></div>
+    <div class="scard b"><div class="sl">MCap</div><div class="sv" style="color:var(--b)">₹1,834 Cr</div><div class="ss">P/B ~1.2x · Reasonable</div></div>
+    <div class="scard a"><div class="sl">GNPA March 2026</div><div class="sv" style="color:var(--am)">6.55%</div><div class="ss">Improving from 7.16% FY25 — still elevated</div></div>
+    <div class="scard g"><div class="sl">CRAR</div><div class="sv" style="color:var(--gm)">20.45%</div><div class="ss">Well capitalized — room for growth</div></div>
+    <div class="scard b"><div class="sl">NIM</div><div class="sv" style="color:var(--b)">7.9%</div><div class="ss">Q4 FY26 — stable, slight expansion</div></div>
+  </div>
+
+  <div class="sh">Comparison with Muthoot Microfin — which Garvit already plans to buy</div>
+  <table class="ht">
+    <thead><tr><th>Metric</th><th>Suryoday SFB</th><th>Muthoot Microfin (already planned)</th><th>Satin Creditcare (watchlist)</th></tr></thead>
+    <tbody>
+      <tr><td>Business type</td><td>Small Finance Bank (regulated)</td><td>NBFC-MFI</td><td>NBFC-MFI</td></tr>
+      <tr><td>MCap</td><td class="mono">₹1,834 Cr</td><td class="mono">₹3,100 Cr</td><td class="mono">₹2,350 Cr</td></tr>
+      <tr class="trg"><td>FY26 PAT</td><td class="mono" style="color:var(--gm)">₹152 Cr (confirmed)</td><td class="mono" style="color:var(--gm)">₹170 Cr (confirmed)</td><td class="mono">~₹235 Cr (est.)</td></tr>
+      <tr class="trr"><td>GNPA</td><td class="mono" style="color:var(--am)">6.55% (declining)</td><td class="mono" style="color:var(--am)">3.89% (low)</td><td class="mono" style="color:var(--am)">~3.3% est.</td></tr>
+      <tr><td>Promoter</td><td>Institutional + public (SFB)</td><td class="mono" style="color:var(--gm)">~60% (Muthoot Pappachan)</td><td class="mono" style="color:var(--am)">36.2%</td></tr>
+      <tr><td>PE</td><td class="mono">~12x (cheap)</td><td class="mono">~18x</td><td class="mono">~10x</td></tr>
+      <tr class="trg"><td>3x probability</td><td><span class="badge ba">15–20%</span></td><td><span class="badge bg">25–30%</span></td><td><span class="badge ba">25–30%</span></td></tr>
+    </tbody>
+  </table>
+
+  <div class="sh">Verdict for Garvit</div>
+  <div class="box box-a">
+    <div class="bt">⚠️ Suryoday SFB — 5.0/10 conviction. Overlaps with Muthoot Microfin plan. GNPA still high at 6.55%.</div>
+    <div class="bb">Suryoday is genuinely recovering (FY26 PAT ₹152 Cr confirmed, Q4 turnaround spectacular). At ₹1,834 Cr MCap and 12x PE it's cheap. BUT: (1) GNPA 6.55% is still elevated — needs another 2 quarters to normalize, (2) Garvit already plans to buy Muthoot Microfin (better GNPA at 3.89%, stronger promoter), (3) Suryoday → Muthoot overlap means no need for both. Skip Suryoday unless you have extra capital after all other priority purchases are done. Come back in Q2 FY27 when GNPA is confirmed below 5%.</div>
+  </div>
+</div>
+
+<!-- PTC INDUSTRIES -->
+<div id="ptc" class="panel">
+  <div class="stock-divider">✈️ PTC Industries Ltd — BSE/NSE: PTCIL · MCap ₹26,000 Cr · Mukul Agrawal 1.07% stake</div>
+
+  <div class="box box-b">
+    <div class="bt">World-class company. Wrong market cap for Garvit's 3x framework — but understand why Mukul holds it</div>
+    <div class="bb">
+    60+ years old. Manufactures precision metal castings and advanced materials for aerospace, defence, oil &amp; gas, marine. Through subsidiary <strong>Aerolloy Technologies:</strong> Titanium alloys + superalloy castings + strategic materials. The company is building a fully integrated titanium value chain in India — from sponge → ingot → billet → casting → finished aerospace part. India currently imports almost all titanium used in aerospace.<br><br>
+    <strong>Clients:</strong> Rolls-Royce, GE, Siemens, Alstom (global) + BrahMos, ISRO, HAL, DRDO (India domestic defence). Long-term supply agreement with Honeywell Aerospace Technologies (Dec 2025). Order from Blue Origin for BE-4 engine superalloy castings. ISRO order for Grade-1 Titanium sponge → Ti-6Al-4V alloy ingots (Double VAR process).<br><br>
+    <strong>The problem for Garvit:</strong> 5-year return +5,263%. MCap ₹26,000 Cr. 3x from here = ₹78,000 Cr. Needs FY28 PAT ₹2,000+ Cr (from current ~₹55 Cr) at 40x PE. Mathematically near-impossible in 3 years. Mukul got this at ₹400–600 range — those multibagger returns are already baked in.
+    </div>
+  </div>
+
+  <div class="sh">Key metrics and why the 3x math breaks down</div>
+  <div class="stock-hero">
+    <div class="scard r"><div class="sl">Market Cap</div><div class="sv" style="color:var(--r)">₹26,000 Cr</div><div class="ss">Too large for 3x in 3 years</div></div>
+    <div class="scard g"><div class="sl">Q2 FY26 Revenue</div><div class="sv" style="color:var(--gm)">₹125 Cr</div><div class="ss">+74% YoY — strong growth</div></div>
+    <div class="scard g"><div class="sl">9M FY26 PAT</div><div class="sv" style="color:var(--gm)">₹41 Cr</div><div class="ss">+14% YoY — margin pressure</div></div>
+    <div class="scard r"><div class="sl">PE Ratio</div><div class="sv" style="color:var(--r)">~475x TTM</div><div class="ss">Extreme — priced for distant future PAT</div></div>
+    <div class="scard g"><div class="sl">Promoter</div><div class="sv" style="color:var(--gm)">~61%</div><div class="ss">Sachin Agarwal family — strong</div></div>
+    <div class="scard g"><div class="sl">Global clients</div><div class="sv" style="color:var(--gm)">World-class</div><div class="ss">Rolls-Royce, GE, Honeywell, Blue Origin, ISRO</div></div>
+    <div class="scard a"><div class="sl">5yr stock return</div><div class="sv" style="color:var(--am)">+5,263%</div><div class="ss">Early investors made fortunes. Mukul was early.</div></div>
+    <div class="scard r"><div class="sl">3x from ₹26,000 Cr?</div><div class="sv" style="color:var(--r)">Not possible</div><div class="ss">Needs ₹2,000 Cr PAT by FY28 — from ₹55 Cr today</div></div>
+  </div>
+
+  <div class="sh">Verdict for Garvit</div>
+  <div class="box box-r">
+    <div class="bt">❌ PTC Industries — DO NOT BUY for 3x framework. Excellent company, wrong size and valuation.</div>
+    <div class="bb">PTC is arguably India's most exciting aerospace/defence manufacturing story. The titanium vertical integration, space supply chain (Blue Origin, ISRO), and defence indigenisation (BrahMos) make this a once-in-generation company. But Mukul bought at ₹400–600 range — not ₹17,000+ today. At ₹26,000 Cr MCap and 475x PE, it's priced for FY30+ earnings. The 3x math requires ₹2,000 Cr PAT in 3 years from a company doing ₹55 Cr today. Skip entirely for Garvit's framework. If it corrects to ₹8,000–10,000 Cr MCap (60% drawdown), reconsider.</div>
+  </div>
+</div>
+
+<!-- OTHER HOLDINGS -->
+<div id="others" class="panel">
+  <div class="sh">Other noteworthy Mukul holdings — quick analysis for Garvit</div>
+  <table class="ht">
+    <thead><tr><th>Stock</th><th>Mukul Stake</th><th>MCap</th><th>FY26 PAT</th><th>Promoter%</th><th>Quick analysis</th><th>For Garvit?</th></tr></thead>
+    <tbody>
+      <tr class="trg"><td><strong>Neuland Labs</strong></td><td class="mono">Largest hold</td><td class="mono">₹18,000 Cr</td><td class="mono">~₹450 Cr</td><td class="mono">~37%</td><td>CRO+CDMO API pharma. Excellent quality. Peptides pipeline. BUT MCap ₹18,000 Cr makes 3x very hard. Promoter low at 37%.</td><td><span class="badge br">SKIP (too large)</span></td></tr>
+      <tr class="trb"><td><strong>Capacite Infraprojects</strong></td><td class="mono">6.62%</td><td class="mono">₹1,996 Cr</td><td class="mono">~₹80 Cr</td><td class="mono" style="color:var(--r)">31.69%</td><td>Real estate EPC (high-rise). Mumbai-based. Revenue ₹2,500 Cr FY25. Strong order book. BUT promoter 31.69% = FAILS Garvit's 55%+ test hard.</td><td><span class="badge br">SKIP (promoter)</span></td></tr>
+      <tr class="tra"><td><strong>J&K Bank</strong></td><td class="mono">1.50%</td><td class="mono">₹12,000 Cr</td><td class="mono">~₹1,800 Cr</td><td class="mono">Govt-owned</td><td>PSB with J&K stronghold. Improving asset quality. Political risk (J&K territory). 3x from ₹12,000 Cr = ₹36,000 Cr = very hard.</td><td><span class="badge br">SKIP (too large)</span></td></tr>
+      <tr class="trg"><td><strong>E2ERAIL (E to E Transportation)</strong></td><td class="mono">13.94% (Mukul's biggest Q4 bet)</td><td class="mono">~₹350 Cr</td><td class="mono">Early stage</td><td class="mono">~60%+</td><td>Brand new listing. Rail + logistics infra. Mukul took 13.94% = very high conviction. But very early stage, limited financial history. High risk, high potential.</td><td><span class="badge ba">WATCHLIST — monitor 2 quarters</span></td></tr>
+      <tr class="trg"><td><strong>ASM Technologies</strong></td><td class="mono">10.28%</td><td class="mono">₹4,670 Cr</td><td class="mono">~₹80 Cr</td><td class="mono">~40%</td><td>IT + engineering services (automotive, telecom, IoT). Mukul's 3rd biggest hold. BUT promoter 40% = fails Garvit. IT services = lower growth rate.</td><td><span class="badge br">SKIP (promoter + IT sector)</span></td></tr>
+      <tr class="trb"><td><strong>KRN Heat Exchanger</strong></td><td class="mono">1.61%</td><td class="mono">₹4,562 Cr</td><td class="mono">~₹80 Cr FY26E</td><td class="mono" style="color:var(--gm)">70.79%</td><td>Analysed in detail. Data centre cooling play. Debt-free. Good quality. Watchlist at correction.</td><td><span class="badge ba">WATCHLIST (expensive now)</span></td></tr>
+      <tr class="trg"><td><strong>Sahasra Electronic Solutions</strong></td><td class="mono">2.76%</td><td class="mono">₹630 Cr</td><td class="mono">~₹20 Cr</td><td class="mono" style="color:var(--gm)">73.77%</td><td>Full analysis done. EMS + semiconductor. Best Mukul pick for Garvit.</td><td><span class="badge bg">BUY ₹15–20K</span></td></tr>
+    </tbody>
+  </table>
+
+  <div class="sh">Mukul's investment philosophy decoded for stock picking</div>
+  <div class="two">
+    <div class="icard b"><span class="pill pb">📊 What makes Mukul buy</span><h3>5 triggers that consistently precede his entries</h3><p><strong>1. Pre-profitability or early-profitability:</strong> He buys before the market discovers earnings. Sahasra at ₹630 Cr with ₹20 Cr PAT — exactly where he enters.<br><strong>2. Structural themes:</strong> Healthcare, semiconductors, rail/infra, financials — all multi-decade stories.<br><strong>3. Insider confidence:</strong> High promoter holding (he trusts promoters with skin-in-the-game).<br><strong>4. Bulk deal entry:</strong> Often announces position via bulk deal — early signal to retail.<br><strong>5. Corporate events:</strong> Mergers, demergers, capacity expansions — structural catalysts.</p></div>
+    <div class="icard g"><span class="pill pg">✅ How to use Mukul's portfolio</span><h3>Follow his fresh adds with your own filter applied</h3><p>Don't blindly follow all 75 stocks. Filter his fresh Q4 FY26 adds through Garvit's own criteria:<br>→ Promoter ≥55% (eliminates Capacite, ASM, many pharma)<br>→ MCap ≤₹5,000 Cr ideally (eliminates PTC, Neuland, J&K Bank)<br>→ Multiple growth verticals (keeps Sahasra, KRN)<br>→ 3x probability ≥20% (keeps Sahasra, KRN on watchlist)<br>After filter: Sahasra (strong), KRN (watchlist), E2ERAIL (monitor) survive.</p></div>
+  </div>
+</div>
+
+<!-- VERDICT -->
+<div id="verdict" class="panel">
+  <div class="sh">Final verdict — Mukul Agrawal portfolio filtered for Garvit's 3x framework</div>
+
+  <div class="verdict">
+    <div class="vtitle">🏆 Best Pick from Mukul's Portfolio for Garvit: Sahasra Electronic Solutions (₹15–20K entry)</div>
+    <div class="vbody">
+    After running all 75 Mukul holdings through Garvit's framework (promoter ≥55%, MCap manageable for 3x, multiple verticals, 3x probability ≥20%, zero pledge), only ONE stock clearly passes all filters:<br><br>
+    <strong>Sahasra Electronic Solutions (SAHASRA):</strong><br>
+    ✅ Post-merger promoter 73.77% — passes<br>
+    ✅ MCap ₹630 Cr — 3x math very achievable (₹1,890 Cr target = PAT ₹63 Cr at 30x)<br>
+    ✅ Two verticals: EMS (PCBAs) + Semiconductor (eSIM, memory) — multi-vertical<br>
+    ✅ Government PLI + SPECS subsidy ₹18.5 Cr received — policy tailwind<br>
+    ✅ Mukul bought Q4 FY26 (freshest signal — he usually enters early)<br>
+    ✅ Revenue guidance ₹140 Cr FY26 → ₹325 Cr FY27 = 2.3x in 1 year<br>
+    ✅ eSIM = 10-year optionality (India's 120 Cr SIM replacement)<br>
+    ✅ AI/data centre demand driving memory + DRAM<br><br>
+    <strong>Watchlist (not immediate):</strong> KRN Heat Exchanger — buy if corrects 20% or after FY26 results confirm data centre orders.<br>
+    <strong>Skip:</strong> PTC Industries (too large), Neuland (too large), Capacite (promoter fails), J&K Bank (too large), ASM Tech (IT, promoter).<br>
+    <strong>Monitor:</strong> E2ERAIL — Mukul's 13.94% stake is his biggest Q4 bet but company is too early-stage for analysis. Give it 2 quarters.
+    </div>
+  </div>
+
+  <div class="sh">Priority order for Garvit — Mukul picks vs existing pending actions</div>
+  <div class="alist">
+    <div class="aitem"><div class="adot dr">1</div><div class="ac"><strong>EFC Rights May 13–22 — ₹7,800 [URGENT THIS WEEK]</strong><div class="meta">Non-negotiable. Exercise 52 REs at ₹150 via bank ASBA. Deadline May 22.</div></div></div>
+    <div class="aitem"><div class="adot dr">2</div><div class="ac"><strong>EXIT RBZ Jewellers → RPSG Ventures [THIS WEEK]</strong><div class="meta">Still pending. 5 sessions overdue. Execute the core portfolio rebalancing first.</div></div></div>
+    <div class="aitem"><div class="adot dr">3</div><div class="ac"><strong>TRIM Nurture Well + SELL KPI Green → RPSG Ventures + Muthoot Microfin [THIS WEEK]</strong><div class="meta">Core pending actions still take priority over new discoveries.</div></div></div>
+    <div class="aitem"><div class="adot da">4</div><div class="ac"><strong>BUY Sahasra Electronic Solutions ₹15,000–20,000 [AFTER core actions done]</strong><div class="meta">Wait for FY26 full year results confirmation (₹140 Cr revenue + PAT ≥₹18 Cr). Then enter. MCap ₹630 Cr, Mukul fresh add, best 3x probability from Mukul's portfolio. Conviction: 6.5/10.</div></div></div>
+    <div class="aitem"><div class="adot db">5</div><div class="ac"><strong>WATCHLIST: KRN Heat Exchanger — alert at ₹550–650 (20–25% correction from current)</strong><div class="meta">FY26 results call May 15, 2026 (tomorrow). Watch for data centre order confirmation. Don't buy before that call. If confirmed ≥₹200 Cr data centre order → buy ₹15K.</div></div></div>
+    <div class="aitem"><div class="adot dg">6</div><div class="ac"><strong>MONITOR: E2ERAIL — Mukul's 13.94% fresh add. Watch for 2 quarters of results.</strong><div class="meta">Very early stage. No enough financial history for deep conviction analysis. But Mukul's largest Q4 bet — worth monitoring. Come back in Q2 FY26 with 2 quarters of numbers.</div></div></div>
+  </div>
+
+  <div class="sh">Scorecard — Mukul's picks through Garvit's framework</div>
+  <table class="ht">
+    <thead><tr><th>Stock</th><th>Promoter ≥55%</th><th>MCap for 3x</th><th>Multi-vertical</th><th>3x Prob</th><th>Conviction</th><th>Action</th></tr></thead>
+    <tbody>
+      <tr class="trg"><td><strong>Sahasra Electronics</strong></td><td class="mono" style="color:var(--gm)">✅ 73.77%</td><td class="mono" style="color:var(--gm)">✅ ₹630 Cr</td><td class="mono" style="color:var(--gm)">✅ EMS + Semi</td><td><span class="badge bg">25–35%</span></td><td class="mono" style="color:var(--gm)">6.5/10</td><td><span class="badge bg">BUY ₹15–20K</span></td></tr>
+      <tr class="tra"><td><strong>KRN Heat Exchanger</strong></td><td class="mono" style="color:var(--gm)">✅ 70.79%</td><td class="mono" style="color:var(--am)">⚠️ ₹4,562 Cr</td><td class="mono" style="color:var(--am)">⚠️ 1 sector</td><td><span class="badge ba">20–25%</span></td><td class="mono" style="color:var(--am)">5.5/10</td><td><span class="badge ba">WATCH — buy on correction</span></td></tr>
+      <tr class="tra"><td><strong>E2ERAIL</strong></td><td class="mono" style="color:var(--gm)">✅ ~60%</td><td class="mono" style="color:var(--gm)">✅ ~₹350 Cr</td><td class="mono" style="color:var(--am)">⚠️ Rail only</td><td><span class="badge ba">Unknown</span></td><td class="mono" style="color:var(--am)">4/10</td><td><span class="badge ba">MONITOR 2 quarters</span></td></tr>
+      <tr class="tra"><td><strong>Suryoday SFB</strong></td><td class="mono" style="color:var(--am)">⚠️ Bank</td><td class="mono" style="color:var(--am)">⚠️ ₹1,834 Cr</td><td class="mono" style="color:var(--am)">⚠️ MFI+SFB</td><td><span class="badge ba">15–20%</span></td><td class="mono" style="color:var(--am)">5/10</td><td><span class="badge ba">Skip — Muthoot is better</span></td></tr>
+      <tr class="trr"><td><strong>PTC Industries</strong></td><td class="mono" style="color:var(--gm)">✅ ~61%</td><td class="mono" style="color:var(--r)">❌ ₹26,000 Cr</td><td class="mono" style="color:var(--gm)">✅ Aero+Defence</td><td><span class="badge br">5–8%</span></td><td class="mono" style="color:var(--r)">2/10</td><td><span class="badge br">SKIP — too large</span></td></tr>
+      <tr class="trr"><td><strong>Capacite Infraprojects</strong></td><td class="mono" style="color:var(--r)">❌ 31.69%</td><td class="mono" style="color:var(--am)">⚠️ ₹1,996 Cr</td><td class="mono" style="color:var(--am)">⚠️ 1 sector</td><td><span class="badge ba">15–20%</span></td><td class="mono" style="color:var(--r)">3/10</td><td><span class="badge br">SKIP — promoter fails</span></td></tr>
+    </tbody>
+  </table>
+</div>
+
+<div class="footer">Mukul Agrawal Portfolio Analysis · Data from Q4 FY26 shareholding filings (March 2026) · Portfolio ₹7,375 Cr · 75 stocks publicly disclosed · May 14, 2026 · Not investment advice · Do your own research · Consult SEBI-registered advisor</div>
+
+<script>
+function go(id,btn){
+  document.querySelectorAll('.tab').forEach(t=>t.classList.remove('active'));
+  document.querySelectorAll('.panel').forEach(p=>p.classList.remove('active'));
+  btn.classList.add('active');
+  document.getElementById(id).classList.add('active');
+}
+</script>
+</body>
+</html>

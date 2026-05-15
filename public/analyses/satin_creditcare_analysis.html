@@ -1,0 +1,399 @@
+<!DOCTYPE html>
+<html><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<style>
+@import url('https://fonts.googleapis.com/css2?family=DM+Mono:wght@400;500&family=DM+Sans:wght@400;500;600;700&display=swap');
+*{box-sizing:border-box;margin:0;padding:0}
+body{font-family:'DM Sans',sans-serif;background:#0a0a0a;color:#e8e6e0;font-size:14px;padding:20px}
+h1{font-size:22px;font-weight:600;letter-spacing:-0.5px;color:#f0ece4;margin-bottom:3px}
+.sub{font-size:12px;color:#555;margin-bottom:18px;font-family:'DM Mono',monospace}
+.hero-grid{display:grid;grid-template-columns:repeat(5,1fr);gap:10px;margin-bottom:18px}
+.hc{background:#111;border:1px solid #1a1a1a;border-radius:10px;padding:12px 14px}
+.hl{font-size:10px;color:#555;text-transform:uppercase;letter-spacing:.08em;margin-bottom:3px;font-family:'DM Mono',monospace}
+.hv{font-size:19px;font-weight:700;letter-spacing:-0.5px}
+.hs{font-size:10px;color:#555;margin-top:2px}
+.green{color:#4ade80}.red{color:#f87171}.amber{color:#fb923c}.blue{color:#60a5fa}.gold{color:#fbbf24}.teal{color:#2dd4bf}.white{color:#f0ece4}.purp{color:#c084fc}
+.tab-row{display:flex;gap:5px;flex-wrap:wrap;margin-bottom:14px}
+.tab{font-size:11px;padding:5px 12px;border-radius:16px;border:1px solid #222;background:transparent;cursor:pointer;color:#666;transition:all .15s}
+.tab:hover,.tab.active{background:#1a1a1a;color:#e8e6e0;border-color:#333}
+.panel{display:none}.panel.active{display:block}
+.sh{font-size:10px;font-weight:600;color:#555;text-transform:uppercase;letter-spacing:.1em;margin:18px 0 10px;display:flex;align-items:center;gap:8px;font-family:'DM Mono',monospace}
+.sh::after{content:'';flex:1;height:1px;background:#1a1a1a}
+.mono{font-family:'DM Mono',monospace}
+.kpi-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:10px;margin-bottom:14px}
+.kpi{background:#111;border:1px solid #1a1a1a;border-radius:10px;padding:12px 14px}
+.kpi.pos{border-left:2px solid #4ade80}.kpi.neg{border-left:2px solid #f87171}.kpi.neu{border-left:2px solid #fb923c}.kpi.inf{border-left:2px solid #60a5fa}.kpi.warn{border-left:2px solid #ff6b35}
+.kv{font-size:22px;font-weight:700;margin:3px 0}
+.kl{font-size:10px;color:#555;font-family:'DM Mono',monospace}
+.ks{font-size:10px;color:#666;margin-top:2px}
+.ic-grid{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-bottom:14px}
+.ic{background:#111;border:1px solid #1a1a1a;border-radius:10px;padding:12px 14px}
+.ic.pos{border-left:2px solid #4ade80}.ic.neg{border-left:2px solid #f87171}.ic.neu{border-left:2px solid #fb923c}.ic.inf{border-left:2px solid #60a5fa}.ic.warn{border-left:2px solid #ff6b35}
+.ic h3{font-size:11px;font-weight:600;margin-bottom:5px}
+.ic p{font-size:11px;color:#888;line-height:1.55}
+.pill{display:inline-flex;align-items:center;font-size:10px;padding:2px 7px;border-radius:8px;margin-bottom:3px}
+.pg{background:#0d2e1a;color:#4ade80}.pr{background:#2e0d0d;color:#f87171}.pa2{background:#2e1d0d;color:#fb923c}.pb{background:#0d1a2e;color:#60a5fa}.pp2{background:#1a0d2e;color:#c084fc}.porg{background:#3e1a00;color:#ff6b35}
+.al{background:#111;border:1px solid #1a1a1a;border-radius:10px;padding:13px;margin-bottom:14px}
+.ai{display:flex;gap:9px;align-items:flex-start;padding:8px 0;border-bottom:1px solid #141414;font-size:12px}
+.ai:last-child{border-bottom:none}
+.ai-ico{width:21px;height:21px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:10px;font-weight:600;flex-shrink:0;margin-top:1px}
+.ie{background:#2e0d0d;color:#f87171}.ia{background:#0d1a2e;color:#60a5fa}.it{background:#2e1d0d;color:#fb923c}.ih{background:#0d2e1a;color:#4ade80}.iu{background:#3e1a00;color:#ff6b35}
+.at strong{color:#e8e6e0;font-weight:500}
+.at .meta{color:#555;font-size:10.5px;margin-top:2px;font-family:'DM Mono',monospace}
+.ht{width:100%;border-collapse:collapse;font-size:12px;margin-bottom:14px}
+.ht th{font-size:9.5px;color:#555;text-transform:uppercase;letter-spacing:.08em;padding:5px 9px;border-bottom:1px solid #1a1a1a;text-align:left;font-family:'DM Mono',monospace}
+.ht td{padding:8px 9px;border-bottom:1px solid #111;vertical-align:middle}
+.ht tr:hover td{background:#0d0d0d}
+.wf{background:#111;border:1px solid #1a1a1a;border-radius:10px;padding:13px;margin-bottom:14px}
+.wr{display:flex;align-items:center;gap:9px;padding:5px 0;border-bottom:1px solid #141414}
+.wr:last-child{border-bottom:none}
+.wl{font-size:10.5px;color:#888;width:220px;flex-shrink:0}
+.wt{flex:1;background:#1a1a1a;border-radius:4px;height:13px;overflow:hidden}
+.wb{height:100%;border-radius:4px;display:flex;align-items:center;padding-left:5px;font-size:8.5px;font-weight:600;color:rgba(255,255,255,.7)}
+.wv{font-size:10.5px;font-weight:500;width:90px;text-align:right;font-family:'DM Mono',monospace}
+.path-grid{display:grid;grid-template-columns:1fr 1fr 1fr;gap:10px;margin-bottom:14px}
+.pc{background:#111;border:1px solid #1a1a1a;border-radius:10px;padding:12px 14px}
+.pc.bull{border-top:2px solid #4ade80}.pc.base{border-top:2px solid #60a5fa}.pc.bear{border-top:2px solid #f87171}
+.pt{font-size:11px;font-weight:600;margin-bottom:7px}.pv{font-size:20px;font-weight:700;margin-bottom:3px}.ps{font-size:10px;color:#555;line-height:1.5}
+.warn-box{background:#0d1a0a;border:2px solid #4ade80;border-radius:10px;padding:13px;margin-bottom:12px}
+.wb2-h{font-size:13px;font-weight:600;color:#4ade80;margin-bottom:7px}
+.wb2-b{font-size:12px;color:#c8e6c9;line-height:1.65}
+.danger-box{background:#1a0d0a;border:2px solid #f87171;border-radius:10px;padding:13px;margin-bottom:12px}
+.db-h{font-size:13px;font-weight:600;color:#f87171;margin-bottom:7px}
+.db-b{font-size:12px;color:#aaa;line-height:1.65}
+.urg-box{background:#3e1a00;border:2px solid #ff6b35;border-radius:10px;padding:12px 14px;margin-bottom:12px}
+.urg-h{font-size:13px;font-weight:700;color:#ff6b35;margin-bottom:5px}
+.urg-b{font-size:12px;color:#e8d4c0;line-height:1.65}
+.peer-win{background:#0a1a0a}.peer-mid{background:#1a150a}.peer-loss{background:#1a0a0a}
+.badge{font-size:9px;padding:2px 7px;border-radius:6px;font-weight:500}
+.bg2{background:#0d2e1a;color:#4ade80}.br2{background:#2e0d0d;color:#f87171}.ba2{background:#2e1d0d;color:#fb923c}.bb2{background:#0d1a2e;color:#60a5fa}
+.footer{border-top:1px solid #1a1a1a;margin-top:18px;padding-top:12px;font-size:10px;color:#333;font-family:'DM Mono',monospace}
+.verdict-box{background:#0a1518;border:2px solid #2dd4bf;border-radius:10px;padding:13px;margin-bottom:12px}
+.vb-h{font-size:13px;font-weight:600;color:#2dd4bf;margin-bottom:7px}
+.vb-b{font-size:12px;color:#b2dfdb;line-height:1.65}
+</style>
+</head>
+<body>
+
+<h1>Satin Creditcare Network Ltd — Deep Investment Analysis</h1>
+<div class="sub">NSE: SATIN · BSE: 539404 · NBFC-MFI · Founded 1990 · CMD: Dr. HP Singh · New Delhi · Market cap ₹2,350 Cr · AUM ₹15,275 Cr (+19% YoY) · FY26 earnings call TOMORROW May 12 @ 10:30 AM IST · 15 consecutive profitable quarters</div>
+
+<div class="hero-grid">
+  <div class="hc"><div class="hl">Market cap</div><div class="hv amber">₹2,350 Cr</div><div class="hs">Small-cap MFI</div></div>
+  <div class="hc"><div class="hl">AUM (FY26)</div><div class="hv green">₹15,275 Cr</div><div class="hs">+19% YoY — record</div></div>
+  <div class="hc"><div class="hl">FY26E PAT</div><div class="hv green">~₹235 Cr</div><div class="hs">Confirm May 12 call</div></div>
+  <div class="hc"><div class="hl">P/B ratio</div><div class="hv teal">0.83x</div><div class="hs">Below book value!</div></div>
+  <div class="hc"><div class="hl">Credit cost FY26</div><div class="hv green">3.8–4.0%</div><div class="hs">↓ from 4.6% FY25</div></div>
+</div>
+
+<div class="tab-row">
+  <button class="tab active" onclick="showTab('overview',this)">🏦 Overview</button>
+  <button class="tab" onclick="showTab('financials',this)">📊 Financials</button>
+  <button class="tab" onclick="showTab('sector',this)">🏭 Sector KPIs</button>
+  <button class="tab" onclick="showTab('guidance',this)">🎯 Guidance</button>
+  <button class="tab" onclick="showTab('risks',this)">⚠️ Risks</button>
+  <button class="tab" onclick="showTab('peers',this)">⚔️ Peer comparison</button>
+  <button class="tab" onclick="showTab('scenarios',this)">🔮 3x scenarios</button>
+  <button class="tab" onclick="showTab('verdict',this)">🏆 Verdict for Garvit</button>
+</div>
+
+<!-- OVERVIEW -->
+<div id="overview" class="panel active">
+  <div class="urg-box">
+    <div class="urg-h">⚡ URGENT: FY26 Earnings call is TOMORROW — May 12, 2026 at 10:30 AM IST</div>
+    <div class="urg-b">Board met May 11 (today) to approve audited FY26 results. Earnings call May 12 with CMD Dr. HP Singh. This is the single most important data point before any buy decision. Wait for the call results before allocating capital. Key metrics to track: (1) FY26 full year PAT, (2) GNPA as of March 2026, (3) Credit cost guidance for FY27, (4) AUM growth guidance. Results are expected to be strong based on the provisional Q4 update (AUM +19%, disbursements +43% in Q4, credit cost 3.8–4%)</div>
+  </div>
+
+  <div class="sh">What Satin Creditcare is — the business in one paragraph</div>
+  <div class="warn-box">
+    <div class="wb2-h">🏦 Satin Creditcare — India's 3rd largest NBFC-MFI by AUM and customer base</div>
+    <div class="wb2-b">
+    Founded 1990 by Dr. HP Singh (who still runs it — 30+ year track record). Serves ~33 lakh active women borrowers across 29 states and UTs in 90,000+ villages through Joint Liability Group (JLG) model — collateral-free microloans to rural/semi-urban women. Unlike peers that collapsed in FY25, Satin posted 15 consecutive profitable quarters through the MFI sector stress cycle.<br><br>
+    <strong>Three business lines (FY26 AUM mix):</strong><br>
+    1. <strong>MFI Core (84% of AUM): ₹12,833 Cr</strong> — JLG loans to women, avg ticket ₹40,000–60,000, 12–24 months, income generation<br>
+    2. <strong>MSME/Non-MFI (8%): via Satin Finserv Ltd (SFL)</strong> — SFL crossed ₹1,000 Cr AUM in FY26 (+93% YoY), MSME loans ₹5–50L, launched <2 years ago<br>
+    3. <strong>Affordable Housing (8%): via Satin Housing Finance Ltd</strong> — ₹1,101 Cr AUM, 22 states, avg ticket ₹15.5L, CRAR 62%, ICRA A- stable<br><br>
+    <strong>Geography mix:</strong> Heavy North India (UP, Rajasthan, MP, Bihar, Haryana) = ~65% AUM. This is actually a differentiated strength vs South India-heavy peers who suffered more in the stress cycle.
+    </div>
+  </div>
+
+  <div class="sh">Key operational highlights — FY26</div>
+  <div class="kpi-grid">
+    <div class="kpi pos"><div class="kl">Consolidated AUM</div><div class="kv green">₹15,275 Cr</div><div class="ks">+19% YoY from ₹12,784 Cr</div></div>
+    <div class="kpi pos"><div class="kl">Q4 Disbursements</div><div class="kv green">+43% YoY</div><div class="ks">₹4,422 Cr Q4 alone — strong recovery</div></div>
+    <div class="kpi pos"><div class="kl">X-Bucket CE Mar'26</div><div class="kv green">~99.9%</div><div class="ks">Near perfect collection on current accounts</div></div>
+    <div class="kpi pos"><div class="kl">NIM (9M FY26)</div><div class="kv green">14.25%</div><div class="ks">+18 bps YoY — healthy and expanding</div></div>
+    <div class="kpi pos"><div class="kl">ROA (9M FY26)</div><div class="kv green">2.22%</div><div class="ks">+171 bps YoY — massive improvement</div></div>
+    <div class="kpi pos"><div class="kl">ROE (9M FY26)</div><div class="kv green">10.82%</div><div class="ks">+859 bps YoY — turning profitable fast</div></div>
+    <div class="kpi pos"><div class="kl">Credit Cost FY26</div><div class="kv green">3.8–4.0%</div><div class="ks">↓ from 4.6% FY25 — improving</div></div>
+    <div class="kpi neu"><div class="kl">Cost of Debt</div><div class="kv amber">↓49 bps YoY</div><div class="ks">Marginal borrowing cost reducing</div></div>
+  </div>
+
+  <div class="sh">Why Satin survived FY25 while others collapsed</div>
+  <div class="ic-grid">
+    <div class="ic pos"><span class="pill pg">✅ 15 consecutive profitable quarters</span><h3>Even through worst MFI stress cycle since 2010</h3><p>Peers like Spandana Sphoorty lost ₹699 Cr in FY26. Fusion Finance near-bankrupt. CreditAccess Grameen lost money in Q3/Q4 FY25. Satin kept posting profit every single quarter through the entire stress cycle — a testament to conservative underwriting and North India geographic advantage.</p></div>
+    <div class="ic pos"><span class="pill pg">✅ North India geography = Less stress</span><h3>South India was the epicentre of MFI crisis</h3><p>Karnataka, Tamil Nadu, AP/Telangana saw politically-driven loan recovery interference. Satin's 65%+ North India exposure (UP, Rajasthan, MP, Bihar) meant it was protected from the worst regional disruptions that hit CreditAccess Grameen and Spandana hard.</p></div>
+    <div class="ic pos"><span class="pill pg">✅ PAR 1 outperformed industry</span><h3>Satin PAR 1: 4.9% vs Industry 16.9% in Mar'25</h3><p>Industry (excluding Satin) PAR 1 stood at 16.9% as of March 2025. Satin's PAR 1 was only 4.9% — 1/3 of industry average. This is the single most powerful data point showing Satin's superior risk management vs peers during the stress cycle.</p></div>
+    <div class="ic inf"><span class="pill pb">📈 Subsidiary growth accelerating</span><h3>SFL (MSME) crossed ₹1,000 Cr AUM in FY26</h3><p>Satin Finserv Ltd grew 93% YoY to cross ₹1,000 Cr AUM. This is the diversification engine — MSME loans carry higher margins and lower sector correlation vs MFI. Housing Finance at ₹1,101 Cr, ICRA A-stable rated. Multi-vertical portfolio is emerging.</p></div>
+  </div>
+</div>
+
+<!-- FINANCIALS -->
+<div id="financials" class="panel">
+  <div class="sh">Revenue, PAT and AUM history — the full picture</div>
+  <table class="ht">
+    <tr><th>Period</th><th>AUM</th><th>Revenue</th><th>PAT (consol.)</th><th>NIM</th><th>Credit Cost</th><th>ROA</th><th>ROE</th><th>GNPA</th><th>Key event</th></tr>
+    <tr><td class="mono">FY23</td><td class="mono">₹9,115 Cr</td><td class="mono">₹1,551 Cr</td><td class="mono green">~₹150 Cr</td><td class="mono">~13%</td><td class="mono">~3%</td><td class="mono green">~1.5%</td><td class="mono green">~10%</td><td class="mono amber">~2.5%</td><td>Post-COVID recovery. Strong AUM growth. PAR 90 improving from 8% FY22 lows. North India base stable.</td></tr>
+    <tr><td class="mono">FY24</td><td class="mono amber">₹11,850 Cr</td><td class="mono green">₹2,241 Cr</td><td class="mono green">~₹340 Cr</td><td class="mono">~13.5%</td><td class="mono green">~2%</td><td class="mono green">~2.5%</td><td class="mono green">~15%</td><td class="mono green">~2.0%</td><td>Peak year. Strong AUM +30%. High disbursements. Sector-wide boom. Q4 FY24 PAT ₹128 Cr. Best year for MFIs.</td></tr>
+    <tr><td class="mono">FY25</td><td class="mono">₹12,784 Cr</td><td class="mono">₹2,602 Cr</td><td class="mono amber">₹186 Cr</td><td class="mono">12.61%</td><td class="mono amber">4.6%</td><td class="mono amber">2.07%</td><td class="mono amber">7.86%</td><td class="mono amber">3.70%</td><td>MFI sector stress. Multiple lender borrower over-leverage. PAR1 peaked at 6.8% (Sep'24) then recovered. 15 consecutive quarters profitable. Credit cost 4.6% — contained. Q4 FY25 PAT standalone ₹41 Cr.</td></tr>
+    <tr><td class="mono">Q1 FY26</td><td class="mono">~₹13,341 Cr</td><td class="mono">~₹730 Cr</td><td class="mono amber">~₹45 Cr</td><td class="mono">~13.5%</td><td class="mono">~4.5%</td><td class="mono">~1.5%</td><td class="mono">~8%</td><td class="mono amber">~3.9%</td><td>Recovery beginning. AUM growing. Disbursements picking up. PAR1 started declining.</td></tr>
+    <tr><td class="mono">Q2 FY26</td><td class="mono">~₹13,800 Cr</td><td class="mono green">₹792.8 Cr</td><td class="mono green">₹53.2 Cr</td><td class="mono">~14%</td><td class="mono">~4.2%</td><td class="mono">~2%</td><td class="mono">~9%</td><td class="mono amber">~3.8%</td><td>PAT +18.95% YoY. Revenue +20.6% YoY. Margin improvement visible. ROA recovery accelerating.</td></tr>
+    <tr><td class="mono">9M FY26</td><td class="mono green">₹13,341 Cr*</td><td class="mono green">₹2,259 Cr</td><td class="mono green">~₹167 Cr</td><td class="mono green">14.25%</td><td class="mono green">4.03%</td><td class="mono green">2.22%</td><td class="mono green">10.82%</td><td class="mono amber">~3.5%</td><td>ROA +171 bps YoY. ROE +859 bps YoY. NIM expanding. Credit costs falling. PPoP ₹224 Cr.</td></tr>
+    <tr style="background:#0a1a0a"><td class="mono green">FY26E Full</td><td class="mono green">₹15,275 Cr</td><td class="mono green">~₹3,050 Cr</td><td class="mono green">~₹235 Cr</td><td class="mono green">~14.3%</td><td class="mono green">3.8–4.0%</td><td class="mono green">~2.3%</td><td class="mono green">~11%</td><td class="mono green">~3.3%</td><td>Q4 disbursements +43% YoY (₹4,422 Cr). AUM +19%. Credit costs best since FY23. X-bucket CE 99.9%. MAY 12 CALL CONFIRMS.</td></tr>
+    <tr><td class="mono">FY27E</td><td class="mono green">~₹18,000 Cr</td><td class="mono green">~₹3,600 Cr</td><td class="mono green">~₹340 Cr</td><td class="mono green">~14.5%</td><td class="mono green">~3.0%</td><td class="mono green">~2.8%</td><td class="mono green">~14%</td><td class="mono green">~2.8%</td><td>Credit cost normalisation to 3% from 4% adds ~₹100 Cr PAT mechanically. AUM growing 18-20%. SFL MSME contributes meaningfully. Housing Finance scales. Subsidiaries drive PAT diversification.</td></tr>
+    <tr><td class="mono">FY28E</td><td class="mono green">~₹21,000 Cr</td><td class="mono green">~₹4,200 Cr</td><td class="mono green">~₹480 Cr</td><td class="mono green">~14.5%</td><td class="mono green">~2.5%</td><td class="mono green">~3.2%</td><td class="mono green">~17%</td><td class="mono green">~2.5%</td><td>3x case: ₹2,350 Cr × 3 = ₹7,050 Cr target. At 15x PE on ₹480 Cr PAT = ₹7,200 Cr. Achievable if credit cost reaches 2.5% (sector historical mean) and AUM sustains 15-18% growth.</td></tr>
+  </table>
+
+  <div class="sh">Key financial ratios — current state and direction of travel</div>
+  <div class="wf">
+    <div class="wr"><div class="wl green">NIM (Net Interest Margin) 14.25%</div><div class="wt"><div class="wb" style="width:71%;background:#4ade80">14.25% — healthy, expanding</div></div><div class="wv green">+18 bps YoY</div></div>
+    <div class="wr"><div class="wl green">ROA 2.22%</div><div class="wt"><div class="wb" style="width:44%;background:#4ade80">2.22% — approaching sector-best levels</div></div><div class="wv green">+171 bps YoY</div></div>
+    <div class="wr"><div class="wl green">ROE 10.82%</div><div class="wt"><div class="wb" style="width:54%;background:#4ade80">10.82% — rapidly improving</div></div><div class="wv green">+859 bps YoY</div></div>
+    <div class="wr"><div class="wl amber">Credit Cost 3.8–4.0%</div><div class="wt"><div class="wb" style="width:40%;background:#fb923c">3.8-4.0% (down from 4.6% FY25)</div></div><div class="wv amber">Still elevated — key metric</div></div>
+    <div class="wr"><div class="wl green">X-Bucket CE ~99.9%</div><div class="wt"><div class="wb" style="width:99%;background:#4ade80">99.9% — near perfect current collections</div></div><div class="wv green">Best-in-sector</div></div>
+    <div class="wr"><div class="wl amber">Promoter holding 36.2%</div><div class="wt"><div class="wb" style="width:36%;background:#fb923c">36.2% — lower vs peers</div></div><div class="wv amber">HP Singh family</div></div>
+    <div class="wr"><div class="wl green">P/B 0.83x</div><div class="wt"><div class="wb" style="width:17%;background:#4ade80">0.83x — below book value</div></div><div class="wv green">Deep value signal</div></div>
+    <div class="wr"><div class="wl green">Stage 3 coverage 62.3%</div><div class="wt"><div class="wb" style="width:62%;background:#4ade80">62.3% — improving from 60.4%</div></div><div class="wv green">Adequate provisioning</div></div>
+  </div>
+</div>
+
+<!-- SECTOR KPIs -->
+<div id="sector" class="panel">
+  <div class="sh">MFI sector context — India's microfinance industry and where Satin fits</div>
+
+  <div class="warn-box">
+    <div class="wb2-h">🌱 India MFI sector — ₹4.3 lakh Cr market, serving 7.8 crore borrowers, structural growth story</div>
+    <div class="wb2-b">
+    India's NBFC-MFI sector provides collateral-free credit to women in rural and semi-urban areas — a segment with no access to formal banking. The sector serves 7.8 crore unique borrowers and has an outstanding portfolio of ₹3.9 lakh Cr (MFIs alone). RBI regulatory guardrails (Guardrail 1.0 and 2.0) cap borrower indebtedness: max 3 lenders per borrower, ₹2L loan cap for borrowers with income ≤₹3L.<br><br>
+    <strong>Sector stress cycle (FY24–FY26) and where we are now:</strong> Over-leveraging of borrowers in FY23–24 caused a credit stress cycle in FY25–26. Collection efficiency dropped, NPA spiked. Satin outperformed with PAR 1 of 4.9% vs industry 16.9%. The stress appears to be bottoming: Q4 FY26 saw X-bucket CE recovering to 99.9% across most MFIs. RBI guardrails are reducing borrower leverage. The sector should normalize by FY27.<br><br>
+    <strong>Satin's position in the sector:</strong> 3rd largest NBFC-MFI by AUM (₹15,275 Cr). Present in 29 states. 90,000+ villages. 2,015 branches. 33 lakh borrowers. Better PAR vs industry = better underwriting discipline.
+    </div>
+  </div>
+
+  <div class="sh">Sector KPIs — MFI industry benchmarks</div>
+  <div class="kpi-grid">
+    <div class="kpi inf"><div class="kl">Industry portfolio size</div><div class="kv blue">₹3.9L Cr</div><div class="ks">Total MFI outstanding (Mar 2026)</div></div>
+    <div class="kpi inf"><div class="kl">Total borrowers</div><div class="kv blue">7.8 Cr</div><div class="ks">Unique MFI borrowers in India</div></div>
+    <div class="kpi pos"><div class="kl">Industry PAR 1 (excl. Satin)</div><div class="kv red">16.9%</div><div class="ks">vs Satin's 4.9% — massive outperformance</div></div>
+    <div class="kpi pos"><div class="kl">Satin PAR 1 vs Industry</div><div class="kv green">4.9% vs 16.9%</div><div class="ks">3.5x better than peers</div></div>
+    <div class="kpi neu"><div class="kl">Guardrail 2.0</div><div class="kv amber">3 lender cap</div><div class="ks">Max 3 MFI lenders/borrower — reducing overleveraging</div></div>
+    <div class="kpi neu"><div class="kl">Avg MFI yield</div><div class="kv amber">~23–24%</div><div class="ks">On lending rate; NIM ~12–15% after cost of funds</div></div>
+    <div class="kpi pos"><div class="kl">Sector recovery signal</div><div class="kv green">Q4 FY26</div><div class="ks">X-bucket CE normalising across sector</div></div>
+    <div class="kpi pos"><div class="kl">Rural income tailwind</div><div class="kv green">Strong</div><div class="ks">Good rabi harvest FY26; rural consumption recovering</div></div>
+  </div>
+
+  <div class="sh">North India vs South India — geographic thesis for Satin</div>
+  <div class="ic-grid">
+    <div class="ic pos"><span class="pill pg">✅ Satin's North India advantage</span><h3>65%+ AUM in UP, Rajasthan, MP, Bihar, Haryana</h3><p>North India states had lower political interference in MFI collections vs South India (Karnataka election-related disruptions, AP/Telangana MFIN issues). Satin's North India concentration meant PAR stayed under control while South India-heavy peers (CreditAccess, Spandana) took massive hits. This is a structural moat, not luck.</p></div>
+    <div class="ic neg"><span class="pill pr">⚠️ South India MFI stress explained</span><h3>Karnataka, AP, Telangana = epicentre of FY25 crisis</h3><p>State-level political intervention in collections, farmer loan waiver expectations, multiple lending (up to 8 lenders per borrower in stressed districts). CreditAccess Grameen has 45%+ AUM in South India — this hit them hard. Spandana Sphoorty lost ₹699 Cr FY26. Satin's negligible South India exposure protected it.</p></div>
+    <div class="ic inf"><span class="pill pb">📊 Regulatory tailwinds</span><h3>RBI Guardrail 2.0 — 3 lender cap from Apr 2025</h3><p>Maximum 3 MFI lenders per borrower cap directly reduces the systemic over-indebtedness risk. New loans originated post-Guardrail show better-than-average collections (confirmed by multiple MFIs). FY27 fresh book quality will be structurally better than FY25 vintage. This is a sector-level tailwind for all MFIs including Satin.</p></div>
+    <div class="ic pos"><span class="pill pg">💡 Rural income recovery</span><h3>Good monsoon FY26, rabi harvest strong</h3><p>India's rabi harvest (wheat, mustard) FY26 was robust. Rural household incomes improving. MFI borrowers (rural women) are seeing income normalization. This directly reduces fresh NPA generation. Q4 FY26 collection efficiency improving across the sector validates this rural income recovery thesis.</p></div>
+  </div>
+</div>
+
+<!-- GUIDANCE -->
+<div id="guidance" class="panel">
+  <div class="sh">Management guidance — track record and FY27 expectations</div>
+
+  <div class="urg-box">
+    <div class="urg-h">⚡ FY26 full audited results: Board meeting May 11 (today) | Earnings call May 12 (TOMORROW 10:30 AM IST)</div>
+    <div class="urg-b">CMD Dr. HP Singh will present full year FY26 audited results and FY27 guidance on the earnings call tomorrow. This is LIVE data. Based on provisional Q4 update: AUM ₹15,275 Cr (+19%), disbursements ₹12,516 Cr (+17%), credit cost 3.8–4.0%, branches 2,015. Expect management to guide: FY27 AUM growth 18–20%, credit cost 3.0–3.5%, ROA target 2.5%+.</div>
+  </div>
+
+  <div class="al">
+    <div class="ai"><div class="ai-ico ih">✓</div><div class="at"><strong>FY25 guidance delivered: Credit cost 4.5–5.0%, AUM growth 8–10%</strong><div class="meta">Actual FY25: Credit cost 4.6% (within range). AUM growth 8% standalone. DELIVERED despite being a stress year. 9/10 credibility on cost management guidance.</div></div></div>
+    <div class="ai"><div class="ai-ico ih">✓</div><div class="at"><strong>FY26 credit cost guidance: "Below FY25 level of 4.6%" — DELIVERED (3.8–4.0%)</strong><div class="meta">Management guided credit cost improvement below 4.6%. Actual FY26: 3.8–4.0%. Beat guidance. Strong execution on risk management. Credibility: 9/10.</div></div></div>
+    <div class="ai"><div class="ai-ico ih">✓</div><div class="at"><strong>FY26 AUM growth: 19% consolidated — exceeded expectations</strong><div class="meta">Given FY25 disbursement conservatism (8–10% growth), FY26's 19% AUM growth and 43% Q4 disbursement surge shows confident re-acceleration. Managed AUM ₹1,000+ Cr+ BC/co-lending adds on top. Strong execution.</div></div></div>
+    <div class="ai"><div class="ai-ico ia">→</div><div class="at"><strong>FY27 expected guidance (earnings call tomorrow): AUM 18–22%, credit cost 3.0–3.5%, ROA 2.5%+</strong><div class="meta">Credit cost normalization from 4% → 3% adds ~₹100–120 Cr PAT mechanically. AUM 18-22% growth supported by improving borrower quality (Guardrail 2.0 vintage), SFL MSME expansion, Housing Finance scaling. If these are confirmed tomorrow → conviction upgrades significantly.</div></div></div>
+    <div class="ai"><div class="ai-ico ih">✓</div><div class="at"><strong>Subsidiary milestones: SFL crossed ₹1,000 Cr AUM (+93% YoY)</strong><div class="meta">Satin Finserv Ltd (MSME lender) guided aggressive growth and delivered 93% YoY. Satin Housing Finance at ₹1,101 Cr, ICRA A- stable. The subsidiary diversification thesis is executing on schedule. By FY28, subsidiaries could contribute 20%+ of consolidated PAT.</div></div></div>
+    <div class="ai"><div class="ai-ico it">!</div><div class="at"><strong>FY27 risk: If credit cost stays above 4% due to political interference or drought</strong><div class="meta">If credit costs don't normalize to 3.0–3.5% as guided, the PAT improvement thesis loses momentum. Watch guidance on this metric carefully in tomorrow's call — this is the single most important number.</div></div></div>
+  </div>
+
+  <div class="sh">The credit cost math — why this is the key driver</div>
+  <div class="wf">
+    <div class="wr"><div class="wl red">FY25 credit cost 4.6% on ₹12,784 Cr AUM</div><div class="wt"><div class="wb" style="width:46%;background:#f87171">₹588 Cr provisions</div></div><div class="wv red">₹588 Cr drag</div></div>
+    <div class="wr"><div class="wl amber">FY26 credit cost 3.9% on ₹15,275 Cr AUM</div><div class="wt"><div class="wb" style="width:39%;background:#fb923c">₹596 Cr provisions</div></div><div class="wv amber">₹596 Cr drag</div></div>
+    <div class="wr"><div class="wl green">FY27E credit cost 3.0% on ₹18,000 Cr AUM</div><div class="wt"><div class="wb" style="width:30%;background:#4ade80">₹540 Cr provisions</div></div><div class="wv green">₹540 Cr drag</div></div>
+    <div class="wr style="background:#0a1a0a"><div class="wl green">FY27 PAT improvement from credit cost alone</div><div class="wt"><div class="wb" style="width:65%;background:#059669">₹596 → ₹540 Cr drag = ₹56 Cr PAT addition</div></div><div class="wv green">+₹56 Cr PAT</div></div>
+    <div class="wr"><div class="wl green">FY27 PAT improvement from AUM growth (NIM)</div><div class="wt"><div class="wb" style="width:55%;background:#4ade80">₹18,000 Cr × 14.25% NIM growth component</div></div><div class="wv green">+₹80 Cr PAT</div></div>
+    <div class="wr" style="background:#0a1a0a"><div class="wl green">Total FY27E PAT estimate</div><div class="wt"><div class="wb" style="width:70%;background:#059669">FY26E ₹235 Cr + ₹56 + ₹80 Cr = ₹340+ Cr</div></div><div class="wv green">₹340 Cr FY27E</div></div>
+  </div>
+</div>
+
+<!-- RISKS -->
+<div id="risks" class="panel">
+  <div class="sh">Comprehensive risk assessment — be honest about what could go wrong</div>
+
+  <div class="danger-box">
+    <div class="db-h">🔴 Top 4 risks — rank-ordered by severity</div>
+    <div class="db-b">
+    <strong>1. Promoter holding only 36.2% — the governance concern</strong><br>
+    Dr. HP Singh (CMD, founder) holds shares, but the overall promoter group at 36.2% is low compared to peers (Muthoot Microfin ~60%, CreditAccess Grameen ~70% via Grameen Koota). Low promoter holding means potential corporate governance dilution risk, block sales pressure, or management change risk. This is the single most important qualitative concern for Garvit's framework (prefers 55%+ promoter holding).<br><br>
+    <strong>2. Credit cost normalization risk — what if it doesn't improve?</strong><br>
+    The entire 3x thesis depends on credit costs declining from 4% → 3% → 2.5% by FY28. If rural income stress continues (drought, political intervention, new state-level curbs), credit costs could stay elevated at 4%+. This would cap PAT at ₹200–230 Cr and the 3x math breaks down.<br><br>
+    <strong>3. State-level political risk — similar to South India crisis</strong><br>
+    UP elections FY27, Rajasthan political dynamics. While historically less severe than South India, if any North India state introduces loan waivers or collection interference, Satin is disproportionately exposed given its 65% North India concentration. This is the mirror-image risk of what hit CreditAccess in South India.<br><br>
+    <strong>4. RBI regulatory risk — further interest rate capping</strong><br>
+    RBI has been scrutinizing MFI lending rates and NIM. Any regulatory cap on lending rates (e.g., 24% to 20%) would compress NIM by 300-400 bps, directly hitting PAT by ₹80–100 Cr. This is a sector-wide risk affecting all MFIs equally, but Satin's current 14.25% NIM has some buffer.
+    </div>
+  </div>
+
+  <div class="sh">Risk scorecard</div>
+  <table class="ht">
+    <tr><th>Risk</th><th>Severity</th><th>Probability</th><th>Mitigation</th></tr>
+    <tr><td>Credit cost stays above 4% in FY27</td><td class="red">HIGH</td><td class="amber">30%</td><td>Guardrail 2.0 reducing borrower leverage; rural income improving; Q4 data showing improvement</td></tr>
+    <tr><td>Political interference in North India collections</td><td class="amber">MEDIUM</td><td class="amber">20%</td><td>No current signals; UP elections FY27 — watch; Satin's good relationship with state govts historically</td></tr>
+    <tr><td>Promoter stake dilution or management change</td><td class="amber">MEDIUM</td><td class="amber">15%</td><td>HP Singh is 30+ year founder, still engaged; no succession signals; strategic investors (IFC, FMO) on board</td></tr>
+    <tr><td>RBI rate cap on MFI lending</td><td class="amber">MEDIUM</td><td class="amber">20%</td><td>RBI has been measured; Guardrails focus on borrower protection, not rate caps; unlikely but possible</td></tr>
+    <tr><td>SFL/SHFL subsidiary NPA surge</td><td class="amber">LOW-MED</td><td class="amber">15%</td><td>SFL is early stage — limited seasoning; SHFL ICRA A- stable; manageable at current scale</td></tr>
+    <tr><td>AUM growth slows below 12%</td><td class="amber">LOW-MED</td><td class="amber">20%</td><td>Q4 disbursements +43% suggests strong pipeline; demand for microfinance structurally robust in India</td></tr>
+    <tr><td>Overall sector contagion/regulatory shutdown</td><td class="red">EXTREME</td><td class="green">3%</td><td>Very low probability; RBI prefers guardrails over shutdowns; MFI sector serves national financial inclusion goals</td></tr>
+  </table>
+</div>
+
+<!-- PEER COMPARISON -->
+<div id="peers" class="panel">
+  <div class="sh">MFI sector peer comparison — who is the best 3x bet?</div>
+  <div style="overflow-x:auto">
+  <table class="ht">
+    <tr><th>Company</th><th>AUM</th><th>Market Cap</th><th>FY26 PAT</th><th>P/B</th><th>ROA</th><th>NIM</th><th>GNPA</th><th>Credit Cost</th><th>Promoter%</th><th>3x Probability</th></tr>
+    <tr class="peer-win"><td><strong style="color:#4ade80">Satin Creditcare ← GARVIT</strong></td><td class="mono green">₹15,275 Cr</td><td class="mono amber">₹2,350 Cr</td><td class="mono green">~₹235 Cr</td><td class="mono green">0.83x ✅</td><td class="mono green">2.22%</td><td class="mono green">14.25%</td><td class="mono amber">~3.3%</td><td class="mono green">3.8–4.0%↓</td><td class="mono amber">36.2%</td><td><span class="badge bg2">25–30%</span></td></tr>
+    <tr class="peer-win"><td><strong>Muthoot Microfin</strong></td><td class="mono green">₹14,006 Cr</td><td class="mono amber">₹3,100 Cr</td><td class="mono green">₹170 Cr</td><td class="mono green">1.0x</td><td class="mono amber">2.1%↑</td><td class="mono green">12%</td><td class="mono amber">3.89%↓</td><td class="mono green">2.8%↓</td><td class="mono green">~60%</td><td><span class="badge bg2">25–30%</span></td></tr>
+    <tr class="peer-mid"><td><strong>CreditAccess Grameen</strong></td><td class="mono green">₹29,590 Cr</td><td class="mono red">₹20,000 Cr</td><td class="mono green">₹778 Cr</td><td class="mono amber">2.5x</td><td class="mono amber">~3.5%</td><td class="mono green">~13.5%</td><td class="mono green">3.17%↓</td><td class="mono green">~2.5%</td><td class="mono green">70%+</td><td><span class="badge ba2">10–15%</span></td></tr>
+    <tr class="peer-loss"><td><strong>Spandana Sphoorty</strong></td><td class="mono red">~₹7,500 Cr</td><td class="mono amber">₹1,948 Cr</td><td class="mono red">-₹699 Cr FY26</td><td class="mono amber">0.85x</td><td class="mono red">Negative</td><td class="mono red">Collapsing</td><td class="mono red">High — >8%</td><td class="mono red">Very high</td><td class="mono amber">~45%</td><td><span class="badge br2">5–10%</span></td></tr>
+    <tr class="peer-loss"><td><strong>Fusion Finance</strong></td><td class="mono red">~₹8,000 Cr</td><td class="mono amber">~₹800 Cr</td><td class="mono red">Deep losses</td><td class="mono red">~0.4x</td><td class="mono red">Negative</td><td class="mono red">Collapsing</td><td class="mono red">Extreme</td><td class="mono red">10%+</td><td class="mono amber">~40%</td><td><span class="badge br2">2–5%</span></td></tr>
+  </table>
+  </div>
+
+  <div class="sh">Head-to-head: Satin Creditcare vs Muthoot Microfin — the most relevant comparison for Garvit</div>
+  <div class="ic-grid">
+    <div class="ic pos"><span class="pill pg">Satin wins: Valuation</span><h3>P/B 0.83x (Satin) vs 1.0x (Muthoot) — Satin cheaper</h3><p>At below-book valuation, Satin is cheaper on every metric. ₹2,350 Cr market cap on ₹15,275 Cr AUM = price/AUM of 15.4%. Muthoot is ₹3,100 Cr on ₹14,006 Cr AUM = 22.1% — Satin is 30% cheaper per unit of AUM. For a 3x target, entering at lower P/B gives more room for multiple expansion.</p></div>
+    <div class="ic pos"><span class="pill pg">Satin wins: Consistent profitability</span><h3>15 consecutive quarters profit vs Muthoot's FY25 loss</h3><p>Muthoot lost ₹222.5 Cr in FY25 and was just recovering. Satin was profitable every quarter through the stress. This shows superior underwriting quality and risk management. The street trusts Satin's management more — reflected in its PE premium vs Muthoot.</p></div>
+    <div class="ic pos"><span class="pill pg">Satin wins: Larger AUM with less market cap</span><h3>₹15,275 Cr AUM vs ₹14,006 Cr AUM — same AUM scale, less valuation</h3><p>Satin actually has MORE AUM than Muthoot but trades at LOWER market cap. This disconnect is a clear mispricing that should correct as FY26 profitability is confirmed tomorrow.</p></div>
+    <div class="ic neg"><span class="pill pr">Muthoot wins: Promoter quality</span><h3>Muthoot Pappachan Group (~60%) vs HP Singh (36.2%)</h3><p>This is the single biggest edge Muthoot has. Muthoot Pappachan group is an established ₹75,000+ Cr enterprise with deep institutional credibility. HP Singh at 36.2% is lower and creates governance uncertainty. For Garvit's framework (prefers 55%+ promoter holding), this is Satin's biggest negative vs Muthoot.</p></div>
+    <div class="ic neg"><span class="pill pr">Muthoot wins: Credit cost trajectory</span><h3>Muthoot credit cost 2.8% Q4 vs Satin 3.8–4.0% FY26</h3><p>Muthoot Microfin has credit costs lower at 2.8% in Q4 FY26, showing faster normalization. Satin's 3.8–4.0% is still elevated and needs more improvement to get to the sector normal of 2–3%. Muthoot's recovery math is cleaner in the near term.</p></div>
+    <div class="ic inf"><span class="pill pb">Equal: Sector recovery timing</span><h3>Both benefit from Guardrail 2.0 + rural income recovery</h3><p>Both are NBFC-MFIs exposed to the same sector recovery tailwind. New loan vintages (post Guardrail 2.0, Apr 2025) show better collection quality across the sector. This rising tide lifts both boats equally.</p></div>
+  </div>
+
+  <div class="sh">CreditAccess Grameen — why NOT to buy despite strong results</div>
+  <div class="danger-box">
+    <div class="db-h">❌ CreditAccess Grameen: ₹20,000 Cr market cap = 3x math is impossible</div>
+    <div class="db-b">CAGL is the best quality MFI in India — PAT ₹778 Cr FY26, AUM ₹29,590 Cr (+14%), 20–25% AUM growth guidance for FY27, ROE 16–20% target. Excellent management, FMO/Dutch development bank backing. BUT:<br><br>
+    At ₹20,000 Cr market cap, 3x = ₹60,000 Cr. That requires FY28 PAT of ₹2,000 Cr at 30x PE — from ₹778 Cr today = 2.6x PAT growth in 2 years. Achievable? No — the base is now too large. CAGL is a high-quality compounder for large portfolios. NOT the 3x vehicle Garvit needs. P/B 2.5x is expensive vs Satin at 0.83x for slightly lower AUM size.</div>
+  </div>
+</div>
+
+<!-- 3X SCENARIOS -->
+<div id="scenarios" class="panel">
+  <div class="sh">Three scenarios — from current ₹2,350 Cr market cap</div>
+  <div class="path-grid">
+    <div class="pc bull">
+      <div class="pt green">Bull: 3–3.5x by FY28 = ₹7,000–8,000 Cr</div>
+      <div class="pv green">₹7,000–8,000 Cr</div>
+      <div class="ps">Credit cost → 2.5% by FY28. AUM grows 20%/yr to ₹22,000 Cr. PAT: FY27 ₹340 Cr, FY28 ₹500 Cr. At 15x PE on ₹500 Cr = ₹7,500 Cr = 3.2x. Probability: 25–30%. Needs: FY27 guidance confirmation (tomorrow), credit cost 3–3.5%, no political disruption in North India.</div>
+    </div>
+    <div class="pc base">
+      <div class="pt blue">Base: 2–2.5x by FY27 = ₹4,700–5,800 Cr</div>
+      <div class="pv blue">₹4,700–5,800 Cr</div>
+      <div class="ps">Credit cost → 3.0–3.5%. AUM grows 15–18%. FY27 PAT ₹300–340 Cr. At 14x PE on ₹340 Cr = ₹4,760 Cr = 2x. Most likely outcome given sector recovery trajectory. Probability: 45%.</div>
+    </div>
+    <div class="pc bear">
+      <div class="pt red">Bear: Flat to -20% = ₹1,880–2,350 Cr</div>
+      <div class="pv red">₹1,880–2,350 Cr</div>
+      <div class="ps">Credit costs stay at 4%+ (political interference or drought in North India). PAT stays ₹200–230 Cr. Market de-rates to 8x PE = ₹1,840 Cr = -22% from current. Bear is REAL — MFI sector has shown ability to stay stressed for 2+ years (FY24–FY26). Probability: 25%.</div>
+    </div>
+  </div>
+
+  <div class="sh">The 3x PAT math — step by step</div>
+  <div class="wf">
+    <div class="wr"><div class="wl amber">FY26E PAT (base)</div><div class="wt"><div class="wb" style="width:47%;background:#fb923c">₹235 Cr est.</div></div><div class="wv amber">₹235 Cr — confirm May 12</div></div>
+    <div class="wr"><div class="wl green">+ AUM growth contribution FY27 (18% × 14% NIM × 0.75)</div><div class="wt"><div class="wb" style="width:25%;background:#4ade80">+₹60 Cr PAT estimate</div></div><div class="wv green">+₹60 Cr</div></div>
+    <div class="wr"><div class="wl green">+ Credit cost improvement (4% → 3.2% on ₹18,000 Cr)</div><div class="wt"><div class="wb" style="width:30%;background:#4ade80">+₹80 Cr PAT</div></div><div class="wv green">+₹80 Cr</div></div>
+    <div class="wr"><div class="wl green">+ SFL/SHFL subsidiary profit contribution</div><div class="wt"><div class="wb" style="width:20%;background:#4ade80">+₹20 Cr PAT</div></div><div class="wv green">+₹20 Cr</div></div>
+    <div class="wr" style="background:#0a1a0a"><div class="wl green">= FY27E PAT estimate</div><div class="wt"><div class="wb" style="width:70%;background:#059669">₹235+₹60+₹80+₹20 = ₹395 Cr FY27E</div></div><div class="wv green">~₹395 Cr</div></div>
+    <div class="wr"><div class="wl blue">At 15x PE on ₹395 Cr PAT</div><div class="wt"><div class="wb" style="width:80%;background:#60a5fa">₹5,925 Cr market cap</div></div><div class="wv blue">2.5x from ₹2,350 Cr</div></div>
+    <div class="wr"><div class="wl green">FY28E PAT if trend continues (credit cost 2.8%)</div><div class="wt"><div class="wb" style="width:100%;background:#059669">₹395 + ₹60 + ₹40 = ~₹495 Cr</div></div><div class="wv green">₹495 Cr</div></div>
+    <div class="wr" style="background:#0a1a0a"><div class="wl green">At 14x PE on ₹495 Cr = 3x target</div><div class="wt"><div class="wb" style="width:95%;background:#059669">₹6,930 Cr = 2.95x from ₹2,350 Cr</div></div><div class="wv green">~3x FY28 ✅</div></div>
+  </div>
+
+  <div class="sh">Target vs probability matrix</div>
+  <table class="ht">
+    <tr><th>Return target</th><th>Market cap needed</th><th>PAT needed</th><th>PE</th><th>Timeline</th><th>Probability</th></tr>
+    <tr><td>3.0x = ₹7,050 Cr</td><td class="mono green">₹7,050 Cr</td><td class="mono green">₹470–500 Cr</td><td class="mono">14–15x</td><td class="mono">FY28</td><td><span class="badge bg2">25–30%</span></td></tr>
+    <tr><td>2.5x = ₹5,875 Cr</td><td class="mono green">₹5,875 Cr</td><td class="mono green">₹390–420 Cr</td><td class="mono">14–15x</td><td class="mono">FY27</td><td><span class="badge ba2">40–45%</span></td></tr>
+    <tr><td>1.5x = ₹3,525 Cr</td><td class="mono amber">₹3,525 Cr</td><td class="mono amber">₹250–280 Cr</td><td class="mono">13x</td><td class="mono">FY26–FY27</td><td><span class="badge ba2">20%</span></td></tr>
+    <tr><td>Bear: -25% = ₹1,762 Cr</td><td class="mono red">₹1,762 Cr</td><td class="mono red">Credit cost stays 4%+</td><td class="mono">8x</td><td class="mono">FY27</td><td><span class="badge br2">15%</span></td></tr>
+  </table>
+</div>
+
+<!-- VERDICT -->
+<div id="verdict" class="panel">
+  <div class="sh">The verdict for Garvit's portfolio — should Satin Creditcare be added?</div>
+
+  <div class="verdict-box">
+    <div class="vb-h">🏆 VERDICT: Satin Creditcare — WATCHLIST with ₹20,000–25,000 speculative entry AFTER May 12 earnings call</div>
+    <div class="vb-b">
+    <strong>Conviction: 6.0/10 (conditional upgrade to 6.5/10 post-tomorrow's earnings call)</strong><br><br>
+    <strong>Why Satin Creditcare deserves to be in Garvit's portfolio:</strong><br>
+    1. P/B at 0.83x = below book value on a profitable, growing NBFC-MFI. Historically, MFI P/Bs trade at 1.5–3x in recovery cycles. Re-rating from 0.83x → 1.5x alone = 80% return, without PAT growth.<br>
+    2. 15 consecutive profitable quarters — the one MFI that didn't collapse in the worst sector crisis since 2010. This is management quality evidence, not luck.<br>
+    3. 3rd largest NBFC-MFI by AUM (₹15,275 Cr) at ₹2,350 Cr market cap = price/AUM of 15.4% — extremely cheap vs historical 25–35%.<br>
+    4. Credit cost trajectory is the key: 4.6% → 3.8–4.0% → 3.0%+ expected in FY27. Each 1% credit cost reduction on ₹18,000 Cr AUM = ₹180 Cr additional PAT pre-tax = ~₹130 Cr PAT. This is mechanical, not speculative.<br>
+    5. May 12 earnings call will be catalytic — if FY27 guidance is 18%+ AUM + sub-3.5% credit cost, stock could re-rate meaningfully in days.<br><br>
+    <strong>Why to be cautious (Garvit's framework flags):</strong><br>
+    1. Promoter holding 36.2% — below Garvit's 55%+ preference. HP Singh is the founder but the institutional structure doesn't have the same safety net as Muthoot Pappachan group.<br>
+    2. North India political risk — UP Lok Sabha 2024 aftermath, state elections — while manageable, this is a latent risk on 65% of AUM.<br>
+    3. Credit cost not yet at normal levels — the 3x thesis requires sustained improvement over 2 years.<br><br>
+    <strong>Best action: Buy ₹20,000–25,000 after May 12 call confirms strong guidance. This is a 6.0/10 speculative allocation, not a 8.5/10 core position.</strong>
+    </div>
+  </div>
+
+  <div class="sh">Satin vs Muthoot Microfin — which to buy first?</div>
+  <div class="ic-grid">
+    <div class="ic pos"><span class="pill pg">📊 Satin: Better valuation, more AUM, more consistent</span><h3>Buy Satin first — deeper value on every metric</h3><p>P/B 0.83x vs 1.0x. ₹2,350 Cr vs ₹3,100 Cr market cap on similar AUM size. 15 consecutive profitable quarters vs Muthoot's FY25 loss. Better current ROA (2.22% vs 2.1%). Cheaper per unit of AUM. If forced to choose one, Satin has better risk/reward at current prices.</p></div>
+    <div class="ic neu"><span class="pill pa2">🔐 Muthoot: Better promoter, faster credit cost improvement</span><h3>Muthoot for promoter quality, Satin for valuation</h3><p>Muthoot Pappachan backing at ~60% is superior governance. Muthoot credit cost 2.8% in Q4 FY26 (faster normalization) vs Satin's 3.8–4.0%. If governance matters most: Muthoot. If valuation matters most: Satin. Ideal: own both in a ratio of 40% Muthoot / 60% Satin if ₹50K total MFI allocation.</p></div>
+  </div>
+
+  <div class="sh">Immediate action plan for Garvit</div>
+  <div class="al">
+    <div class="ai"><div class="ai-ico iu">⚡</div><div class="at"><strong>May 12, 10:30 AM — WATCH Satin Creditcare earnings call</strong><div class="meta">CMD Dr. HP Singh on FY26 full year audited results + FY27 guidance. Key metrics to note: FY26 PAT (expect ₹220–250 Cr), GNPA March 2026 (expect 3.0–3.5%), FY27 credit cost guidance (should be sub-3.5%), AUM growth guidance (expect 18–22%).</div></div></div>
+    <div class="ai"><div class="ai-ico ia">→</div><div class="at"><strong>If FY26 PAT ≥ ₹220 Cr AND FY27 credit cost guidance ≤ 3.5%: BUY ₹20,000–25,000</strong><div class="meta">Two conditions must both be met. This would confirm the recovery math is on track. Entry at current ~₹213 price (₹2,350 Cr mcap) is at 0.83x book — excellent MFI entry historically. 6.0/10 conviction speculative position.</div></div></div>
+    <div class="ai"><div class="ai-ico it">!</div><div class="at"><strong>If FY27 credit cost guidance is 4%+ OR PAT disappoints: DO NOT BUY yet</strong><div class="meta">If management guides credit cost staying at 4%+ for FY27, the 3x math weakens materially. Wait another quarter for evidence of normalization. Don't chase a story that hasn't confirmed the key driver.</div></div></div>
+    <div class="ai"><div class="ai-ico ih">✓</div><div class="at"><strong>Portfolio priority: Fund Satin ONLY AFTER RPSG Ventures + Muthoot Microfin are bought</strong><div class="meta">RPSG Ventures (5 sessions, ₹0 allocated, 7.5/10 conviction) and Muthoot Microfin (₹170 Cr FY26 PAT confirmed, strong promoter) are higher priority. Satin is the third MFI option. Don't add more MFI exposure before the core portfolio actions are done.</div></div></div>
+  </div>
+
+  <div class="sh">Conviction and probability summary</div>
+  <table class="ht">
+    <tr><th>Metric</th><th>Satin Creditcare</th><th>Garvit's threshold</th><th>Pass/Fail</th></tr>
+    <tr><td>Promoter holding</td><td class="amber">36.2%</td><td class="amber">55%+ preferred</td><td class="red">❌ Fails</td></tr>
+    <tr><td>Order book coverage (MFI: AUM growth)</td><td class="green">+19% AUM, +43% Q4 disbursements</td><td class="green">2x coverage</td><td class="green">✅ Passes</td></tr>
+    <tr><td>Consistent profitability</td><td class="green">15 consecutive quarters</td><td class="green">Profitable</td><td class="green">✅ Passes</td></tr>
+    <tr><td>Valuation (P/B)</td><td class="green">0.83x — below book</td><td class="green">Under-valued</td><td class="green">✅ Passes</td></tr>
+    <tr><td>Multiple growth verticals</td><td class="green">MFI + MSME (SFL) + Housing (SHFL)</td><td class="green">Multi-vertical</td><td class="green">✅ Passes</td></tr>
+    <tr><td>3x probability</td><td class="green">25–30%</td><td class="green">20%+ threshold</td><td class="green">✅ Passes</td></tr>
+    <tr><td>Governance (pledge)</td><td class="green">0% pledge</td><td class="green">Zero pledge</td><td class="green">✅ Passes</td></tr>
+    <tr><td>SME-to-mainboard migration</td><td class="amber">Already NSE/BSE listed (migrated 2015)</td><td class="amber">N/A for this</td><td class="amber">N/A</td></tr>
+    <tr style="background:#0a1a0a"><td><strong>OVERALL VERDICT</strong></td><td colspan="2"><strong>6.0/10 conviction — speculative entry after May 12 confirmation</strong></td><td class="green"><strong>WATCHLIST → BUY after call</strong></td></tr>
+  </table>
+</div>
+
+<div class="footer">Satin Creditcare Network Ltd · NSE: SATIN · May 12, 2026 · ₹2,350 Cr market cap · ₹15,275 Cr AUM · FY26 earnings call tomorrow 10:30 AM IST · Not investment advice · Verify independently · SEBI-registered advisor recommended</div>
+
+<script>
+function showTab(id,btn){
+  document.querySelectorAll('.tab').forEach(t=>t.classList.remove('active'));
+  document.querySelectorAll('.panel').forEach(p=>p.classList.remove('active'));
+  btn.classList.add('active');
+  document.getElementById(id).classList.add('active');
+}
+</script>
+</body></html>

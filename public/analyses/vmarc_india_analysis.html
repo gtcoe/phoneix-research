@@ -1,0 +1,419 @@
+<!DOCTYPE html>
+<html><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<style>
+@import url('https://fonts.googleapis.com/css2?family=DM+Mono:wght@400;500&family=DM+Sans:wght@400;500;600;700&display=swap');
+*{box-sizing:border-box;margin:0;padding:0}
+body{font-family:'DM Sans',sans-serif;background:#f8f7f2;color:#1a1a1a;font-size:14px;padding:20px}
+h1{font-size:22px;font-weight:700;letter-spacing:-0.5px;color:#111;margin-bottom:3px}
+.sub{font-size:12px;color:#888;margin-bottom:18px;font-family:'DM Mono',monospace}
+.hero-grid{display:grid;grid-template-columns:repeat(5,1fr);gap:10px;margin-bottom:18px}
+.hc{background:#fff;border:1px solid #e8e4dc;border-radius:10px;padding:12px 14px;box-shadow:0 1px 3px rgba(0,0,0,.04)}
+.hl{font-size:10px;color:#999;text-transform:uppercase;letter-spacing:.08em;margin-bottom:3px;font-family:'DM Mono',monospace}
+.hv{font-size:19px;font-weight:700;letter-spacing:-0.5px}
+.hs{font-size:10px;color:#aaa;margin-top:2px}
+.green{color:#0F6E56}.red{color:#A32D2D}.amber{color:#854F0B}.blue{color:#185FA5}.gold{color:#7D5A0B}.teal{color:#007B6E}.purple{color:#4527A0}.orange{color:#B45309}
+.tab-row{display:flex;gap:5px;flex-wrap:wrap;margin-bottom:16px}
+.tab{font-size:11px;padding:5px 13px;border-radius:16px;border:1px solid #ddd;background:#fff;cursor:pointer;color:#888;transition:all .15s;font-weight:500}
+.tab:hover{background:#f0ece4;color:#333;border-color:#ccc}
+.tab.active{background:#1a1a1a;color:#fff;border-color:#1a1a1a}
+.panel{display:none}.panel.active{display:block}
+.sh{font-size:10px;font-weight:600;color:#999;text-transform:uppercase;letter-spacing:.1em;margin:18px 0 10px;display:flex;align-items:center;gap:8px;font-family:'DM Mono',monospace}
+.sh::after{content:'';flex:1;height:1px;background:#e8e4dc}
+.mono{font-family:'DM Mono',monospace}
+
+/* KPI grid */
+.kpi-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:10px;margin-bottom:14px}
+.kpi{background:#fff;border:1px solid #e8e4dc;border-radius:10px;padding:12px 14px;box-shadow:0 1px 3px rgba(0,0,0,.04)}
+.kpi.pos{border-left:3px solid #0F6E56}.kpi.neg{border-left:3px solid #A32D2D}.kpi.neu{border-left:3px solid #854F0B}.kpi.inf{border-left:3px solid #185FA5}.kpi.warn{border-left:3px solid #B45309}
+.kv{font-size:22px;font-weight:700;margin:3px 0}
+.kl{font-size:10px;color:#aaa;font-family:'DM Mono',monospace}
+.ks{font-size:10px;color:#888;margin-top:2px}
+
+/* Info cards */
+.ic-grid{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-bottom:14px}
+.ic{background:#fff;border:1px solid #e8e4dc;border-radius:10px;padding:13px 15px;box-shadow:0 1px 3px rgba(0,0,0,.04)}
+.ic.pos{border-left:3px solid #0F6E56}.ic.neg{border-left:3px solid #A32D2D}.ic.neu{border-left:3px solid #854F0B}.ic.inf{border-left:3px solid #185FA5}.ic.warn{border-left:3px solid #B45309}
+.ic h3{font-size:11.5px;font-weight:600;margin-bottom:5px;color:#222}
+.ic p{font-size:11.5px;color:#666;line-height:1.6}
+.pill{display:inline-flex;align-items:center;font-size:10px;padding:2px 8px;border-radius:8px;margin-bottom:4px;font-weight:500}
+.pg{background:#E1F5EE;color:#0F6E56}.pr{background:#FCEBEB;color:#A32D2D}.pa2{background:#FAEEDA;color:#854F0B}.pb{background:#E6F1FB;color:#185FA5}.pp2{background:#EDE7F6;color:#4527A0}.porg{background:#FEF3E2;color:#B45309}
+
+/* Action list */
+.al{background:#fff;border:1px solid #e8e4dc;border-radius:10px;padding:13px;margin-bottom:14px;box-shadow:0 1px 3px rgba(0,0,0,.04)}
+.ai{display:flex;gap:9px;align-items:flex-start;padding:9px 0;border-bottom:1px solid #f0ece4;font-size:12px}
+.ai:last-child{border-bottom:none}
+.ai-ico{width:22px;height:22px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:10px;font-weight:700;flex-shrink:0;margin-top:1px}
+.ie{background:#FCEBEB;color:#A32D2D}.ia{background:#E6F1FB;color:#185FA5}.it{background:#FAEEDA;color:#854F0B}.ih{background:#E1F5EE;color:#0F6E56}.iu{background:#FEF3E2;color:#B45309}
+.at strong{color:#222;font-weight:600}
+.at .meta{color:#888;font-size:10.5px;margin-top:2px;font-family:'DM Mono',monospace}
+
+/* Table */
+.ht{width:100%;border-collapse:collapse;font-size:12px;margin-bottom:14px}
+.ht th{font-size:9.5px;color:#999;text-transform:uppercase;letter-spacing:.08em;padding:6px 10px;border-bottom:2px solid #e8e4dc;text-align:left;font-family:'DM Mono',monospace;background:#faf8f4}
+.ht td{padding:9px 10px;border-bottom:1px solid #f0ece4;vertical-align:middle;color:#333}
+.ht tr:hover td{background:#faf8f4}
+.ht tr:last-child td{border-bottom:none}
+
+/* Bar chart */
+.wf{background:#fff;border:1px solid #e8e4dc;border-radius:10px;padding:14px;margin-bottom:14px;box-shadow:0 1px 3px rgba(0,0,0,.04)}
+.wr{display:flex;align-items:center;gap:9px;padding:6px 0;border-bottom:1px solid #f5f2ec}
+.wr:last-child{border-bottom:none}
+.wl{font-size:10.5px;color:#666;width:230px;flex-shrink:0}
+.wt{flex:1;background:#f0ece4;border-radius:4px;height:14px;overflow:hidden}
+.wb{height:100%;border-radius:4px;display:flex;align-items:center;padding-left:6px;font-size:8.5px;font-weight:600;color:rgba(255,255,255,.9)}
+.wv{font-size:10.5px;font-weight:600;width:90px;text-align:right;font-family:'DM Mono',monospace}
+
+/* Path cards */
+.path-grid{display:grid;grid-template-columns:1fr 1fr 1fr;gap:12px;margin-bottom:14px}
+.pc{background:#fff;border:1px solid #e8e4dc;border-radius:10px;padding:13px 15px;box-shadow:0 1px 3px rgba(0,0,0,.04)}
+.pc.bull{border-top:3px solid #0F6E56}.pc.base{border-top:3px solid #185FA5}.pc.bear{border-top:3px solid #A32D2D}
+.pt{font-size:11.5px;font-weight:600;margin-bottom:6px}
+.pv{font-size:20px;font-weight:700;margin-bottom:4px}
+.ps{font-size:10.5px;color:#888;line-height:1.55}
+
+/* Special boxes */
+.warn-box{background:#E1F5EE;border:1.5px solid #0F6E56;border-radius:10px;padding:14px;margin-bottom:14px}
+.wb2-h{font-size:13px;font-weight:700;color:#04342C;margin-bottom:7px}
+.wb2-b{font-size:12px;color:#04342C;line-height:1.7;opacity:.85}
+.danger-box{background:#FCEBEB;border:1.5px solid #A32D2D;border-radius:10px;padding:14px;margin-bottom:14px}
+.db-h{font-size:13px;font-weight:700;color:#712B13;margin-bottom:7px}
+.db-b{font-size:12px;color:#4a1010;line-height:1.65;opacity:.9}
+.caution-box{background:#FEF3E2;border:1.5px solid #B45309;border-radius:10px;padding:14px;margin-bottom:14px}
+.caut-h{font-size:13px;font-weight:700;color:#7C3202;margin-bottom:7px}
+.caut-b{font-size:12px;color:#4a2200;line-height:1.65;opacity:.9}
+.verdict-box{background:#F0FAF5;border:2px solid #0F6E56;border-radius:10px;padding:14px;margin-bottom:14px}
+.vb-h{font-size:14px;font-weight:700;color:#04342C;margin-bottom:7px}
+.vb-b{font-size:12px;color:#1a3a1a;line-height:1.7}
+
+/* Peer table */
+.peer-win{background:#F0FAF5}.peer-mid{background:#FFFDE7}.peer-loss{background:#FFF5F5}
+.badge{font-size:9px;padding:2px 7px;border-radius:6px;font-weight:600}
+.bg2{background:#E1F5EE;color:#0F6E56}.br2{background:#FCEBEB;color:#A32D2D}.ba2{background:#FAEEDA;color:#854F0B}.bb2{background:#E6F1FB;color:#185FA5}
+
+.footer{border-top:1px solid #e8e4dc;margin-top:18px;padding-top:12px;font-size:10px;color:#bbb;font-family:'DM Mono',monospace}
+.row-warn td{background:#FFFDE7}
+.row-danger td{background:#FFF5F5}
+.row-good td{background:#F0FAF5}
+</style>
+</head>
+<body>
+
+<h1>V-Marc India Ltd — Deep Investment Analysis</h1>
+<div class="sub">NSE Emerge: VMARCIND · Cables & Wires · Founded 2006, listed Apr 2021 · CMD: Vikas Garg · Haridwar, Uttarakhand · Market cap ₹2,621 Cr · Revenue ₹1,251 Cr TTM · Ashish Kacholia 2.71% stake · +223% in 1 year · NSE Emerge (SME platform)</div>
+
+<div class="hero-grid">
+  <div class="hc"><div class="hl">Market Cap</div><div class="hv orange">₹2,621 Cr</div><div class="hs">NSE Emerge SME</div></div>
+  <div class="hc"><div class="hl">Revenue TTM</div><div class="hv green">₹1,251 Cr</div><div class="hs">+38% YoY est.</div></div>
+  <div class="hc"><div class="hl">PAT TTM</div><div class="hv green">₹61 Cr</div><div class="hs">~4.9% margin</div></div>
+  <div class="hc"><div class="hl">P/E Ratio</div><div class="hv red">~43x</div><div class="hs">Rich premium</div></div>
+  <div class="hc"><div class="hl">P/B Ratio</div><div class="hv red">11.6x</div><div class="hs">Extreme premium</div></div>
+</div>
+
+<div class="tab-row">
+  <button class="tab active" onclick="show('overview',this)">🏭 Overview</button>
+  <button class="tab" onclick="show('financials',this)">📊 Financials</button>
+  <button class="tab" onclick="show('sector',this)">🔌 Sector KPIs</button>
+  <button class="tab" onclick="show('guidance',this)">🎯 Guidance</button>
+  <button class="tab" onclick="show('risks',this)">⚠️ Risks</button>
+  <button class="tab" onclick="show('peers',this)">⚔️ Peer comparison</button>
+  <button class="tab" onclick="show('scenarios',this)">🔮 3x scenarios</button>
+  <button class="tab" onclick="show('verdict',this)">🏆 Verdict for Garvit</button>
+</div>
+
+<!-- OVERVIEW -->
+<div id="overview" class="panel active">
+  <div class="sh">What V-Marc India actually is</div>
+  <div class="warn-box">
+    <div class="wb2-h">🔌 V-Marc India — Fast-growing North India cables & wires manufacturer, founded 2006 by Vikas Garg</div>
+    <div class="wb2-b">
+    Started as a PVC wire manufacturer in Haridwar (partnership firm 2006), converted to public company in 2021 and listed on NSE Emerge (SME platform). Has grown revenue from ₹181 Cr (FY22) to ₹1,251 Cr (FY26 TTM) — a 7x increase in 4 years. Primary business: manufacturing LT/HT power cables (up to 33KV), building wires, control cables, aerial bunched cables, solar cables, and telecom cables.<br><br>
+    <strong>Key product mix (FY25 ₹905 Cr revenue):</strong><br>
+    • <strong>HT Cables (50%):</strong> High-tension power cables — sold to Electricity Boards (UP, UK, MP, CG, Bihar, Punjab, J&K, HP), Indian Railways, PSUs (SAIL, BHEL, GAIL, BSNL), IRCON, PWD, government projects<br>
+    • <strong>LT Cables (27%):</strong> Low-tension cables for industrial and distribution use<br>
+    • <strong>Building Wires (20%):</strong> Retail/residential wires — sold through dealer network of 400+ across 10+ states<br>
+    • <strong>Others (3%):</strong> Solar cables, coaxial, LAN, CCTV cables<br><br>
+    <strong>Manufacturing:</strong> 2 facilities in Haridwar, Uttarakhand · Installed capacity 75,120 km/yr · ISO 9001:2015 + ISO 14001:2015 · BIS certified · ₹100–125 Cr expansion underway (20 acres near Roorkee, Phase-I by Q1 FY27)
+    </div>
+  </div>
+
+  <div class="sh">Key metrics at a glance</div>
+  <div class="kpi-grid">
+    <div class="kpi pos"><div class="kl">Revenue growth FY22-FY25</div><div class="kv green">+49% CAGR</div><div class="ks">₹181 Cr → ₹905 Cr in 3 years</div></div>
+    <div class="kpi pos"><div class="kv green">₹690 Cr</div><div class="kl">H1 FY26 revenue</div><div class="ks">+97% YoY from ₹350 Cr H1 FY25</div></div>
+    <div class="kpi pos"><div class="kv green">₹36.4 Cr</div><div class="kl">H1 FY26 PAT</div><div class="ks">+219% YoY from ₹11.4 Cr H1 FY25</div></div>
+    <div class="kpi pos"><div class="kv green">11.3%</div><div class="kl">H1 FY26 EBITDA margin</div><div class="ks">Up from 9.96% H1 FY25</div></div>
+    <div class="kpi pos"><div class="kv green">64.9%</div><div class="kl">Promoter holding</div><div class="ks">Vikas Garg family — strong conviction</div></div>
+    <div class="kpi pos"><div class="kv green">2.71%</div><div class="kl">Ashish Kacholia stake</div><div class="ks">Acquired Q2 FY26 (Sep 2025) — validates thesis</div></div>
+    <div class="kpi warn"><div class="kv orange">43x</div><div class="kl">Trailing PE</div><div class="ks">Rich for a cables company — key concern</div></div>
+    <div class="kpi warn"><div class="kv orange">11.6x</div><div class="kl">Price-to-Book</div><div class="ks">Extreme premium — warrants scrutiny</div></div>
+  </div>
+
+  <div class="sh">Why Ashish Kacholia bought 2.71% — the bull case</div>
+  <div class="ic-grid">
+    <div class="ic pos"><span class="pill pg">✅ Government infrastructure play</span><h3>50% revenue from Electricity Boards + PSUs — captive demand</h3><p>HT cables to UP, UK, Rajasthan, Bihar, MP Electricity Boards + Railways + SAIL + BHEL + GAIL = recurring, growing government procurement. India's ₹9 lakh Cr infrastructure capex in FY26 includes massive power T&D spending. RDSS scheme (₹3 lakh Cr), PM Kusum, solar — all drive cable demand.</p></div>
+    <div class="ic pos"><span class="pill pg">✅ Revenue 7x in 4 years — genuine compounder</span><h3>FY22 ₹181 Cr → FY26E ₹1,250 Cr = +590% in 4 years</h3><p>H1 FY26 revenue of ₹690 Cr is already larger than entire FY25 revenue of ₹905 Cr — suggesting FY26 could hit ₹1,300+ Cr. This is not modest growth; this is a company rapidly scaling through a structural demand boom.</p></div>
+    <div class="ic pos"><span class="pill pg">✅ North India geographic advantage</span><h3>All factories in Haridwar — serves UP, UK, MP, Bihar, HP, J&K directly</h3><p>Most cable demand growth is in North India (new RE projects, T&D upgrade, housing boom). V-Marc's Haridwar location gives logistics cost advantage for North India tenders. No South India exposure = no concentration risk in the toughest geographies for government procurement.</p></div>
+    <div class="ic inf"><span class="pill pb">📈 Capacity expansion underway</span><h3>₹100–125 Cr investment for 20 acres near Roorkee — Phase-I Q1 FY27</h3><p>The expansion will materially increase capacity, enabling revenue of ₹2,000+ Cr by FY28. This is a concrete, funded plan. Roorkee is in Haridwar district — same Uttarakhand advantage. Phase I completion Q1 FY27 means revenue acceleration from H2 FY27.</p></div>
+  </div>
+
+  <div class="sh">The NSE Emerge (SME) flag — critical for Garvit</div>
+  <div class="caution-box">
+    <div class="caut-h">⚠️ V-Marc is on NSE Emerge (SME platform) — NOT main NSE/BSE board</div>
+    <div class="caut-b">
+    Just like Oriana Power in Garvit's portfolio, V-Marc trades on NSE Emerge — India's SME exchange. This means:<br>
+    <strong>1. Lot size restriction:</strong> You cannot buy exactly ₹20,000 — you must buy in the prescribed lot (check current lot size, typically 100–1,200 shares for SME stocks). At ₹1,000/share × 100 = minimum lot ₹1,00,000.<br>
+    <strong>2. Limited liquidity:</strong> Daily volumes are lower — exit in distress can be harder.<br>
+    <strong>3. Mainboard migration potential:</strong> This is the key CATALYST. If V-Marc migrates to NSE mainboard (which requires 3+ years of profitable operations, ₹25 Cr+ net worth, etc.), institutional buying opens up and the stock re-rates. This is a trigger Garvit specifically looks for.<br>
+    <strong>4. NSE queried the company on April 24, 2026 about price movement</strong> — suggesting NSE itself is flagging the +223% run. V-Marc replied it was "market-driven." This is a yellow flag on potential surveillance listing.<br>
+    <strong>5. April 2026 price: ₹997.95/share</strong> — stock has run from ₹200 in 1 year. Much of the re-rating may already have happened.
+    </div>
+  </div>
+</div>
+
+<!-- FINANCIALS -->
+<div id="financials" class="panel">
+  <div class="sh">Complete financial history — FY22 to FY26E</div>
+  <table class="ht">
+    <tr><th>Period</th><th>Revenue</th><th>YoY Growth</th><th>EBITDA</th><th>EBITDA%</th><th>PAT</th><th>PAT%</th><th>Key event</th></tr>
+    <tr class="row-good"><td class="mono">FY22</td><td class="mono">₹181 Cr</td><td class="mono amber">Baseline</td><td class="mono">₹16 Cr</td><td class="mono">9.0%</td><td class="mono">₹5 Cr</td><td class="mono">2.8%</td><td>Listed on NSE Emerge Apr 2021. Early stage. Revenue ₹181 Cr.</td></tr>
+    <tr class="row-good"><td class="mono">FY23</td><td class="mono">₹247 Cr</td><td class="mono green">+36%</td><td class="mono">₹27 Cr</td><td class="mono">11.0%</td><td class="mono">₹10 Cr</td><td class="mono">4.2%</td><td>Margin expansion as revenue scales. Building wires dealer network growing. 400+ dealers in 10 states.</td></tr>
+    <tr class="row-good"><td class="mono">FY24</td><td class="mono">₹565 Cr</td><td class="mono green">+129%</td><td class="mono">₹68 Cr</td><td class="mono">12.0%</td><td class="mono">₹27 Cr</td><td class="mono">4.8%</td><td>Revenue doubles. HT cable orders from Electricity Boards surge. RDSS + PM Kusum schemes drive demand. Best margin year. Capacity running near peak.</td></tr>
+    <tr class="row-good"><td class="mono">FY25</td><td class="mono">₹905 Cr</td><td class="mono green">+60%</td><td class="mono">₹100 Cr</td><td class="mono">11.1%</td><td class="mono">₹36 Cr</td><td class="mono">4.0%</td><td>Scaling up with new hires + capacity. Margin dipped slightly (manpower + scaling costs). HT cables 50% of revenue. Kacholia buys 2.71% in Sep 2025 quarter. Stock starts re-rating.</td></tr>
+    <tr><td class="mono">H1 FY26</td><td class="mono green">₹690 Cr</td><td class="mono green">+97% YoY</td><td class="mono green">₹78 Cr</td><td class="mono green">11.3%</td><td class="mono green">₹36 Cr</td><td class="mono green">5.3%</td><td>H1 PAT alone equals full FY25 PAT. Revenue almost doubles. EBITDA margin improving. Kacholia stake validates thesis. Stock rallies to ₹805 high before consolidating.</td></tr>
+    <tr class="row-good"><td class="mono">FY26E</td><td class="mono green">₹1,250–1,350 Cr</td><td class="mono green">+38–49%</td><td class="mono green">₹138–150 Cr</td><td class="mono green">11–11.5%</td><td class="mono green">₹60–70 Cr</td><td class="mono green">4.8–5.2%</td><td>Screener TTM data: Revenue ₹1,251 Cr, PAT ₹61 Cr confirms this range. ₹100–125 Cr capex underway for Roorkee expansion. NSE Emerge queries price movement.</td></tr>
+    <tr><td class="mono">FY27E</td><td class="mono">₹1,700–2,000 Cr</td><td class="mono green">+36–60%</td><td class="mono">₹190–240 Cr</td><td class="mono">~12%</td><td class="mono">₹85–115 Cr</td><td class="mono">~5.5%</td><td>Roorkee Phase-I expansion goes live Q1 FY27. Capacity doubles → revenue can scale. Higher-margin cable mix. RDSS Phase 2 contracts. Operating leverage kicks in as fixed costs absorbed.</td></tr>
+    <tr><td class="mono">FY28E</td><td class="mono">₹2,500–3,000 Cr</td><td class="mono green">+47–50%</td><td class="mono">₹300–360 Cr</td><td class="mono">~12%</td><td class="mono">₹150–200 Cr</td><td class="mono">~6%</td><td>Post-expansion at full utilization. EHV cable entry possible. Export market (if pursued). PAT margins should expand to 6%+ as fixed costs dilute over larger revenue base.</td></tr>
+  </table>
+
+  <div class="sh">The revenue CAGR story — extraordinary compounding from small base</div>
+  <div class="wf">
+    <div class="wr"><div class="wl">FY22 Revenue: ₹181 Cr (base year)</div><div class="wt"><div class="wb" style="width:5%;background:#999">₹181 Cr</div></div><div class="wv amber">₹181 Cr</div></div>
+    <div class="wr"><div class="wl">FY23: +36%</div><div class="wt"><div class="wb" style="width:7%;background:#854F0B">₹247 Cr</div></div><div class="wv amber">₹247 Cr</div></div>
+    <div class="wr"><div class="wl">FY24: +129% (breakout year)</div><div class="wt"><div class="wb" style="width:16%;background:#0F6E56">₹565 Cr</div></div><div class="wv green">₹565 Cr</div></div>
+    <div class="wr"><div class="wl">FY25: +60%</div><div class="wt"><div class="wb" style="width:26%;background:#0F6E56">₹905 Cr</div></div><div class="wv green">₹905 Cr</div></div>
+    <div class="wr"><div class="wl">FY26E: +38–49%</div><div class="wt"><div class="wb" style="width:37%;background:#059669">₹1,250–1,350 Cr</div></div><div class="wv green">₹1,300 Cr est.</div></div>
+    <div class="wr"><div class="wl">FY27E (post-expansion): +54%</div><div class="wt"><div class="wb" style="width:57%;background:#1B5E20">₹2,000 Cr target</div></div><div class="wv green">₹2,000 Cr</div></div>
+    <div class="wr"><div class="wl">FY28E (full capacity): +50%</div><div class="wt"><div class="wb" style="width:85%;background:#1B5E20">₹3,000 Cr</div></div><div class="wv green">₹3,000 Cr</div></div>
+  </div>
+
+  <div class="sh">Margin profile — the key constraint and improvement opportunity</div>
+  <div class="ic-grid">
+    <div class="ic neu"><span class="pill pa2">⚠️ Thin PAT margins (4–5%)</span><h3>Why cable companies have thin margins — it's normal</h3><p>Cables/wires is a commodity-adjacent industry. Raw materials (copper, aluminium, PVC, XLPE) = 70–75% of revenue. EBITDA at 11–12% and PAT at 4–5% is INDUSTRY STANDARD for mid-size Indian cable manufacturers. Polycab EBITDA 12–13%, KEI 8–10%. As V-Marc scales and moves to higher-value products (HV cables, EHV), margins can expand to 13–14% EBITDA and 6%+ PAT.</p></div>
+    <div class="ic pos"><span class="pill pg">✅ Operating leverage ahead</span><h3>Fixed costs diluting as revenue scales toward ₹2,000+ Cr</h3><p>V-Marc has been investing in capacity, team, and systems. Current opex base supports ₹2,000 Cr revenue with modest incremental SG&A. As revenue scales from ₹1,250 Cr → ₹2,000 Cr, margins should expand: EBITDA from 11.3% → 12–13%, PAT from 4.8% → 6–7%. This is the margin expansion that drives 3x PAT growth on 2x revenue growth.</p></div>
+  </div>
+</div>
+
+<!-- SECTOR KPIs -->
+<div id="sector" class="panel">
+  <div class="sh">India cables & wires sector — structural mega-theme</div>
+  <div class="warn-box">
+    <div class="wb2-h">🔌 India cables & wires — ₹1 lakh crore industry growing to ₹1.9 lakh crore by FY30</div>
+    <div class="wb2-b">
+    The Indian cables and wires market was valued at USD 9.32 billion (₹78,000 Cr) in 2024, projected to reach USD 17.08 billion (₹1.43 lakh Cr) by 2032 at a CAGR of 7.94%. But organized players are growing faster — 15–16% revenue CAGR expected. Key structural drivers:<br><br>
+    <strong>1. Power sector capex:</strong> India's T&D investment = ₹3 lakh Cr under RDSS (2022–2026). Electricity Board upgrades + new substations + last-mile connectivity = massive cable demand. Every new substation needs LT/HT cables.<br>
+    <strong>2. Renewable energy:</strong> 500 GW non-fossil target by 2030. 1 MW solar = 50 km of solar cable. 100 GW solar target = 5,000 lakh km of cable. Wind, hydro = additional demand.<br>
+    <strong>3. Railways + metro:</strong> Railway electrification (100%), Vande Bharat, metro expansions = specialized cable demand.<br>
+    <strong>4. Real estate + data centres:</strong> India's housing boom (PMAY) + data centre capex ($10 billion) = massive building wire and high-spec cable demand.<br>
+    <strong>5. Exports boom:</strong> India became net exporter in FY20. Exports hit ₹19,800 Cr in FY25 (+19% CAGR). Germany (+65%), US (+63%) key markets. China+1 strategy benefiting Indian manufacturers.
+    </div>
+  </div>
+
+  <div class="sh">Sector KPIs — where the industry stands</div>
+  <div class="kpi-grid">
+    <div class="kpi inf"><div class="kl">Market size (2025)</div><div class="kv blue">$10B</div><div class="ks">Growing to $17B by 2032 at 7.94% CAGR</div></div>
+    <div class="kpi pos"><div class="kl">Organized sector share</div><div class="kv green">74%</div><div class="ks">Up from 55% in 2015 — formalisation ongoing</div></div>
+    <div class="kpi pos"><div class="kl">Industry revenue growth FY26</div><div class="kv green">15–16%</div><div class="ks">Organized players growing faster than sector</div></div>
+    <div class="kpi pos"><div class="kl">RDSS scheme capex</div><div class="kv green">₹3L Cr</div><div class="ks">Power T&D upgrade scheme — direct cable demand</div></div>
+    <div class="kpi pos"><div class="kl">Export growth H1 FY26</div><div class="kv green">+30% YoY</div><div class="ks">₹11,800 Cr — India becoming global exporter</div></div>
+    <div class="kpi pos"><div class="kl">Data centre cable demand</div><div class="kv green">+26% CAGR</div><div class="ks">$10B data centre market by 2030</div></div>
+    <div class="kpi neu"><div class="kl">Polycab market share</div><div class="kv amber">18%</div><div class="ks">Largest; V-Marc is sub-1% today → large TAM</div></div>
+    <div class="kpi neu"><div class="kl">Copper price risk</div><div class="kv amber">~$10K/t</div><div class="ks">Near highs — margin compression risk if not passed through</div></div>
+  </div>
+
+  <div class="sh">V-Marc's competitive positioning in the sector</div>
+  <div class="ic-grid">
+    <div class="ic pos"><span class="pill pg">✅ North India government/PSU focus</span><h3>Captive government ordering — sticky revenue</h3><p>V-Marc's primary customers are State Electricity Boards and PSUs — they buy on tender, long-term contracts, and repeat orders. Once approved as a vendor (BIS certified, quality track record), switching costs are high. This is NOT consumer brand competition — it's institutional procurement where quality + price + delivery win. V-Marc has been winning these for 15+ years.</p></div>
+    <div class="ic pos"><span class="pill pg">✅ BIS certification + quality credentials</span><h3>ISO 9001:2015, ISO 14001:2015, BIS, Certiva CE — full certified</h3><p>Electricity Boards only buy from BIS-certified manufacturers. V-Marc has all key certifications. Awards include MSME Unit First Prize 2015-16, Zee UP Conclave Award. Raw material sourced from NALCO, BALCO, HINDALCO (top Indian aluminium companies). This quality pedigree is important for government procurement eligibility.</p></div>
+    <div class="ic neu"><span class="pill pa2">⚠️ Limited brand recall vs peers</span><h3>V-Marc is not yet a recognized consumer brand</h3><p>For building wires (retail segment, 20% of revenue), V-Marc competes with Polycab, KEI, Havells, Finolex — all established brands. V-Marc's retail penetration (400+ dealers, 10 states) is very limited vs Polycab's 200,000+ retail outlets. This is a limitation for the retail segment but less important given the institutional focus strategy.</p></div>
+    <div class="ic neg"><span class="pill pr">⚠️ Single geography + small scale</span><h3>Haridwar-based, North India only — geographic concentration risk</h3><p>All manufacturing in Haridwar. Dealer network limited to ~10 states. Compare to Polycab (pan-India, 4,300+ distributors) or KEI (national + exports). V-Marc is a regional player scaling up — not a national brand yet. Single manufacturing location = operational risk (natural disaster, state-level disruption).</p></div>
+  </div>
+</div>
+
+<!-- GUIDANCE -->
+<div id="guidance" class="panel">
+  <div class="sh">Management track record and forward guidance</div>
+
+  <div class="al">
+    <div class="ai"><div class="ai-ico ih">✓</div><div class="at"><strong>Revenue growth delivered: 49% CAGR FY22-FY25 — consistent execution</strong><div class="meta">No formal guidance in SME investor presentations, but operational growth has been consistent every year. No revenue decline in any year. H1 FY26 +97% YoY shows acceleration, not deceleration.</div></div></div>
+    <div class="ai"><div class="ai-ico ih">✓</div><div class="at"><strong>Capacity expansion: ₹100–125 Cr investment, 20 acres near Roorkee, Phase-I Q1 FY27</strong><div class="meta">Concrete, funded, on-schedule plan. Phase-I completion Q1 FY27 means capacity doubled by mid-FY27. This will unlock the next leg of revenue growth to ₹2,000+ Cr. Management confirmed "1.69 lakh kms" target for FY25 was met.</div></div></div>
+    <div class="ai"><div class="ai-ico ih">✓</div><div class="at"><strong>EBITDA margin stable at 11–12% despite rapid scaling — managed well</strong><div class="meta">H1 FY26 margin 11.3% vs H1 FY25 10.0% — margin improved despite 97% revenue jump. This is impressive execution. Typically fast-growing companies see margin compression during scale-up. V-Marc managed to maintain AND slightly improve margins.</div></div></div>
+    <div class="ai"><div class="ai-ico ia">→</div><div class="at"><strong>FY27 implied guidance: Revenue ₹1,700–2,000 Cr + margin improvement to 12%+ on new capacity</strong><div class="meta">No formal guidance given (NSE Emerge companies don't do quarterly calls typically). But with expansion going live Q1 FY27, management has implied targeting ₹2,000 Cr revenue. Operating leverage should push EBITDA from 11.3% → 12.5% as fixed costs dilute.</div></div></div>
+    <div class="ai"><div class="ai-ico it">!</div><div class="at"><strong>NSE's April 2026 price movement query — management said "market-driven"</strong><div class="meta">NSE flagged V-Marc's price surge (replying April 24, 2026). V-Marc replied price movement is market-driven and no undisclosed information exists. This is procedural, but suggests NSE is watching the stock closely. If placed on ASM/ESM list, liquidity would be constrained.</div></div></div>
+    <div class="ai"><div class="ai-ico it">!</div><div class="at"><strong>H2 FY26 seasonality — H2 is typically stronger for cable companies</strong><div class="meta">H1 already ₹690 Cr. Full year FY26 likely ₹1,250–1,350 Cr. H2 FY26 typically stronger because Electricity Board orders pick up after monsoon and year-end government budget utilization. Q4 is traditionally the strongest quarter.</div></div></div>
+  </div>
+
+  <div class="sh">Capacity expansion — the next revenue unlock</div>
+  <div class="wf">
+    <div class="wr"><div class="wl">Current installed capacity: 75,120 km/yr</div><div class="wt"><div class="wb" style="width:35%;background:#185FA5">2 plants Haridwar</div></div><div class="wv blue">75,120 km/yr</div></div>
+    <div class="wr"><div class="wl">FY25 actual production: ~1.69 lakh km</div><div class="wt"><div class="wb" style="width:60%;background:#0F6E56">Running near capacity</div></div><div class="wv green">1,69,000 km</div></div>
+    <div class="wr"><div class="wl">Expansion: 20 acres Roorkee, Phase-I Q1 FY27</div><div class="wt"><div class="wb" style="width:100%;background:#1B5E20">₹100–125 Cr investment — doubles capacity</div></div><div class="wv green">₹100–125 Cr</div></div>
+    <div class="wr"><div class="wl">Post-expansion revenue capacity</div><div class="wt"><div class="wb" style="width:80%;background:#059669">₹2,500–3,000 Cr+ at full utilization</div></div><div class="wv green">₹2,500+ Cr</div></div>
+    <div class="wr"><div class="wl">PAT at ₹2,500 Cr revenue × 6% margin</div><div class="wt"><div class="wb" style="width:60%;background:#047857">₹150 Cr PAT = 2.5x FY26 PAT</div></div><div class="wv green">~₹150 Cr</div></div>
+  </div>
+</div>
+
+<!-- RISKS -->
+<div id="risks" class="panel">
+  <div class="sh">Comprehensive risk assessment — V-Marc India</div>
+
+  <div class="danger-box">
+    <div class="db-h">🔴 The biggest risk: Valuation has run far ahead of fundamentals</div>
+    <div class="db-b">
+    This is the #1 risk for anyone buying V-Marc TODAY at ₹2,621 Cr market cap:<br><br>
+    <strong>The 3x math at current prices is very challenging:</strong><br>
+    Current MCap: ₹2,621 Cr. 3x = ₹7,863 Cr. That requires FY28 PAT of ₹262 Cr at 30x PE (generous for a cable company). V-Marc's FY26E PAT is ₹61 Cr. Reaching ₹262 Cr requires 4.3x PAT growth from FY26E — which even at 50% annual growth takes until FY30.<br><br>
+    <strong>The P/B of 11.6x is extreme:</strong><br>
+    Polycab (India's largest, dominant brand, 18% market share) trades at 10–12x book. V-Marc at 11.6x P/B is priced RICHER than Polycab for 1% of the market share. Peers like KEI trade at 5–6x book, RR Kabel at 3x book. V-Marc's P/B premium is only justifiable if it delivers extraordinary growth + margin expansion for 4+ more years flawlessly.<br><br>
+    <strong>Stock is up +223% in 1 year:</strong><br>
+    Much of the re-rating has already happened. The stock went from ₹200 to ₹1,000 in 1 year. The easy money has been made by early investors. NSE queried the company in April 2026 about the price movement — a potential signal of regulatory scrutiny.
+    </div>
+  </div>
+
+  <div class="sh">Risk matrix</div>
+  <table class="ht">
+    <tr><th>Risk</th><th>Severity</th><th>Probability</th><th>Impact on thesis</th></tr>
+    <tr class="row-danger"><td><strong>Valuation correction — P/B rerates from 11.6x → 5x</strong></td><td class="red">VERY HIGH</td><td class="amber">40%</td><td class="red">Stock would fall 55–60% to ₹420–450. Even with fundamentals intact.</td></tr>
+    <tr class="row-warn"><td>NSE ASM/ESM listing due to price surge</td><td class="amber">MEDIUM</td><td class="amber">25%</td><td class="amber">Circuit limits tightened, institutional buying restricted, PE compression.</td></tr>
+    <tr class="row-warn"><td>Copper/aluminium price spike — margin compression</td><td class="amber">MEDIUM</td><td class="amber">35%</td><td class="amber">Raw materials 70–75% of revenue. Copper at $10,000/t is near highs. Any further surge compresses EBITDA margins from 11% to 9%.</td></tr>
+    <tr class="row-warn"><td>Government payment delays (Electricity Boards)</td><td class="amber">MEDIUM</td><td class="amber">30%</td><td class="amber">State Electricity Boards are known for delayed payments. Working capital can bloat, debt can rise, interest costs eat into thin margins.</td></tr>
+    <tr><td>Capacity expansion execution delay (Roorkee)</td><td>LOW-MED</td><td class="amber">20%</td><td>Delays Phase-I completion — FY27 growth target missed. Land acquisition issues are common in Uttarakhand for industrial projects.</td></tr>
+    <tr><td>Single customer concentration (if top EB orders stop)</td><td>MEDIUM</td><td>LOW 10%</td><td>If any major Electricity Board (e.g., UPPCL) faces budget cuts or tender delays, H2 revenue takes a hit.</td></tr>
+    <tr><td>Management succession / governance</td><td>LOW-MED</td><td>LOW 10%</td><td>Vikas Garg as sole promoter-operator. NSE Emerge governance less stringent than mainboard. No formal analyst coverage.</td></tr>
+  </table>
+</div>
+
+<!-- PEERS -->
+<div id="peers" class="panel">
+  <div class="sh">India cables & wires sector — full peer comparison</div>
+
+  <div class="caution-box">
+    <div class="caut-h">📌 Context: V-Marc is 1/1,000th the size of Polycab but trades at similar valuation multiples</div>
+    <div class="caut-b">The cables sector has large established players. V-Marc is a regional SME that has grown rapidly. The valuation gap vs fundamentals is stark — this is a growth premium that must be earned through sustained execution over years.</div>
+  </div>
+
+  <div style="overflow-x:auto">
+  <table class="ht">
+    <tr><th>Company</th><th>Market Cap</th><th>Revenue FY26E</th><th>PAT FY26E</th><th>EBITDA%</th><th>PAT%</th><th>PE</th><th>P/B</th><th>Promoter%</th><th>Market Share</th><th>3x Probability</th></tr>
+    <tr class="peer-mid"><td><strong style="color:#B45309">V-Marc India ← GARVIT</strong><br><small>NSE Emerge SME</small></td><td class="mono amber">₹2,621 Cr</td><td class="mono green">~₹1,300 Cr</td><td class="mono green">~₹62 Cr</td><td class="mono green">~11.3%</td><td class="mono amber">~4.9%</td><td class="mono red">~43x</td><td class="mono red">11.6x</td><td class="mono green">64.9%</td><td class="mono">sub-1%</td><td><span class="badge ba2">8–12%</span></td></tr>
+    <tr class="peer-win"><td><strong>Polycab India</strong><br><small>NSE Mainboard</small></td><td class="mono">₹1,37,000 Cr</td><td class="mono">~₹20,000 Cr</td><td class="mono">~₹2,000 Cr</td><td class="mono green">12–13%</td><td class="mono green">~10%</td><td class="mono amber">45x</td><td class="mono amber">10–12x</td><td class="mono">50%+</td><td class="mono">18%</td><td><span class="badge br2">2–3%</span></td></tr>
+    <tr class="peer-win"><td><strong>KEI Industries</strong><br><small>NSE Mainboard</small></td><td class="mono">₹45,000 Cr</td><td class="mono">~₹9,500 Cr</td><td class="mono">~₹680 Cr</td><td class="mono green">9–10%</td><td class="mono green">~7%</td><td class="mono amber">35x</td><td class="mono amber">5–6x</td><td class="mono">52%</td><td class="mono">9%</td><td><span class="badge br2">5–8%</span></td></tr>
+    <tr class="peer-mid"><td><strong>RR Kabel</strong><br><small>NSE Mainboard</small></td><td class="mono">₹21,970 Cr</td><td class="mono">₹9,722 Cr</td><td class="mono">~₹450 Cr</td><td class="mono amber">8.1%</td><td class="mono amber">~4.6%</td><td class="mono red">44x</td><td class="mono amber">3x</td><td class="mono">50%</td><td class="mono">7%</td><td><span class="badge br2">5%</span></td></tr>
+    <tr class="peer-mid"><td><strong>Finolex Cables</strong><br><small>NSE Mainboard</small></td><td class="mono">₹15,000 Cr</td><td class="mono">~₹5,500 Cr</td><td class="mono">~₹400 Cr</td><td class="mono amber">10%</td><td class="mono amber">~7%</td><td class="mono amber">35x</td><td class="mono amber">4x</td><td class="mono">35%</td><td class="mono">5%</td><td><span class="badge br2">3–5%</span></td></tr>
+    <tr class="peer-win"><td><strong>Dynamic Cables</strong><br><small>NSE SME</small></td><td class="mono">₹2,800 Cr</td><td class="mono">~₹800 Cr</td><td class="mono">~₹45 Cr</td><td class="mono amber">9–10%</td><td class="mono amber">~5%</td><td class="mono red">50x</td><td class="mono red">10x</td><td class="mono green">70%+</td><td class="mono">sub-1%</td><td><span class="badge ba2">10–15%</span></td></tr>
+  </table>
+  </div>
+
+  <div class="sh">Best option for Garvit's use case — cables sector analysis</div>
+  <div class="ic-grid">
+    <div class="ic neg"><span class="pill pr">❌ V-Marc at ₹2,621 Cr — Too expensive for 3x</span><h3>Authentic growth story but wrong entry point</h3><p>Revenue CAGR of 49% is genuine. Kacholia validation is real. Expansion is concrete. But at 11.6x P/B and 43x PE with thin 4.9% PAT margins, the stock needs flawless execution for 3+ years to justify current valuation. 3x probability: 8–12%. Not the 3x vehicle Garvit needs.</p></div>
+    <div class="ic neu"><span class="pill pa2">⚠️ KEI Industries — Good quality, wrong size</span><h3>Best fundamentals in the sector, but ₹45,000 Cr mcap kills 3x math</h3><p>KEI is the highest quality cable company for Garvit's criteria: 15–20% growth guidance, diversified (retail + institutional + EHV + exports), promoter 52%, 9% market share. But at ₹45,000 Cr market cap, 3x = ₹1.35 lakh Cr — requires extraordinary circumstances. 3x probability: 5–8%. Too large.</p></div>
+    <div class="ic pos"><span class="pill pg">✅ Dynamic Cables — More appropriate 3x candidate</span><h3>Smaller base, Rajasthan expansion, better entry math</h3><p>Dynamic Cables (NSE SME): ₹2,800 Cr mcap, ₹800 Cr revenue, 70%+ promoter. Similar profile to V-Marc but: Rajasthan expansion (BIS-approved new plant), lower P/B (~10x), better promoter holding, Kacholia has also looked at this space. 3x probability: 10–15%. Still expensive sector-wide.</p></div>
+    <div class="ic inf"><span class="pill pb">📌 Sector verdict: Wait for correction or buy sector ETF logic</span><h3>The cables sector is genuinely excellent — but SME cable stocks are expensive</h3><p>The structural demand (RDSS, renewables, data centres, railways) is real and multi-year. But V-Marc at ₹2,621 Cr on ₹61 Cr PAT = 43x PE is pricing in perfection. A 30–40% correction (to ₹1,600–1,800 Cr mcap) would make V-Marc a 20–25% 3x probability stock. Not at current price.</p></div>
+  </div>
+</div>
+
+<!-- 3X SCENARIOS -->
+<div id="scenarios" class="panel">
+  <div class="sh">3x scenario analysis from current ₹2,621 Cr market cap</div>
+  <div class="path-grid">
+    <div class="pc bull">
+      <div class="pt green">Bull: 2–2.5x by FY28</div>
+      <div class="pv green">₹5,240–6,550 Cr</div>
+      <div class="ps">FY28 PAT ₹150–175 Cr. At 35x PE (SME premium) = ₹5,250–6,125 Cr = 2–2.3x. Requires: Roorkee expansion on schedule, margin expansion to 6%, no ASM listing, no commodity spike. Probability: 20–25%. NOT a 3x — a 2–2.5x in 2–3 years.</div>
+    </div>
+    <div class="pc base">
+      <div class="pt blue">Base: 1.3–1.8x by FY27</div>
+      <div class="pv blue">₹3,400–4,700 Cr</div>
+      <div class="ps">FY27 PAT ₹100 Cr at 35x = ₹3,500 Cr = 1.3x. If multiples compress to 25x PE (more reasonable for cable company): ₹2,500 Cr = flat from current. Probability: 40%. Base case is modest appreciation or sideways movement.</div>
+    </div>
+    <div class="pc bear">
+      <div class="pt red">Bear: -30 to -50%</div>
+      <div class="pv red">₹1,310–1,830 Cr</div>
+      <div class="ps">P/B re-rates from 11.6x to 5x. Market cap falls to ₹1,130–1,350 Cr (-50% to -48%). Fundamentals stay intact but valuation corrects. Or: ASM listing + commodiy spike + payment delays = near-term earnings pressure. Probability: 35–40%.</div>
+    </div>
+  </div>
+
+  <div class="sh">The critical 3x math — what's needed vs what's likely</div>
+  <table class="ht">
+    <tr><th>Metric</th><th>Required for 3x (₹7,863 Cr mcap)</th><th>Likely by FY28</th><th>Gap</th></tr>
+    <tr><td>PAT needed at 30x PE</td><td class="red">₹262 Cr PAT</td><td class="amber">₹150–175 Cr est.</td><td class="red">₹87–112 Cr short — achievable only by FY30</td></tr>
+    <tr><td>Revenue needed at 5.5% PAT margin</td><td class="red">₹4,760 Cr revenue</td><td class="amber">~₹2,500–3,000 Cr FY28E</td><td class="red">Revenue needs 2+ more years to reach ₹4,760 Cr</td></tr>
+    <tr><td>Timeline for 3x</td><td class="amber">FY28 (2 years)</td><td class="red">FY30–31 at best</td><td class="red">2+ years further than Garvit's target</td></tr>
+    <tr><td>PE required to sustain 3x valuation</td><td class="red">≥30x on ₹262 Cr PAT</td><td class="amber">30–35x plausible for SME</td><td class="amber">Valuation assumption is marginally achievable</td></tr>
+    <tr><td>P/B at 3x mcap on current book</td><td class="red">~35x P/B</td><td class="red">Not sustainable</td><td class="red">P/B needs to FALL, not rise — for 3x, PAT must grow much faster than book</td></tr>
+  </table>
+</div>
+
+<!-- VERDICT -->
+<div id="verdict" class="panel">
+  <div class="sh">The complete verdict for Garvit's 3x-in-3-years portfolio</div>
+
+  <div class="danger-box">
+    <div class="db-h">❌ V-Marc India at current price: DO NOT BUY — Excellent business, wrong valuation</div>
+    <div class="db-b">
+    <strong>V-Marc India is a genuine high-growth business. But the 3x math is broken at ₹2,621 Cr market cap.</strong><br><br>
+    The stock has already done +223% in 1 year. Early investors who bought at ₹200–300 got the extraordinary returns. At ₹1,000/share (₹2,621 Cr market cap), P/B is 11.6x and PE is 43x on 4.9% PAT margins. For a cables company with thin margins and commodity exposure, this valuation has NO margin of safety.<br><br>
+    <strong>The numbers don't lie:</strong><br>
+    • 3x = ₹7,863 Cr target. Needs PAT of ₹262 Cr at 30x PE. FY26E PAT: ₹61 Cr. Timeline to ₹262 Cr at 50% annual growth: FY26 ₹61 → FY27 ₹92 → FY28 ₹138 → FY29 ₹207 → FY30 ₹310 — FY30 is when 3x math works at CURRENT PRICE. That's 4 years, not 3.<br>
+    • This is the same problem identified with STL (Sterlite Technologies) — a great business that has already re-rated and the early money has been made.
+    </div>
+  </div>
+
+  <div class="verdict-box">
+    <div class="vb-h">✅ WATCHLIST: V-Marc is the RIGHT business — just at the WRONG price. Alert at ₹450–550/share.</div>
+    <div class="vb-b">
+    If V-Marc corrects 45–55% from current ₹1,000 to ₹450–550/share:<br>
+    • Market cap: ₹1,100–1,350 Cr<br>
+    • P/B: ~5.3–6.5x (reasonable for a fast-growing SME cable company)<br>
+    • PE: ~18–22x on FY26 PAT (also reasonable)<br>
+    • 3x target: ₹3,300–4,050 Cr. Needs FY28 PAT ~₹110–135 Cr at 30x PE — achievable with expansion<br>
+    • 3x probability at corrected entry: 25–30%<br><br>
+    <strong>What would cause this correction:</strong> ASM listing from NSE (reducing retail liquidity), commodity price spike (copper/aluminium), government payment delay (Electricity Board), sector-wide de-rating. These are all plausible in the next 6–12 months.<br><br>
+    <strong>Meanwhile: Much better 3x vehicles exist for Garvit's portfolio right now:</strong><br>
+    RPSG Ventures (₹0 allocation, 5 sessions overdue, 7.5/10 conviction) • Muthoot Microfin (FY26 PAT ₹170 Cr confirmed, 25–30% 3x probability) • SG Finserve (Kacholia 2.37%, CRISIL AA, FY27 PAT guidance ₹190 Cr) • C2C Advanced Systems (Kacholia buying, post-Sindoor defence play)
+    </div>
+  </div>
+
+  <div class="sh">Conviction scorecard against Garvit's criteria</div>
+  <table class="ht">
+    <tr><th>Garvit's criterion</th><th>V-Marc score</th><th>Pass/Fail</th><th>Notes</th></tr>
+    <tr class="row-good"><td>Promoter holding ≥55%</td><td class="green">64.9%</td><td class="green">✅ PASS</td><td>Vikas Garg family — strong skin in the game</td></tr>
+    <tr class="row-good"><td>No pledge</td><td class="green">0% pledge</td><td class="green">✅ PASS</td><td>Clean governance on promoter pledging</td></tr>
+    <tr class="row-good"><td>Multiple growth verticals</td><td class="amber">HT + LT + Building + Solar + Telecom cables</td><td class="amber">✅ PARTIAL</td><td>Cable types diversified; all still cables. Not truly multi-sector.</td></tr>
+    <tr class="row-good"><td>Order book coverage / visibility</td><td class="amber">Government tender-driven</td><td class="amber">✅ PARTIAL</td><td>Government contracts provide visibility but no multi-year order book disclosed.</td></tr>
+    <tr class="row-good"><td>Ace investor validation</td><td class="green">Kacholia 2.71%</td><td class="green">✅ PASS</td><td>Strong signal — Kacholia's track record is validated. BUT he bought much cheaper.</td></tr>
+    <tr class="row-good"><td>SME-to-mainboard migration potential</td><td class="green">NSE Emerge → Mainboard possible</td><td class="green">✅ PASS</td><td>Migration would be a major re-rating catalyst. Eligible if financial criteria met.</td></tr>
+    <tr class="row-warn"><td>Valuation (under-priced vs growth)</td><td class="red">P/B 11.6x, PE 43x</td><td class="red">❌ FAIL</td><td>Most important failure. Valuation leaves no margin of safety for a 3x return.</td></tr>
+    <tr class="row-danger"><td>3x probability ≥20%</td><td class="red">8–12%</td><td class="red">❌ FAIL</td><td>Math doesn't work at current ₹2,621 Cr mcap within 3-year horizon.</td></tr>
+    <tr style="background:#f5f0e8"><td><strong>OVERALL VERDICT</strong></td><td colspan="2"><strong>4.0/10 conviction at current price — DO NOT BUY NOW</strong></td><td><strong>Watchlist at ₹450–550 (₹1,100–1,350 Cr mcap)</strong></td></tr>
+  </table>
+
+  <div class="sh">Portfolio recommendation — what to do instead</div>
+  <div class="al">
+    <div class="ai"><div class="ai-ico ie">✕</div><div class="at"><strong>DO NOT buy V-Marc at current ₹1,000/share (₹2,621 Cr mcap)</strong><div class="meta">3x math fails at current price. NSE flagging price movement is a yellow flag. Better vehicles available.</div></div></div>
+    <div class="ai"><div class="ai-ico it">📌</div><div class="at"><strong>WATCHLIST: Set alert at ₹450–550/share — revisit if corrected 45–55%</strong><div class="meta">At that entry: P/B 5–6x, PE 18–22x, 3x achievable by FY29. Much better risk/reward.</div></div></div>
+    <div class="ai"><div class="ai-ico ih">✓</div><div class="at"><strong>Instead: RPSG Ventures (₹0, overdue 5 sessions), Muthoot Microfin (FY26 PAT confirmed), SG Finserve (Kacholia), C2C Advanced (post-Sindoor)</strong><div class="meta">These offer better risk/reward at current prices. V-Marc's money has already been made by those who entered at ₹200–300.</div></div></div>
+  </div>
+</div>
+
+<div class="footer">V-Marc India Ltd · NSE Emerge: VMARCIND · May 12, 2026 · ₹2,621 Cr market cap · Revenue ₹1,251 Cr TTM · PAT ₹61 Cr · Promoter 64.9% · Kacholia 2.71% · NSE Emerge SME platform · Not investment advice · Verify independently · SEBI-registered advisor recommended</div>
+
+<script>
+function show(id,btn){
+  document.querySelectorAll('.tab').forEach(t=>t.classList.remove('active'));
+  document.querySelectorAll('.panel').forEach(p=>p.classList.remove('active'));
+  btn.classList.add('active');
+  document.getElementById(id).classList.add('active');
+}
+</script>
+</body></html>

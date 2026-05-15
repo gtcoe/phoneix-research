@@ -1,0 +1,701 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<style>
+@import url('https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&family=DM+Mono:wght@400;500&display=swap');
+
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+:root {
+  --bg: #F5F3EE;
+  --surface: #FFFFFF;
+  --surface2: #FAF9F6;
+  --border: #E8E3D9;
+  --border2: #D6CFC2;
+  --text: #1C1917;
+  --text2: #57534E;
+  --text3: #A8A29E;
+  --green: #166534;
+  --green-bg: #DCFCE7;
+  --green-mid: #16A34A;
+  --red: #991B1B;
+  --red-bg: #FEE2E2;
+  --amber: #92400E;
+  --amber-bg: #FEF3C7;
+  --amber-mid: #D97706;
+  --blue: #1E40AF;
+  --blue-bg: #DBEAFE;
+  --teal: #0F766E;
+  --teal-bg: #CCFBF1;
+  --orange: #9A3412;
+  --orange-bg: #FFEDD5;
+  --purple: #581C87;
+  --purple-bg: #F3E8FF;
+}
+
+body {
+  font-family: 'Plus Jakarta Sans', sans-serif;
+  background: var(--bg);
+  color: var(--text);
+  font-size: 14px;
+  padding: 24px;
+  line-height: 1.5;
+}
+
+/* Header */
+.header { margin-bottom: 20px; }
+h1 { font-size: 24px; font-weight: 800; letter-spacing: -0.5px; color: var(--text); margin-bottom: 4px; }
+.tagline { font-size: 12px; color: var(--text3); font-family: 'DM Mono', monospace; }
+
+/* Hero grid */
+.hero { display: grid; grid-template-columns: repeat(5, 1fr); gap: 10px; margin-bottom: 20px; }
+.hcard {
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: 12px;
+  padding: 14px 16px;
+  box-shadow: 0 1px 4px rgba(0,0,0,.04);
+}
+.hcard-label { font-size: 10px; color: var(--text3); font-family: 'DM Mono', monospace; text-transform: uppercase; letter-spacing: .08em; margin-bottom: 4px; }
+.hcard-value { font-size: 20px; font-weight: 800; letter-spacing: -0.5px; }
+.hcard-sub { font-size: 10.5px; color: var(--text3); margin-top: 3px; }
+.val-green { color: var(--green-mid); }
+.val-red { color: var(--red); }
+.val-amber { color: var(--amber-mid); }
+.val-blue { color: var(--blue); }
+.val-teal { color: var(--teal); }
+.val-text { color: var(--text); }
+
+/* Tabs */
+.tabs { display: flex; gap: 6px; flex-wrap: wrap; margin-bottom: 18px; }
+.tab {
+  font-size: 12px; font-weight: 600;
+  padding: 7px 15px; border-radius: 20px;
+  border: 1.5px solid var(--border);
+  background: var(--surface); color: var(--text2);
+  cursor: pointer; transition: all .15s;
+}
+.tab:hover { background: var(--surface2); border-color: var(--border2); }
+.tab.active { background: var(--text); color: #fff; border-color: var(--text); }
+
+.panel { display: none; }
+.panel.active { display: block; }
+
+/* Section header */
+.sh {
+  font-size: 10px; font-weight: 700; color: var(--text3);
+  text-transform: uppercase; letter-spacing: .12em;
+  display: flex; align-items: center; gap: 10px;
+  margin: 20px 0 12px;
+  font-family: 'DM Mono', monospace;
+}
+.sh::after { content: ''; flex: 1; height: 1px; background: var(--border); }
+
+/* KPI cards */
+.kpi-grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 10px; margin-bottom: 16px; }
+.kcard {
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: 12px;
+  padding: 14px 16px;
+  box-shadow: 0 1px 4px rgba(0,0,0,.04);
+}
+.kcard.g { border-left: 3px solid var(--green-mid); }
+.kcard.r { border-left: 3px solid var(--red); }
+.kcard.a { border-left: 3px solid var(--amber-mid); }
+.kcard.b { border-left: 3px solid var(--blue); }
+.kcard.t { border-left: 3px solid var(--teal); }
+.kcard.p { border-left: 3px solid var(--purple); }
+.kcard.o { border-left: 3px solid var(--orange); }
+.kcard-label { font-size: 10px; color: var(--text3); font-family: 'DM Mono', monospace; text-transform: uppercase; letter-spacing: .07em; margin-bottom: 4px; }
+.kcard-value { font-size: 22px; font-weight: 800; letter-spacing: -0.5px; margin-bottom: 3px; }
+.kcard-sub { font-size: 10.5px; color: var(--text2); }
+
+/* Info cards */
+.ic-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; margin-bottom: 16px; }
+.icard {
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: 12px;
+  padding: 14px 16px;
+  box-shadow: 0 1px 4px rgba(0,0,0,.04);
+}
+.icard.g { border-left: 3px solid var(--green-mid); }
+.icard.r { border-left: 3px solid var(--red); }
+.icard.a { border-left: 3px solid var(--amber-mid); }
+.icard.b { border-left: 3px solid var(--blue); }
+.icard.t { border-left: 3px solid var(--teal); }
+.icard.o { border-left: 3px solid var(--orange); }
+.icard h3 { font-size: 12px; font-weight: 700; margin-bottom: 6px; color: var(--text); }
+.icard p { font-size: 11.5px; color: var(--text2); line-height: 1.6; }
+
+/* Pills */
+.pill {
+  display: inline-flex; align-items: center;
+  font-size: 10px; font-weight: 700; padding: 2px 9px; border-radius: 20px;
+  margin-bottom: 5px; letter-spacing: .03em;
+}
+.pill-g { background: var(--green-bg); color: var(--green); }
+.pill-r { background: var(--red-bg); color: var(--red); }
+.pill-a { background: var(--amber-bg); color: var(--amber); }
+.pill-b { background: var(--blue-bg); color: var(--blue); }
+.pill-t { background: var(--teal-bg); color: var(--teal); }
+.pill-o { background: var(--orange-bg); color: var(--orange); }
+.pill-p { background: var(--purple-bg); color: var(--purple); }
+
+/* Special highlight boxes */
+.box {
+  border-radius: 12px; padding: 16px; margin-bottom: 16px;
+  border: 1.5px solid;
+}
+.box-g { background: #F0FDF4; border-color: #86EFAC; }
+.box-g .box-title { color: var(--green); }
+.box-g .box-body { color: #14532D; opacity: .88; }
+.box-r { background: #FFF1F2; border-color: #FECACA; }
+.box-r .box-title { color: var(--red); }
+.box-r .box-body { color: #7F1D1D; opacity: .88; }
+.box-a { background: #FFFBEB; border-color: #FDE68A; }
+.box-a .box-title { color: var(--amber); }
+.box-a .box-body { color: #451A03; opacity: .88; }
+.box-b { background: #EFF6FF; border-color: #BFDBFE; }
+.box-b .box-title { color: var(--blue); }
+.box-b .box-body { color: #1E3A5F; opacity: .88; }
+.box-t { background: #F0FDFA; border-color: #99F6E4; }
+.box-t .box-title { color: var(--teal); }
+.box-t .box-body { color: #134E4A; opacity: .88; }
+.box-o { background: #FFF7ED; border-color: #FED7AA; }
+.box-o .box-title { color: var(--orange); }
+.box-o .box-body { color: #431407; opacity: .88; }
+.box-title { font-size: 13px; font-weight: 700; margin-bottom: 8px; }
+.box-body { font-size: 12px; line-height: 1.7; }
+
+/* Table */
+.ht { width: 100%; border-collapse: collapse; font-size: 12px; margin-bottom: 16px; }
+.ht thead tr { background: var(--surface2); }
+.ht th {
+  font-size: 10px; font-weight: 700; color: var(--text3);
+  text-transform: uppercase; letter-spacing: .08em;
+  padding: 8px 12px; border-bottom: 2px solid var(--border);
+  text-align: left; font-family: 'DM Mono', monospace;
+}
+.ht td { padding: 10px 12px; border-bottom: 1px solid var(--border); color: var(--text2); vertical-align: middle; }
+.ht tr:hover td { background: var(--surface2); }
+.ht tr:last-child td { border-bottom: none; }
+.tr-g { background: #F0FDF4; }
+.tr-a { background: #FFFBEB; }
+.tr-r { background: #FFF1F2; }
+.tr-b { background: #EFF6FF; }
+
+/* Bar chart */
+.bar-grid { background: var(--surface); border: 1px solid var(--border); border-radius: 12px; padding: 16px; margin-bottom: 16px; }
+.bar-row { display: flex; align-items: center; gap: 10px; padding: 5px 0; border-bottom: 1px solid var(--bg); }
+.bar-row:last-child { border-bottom: none; }
+.bar-label { font-size: 11px; color: var(--text2); width: 240px; flex-shrink: 0; }
+.bar-track { flex: 1; background: var(--bg); border-radius: 6px; height: 14px; overflow: hidden; }
+.bar-fill { height: 100%; border-radius: 6px; display: flex; align-items: center; padding-left: 7px; font-size: 8.5px; font-weight: 700; color: rgba(255,255,255,.9); }
+.bar-val { font-size: 11px; font-weight: 700; width: 90px; text-align: right; font-family: 'DM Mono', monospace; }
+
+/* Action list */
+.action-card { background: var(--surface); border: 1px solid var(--border); border-radius: 12px; padding: 14px; margin-bottom: 14px; }
+.action-item { display: flex; gap: 10px; align-items: flex-start; padding: 9px 0; border-bottom: 1px solid var(--bg); font-size: 12px; }
+.action-item:last-child { border-bottom: none; }
+.action-dot { width: 22px; height: 22px; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 10px; font-weight: 700; flex-shrink: 0; margin-top: 1px; }
+.dot-g { background: var(--green-bg); color: var(--green); }
+.dot-r { background: var(--red-bg); color: var(--red); }
+.dot-a { background: var(--amber-bg); color: var(--amber); }
+.dot-b { background: var(--blue-bg); color: var(--blue); }
+.dot-t { background: var(--teal-bg); color: var(--teal); }
+.dot-o { background: var(--orange-bg); color: var(--orange); }
+.action-content strong { font-weight: 700; color: var(--text); display: block; margin-bottom: 2px; }
+.action-meta { font-size: 10.5px; color: var(--text3); font-family: 'DM Mono', monospace; margin-top: 3px; }
+
+/* Scenario cards */
+.scenario-grid { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 12px; margin-bottom: 16px; }
+.scenario-card { background: var(--surface); border: 1px solid var(--border); border-radius: 12px; padding: 16px; }
+.scenario-card.bull { border-top: 3px solid var(--green-mid); }
+.scenario-card.base { border-top: 3px solid var(--blue); }
+.scenario-card.bear { border-top: 3px solid var(--red); }
+.sc-label { font-size: 11.5px; font-weight: 700; margin-bottom: 6px; }
+.sc-value { font-size: 22px; font-weight: 800; letter-spacing: -0.5px; margin-bottom: 5px; }
+.sc-body { font-size: 11px; color: var(--text2); line-height: 1.6; }
+
+/* Future business cards */
+.future-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 10px; margin-bottom: 16px; }
+.fcard { background: var(--surface); border: 1px solid var(--border); border-radius: 12px; padding: 14px; }
+.fcard-icon { font-size: 22px; margin-bottom: 8px; }
+.fcard-title { font-size: 12px; font-weight: 700; color: var(--text); margin-bottom: 4px; }
+.fcard-tag { font-size: 9.5px; font-weight: 700; padding: 2px 8px; border-radius: 10px; display: inline-block; margin-bottom: 7px; }
+.fcard-body { font-size: 11px; color: var(--text2); line-height: 1.6; }
+.fcard-timeline { font-size: 10px; font-family: 'DM Mono', monospace; color: var(--text3); margin-top: 7px; font-weight: 500; }
+
+/* Peer table special */
+.peer-best { background: #F0FDF4; }
+.peer-mid { background: #FFFBEB; }
+.peer-bad { background: #FFF1F2; }
+
+.badge { font-size: 9.5px; font-weight: 700; padding: 2px 8px; border-radius: 10px; }
+.badge-g { background: var(--green-bg); color: var(--green); }
+.badge-r { background: var(--red-bg); color: var(--red); }
+.badge-a { background: var(--amber-bg); color: var(--amber); }
+.badge-b { background: var(--blue-bg); color: var(--blue); }
+
+/* Verdict */
+.verdict-card { background: #F0FDF4; border: 2px solid #86EFAC; border-radius: 14px; padding: 18px; margin-bottom: 14px; }
+.verdict-title { font-size: 15px; font-weight: 800; color: var(--green); margin-bottom: 8px; }
+.verdict-body { font-size: 12px; color: #14532D; line-height: 1.75; }
+
+/* mono text */
+.mono { font-family: 'DM Mono', monospace; }
+
+/* Footer */
+.footer { border-top: 1px solid var(--border); margin-top: 20px; padding-top: 12px; font-size: 10px; color: var(--text3); font-family: 'DM Mono', monospace; }
+
+/* Compact two-col */
+.two-col { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; margin-bottom: 16px; }
+</style>
+</head>
+<body>
+
+<div class="header">
+  <h1>Advait Energy Transitions Ltd — Deep Investment Analysis</h1>
+  <div class="tagline">NSE/BSE: ADVAIT · Formerly Advait Infratech · Founded 2009 · HQ Ahmedabad, Gujarat · Promoter 66.8% · MCap ₹2,000 Cr · Revenue ₹680 Cr TTM · 5yr Revenue CAGR 54% · Multiple new business entries: BESS, Electrolyser, Fuel Cell</div>
+</div>
+
+<div class="hero">
+  <div class="hcard"><div class="hcard-label">Market Cap</div><div class="hcard-value val-text">₹2,000 Cr</div><div class="hcard-sub">₹~1,900 Cr at current</div></div>
+  <div class="hcard"><div class="hcard-label">Revenue TTM</div><div class="hcard-value val-green">₹680 Cr</div><div class="hcard-sub">+70%+ YoY est. FY26</div></div>
+  <div class="hcard"><div class="hcard-label">PAT TTM</div><div class="hcard-value val-green">₹49.4 Cr</div><div class="hcard-sub">~7.3% PAT margin</div></div>
+  <div class="hcard"><div class="hcard-label">Order Book</div><div class="hcard-value val-blue">₹1,048 Cr</div><div class="hcard-sub">Dec 2025 · 1.54x revenue</div></div>
+  <div class="hcard"><div class="hcard-label">Promoter</div><div class="hcard-value val-green">66.8%</div><div class="hcard-sub">Zero pledge · Strong</div></div>
+</div>
+
+<div class="tabs">
+  <button class="tab active" onclick="go('overview',this)">🏭 Overview</button>
+  <button class="tab" onclick="go('financials',this)">📊 Financials</button>
+  <button class="tab" onclick="go('new_business',this)">🚀 New Businesses</button>
+  <button class="tab" onclick="go('sector',this)">⚡ Sector KPIs</button>
+  <button class="tab" onclick="go('guidance',this)">🎯 Guidance</button>
+  <button class="tab" onclick="go('risks',this)">⚠️ Risks</button>
+  <button class="tab" onclick="go('peers',this)">⚔️ Peers</button>
+  <button class="tab" onclick="go('scenarios',this)">🔮 3x Scenarios</button>
+  <button class="tab" onclick="go('verdict',this)">🏆 Verdict</button>
+</div>
+
+<!-- =========== OVERVIEW =========== -->
+<div id="overview" class="panel active">
+  <div class="sh">Who is Advait Energy Transitions — the company in full</div>
+  <div class="box box-b">
+    <div class="box-title">⚡ Advait Energy Transitions — Gujarat's multi-vertical energy infrastructure and transition company</div>
+    <div class="box-body">
+    Founded 2009 in Ahmedabad by promoter family. Originally a power transmission solutions company (stringing tools, OPGW cables, ACS wires). Rebranded from "Advait Infratech" to "Advait Energy Transitions" in 2025 — signalling the strategic pivot.<br><br>
+    <strong>Today Advait operates across 4 active verticals + 3 emerging ones:</strong><br><br>
+    🔷 <strong>Power Transmission Solutions (PTS) — Core, 84% of order book:</strong> Manufacturing stringing tools, OPGW (Optical Fibre Ground Wire), ACS wires, ERS (Emergency Restoration System), OFC cables, insulators. Plus EPC execution — live-line OPGW installations, MVCC conductor work, underground cabling, substation projects. Customers: GUVNL, PGVCL, PTCUL, MSETCL, State Electricity Boards, Railways. Exported to 45+ countries.<br><br>
+    🔶 <strong>New & Renewable Energy (NRE) — Fast growing, 16% of order book:</strong> Solar EPC projects (100 MW at Khavda, 67.1 MWp under IPP), BESS project development (BOO model), green hydrogen, electrolysers, fuel cells.<br><br>
+    <strong>Key February 2026 milestone:</strong> Won 150 MW/300 MWh GUVNL BESS project as L1 bidder at ₹2.10 lakh/MW/month + VGF support. This is the entry into annuity-model BESS infrastructure — a potential recurring revenue stream for 12+ years.
+    </div>
+  </div>
+
+  <div class="sh">Core product lines — what they make and sell</div>
+  <div class="kpi-grid">
+    <div class="kcard g"><div class="kcard-label">OPGW Cables</div><div class="kcard-value val-green">Optical Ground Wire</div><div class="kcard-sub">Ground + fibre optic combined. Supplied to all major utilities + Railways. Exported globally.</div></div>
+    <div class="kcard g"><div class="kcard-label">ACS Wire</div><div class="kcard-value val-green">Aluminium Clad Steel</div><div class="kcard-sub">Conductor technology for transmission lines. In-house factory setup FY22. Import substitute.</div></div>
+    <div class="kcard b"><div class="kcard-label">Stringing Tools</div><div class="kcard-value val-blue">T&D Equipment</div><div class="kcard-sub">Specialised tools for stringing transmission lines. Global export product. High margin.</div></div>
+    <div class="kcard b"><div class="kcard-label">ERS Towers</div><div class="kcard-value val-blue">Emergency Restoration</div><div class="kcard-sub">Rapid deployment towers post-disaster. MSETCL order ₹19.99 Cr (Feb 2026). Defence + utility use.</div></div>
+    <div class="kcard t"><div class="kcard-label">Solar EPC</div><div class="kcard-value val-teal">Projects</div><div class="kcard-sub">100 MW Khavda (12.5 MW commissioned Q3 FY26). 67.1 MWp IPP mode (subsidiary AGPL).</div></div>
+    <div class="kcard t"><div class="kcard-label">BESS Projects (BOO)</div><div class="kcard-value val-teal">Build-Own-Operate</div><div class="kcard-sub">50MW/100MWh + 150MW/300MWh (L1). 12-yr concession. VGF-backed. Annuity revenue model.</div></div>
+    <div class="kcard a"><div class="kcard-label">Electrolyser Mfg</div><div class="kcard-value val-amber">30 MW → 300 MW</div><div class="kcard-sub">Phase-I 30 MW launched. 100 MW by Mar'27. 300 MW eventually. ₹200 Cr capex.</div></div>
+    <div class="kcard a"><div class="kcard-label">Fuel Cell Tech</div><div class="kcard-value val-amber">AVL List GmbH</div><div class="kcard-sub">Austrian technology license for domestic manufacturing. Assembly line at Sanand.</div></div>
+  </div>
+
+  <div class="sh">Key metrics snapshot — FY26 state</div>
+  <div class="kpi-grid">
+    <div class="kcard g"><div class="kcard-label">9M FY26 Revenue</div><div class="kcard-value val-green">₹486 Cr</div><div class="kcard-sub">+138% YoY from ₹204 Cr — extraordinary growth</div></div>
+    <div class="kcard g"><div class="kcard-label">9M FY26 EBITDA</div><div class="kcard-value val-green">₹64.5 Cr</div><div class="kcard-sub">+82% YoY · 13.3% margin · recovering</div></div>
+    <div class="kcard g"><div class="kcard-label">9M FY26 PAT</div><div class="kcard-value val-green">₹36.5 Cr</div><div class="kcard-sub">+90% YoY · 7.5% PAT margin</div></div>
+    <div class="kcard b"><div class="kcard-label">Order Book</div><div class="kcard-value val-blue">₹1,048 Cr</div><div class="kcard-sub">+132% YoY · 1.54x annual revenue</div></div>
+    <div class="kcard g"><div class="kcard-label">Revenue 5yr CAGR</div><div class="kcard-value val-green">54.49%</div><div class="kcard-sub">vs industry 15.23% — 3.6x sector growth</div></div>
+    <div class="kcard g"><div class="kcard-label">Countries served</div><div class="kcard-value val-green">45+</div><div class="kcard-sub">Global export of stringing tools + OPGW</div></div>
+    <div class="kcard a"><div class="kcard-label">Debtor days</div><div class="kcard-value val-amber">173 days</div><div class="kcard-sub">HIGH — Working capital risk. Government buyer timing.</div></div>
+    <div class="kcard a"><div class="kcard-label">EBITDA margin trend</div><div class="kcard-value val-amber">11–13%</div><div class="kcard-sub">Compressing from 17% FY24 as NRE segment scales</div></div>
+  </div>
+</div>
+
+<!-- =========== FINANCIALS =========== -->
+<div id="financials" class="panel">
+  <div class="sh">Complete financial history — FY22 to FY26E</div>
+  <table class="ht">
+    <thead><tr><th>Period</th><th>Revenue (Consol.)</th><th>Growth</th><th>EBITDA</th><th>EBITDA%</th><th>PAT</th><th>PAT%</th><th>Key events</th></tr></thead>
+    <tbody>
+      <tr class="tr-b"><td class="mono">FY22</td><td class="mono">~₹50–70 Cr</td><td class="mono">—</td><td class="mono">~₹8 Cr</td><td class="mono">~14%</td><td class="mono">~₹5 Cr</td><td class="mono">~8%</td><td>Early stage. ACS wire factory set up. Stringing tools + OPGW core business. Started international exports.</td></tr>
+      <tr class="tr-b"><td class="mono">FY23</td><td class="mono">~₹110–130 Cr</td><td class="mono" style="color:#16A34A">+80%</td><td class="mono">~₹18 Cr</td><td class="mono">~15%</td><td class="mono">~₹10 Cr</td><td class="mono">~9%</td><td>Strong ramp in PTS. EPC projects starting. Export revenues growing. Green hydrogen plan announced.</td></tr>
+      <tr><td class="mono">FY24</td><td class="mono">₹208.84 Cr</td><td class="mono" style="color:#16A34A">+65%</td><td class="mono">~₹35 Cr</td><td class="mono">17%</td><td class="mono">₹21.89 Cr</td><td class="mono">10.5%</td><td>Peak EBITDA margins. PTS business at scale. EPC order wins accelerating. Advait Greenergy (AGPL) incorporated as green hydrogen subsidiary.</td></tr>
+      <tr class="tr-g"><td class="mono">FY25</td><td class="mono">₹399.11 Cr</td><td class="mono" style="color:#16A34A">+91%</td><td class="mono">~₹52 Cr</td><td class="mono">13%</td><td class="mono">₹32.05 Cr</td><td class="mono">8%</td><td>Revenue nearly doubles. Q4 FY25 ₹194.66 Cr alone = H1 FY24. BESS + solar EPC added. New hires + NRE scale-up costs compress margins. Operating cash flow ₹46 Cr (vs -₹9 Cr FY24). Major MoU at Vibrant Gujarat ₹1,400 Cr.</td></tr>
+      <tr><td class="mono">Q1 FY26</td><td class="mono">₹118.43 Cr</td><td class="mono" style="color:#16A34A">+98.5%</td><td class="mono">~₹13 Cr</td><td class="mono">~11%</td><td class="mono">₹8.37 Cr</td><td class="mono">7.1%</td><td>Strong start to FY26. Revenue almost double YoY. PAT +54%. NRE margin drag but PTS scaling strongly.</td></tr>
+      <tr><td class="mono">Q2 FY26</td><td class="mono">₹156.87 Cr</td><td class="mono" style="color:#16A34A">+239%</td><td class="mono">~₹18 Cr</td><td class="mono">~11.5%</td><td class="mono">₹10.54 Cr</td><td class="mono">6.7%</td><td>Extraordinary 239% YoY growth. Large PGVCL ₹216 Cr EPC order kicking in. Q2 BESS execution started (50 MW GUVNL). Kacholia sector interest noted.</td></tr>
+      <tr class="tr-g"><td class="mono">Q3 FY26</td><td class="mono">₹211.03 Cr</td><td class="mono" style="color:#16A34A">+114%</td><td class="mono">₹26 Cr</td><td class="mono">~12.3%</td><td class="mono">₹16.59 Cr</td><td class="mono">7.9%</td><td>Record quarter. Margin recovering (11% → 12.3%). L1 for 150 MW BESS confirmed Feb 2026. Order book ₹1,048 Cr. 9M revenue ₹486 Cr (+138%). Sanand facility under construction. Electrolyser Phase-I launched.</td></tr>
+      <tr class="tr-g"><td class="mono">FY26E Full</td><td class="mono">₹680–720 Cr</td><td class="mono" style="color:#16A34A">+70–80%</td><td class="mono">~₹85–95 Cr</td><td class="mono">12.5–13%</td><td class="mono">₹49–60 Cr</td><td class="mono">7–8.5%</td><td>Screener TTM ₹680 Cr, PAT ₹49.4 Cr. Q4 typically strong seasonality. 40-45% guided growth — likely exceeded. New BESS order adds backlog. PGVCL ₹216 Cr and PTCUL ₹27.74 Cr orders executing.</td></tr>
+      <tr><td class="mono">FY27E</td><td class="mono">₹950–1,200 Cr</td><td class="mono" style="color:#16A34A">+40–65%</td><td class="mono">₹125–160 Cr</td><td class="mono">13–14%</td><td class="mono">₹85–115 Cr</td><td class="mono">9–10%</td><td>Sanand facility online Q3 FY27. Electrolyser 100 MW capacity. BESS 50 MW commissioning Q3 FY27. BESS 150 MW starts construction. Solar EPC at Khavda completing. Operating leverage as fixed costs dilute. Margin expansion to 13–14%.</td></tr>
+      <tr><td class="mono">FY28E</td><td class="mono">₹1,500–2,000 Cr</td><td class="mono" style="color:#16A34A">+58–67%</td><td class="mono">₹225–300 Cr</td><td class="mono">15–16%</td><td class="mono">₹150–220 Cr</td><td class="mono">10–12%</td><td>Multiple revenue streams mature: PTS EPC growing, BESS annuity from 200 MW+ portfolio, electrolyser ₹200–300 Cr revenue (management guided), fuel cell assembly commercial. Margin expansion to 15%+ as NRE stabilises. Potential 3x PAT growth from FY26.</td></div></td></tr>
+    </tbody>
+  </table>
+
+  <div class="sh">Revenue CAGR — 54% vs industry 15% — the compounding advantage</div>
+  <div class="bar-grid">
+    <div class="bar-row"><div class="bar-label">FY22: ~₹60 Cr</div><div class="bar-track"><div class="bar-fill" style="width:3%;background:#A8A29E">₹60 Cr</div></div><div class="bar-val" style="color:var(--text3)">₹60 Cr</div></div>
+    <div class="bar-row"><div class="bar-label">FY23: ~₹120 Cr (+100%)</div><div class="bar-track"><div class="bar-fill" style="width:6%;background:#92400E">₹120 Cr</div></div><div class="bar-val" style="color:var(--amber-mid)">₹120 Cr</div></div>
+    <div class="bar-row"><div class="bar-label">FY24: ₹209 Cr (+65%)</div><div class="bar-track"><div class="bar-fill" style="width:10%;background:#0F766E">₹209 Cr</div></div><div class="bar-val" style="color:var(--teal)">₹209 Cr</div></div>
+    <div class="bar-row"><div class="bar-label">FY25: ₹399 Cr (+91%)</div><div class="bar-track"><div class="bar-fill" style="width:20%;background:#16A34A">₹399 Cr</div></div><div class="bar-val" style="color:var(--green-mid)">₹399 Cr</div></div>
+    <div class="bar-row"><div class="bar-label">FY26E: ₹680–720 Cr (+70–80%)</div><div class="bar-track"><div class="bar-fill" style="width:34%;background:#166534">₹700 Cr</div></div><div class="bar-val" style="color:var(--green)">₹700 Cr</div></div>
+    <div class="bar-row"><div class="bar-label">FY27E: ₹950–1,200 Cr (+50%)</div><div class="bar-track"><div class="bar-fill" style="width:55%;background:#14532D">₹1,100 Cr</div></div><div class="bar-val" style="color:var(--green)">₹1,100 Cr</div></div>
+    <div class="bar-row"><div class="bar-label">FY28E: ₹1,500–2,000 Cr (+67%)</div><div class="bar-track"><div class="bar-fill" style="width:90%;background:#052E16">₹1,750 Cr</div></div><div class="bar-val" style="color:var(--green)">₹1,750 Cr</div></div>
+  </div>
+
+  <div class="sh">Key concern: EBITDA margin compression explained</div>
+  <div class="ic-grid">
+    <div class="icard a"><span class="pill pill-a">⚠️ FY24→FY26: 17% → 12% EBITDA compression</span><h3>Why margins fell — investment phase, not structural</h3><p>FY24 at 17% EBITDA was peak margins on a primarily product-sale PTS business (tools, OPGW). As EPC (lower margin) and NRE (high upfront cost, delayed revenue) scaled up, blended margins compressed. This is NORMAL for a company transitioning from product to project business. Margin recovery expected as Sanand facility comes online (manufacturing cost reduction) and BESS annuity adds high-margin recurring revenue from FY28.</p></div>
+    <div class="icard g"><span class="pill pill-g">✅ Recovery path: 12% → 15–16% by FY28</span><h3>Three drivers of margin recovery</h3><p>1. Sanand facility: New manufacturing capacity = lower procurement costs for OPGW, tools, and ERS. Fixed cost absorption improves with scale. 2. BESS annuity: 12-year BOO concession revenue = near 100% gross margin on operating phase (after construction payback). 3. Electrolyser: Once commercial, manufacturing has 20–30% EBITDA margins (hardware). Three high-margin businesses offsetting EPC drag.</p></div>
+  </div>
+</div>
+
+<!-- =========== NEW BUSINESSES =========== -->
+<div id="new_business" class="panel">
+  <div class="sh">Future product lines and new business entries — 5 major bets in parallel</div>
+  <div class="box box-b">
+    <div class="box-title">🚀 Advait is building 5 new revenue streams simultaneously — energy infrastructure + technology</div>
+    <div class="box-body">
+    This is the most differentiated aspect of Advait's story. While the core PTS business funds operations, management is making deliberate bets on the next decade of energy infrastructure: BESS project development (recurring annuity), BESS manufacturing (hardware play), green hydrogen electrolysers (import substitute), fuel cell technology (emerging), and carbon advisory (monetising climate regulations). The Sanand multi-integrated facility is the physical hub for all these new businesses.
+    </div>
+  </div>
+
+  <div class="future-grid">
+    <div class="fcard">
+      <div class="fcard-icon">🔋</div>
+      <div class="fcard-title">BESS Project Development (BOO)</div>
+      <div class="fcard-tag" style="background:var(--teal-bg);color:var(--teal)">REVENUE STARTING FY27</div>
+      <div class="fcard-body">
+        <strong>What:</strong> Build-Own-Operate BESS projects for State DISCOMs under 12-year concession agreements. Revenue = capacity charge (₹2.10 lakh/MW/month) × months commissioned.<br><br>
+        <strong>Portfolio:</strong><br>
+        • 50MW/100MWh GUVNL Phase IV — ₹141 Cr investment, Q3 FY27 commissioning<br>
+        • 150MW/300MWh GUVNL Phase VIII — L1 winner, VGF supported, 18 months from BESPA<br>
+        • Target: 1 GW portfolio over 5 years<br><br>
+        <strong>Revenue math (200MW at ₹2.1L/MW/month):</strong><br>
+        200 MW × ₹2.10L × 12 = ₹504 Cr/year annuity at full portfolio
+      </div>
+      <div class="fcard-timeline">⏱ First revenue: Q3 FY27 (50MW) → Scales to ₹100+ Cr by FY28</div>
+    </div>
+
+    <div class="fcard">
+      <div class="fcard-icon">🏭</div>
+      <div class="fcard-title">BESS Manufacturing Facility</div>
+      <div class="fcard-tag" style="background:var(--blue-bg);color:var(--blue)">PHASE-I OCT 2026</div>
+      <div class="fcard-body">
+        <strong>What:</strong> Indigenous BESS manufacturing — becoming a domestic supplier of battery storage systems instead of relying on imports.<br><br>
+        <strong>Scale:</strong><br>
+        • Phase-I: 2.5 GWh from October 2026<br>
+        • Total target: 5 GWh capacity<br>
+        • Location: Sanand integrated facility<br><br>
+        <strong>Why important:</strong> India's BESS market is ₹50,000+ Cr over 5 years. Government is pushing local content (minimum 20% in GUVNL bids). Being a domestic manufacturer gives price and tender advantage. Can supply own BOO projects = cost control.<br><br>
+        <strong>Revenue potential:</strong> ₹500–1,000 Cr/yr at full 5 GWh run rate (₹2–3 Cr per MWh manufacturing cost)
+      </div>
+      <div class="fcard-timeline">⏱ Phase-I Oct 2026 → Commercial scale FY28</div>
+    </div>
+
+    <div class="fcard">
+      <div class="fcard-icon">🌿</div>
+      <div class="fcard-title">Green Hydrogen Electrolyser Manufacturing</div>
+      <div class="fcard-tag" style="background:var(--green-bg);color:var(--green)">30MW LAUNCHED · 300MW GOAL</div>
+      <div class="fcard-body">
+        <strong>What:</strong> Manufacturing indigenous electrolysers (the machines that split water into hydrogen using electricity). India imports almost all electrolysers — huge import substitution opportunity.<br><br>
+        <strong>Technology:</strong> AEM (Alkaline Exchange Membrane) + PEM (Proton Exchange Membrane) — both technologies via global tech partnerships<br><br>
+        <strong>Scale:</strong><br>
+        • Phase-I: 30 MW unit launched<br>
+        • Phase-II: 100 MW by March 2027<br>
+        • End target: 300 MW capacity<br>
+        • 1 MW green hydrogen plant already operating at Gujarat<br><br>
+        <strong>Management guidance:</strong> ₹200–300 Cr revenue annually at 100 MW capacity commercialisation
+      </div>
+      <div class="fcard-timeline">⏱ 100MW by Mar'27 → ₹200–300 Cr revenue FY28</div>
+    </div>
+
+    <div class="fcard">
+      <div class="fcard-icon">⚗️</div>
+      <div class="fcard-title">Fuel Cell Technology</div>
+      <div class="fcard-tag" style="background:var(--purple-bg);color:var(--purple)">EMERGING · FY28+</div>
+      <div class="fcard-body">
+        <strong>What:</strong> Assembly line for hydrogen fuel cell systems. Fuel cells generate electricity from hydrogen — used in material handling, stationary power, eventually transport.<br><br>
+        <strong>Technology partner:</strong> AVL List GmbH (Austria) — licensing agreement for domestic manufacturing. AVL is a global leader in powertrain testing and fuel cell systems.<br><br>
+        <strong>Current status:</strong> Assembly line under construction at Sanand. Not yet commercial.<br><br>
+        <strong>Market:</strong> India's fuel cell market nascent but government is targeting green hydrogen in industry, ports, and eventually transport. Advait is positioning early in this emerging space.<br><br>
+        <strong>Revenue timeline:</strong> Commercial FY28–FY29 at earliest. Long gestation, high potential.
+      </div>
+      <div class="fcard-timeline">⏱ Assembly line FY27 → Commercial revenue FY28–29</div>
+    </div>
+
+    <div class="fcard">
+      <div class="fcard-icon">🌱</div>
+      <div class="fcard-title">Carbon Advisory & Credits</div>
+      <div class="fcard-tag" style="background:var(--amber-bg);color:var(--amber)">EARLY STAGE</div>
+      <div class="fcard-body">
+        <strong>What:</strong> Dedicated subsidiary (Advait Carbon Advisory & Renewables Assets Pvt Ltd) to help corporates offset emissions and monetise carbon credits from Advait's own renewable assets.<br><br>
+        <strong>Logic:</strong> Advait's solar IPP (67.1 MWp) and hydrogen plant generate genuine carbon credits. As India's carbon credit market matures (compliance mechanism announced 2023, expected operational FY26–27), these can be monetised.<br><br>
+        <strong>Opportunity:</strong> Carbon credits expected at ₹1,000–3,000/tonne CO₂ equivalent in Indian market. Even 50,000 tonnes/year = ₹5–15 Cr additional revenue from existing assets.<br><br>
+        <strong>Revenue timeline:</strong> Small initially, growing as India's carbon market develops.
+      </div>
+      <div class="fcard-timeline">⏱ Carbon market development FY27 → Revenue FY28+</div>
+    </div>
+
+    <div class="fcard">
+      <div class="fcard-icon">🏗️</div>
+      <div class="fcard-title">Sanand Integrated Manufacturing</div>
+      <div class="fcard-tag" style="background:var(--blue-bg);color:var(--blue)">Q3 FY27 COMMISSIONING</div>
+      <div class="fcard-body">
+        <strong>What:</strong> Multi-product greenfield manufacturing facility at Sanand, Gujarat — the physical hub for ALL new businesses.<br><br>
+        <strong>Products to be made:</strong><br>
+        • Power transmission products (ERS, OPGW, tools expansion)<br>
+        • BESS components and assembly<br>
+        • Electrolyser manufacturing (100 MW capacity)<br>
+        • Fuel cell assembly line (AVL technology)<br><br>
+        <strong>Why Sanand:</strong> Gujarat industrial zone — DMIC corridor, tax incentives, infrastructure, proximity to GUVNL/PGVCL customers. Same district as Tata Motors Nano plant and Agratas TATA battery factory.<br><br>
+        <strong>Investment:</strong> ₹200 Cr electrolyser capex + BESS facility investment. Total Sanand outlay likely ₹400–500 Cr over 3 years.
+      </div>
+      <div class="fcard-timeline">⏱ Operations start Q3 FY27 · Full ramp FY28–29</div>
+    </div>
+  </div>
+
+  <div class="sh">Revenue unlock timeline — from current ₹680 Cr to ₹2,000+ Cr</div>
+  <table class="ht">
+    <thead><tr><th>Business</th><th>FY26 Revenue</th><th>FY27E Revenue</th><th>FY28E Revenue</th><th>Status</th></tr></thead>
+    <tbody>
+      <tr class="tr-g"><td><strong>PTS EPC + Products</strong></td><td class="mono">~₹550–580 Cr</td><td class="mono">₹750–850 Cr</td><td class="mono">₹900–1,000 Cr</td><td><span class="badge badge-g">SCALING</span></td></tr>
+      <tr class="tr-b"><td><strong>Solar EPC (NRE)</strong></td><td class="mono">~₹80–100 Cr</td><td class="mono">₹120–150 Cr</td><td class="mono">₹150–200 Cr</td><td><span class="badge badge-b">ACTIVE</span></td></tr>
+      <tr class="tr-a"><td><strong>BESS BOO Annuity</strong></td><td class="mono">₹0 (construction)</td><td class="mono">₹30–50 Cr (partial year)</td><td class="mono">₹150–250 Cr</td><td><span class="badge badge-a">Q3 FY27 START</span></td></tr>
+      <tr class="tr-a"><td><strong>Electrolyser Manufacturing</strong></td><td class="mono">₹0 (setup)</td><td class="mono">₹50–80 Cr (pilot)</td><td class="mono">₹200–300 Cr</td><td><span class="badge badge-a">100MW by Mar'27</span></td></tr>
+      <tr><td><strong>BESS Manufacturing</strong></td><td class="mono">₹0</td><td class="mono">₹0–20 Cr (early)</td><td class="mono">₹100–200 Cr</td><td><span class="badge badge-b">Phase-I Oct 2026</span></td></tr>
+      <tr><td><strong>Fuel Cell + Carbon</strong></td><td class="mono">₹0</td><td class="mono">₹5–15 Cr</td><td class="mono">₹30–60 Cr</td><td><span class="badge" style="background:#F3E8FF;color:#581C87">EARLY STAGE</span></td></tr>
+      <tr class="tr-g" style="font-weight:700"><td><strong>TOTAL</strong></td><td class="mono" style="color:var(--green);font-weight:700">~₹680–700 Cr</td><td class="mono" style="color:var(--green);font-weight:700">₹1,000–1,200 Cr</td><td class="mono" style="color:var(--green);font-weight:700">₹1,500–2,000 Cr</td><td><span class="badge badge-g">ON TRACK</span></td></tr>
+    </tbody>
+  </table>
+</div>
+
+<!-- =========== SECTOR =========== -->
+<div id="sector" class="panel">
+  <div class="sh">Power T&D + Energy Transition sector — the multi-decade structural tailwind</div>
+  <div class="box box-g">
+    <div class="box-title">⚡ Advait sits at the intersection of India's two biggest infrastructure themes: Power T&D + Energy Transition</div>
+    <div class="box-body">
+    <strong>Power T&D:</strong> India is investing ₹9.15 lakh crore in electricity infrastructure by 2032 (NITI Aayog estimate). RDSS scheme ₹3.03 lakh Cr for distribution upgrade. National Grid expansion for 500 GW RE integration needs massive new transmission. Every new substation, every transmission line, every grid upgrade = Advait's products and services.<br><br>
+    <strong>BESS:</strong> India's BESS market is projected to reach 25–30 GWh by 2030. GUVNL alone is tendering 2,000 MWh+ per year. SECI has massive pipelines. Total BESS investment in India = ₹50,000–70,000 Cr over 5 years. VGF support makes projects bankable.<br><br>
+    <strong>Green Hydrogen:</strong> India's National Green Hydrogen Mission = 5 MMTPA by 2030. Electrolyser demand = 50,000+ MW by 2030. Currently India imports ~100% of electrolysers. Domestic manufacturing = ₹15,000–20,000 Cr market opportunity for indigenous producers.
+    </div>
+  </div>
+
+  <div class="kpi-grid">
+    <div class="kcard b"><div class="kcard-label">India T&D investment</div><div class="kcard-value val-blue">₹9.15L Cr</div><div class="kcard-sub">By 2032 — Advait's primary market</div></div>
+    <div class="kcard b"><div class="kcard-label">RDSS scheme</div><div class="kcard-value val-blue">₹3.03L Cr</div><div class="kcard-sub">Distribution network upgrade — MVCC, OPGW demand</div></div>
+    <div class="kcard t"><div class="kcard-label">India BESS target</div><div class="kcard-value val-teal">25–30 GWh</div><div class="kcard-sub">By 2030 — ₹50,000+ Cr opportunity</div></div>
+    <div class="kcard t"><div class="kcard-label">Green H₂ mission</div><div class="kcard-value val-teal">5 MMTPA</div><div class="kcard-sub">By 2030 — needs 50,000 MW+ electrolysers</div></div>
+    <div class="kcard g"><div class="kcard-label">OPGW market CAGR</div><div class="kcard-value val-green">12–15%</div><div class="kcard-sub">Growing with grid expansion and 5G integration</div></div>
+    <div class="kcard g"><div class="kcard-label">Advait revenue CAGR</div><div class="kcard-value val-green">54.49%</div><div class="kcard-sub">vs sector 15.23% — massive market share gain</div></div>
+    <div class="kcard a"><div class="kcard-label">Electrolyser import bill</div><div class="kcard-value val-amber">~100%</div><div class="kcard-sub">India imports almost all electrolysers — Advait is building domestic capacity</div></div>
+    <div class="kcard a"><div class="kcard-label">Carbon credit potential</div><div class="kcard-value val-amber">₹1–3K/t</div><div class="kcard-sub">India carbon market developing — Advait's assets eligible</div></div>
+  </div>
+
+  <div class="sh">Advait vs the power T&D and energy sector opportunity</div>
+  <div class="ic-grid">
+    <div class="icard g"><span class="pill pill-g">✅ Government as customer = visibility</span><h3>GUVNL, PGVCL, PTCUL, MSETCL — state utilities are AAA counterparties</h3><p>Advait's primary customers are state electricity utilities and PSUs — the highest-quality government-backed buyers in India. Payment terms are slower (173 debtor days) but default risk is essentially zero. Once vendor-approved, repeat business is systematic. This is not discretionary consumer spending — it's non-negotiable infrastructure.</p></div>
+    <div class="icard g"><span class="pill pill-g">✅ Global exports — 45+ countries</span><h3>Stringing tools + OPGW exported worldwide — rare India SME advantage</h3><p>Most Indian SMEs don't export to 45+ countries. Advait's specialised stringing tools and OPGW cables are used globally for transmission line construction. This global validation provides pricing power and reduces domestic-cycle dependence. International revenue also has better margins than domestic EPC.</p></div>
+    <div class="icard b"><span class="pill pill-b">📊 BESS: ₹50,000 Cr market over 5 years</span><h3>India's BESS pipeline is the biggest structural opportunity</h3><p>GUVNL alone has tendered 2,670+ MWh in Phase VII-VIII. SECI, NTPC, state DISCOMs all have massive BESS pipelines. VGF support makes projects bankable. Advait as L1 winner demonstrates competitive pricing. Each MW at ₹2.10L/MW/month × 12-year concession = ₹25+ Cr total revenue per MW over concession period. 200 MW portfolio = ₹5,000+ Cr lifetime revenue.</p></div>
+    <div class="icard t"><span class="pill pill-t">🌿 Electrolyser import substitution — ₹20,000 Cr market</span><h3>India must build domestic electrolyser manufacturing for H2 mission</h3><p>India's National Green Hydrogen Mission requires 50,000+ MW electrolysers by 2030, currently all imported. Government pushing PLI-like incentives for domestic manufacturers. Advait with 300 MW capacity target is among India's first movers. Management's ₹200–300 Cr revenue guidance at 100 MW is conservative — market pricing at ₹20–25 Cr per MW installed suggests much higher potential at scale.</p></div>
+  </div>
+</div>
+
+<!-- =========== GUIDANCE =========== -->
+<div id="guidance" class="panel">
+  <div class="sh">Management guidance — track record and FY27 expectations</div>
+
+  <div class="action-card">
+    <div class="action-item"><div class="action-dot dot-g">✓</div><div class="action-content"><strong>FY26 guidance "40–45% revenue growth" — likely EXCEEDED (tracking 70–80%)</strong><div class="action-meta">Management guided 40-45% growth in FY26. 9M FY26 revenue ₹486 Cr already vs FY25 full year ₹399 Cr. FY26 estimate ₹680–700 Cr = 70–75% YoY growth. Guidance was conservative. CREDIBILITY: HIGH (9/10)</div></div></div>
+    <div class="action-item"><div class="action-dot dot-g">✓</div><div class="action-content"><strong>Order book milestone ₹1,000 Cr achieved — December 2025 ₹1,048 Cr</strong><div class="action-meta">Management had been guiding toward ₹1,000 Cr order book as a key milestone. Achieved and maintained. 132% YoY order book growth vs 138% revenue growth = books running near book-to-bill 1:1 — healthy replenishment rate.</div></div></div>
+    <div class="action-item"><div class="action-dot dot-g">✓</div><div class="action-content"><strong>BESS project entry confirmed — 50 MW Q3 FY27, 150 MW in 18 months from BESPA</strong><div class="action-meta">Management said they were targeting BESS project development. Executed: 50 MW (executing) + 150 MW (L1 winner, Feb 2026). BESS portfolio target 1 GW over 5 years is ambitious but credible given competitive bidding success at ₹2.10 lakh/MW/month.</div></div></div>
+    <div class="action-item"><div class="action-dot dot-g">✓</div><div class="action-content"><strong>Electrolyser Phase-I 30 MW launched — 100 MW by March 2027</strong><div class="action-meta">Management guided electrolyser capacity build-out in phases. Phase-I 30 MW launched. Targeting 100 MW by March 2027. Management revenue guidance: ₹200–300 Cr annually at 100 MW commercialisation. This is the key new revenue catalyst for FY28.</div></div></div>
+    <div class="action-item"><div class="action-dot dot-b">→</div><div class="action-content"><strong>FY27 guidance (implied): Revenue ₹950–1,200 Cr, maintain 40–50% growth trajectory</strong><div class="action-meta">No formal FY27 guidance yet. But with order book ₹1,048 Cr (1.54x current revenue), PGVCL ₹216 Cr executing, BESS 50 MW commissioning, and BESS 150 MW starting construction — FY27 revenue of ₹1,000+ Cr is the consensus expectation. Sanand facility adds capacity from Q3 FY27.</div></div></div>
+    <div class="action-item"><div class="action-dot dot-a">!</div><div class="action-content"><strong>EBITDA margin guidance: Recovery from 11% → 13–15% by FY28 as manufacturing scales</strong><div class="action-meta">Margin compression from 17% (FY24) to 11% (FY26) is due to NRE scale-up costs and EPC business growth (lower margin than products). Management expects recovery as Sanand reduces manufacturing costs, BESS annuity adds high-margin recurring revenue, and electrolyser manufacturing contributes 20%+ EBITDA.</div></div></div>
+    <div class="action-item"><div class="action-dot dot-a">!</div><div class="action-content"><strong>Vibrant Gujarat MoU ₹1,400 Cr — pipeline, not order book</strong><div class="action-meta">AGPL inked ₹1,400 Cr MoUs at Vibrant Gujarat for Electrolyser, Fuel Cell, ERS, and EPC projects. MoUs are intentions, not orders. But they indicate government/institutional pipeline aligned with Advait's capabilities. Typically 20–30% of MoUs convert to actual orders over 2–3 years.</div></div></div>
+  </div>
+</div>
+
+<!-- =========== RISKS =========== -->
+<div id="risks" class="panel">
+  <div class="sh">Comprehensive risk assessment — execution risk is real with 5 new businesses</div>
+  <div class="box box-r">
+    <div class="box-title">🔴 The biggest risks — be honest about the challenges</div>
+    <div class="box-body">
+    <strong>1. Execution risk: 5 new business lines simultaneously</strong><br>
+    Advait is building BESS projects, BESS manufacturing, electrolyser manufacturing, fuel cell assembly, and carbon advisory — all at the same time, while growing the core PTS business. This is a lot for a ₹2,000 Cr SME company. Management bandwidth, capital allocation discipline, and execution quality across all verticals is the #1 risk. One failed new venture can destroy the narrative and compress the valuation multiple.<br><br>
+    <strong>2. Debtor days 173 — working capital trap</strong><br>
+    Government customers (Electricity Boards) pay slowly. Debtor days at 173 means ₹290+ Cr of revenue is outstanding at any time. If new NRE projects (BESS BOO = upfront ₹141 Cr investment) overlap with slow receivables from existing EPC work, Advait could face working capital stress. Debt could rise significantly, eating into thin PAT margins.<br><br>
+    <strong>3. Hydrogen and BESS: pre-revenue, but major capex</strong><br>
+    Electrolyser facility = ₹200 Cr capex. BESS 50 MW = ₹141 Cr. BESS 150 MW = ~₹400–450 Cr. Sanand facility = ₹200+ Cr. Total = ₹900+ Cr over 3 years. Against current net worth of ₹208 Cr (FY25), this requires significant debt/equity raising. Dilution risk is real. 
+    </div>
+  </div>
+
+  <div class="sh">Risk matrix</div>
+  <table class="ht">
+    <thead><tr><th>Risk</th><th>Severity</th><th>Probability</th><th>Mitigation</th></tr></thead>
+    <tbody>
+      <tr class="tr-r"><td><strong>Execution failure in 1+ new business lines</strong></td><td class="mono" style="color:var(--red)">HIGH</td><td class="mono" style="color:var(--amber-mid)">30%</td><td>Management has 15yr track record in PTS. New businesses are supported by JV partners + global tech licensors. But first-time manufacturing (electrolyser, fuel cell) has higher risk.</td></tr>
+      <tr class="tr-a"><td><strong>Working capital stress (debtor days 173)</strong></td><td class="mono" style="color:var(--amber-mid)">MEDIUM</td><td class="mono" style="color:var(--amber-mid)">35%</td><td>VGF for BESS reduces upfront risk. BESS annuity gives predictable cash flows from FY28. Operating cash flow recovering (₹46 Cr FY25 vs -₹9 Cr FY24). Active monitoring needed.</td></tr>
+      <tr class="tr-a"><td><strong>Equity dilution for capital raising</strong></td><td class="mono" style="color:var(--amber-mid)">MEDIUM</td><td class="mono" style="color:var(--amber-mid)">40%</td><td>₹90 Cr fundraising at AGPL subsidiary being explored. Parent may need QIP/rights. At current PE, dilution at ₹1,500–2,000/share would be at reasonable valuation. Manageable if used for growth.</td></tr>
+      <tr><td><strong>Green hydrogen market development slower than expected</strong></td><td class="mono" style="color:var(--amber-mid)">MEDIUM</td><td class="mono" style="color:var(--amber-mid)">35%</td><td>Green hydrogen is genuinely nascent. Mission targets are aspirational. Electrolyser demand could take until FY29–30 to fully materialise. But 100 MW capacity + government connections = early mover advantage.</td></tr>
+      <tr><td><strong>BESS commissioning delays</strong></td><td>LOW-MED</td><td class="mono">20%</td><td>50 MW GUVNL project targeted Q3 FY27 — 18 months execution. Similar projects have faced 3–6 month delays due to supply chain (LFP battery imports from China). VGF extension terms available.</td></tr>
+      <tr><td><strong>Competition in EPC from larger players</strong></td><td>LOW</td><td class="mono">15%</td><td>KEC, Sterlite Power, Kalpataru are much larger EPC companies. Advait competes in specialised segments (OPGW, MVCC, live-line stringing) where they have genuine expertise — not a direct threat in core niche.</td></tr>
+      <tr class="tr-g"><td><strong>Valuation correction (PE 45x, P/B 9x)</strong></td><td class="mono" style="color:var(--amber-mid)">MEDIUM</td><td class="mono" style="color:var(--amber-mid)">30%</td><td>Current PE is elevated but supported by optionality from new businesses. If FY27 revenue ₹1,000+ Cr delivered, forward PE drops to ~25x which is reasonable for a multi-vertical energy transition company.</td></tr>
+    </tbody>
+  </table>
+</div>
+
+<!-- =========== PEERS =========== -->
+<div id="peers" class="panel">
+  <div class="sh">Comparable companies in power T&D + energy transition — who is the best 3x bet?</div>
+
+  <div style="overflow-x:auto">
+  <table class="ht">
+    <thead><tr><th>Company</th><th>MCap</th><th>Revenue FY26E</th><th>PAT FY26E</th><th>EBITDA%</th><th>PE</th><th>Promoter</th><th>Key advantage</th><th>3x Probability</th></tr></thead>
+    <tbody>
+      <tr class="peer-best"><td><strong style="color:var(--teal)">Advait Energy ← GARVIT</strong></td><td class="mono">₹2,000 Cr</td><td class="mono">₹680 Cr</td><td class="mono">₹49 Cr</td><td class="mono" style="color:var(--amber-mid)">12%</td><td class="mono" style="color:var(--amber-mid)">~40x</td><td class="mono" style="color:var(--green)">66.8%</td><td>Multi-vertical: PTS + BESS BOO + Electrolyser + Fuel Cell. First mover in BESS + H₂.</td><td><span class="badge badge-g">25–30%</span></td></tr>
+      <tr class="peer-mid"><td><strong>Techno Electric</strong></td><td class="mono">₹8,000 Cr</td><td class="mono">~₹2,200 Cr</td><td class="mono">~₹250 Cr</td><td class="mono" style="color:var(--green)">18%</td><td class="mono">~32x</td><td class="mono" style="color:var(--green)">~58%</td><td>Power EPC + wind IPP. High margins. Conservative balance sheet. Strong cash flows.</td><td><span class="badge badge-a">12–18%</span></td></tr>
+      <tr class="peer-mid"><td><strong>KEC International</strong></td><td class="mono">₹25,000 Cr</td><td class="mono">~₹18,000 Cr</td><td class="mono">~₹700 Cr</td><td class="mono" style="color:var(--amber-mid)">10%</td><td class="mono">~35x</td><td class="mono">~40%</td><td>India's largest T&D EPC. Global operations. SAE Towers acquisition. 3x math: very difficult from ₹25,000 Cr.</td><td><span class="badge badge-r">3–5%</span></td></tr>
+      <tr><td><strong>Inox Green Energy</strong></td><td class="mono">₹2,500 Cr</td><td class="mono">~₹400 Cr</td><td class="mono">~₹45 Cr</td><td class="mono">~40%</td><td class="mono">~55x</td><td class="mono">~71%</td><td>Wind O&M services. Pure annuity model. High margins. But only one business + expensive.</td><td><span class="badge badge-a">10–15%</span></td></tr>
+      <tr class="peer-mid"><td><strong>TARIL (Garvit holds)</strong></td><td class="mono">~₹3,500 Cr</td><td class="mono">~₹600 Cr</td><td class="mono">~₹50 Cr</td><td class="mono" style="color:var(--green)">~15%</td><td class="mono">~40x</td><td class="mono">~60%</td><td>HVDC transformer pioneer. Defence + T&D. Narrower scope than Advait but higher margin.</td><td><span class="badge badge-a">20–25%</span></td></tr>
+      <tr><td><strong>Enviro Infra (Garvit holds)</strong></td><td class="mono">~₹900 Cr</td><td class="mono">~₹350 Cr</td><td class="mono">~₹30 Cr</td><td class="mono">~15%</td><td class="mono">~30x</td><td class="mono">~60%</td><td>Water EPC + BESS (NTPC ₹1,070 Cr). Smaller. Lower valuation. Different sector focus.</td><td><span class="badge badge-a">20–25%</span></td></tr>
+    </tbody>
+  </table>
+  </div>
+
+  <div class="sh">Best option for Garvit's use case — definitive analysis</div>
+  <div class="ic-grid">
+    <div class="icard g"><span class="pill pill-g">✅ Advait: Best 3x candidate in the T&D + Energy Transition space</span><h3>Why Advait wins for Garvit's criteria</h3><p>1. Multiple verticals (PTS + BESS + H₂ + fuel cell + carbon) — exactly what Garvit looks for. 2. Promoter 66.8% — strong. 3. Government/PSU customers — reliable, non-discretionary demand. 4. BESS L1 wins validate market competitiveness. 5. Mainboard listed (not SME) — better liquidity than V-Marc/Oriana. 6. 3x math achievable: FY26 PAT ₹50 Cr → FY28 PAT ₹175 Cr at 35x PE = ₹6,125 Cr = 3x+ from ₹2,000 Cr. 7. Management guided ₹200–300 Cr just from electrolyser — transforms PAT.</p></div>
+    <div class="icard a"><span class="pill pill-a">⚠️ Key risk vs TARIL (already in portfolio)</span><h3>Advait vs TARIL — do you need both?</h3><p>Garvit already holds TARIL (₹60,600 invested, +8%). Both are power T&D infrastructure plays. But they're differentiated: TARIL = transformers + HVDC (component manufacturing). Advait = EPC + BESS BOO + H₂ (multi-service + new energy transition). Advait has more growth optionality. TARIL has better current margins. Both can coexist but Advait has bigger upside from new businesses if they execute.</p></div>
+    <div class="icard b"><span class="pill pill-b">📌 For Garvit: Entry at ₹1,800–2,000 levels makes sense</span><h3>Watchlist with controlled entry — not a large bet</h3><p>Current price ~₹1,900–2,100. PE 40–45x is elevated but new businesses are pre-revenue optionalities not priced as zero. Enter ₹15,000–20,000 as a speculative position. Conviction 6.0–6.5/10. Watch FY26 full year results (expected May 2026) and Sanand commencement (Q3 FY27) as upgrade triggers. Full BESS annuity from FY28 = re-rate from 35x PE to 40x+ on growing PAT base.</p></div>
+    <div class="icard r"><span class="pill pill-r">❌ Not a top priority over existing action items</span><h3>Portfolio sequence still matters</h3><p>RPSG Ventures (7.5/10, 5 sessions overdue) and Muthoot Microfin (FY26 PAT confirmed, 25–30% 3x probability) remain higher priority for immediate capital deployment. Advait is the 4th–5th priority — a speculative allocation after core actions are done. Don't let interesting new stories distract from the clear pending actions.</p></div>
+  </div>
+</div>
+
+<!-- =========== SCENARIOS =========== -->
+<div id="scenarios" class="panel">
+  <div class="sh">3x scenario analysis — from current ~₹2,000 Cr market cap</div>
+  <div class="scenario-grid">
+    <div class="scenario-card bull">
+      <div class="sc-label" style="color:var(--green)">Bull: 3–4x by FY28</div>
+      <div class="sc-value" style="color:var(--green)">₹6,000–8,000 Cr</div>
+      <div class="sc-body">
+        FY28 PAT ₹175–200 Cr. All new businesses execute on schedule. BESS 200 MW portfolio annuity ₹100+ Cr. Electrolyser ₹200–300 Cr revenue at 15% margin = ₹30–45 Cr PAT. PTS EPC ₹1,000 Cr at 8% = ₹80 Cr PAT. Total: ₹175–220 Cr PAT × 35x PE = ₹6,125–7,700 Cr = 3–3.9x.<br><br>
+        <strong>Probability: 25–30%.</strong> Requires Sanand on-time, BESS commissioning on-time, electrolyser commercial order wins.
+      </div>
+    </div>
+    <div class="scenario-card base">
+      <div class="sc-label" style="color:var(--blue)">Base: 2–2.5x by FY27</div>
+      <div class="sc-value" style="color:var(--blue)">₹4,000–5,000 Cr</div>
+      <div class="sc-body">
+        FY27 PAT ₹90–110 Cr. PTS EPC scaling, BESS 50 MW partial-year annuity, electrolyser pilot revenue. At 40x PE: ₹3,600–4,400 Cr = 1.8–2.2x. New business optionality valued by market → PE stays 40x.<br><br>
+        <strong>Probability: 40–45%.</strong> Most likely outcome as the new businesses are visible but not fully monetised yet. 2x in 2 years is the base case.
+      </div>
+    </div>
+    <div class="scenario-card bear">
+      <div class="sc-label" style="color:var(--red)">Bear: -20 to -30%</div>
+      <div class="sc-value" style="color:var(--red)">₹1,400–1,600 Cr</div>
+      <div class="sc-body">
+        Execution failure in new businesses + working capital stress. Hydrogen market slower. BESS delays. PTS EPC grows at 20% (not 40%). FY27 PAT ₹60–70 Cr. PE compresses from 40x to 25x = ₹1,500–1,750 Cr = -12% to -25%.<br><br>
+        <strong>Probability: 25–30%.</strong> EPC + working capital risk is real. But PTS core remains structurally sound regardless.
+      </div>
+    </div>
+  </div>
+
+  <div class="sh">The 3x PAT math — step by step</div>
+  <div class="bar-grid">
+    <div class="bar-row"><div class="bar-label">FY26E PAT (current base)</div><div class="bar-track"><div class="bar-fill" style="width:25%;background:#D97706">~₹50 Cr</div></div><div class="bar-val" style="color:var(--amber-mid)">₹50 Cr</div></div>
+    <div class="bar-row"><div class="bar-label">+ PTS EPC growth FY27→FY28 (₹1,000 Cr × 8%)</div><div class="bar-track"><div class="bar-fill" style="width:35%;background:#16A34A">+₹30 Cr PAT from EPC scale</div></div><div class="bar-val" style="color:var(--green-mid)">+₹30 Cr</div></div>
+    <div class="bar-row"><div class="bar-label">+ BESS BOO annuity (200 MW × ₹2.1L/month)</div><div class="bar-track"><div class="bar-fill" style="width:40%;background:#0F766E">+₹40–50 Cr PAT (annuity near 100% GM)</div></div><div class="bar-val" style="color:var(--teal)">+₹45 Cr</div></div>
+    <div class="bar-row"><div class="bar-label">+ Electrolyser revenue ₹200–300 Cr × 15% margin</div><div class="bar-track"><div class="bar-fill" style="width:45%;background:#1E40AF">+₹30–45 Cr PAT</div></div><div class="bar-val" style="color:var(--blue)">+₹40 Cr</div></div>
+    <div class="bar-row"><div class="bar-label">+ BESS manufacturing + other NRE</div><div class="bar-track"><div class="bar-fill" style="width:20%;background:#166534">+₹15–25 Cr</div></div><div class="bar-val" style="color:var(--green)">+₹20 Cr</div></div>
+    <div class="bar-row" style="background:#F0FDF4"><div class="bar-label" style="color:var(--green);font-weight:700">= FY28E Total PAT</div><div class="bar-track"><div class="bar-fill" style="width:90%;background:#052E16">₹50+₹30+₹45+₹40+₹20 = ~₹185 Cr</div></div><div class="bar-val" style="color:var(--green);font-weight:700">~₹185 Cr</div></div>
+    <div class="bar-row" style="background:#F0FDF4"><div class="bar-label" style="color:var(--green);font-weight:700">At 33x PE on ₹185 Cr = ₹6,105 Cr = 3x ✅</div><div class="bar-track"><div class="bar-fill" style="width:100%;background:#166534">₹6,105 Cr → 3.05x from ₹2,000 Cr</div></div><div class="bar-val" style="color:var(--green);font-weight:700">3x achievable</div></div>
+  </div>
+
+  <div class="sh">Key milestones to track — triggers for conviction upgrade</div>
+  <table class="ht">
+    <thead><tr><th>Milestone</th><th>Timeline</th><th>Impact on thesis</th><th>Status</th></tr></thead>
+    <tbody>
+      <tr class="tr-g"><td><strong>FY26 full year results — PAT ≥₹55 Cr</strong></td><td class="mono">May 2026</td><td>Confirms 7–8% PAT margin at scale. Validates trajectory.</td><td><span class="badge badge-a">PENDING</span></td></tr>
+      <tr class="tr-g"><td><strong>BESPA signing for 150 MW GUVNL (post-LoI)</strong></td><td class="mono">Q1 FY27</td><td>Converts LoI to live project. Construction starts. Revenue visibility locked for 12 years.</td><td><span class="badge badge-a">LoI RECEIVED</span></td></tr>
+      <tr><td><strong>Electrolyser commercial order ≥₹50 Cr</strong></td><td class="mono">Q2–Q3 FY27</td><td>Validates market demand for domestic electrolysers. First revenue from H₂ business.</td><td><span class="badge badge-b">100MW by Mar'27</span></td></tr>
+      <tr><td><strong>Sanand facility operations start</strong></td><td class="mono">Q3 FY27</td><td>Manufacturing cost reduction → margin recovery. All new products simultaneously.</td><td><span class="badge badge-a">UNDER CONSTRUCTION</span></td></tr>
+      <tr><td><strong>50 MW BESS commissioning</strong></td><td class="mono">Q3 FY27</td><td>First annuity revenue from BOO. Proves BESS execution capability. Opens 150 MW execution.</td><td><span class="badge badge-a">EXECUTING</span></td></tr>
+      <tr class="tr-g"><td><strong>Fuel cell first commercial delivery</strong></td><td class="mono">FY28</td><td>New revenue stream proven. AVL technology commercialisation in India.</td><td><span class="badge badge-b">ASSEMBLY LINE</span></td></tr>
+    </tbody>
+  </table>
+</div>
+
+<!-- =========== VERDICT =========== -->
+<div id="verdict" class="panel">
+  <div class="sh">The complete verdict for Garvit's 3x portfolio</div>
+
+  <div class="verdict-card">
+    <div class="verdict-title">✅ ADVAIT ENERGY: 6.5/10 conviction — Speculative buy ₹15,000–20,000 after FY26 results confirm</div>
+    <div class="verdict-body">
+    <strong>The bull case in one sentence:</strong> Advait is building 5 new energy transition revenue streams on top of a proven ₹680 Cr+ power transmission EPC business — and the math shows 3x by FY28 if BESS annuity + electrolyser commercial together contribute ₹100+ Cr PAT to a PTS base that's growing at 40%+.<br><br>
+    <strong>Why Advait deserves a position in Garvit's portfolio:</strong><br>
+    1. <strong>Multiple growth verticals</strong> — Garvit's #1 investment criterion. PTS (proven) + BESS BOO (annuity model) + Electrolyser manufacturing (import substitute) + Fuel cell (emerging) + Carbon advisory (optionality). Exactly what the 3x framework demands.<br>
+    2. <strong>Promoter 66.8% with zero pledge</strong> — passes Garvit's governance test comfortably.<br>
+    3. <strong>Government-backed customers</strong> — GUVNL, PGVCL, PTCUL, MSETCL, Railways. Non-discretionary T&D spending. Default risk negligible.<br>
+    4. <strong>BESS L1 winner validates competitive positioning</strong> — L1 at ₹2.10 lakh/MW/month in competitive GUVNL auction means Advait can actually execute and price competitively, not just claim technology leadership.<br>
+    5. <strong>Mainboard listed</strong> — unlike Oriana or V-Marc (NSE Emerge). Full institutional participation possible. Better liquidity.<br>
+    6. <strong>3x math works by FY28</strong> — FY26 PAT ₹50 Cr → FY28 PAT ₹175–200 Cr at 33–35x PE = ₹5,800–7,000 Cr = 2.9–3.5x from ₹2,000 Cr current. The BESS annuity alone (200 MW × 12 years) is ₹5,000+ Cr lifetime revenue.<br><br>
+    <strong>What gives us pause:</strong><br>
+    1. Debtor days 173 — working capital risk on large government projects. If new BESS capex and slow receivables overlap, balance sheet could tighten.<br>
+    2. Execution risk across 5 new businesses simultaneously — management bandwidth is finite.<br>
+    3. Hydrogen market timeline — green hydrogen at commercial scale in India is FY28–FY30, not immediately.<br>
+    4. Current PE 40–45x leaves little margin of safety on near-term earnings. The premium is justified only if new business ramps as guided.<br><br>
+    <strong>Entry strategy:</strong> ₹15,000–20,000 speculative position at ~₹1,850–2,100. Watch: (a) FY26 full year PAT ≥₹55 Cr, (b) BESPA signing for 150 MW GUVNL, (c) First electrolyser commercial order. If all three tick by Q2 FY27 → upgrade conviction to 7.5/10 and add ₹15,000 more.
+    </div>
+  </div>
+
+  <div class="sh">Conviction scorecard — Advait vs Garvit's investment framework</div>
+  <table class="ht">
+    <thead><tr><th>Garvit's criterion</th><th>Advait score</th><th>Pass/Fail</th><th>Notes</th></tr></thead>
+    <tbody>
+      <tr class="tr-g"><td>Promoter ≥55%</td><td class="mono" style="color:var(--green)">66.8%</td><td class="mono" style="color:var(--green)">✅ PASS</td><td>Strong promoter family commitment. Zero pledge.</td></tr>
+      <tr class="tr-g"><td>No pledge</td><td class="mono" style="color:var(--green)">0%</td><td class="mono" style="color:var(--green)">✅ PASS</td><td>Clean governance.</td></tr>
+      <tr class="tr-g"><td>Multiple growth verticals</td><td class="mono" style="color:var(--green)">5 new + 1 core</td><td class="mono" style="color:var(--green)">✅ PASS</td><td>Best multi-vertical story in Garvit's watchlist.</td></tr>
+      <tr class="tr-g"><td>Order book coverage ≥2x</td><td class="mono" style="color:var(--green)">₹1,048 Cr = 1.54x</td><td class="mono" style="color:var(--amber-mid)">⚠️ PARTIAL</td><td>Below 2x but replenishing rapidly. 132% YoY order book growth.</td></tr>
+      <tr class="tr-g"><td>SME-to-mainboard catalyst</td><td class="mono" style="color:var(--green)">Already mainboard</td><td class="mono" style="color:var(--green)">✅ PASS</td><td>No SME lot restrictions. Institutional investors can buy.</td></tr>
+      <tr class="tr-g"><td>Mainboard listed</td><td class="mono" style="color:var(--green)">NSE + BSE</td><td class="mono" style="color:var(--green)">✅ PASS</td><td>Better liquidity than V-Marc/Oriana (SME).</td></tr>
+      <tr class="tr-a"><td>Debtor risk</td><td class="mono" style="color:var(--amber-mid)">173 days</td><td class="mono" style="color:var(--red)">❌ CONCERN</td><td>High but consistent with government EPC companies. Needs monitoring.</td></tr>
+      <tr class="tr-a"><td>3x probability ≥20%</td><td class="mono" style="color:var(--green)">25–30%</td><td class="mono" style="color:var(--green)">✅ PASS</td><td>3x achievable by FY28 if BESS + electrolyser execute on schedule.</td></tr>
+      <tr style="background:#F0FDF4;font-weight:700"><td><strong>OVERALL VERDICT</strong></td><td colspan="2"><strong>6.5/10 — Speculative buy ₹15–20K after FY26 results</strong></td><td><strong>Priority: After RPSG Ventures + Muthoot Microfin</strong></td></tr>
+    </tbody>
+  </table>
+
+  <div class="sh">Portfolio action plan for Garvit</div>
+  <div class="action-card">
+    <div class="action-item"><div class="action-dot dot-r">1</div><div class="action-content"><strong>Still do these FIRST (before Advait): RPSG Ventures (₹35K), Muthoot Microfin (₹25K), SG Finserve (₹25K)</strong><div class="action-meta">RPSG is 5 sessions overdue. Muthoot FY26 PAT ₹170 Cr confirmed. SG Finserve Kacholia + CRISIL AA. All higher conviction + priority than Advait.</div></div></div>
+    <div class="action-item"><div class="action-dot dot-a">2</div><div class="action-content"><strong>After FY26 results (May 2026): Advait allocation ₹15,000–20,000 as speculative position</strong><div class="action-meta">Wait for FY26 audited results. If PAT ≥₹55 Cr and margin recovering to 12–13% → buy ₹15–20K at ₹1,850–2,100 price range. Conviction 6.5/10.</div></div></div>
+    <div class="action-item"><div class="action-dot dot-b">3</div><div class="action-content"><strong>Watch 3 key triggers for upgrade: BESPA signed + Electrolyser commercial order + Sanand Phase-I live</strong><div class="action-meta">If all three trigger by Q2 FY27 → upgrade conviction to 7.5/10 and add ₹15,000 more (total ₹30–35K). This is the 3x catalyst confirmation event.</div></div></div>
+    <div class="action-item"><div class="action-dot dot-g">4</div><div class="action-content"><strong>Note: Advait + TARIL = 2 T&D infrastructure plays — manage concentration</strong><div class="action-meta">Garvit already holds TARIL (₹60,600, +8%). Advait and TARIL are different enough (TARIL = transformers/HVDC components, Advait = EPC + new energy transition). Both can coexist. But don't exceed ₹1.5L combined in this sub-sector.</div></div></div>
+  </div>
+</div>
+
+<div class="footer">Advait Energy Transitions Ltd · NSE/BSE: ADVAIT · May 12, 2026 · ~₹2,000 Cr market cap · Revenue ₹680 Cr TTM · PAT ₹49.4 Cr · Promoter 66.8% · Order book ₹1,048 Cr · Not investment advice · Verify independently · Consult SEBI-registered advisor</div>
+
+<script>
+function go(id,btn){
+  document.querySelectorAll('.tab').forEach(t=>t.classList.remove('active'));
+  document.querySelectorAll('.panel').forEach(p=>p.classList.remove('active'));
+  btn.classList.add('active');
+  document.getElementById(id).classList.add('active');
+}
+</script>
+</body>
+</html>
